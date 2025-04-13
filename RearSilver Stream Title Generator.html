@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Stream Title Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input, select, button, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1rem;
+            user-select: none;
+            gap: 10px;
+        }
+
+        .custom-checkbox input {
+            display: none;
+        }
+
+        .custom-checkbox .checkmark {
+            height: 20px;
+            width: 20px;
+            background-color: #ccc;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .custom-checkbox input:checked + .checkmark {
+            background-color: DodgerBlue;
+        }
+
+        .custom-checkbox .checkmark::after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .custom-checkbox input:checked + .checkmark::after {
+            display: block;
+        }
+
+        .hashtag-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+
+        .note {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        #previewArea {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        #charWarning {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        #supportMessage {
+            margin-top: 10px;
+            font-style: italic;
+            color: #333;
+        }
+
+        #goLiveMessageSection {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        button#shareTwitter, button#shareDiscord {
+            background-color: #1DA1F2; /* Twitter Blue */
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-right: 5px; /* Add some spacing */
+        }
+
+        button#shareDiscord {
+            background-color: #7289DA; /* Discord Blurple */
+        }
+
+        button#shareTwitter:hover {
+            background-color: #0C87C5;
+        }
+
+        button#shareDiscord:hover {
+            background-color: #586EA6;
+        }
+
+        #shareSection {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        #shareSection label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        #shareSection input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        #shareSection button {
+            background-color: #1DA1F2; /* Twitter Blue */
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-right: 5px;
+            border: none; /* Remove default button border */
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        #shareSection button#shareDiscord {
+            background-color: #5865F2; /* Discord Blurple */
+        }
+
+        #shareSection button:hover {
+            opacity: 0.8;
+        }
+
+        #twitchBtn {
+            background-color: #6441a5; /* Twitter Blue */
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-right: 50px;
+            border: none; /* Remove default button border */
+            padding: 10px 15px;
+            border-radius: 5px;
+            width: 295px;
+        }
+
+        #discordBtn {
+            background-color: #5865F2; /* Discord Blurple */
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-right: 5px;
+            border: none; /* Remove default button border */
+            padding: 10px 15px;
+            border-radius: 5px;
+            width: 295px;
+        }
+
+        #twitchBtn:hover {
+            opacity: 0.8;
+        }
+
+        #discordBtn:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <button id="twitchBtn">Follow me on Twitch</button>
+            <button id="discordBtn">Join my server for more streamer tools</button>
+        <h1>Stream Title Generator</h1>
+
+        <label for="gameTitle">Game Title:</label>
+        <input type="text" id="gameTitle" placeholder="Enter game...">
+
+        <label class="custom-checkbox">
+            <input type="checkbox" id="emojiPack">
+            <span class="checkmark"></span>
+            <span>Enable Emoji Pack</span>
+        </label>
+
+
+        <label for="theme">Choose a Theme:</label>
+        <select id="theme">
+            <option value="witty">Witty</option>
+            <option value="cheeky">Cheeky</option>
+            <option value="sussy">Sussy</option>
+            <option value="energetic">Energetic</option>
+            <option value="chilled">Chilled Vibes</option>
+            <option value="focused">Focused Gameplay</option>
+            <option value="community">Community Hangout</option>
+            <option value="chaotic">Chaotic Fun</option>
+            <option value="story">Story Driven</option>
+            <option value="competitive">Competitive Play</option>
+        </select>
+
+        <label>Hashtags:</label>
+        <div class="hashtag-options">
+            <label class="custom-checkbox">
+                <input type="checkbox" class="hashtagOption" value="#FirstPlaythrough">
+                <span class="checkmark"></span>#FirstPlaythrough
+            </label>
+            <label class="custom-checkbox">
+                <input type="checkbox" class="hashtagOption" value="#NoBackseating">
+                <span class="checkmark"></span>#NoBackseating
+            </label>
+            <label class="custom-checkbox">
+                <input type="checkbox" class="hashtagOption" value="#TwitchDrops">
+                <span class="checkmark"></span>#TwitchDrops
+            </label>
+            <label class="custom-checkbox">
+                <input type="checkbox" class="hashtagOption" value="#NoSpoilers">
+                <span class="checkmark"></span>#NoSpoilers
+            </label>
+            <label class="custom-checkbox">
+                <input type="checkbox" class="hashtagOption" value="#CosyVibes">
+                <span class="checkmark"></span>#CosyVibes
+            </label>
+            <label class="custom-checkbox">
+                <input type="checkbox" class="hashtagOption" value="#ViewerInteractions">
+                <span class="checkmark"></span>#ViewerInteractions
+            </label>
+            <label class="custom-checkbox">
+                <input type="checkbox" class="hashtagOption" value="#LiveNow">
+                <span class="checkmark"></span>#LiveNow
+            </label>
+            <label class="custom-checkbox">
+                <input type="checkbox" class="hashtagOption" value="#Gaming">
+                <span class="checkmark"></span>#Gaming
+            </label>
+            <label class="custom-checkbox">
+                <input type="checkbox" class="hashtagOption" value="#VTuber">
+                <span class="checkmark"></span>#VTuber
+            </label>
+            <label class="custom-checkbox">
+                <input type="checkbox" class="hashtagOption" value="#Furry">
+                <span class="checkmark"></span>#Furry
+            </label>
+            <label class="custom-checkbox">
+                <input type="checkbox" class="hashtagOption" value="#JustChatting">
+                <span class="checkmark"></span>#JustChatting
+            </label>
+            <label class="custom-checkbox">
+                <input type="checkbox" class="hashtagOption" value="#ArtStream">
+                <span class="checkmark"></span>#ArtStream
+            </label>
+        </div>
+
+        <label for="customHashtags">Custom Hashtags (comma separated):</label>
+        <input type="text" id="customHashtags" placeholder="#chaotic, #pog, #lfg">
+
+        <button id="generateBtn">Generate Title/Go Live Notification</button>
+
+        <div id="previewArea">
+            <h2>Generated Title:</h2>
+            <p id="generatedTitle">Your title will appear here!</p>
+            <p id="supportMessage"></p>
+            <p id="charWarning"></p>
+            <button id="copyBtn">Copy Title</button>
+            <button id="exportBtn">Export Title to .txt</button>
+        </div>
+
+
+
+        <div id="goLiveMessageSection">
+            <h2>Go Live Message:</h2>
+            <p id="goLiveMessage">Your go live message will appear here!</p>
+            <button id="copyGoLiveBtn">Copy Go Live Message</button>
+        </div>
+
+
+        <div id="shareSection">
+            <h2>Share Your Stream:</h2>
+            <label for="shareContent">Share:</label>
+            <select id="shareContent">
+                <option value="title">Stream Title</option>
+                <option value="golive">Go Live Message</option>
+            </select>
+            <label for="twitchChannel">Twitch Channel Name (twitch.tv/):</label>
+            <input type="text" id="twitchChannel" value="" placeholder="your channel name only">
+            <button id="shareTwitter">Share on Twitter</button>
+            <button id="shareDiscord">Share on Discord</button>
+        </div>
+
+    </div>
+
+    <script>
+const predefinedGamesSupport = [
+        { title: "Baldur's Gate 3", support: ["Have an epic adventure in Baldur's Gate 3!", "May your rolls be high in Baldur's Gate 3!", "Good luck exploring the Forgotten Realms in Baldur's Gate 3!"] },
+        { title: "The Witcher 3", support: ["Good luck on the monster hunt in The Witcher 3!", "Hope you have a legendary journey in The Witcher 3!", "Slay those beasts in The Witcher 3, you got this!"] },
+        { title: "Minecraft", support: ["Have fun crafting your world in Minecraft!", "Good luck with your builds in Minecraft!", "Hope you discover amazing things in your Minecraft adventure!"] },
+        { title: "VRChat", support: ["Have a blast hanging out in VRChat!", "Good luck with the virtual shenanigans in VRChat!", "Enjoy connecting with everyone in VRChat!"] },
+        { title: "Destiny 2", support: ["Good luck, Guardian, in your Destiny 2 adventures!", "Hope you get some great loot in Destiny 2!", "Eyes up, Guardian! You got this in Destiny 2!"] },
+        { title: "Stardew Valley", support: ["Have a relaxing time on your Stardew Valley farm!", "Good luck with your crops and critters in Stardew Valley!", "Hope you build a wonderful life in Stardew Valley!"] },
+        { title: "League of Legends", support: ["Good luck on the Rift!", "Hope you climb the ranks in League of Legends!", "Crush your opponents, you got this!"] },
+        { title: "Apex Legends", support: ["Good luck becoming the champion in Apex Legends!", "Hope your drops are good in Apex Legends!", "Squad up and dominate!"] },
+        { title: "Final Fantasy XIV", support: ["Have a fantastic adventure in Eorzea!", "Good luck with your quests in Final Fantasy XIV!", "Hope you have a wonderful time in Final Fantasy XIV!"] },
+        { title: "Cyberpunk 2077", support: ["Good luck navigating Night City!", "Hope you become a legend in Cyberpunk 2077!", "Enjoy the neon-soaked world of Cyberpunk 2077!"] }
+    ];
+
+    const hashtagSupportMessages = {
+        "#FirstPlaythrough": ["Good luck on your first playthrough!", "Hope you enjoy experiencing this for the first time!", "Have fun discovering everything!"],
+        "#NoBackseating": ["Hope you have a smooth, uninterrupted playthrough!", "Enjoy figuring things out on your own!", "May your decisions be the right ones!"],
+        "#TwitchDrops": ["Hope your viewers grab some awesome drops!", "Good luck with the drops today!", "May the loot be plentiful!"],
+        "#NoSpoilers": ["Hope everyone respects the spoiler-free zone!", "Enjoy the story without any hints!", "May everyone experience the surprises together!"],
+        "#CosyVibes": ["Hope you have a lovely and relaxed stream!", "Enjoy the cosy atmosphere!", "May your viewers feel right at home!"],
+        "#ViewerInteractions": ["Hope you have some great interactions with your viewers!", "Enjoy connecting with your community!", "May the chat be lively and fun!"],
+        "#LiveNow": ["Good luck with your live stream!", "Hope you have a great broadcast!", "Wishing you a successful stream!"],
+        "#Gaming": ["Have fun gaming!", "Hope you have an enjoyable session!", "May your skills shine!"]
+        // Add more hashtag-specific support messages as needed
+    };
+
+    const generalSupportMessages = [
+        "You got this!",
+        "Have a fantastic stream!",
+        "Good luck!",
+        "Break a leg!",
+        "Hope you have a great time!",
+        "Enjoy the stream!",
+        "Wishing you all the best!",
+        "Let's go!",
+        "You're gonna crush it!",
+        "Have an awesome stream, chat!", // Added a community-focused one
+        "Time to shine!",
+        "Go get 'em!",
+        "Believe in the hype!",
+        "Make some memories today!",
+        "Have fun and be yourself!",
+        "Sending good vibes!",
+        "You've got this in the bag!",
+        "Knock 'em dead!", // Use cautiously based on your tone!
+        "Let the good times roll!",
+        "Here's to a great stream!",
+        "Hope you reach your goals today!",
+        "May your frames be high!",
+        "May your ping be low!",
+        "Let the adventure begin!",
+        "Time to make some magic!",
+        "You're a star!",
+        "Shine bright!",
+        "Have a wonderful stream, everyone!",
+        "Let's have some fun!",
+        "You're doing great!",
+        "Keep up the amazing work!",
+        "We're all here to support you!",
+        "Enjoy every moment!",
+        "Make it a stream to remember!",
+        "You've got the energy!",
+        "Let the good times flow!",
+        "Here's to a successful stream!",
+        "May your chat be engaging!",
+        "Hope you hit all your targets!",
+        "Time to rock and roll!",
+        "You're a natural!",
+        "Let your personality shine!",
+        "Have a truly excellent stream!",
+        "We're all cheering for you!",
+        "Go out there and be awesome!",
+        "Hope you connect with lots of viewers!",
+        "May your stream be filled with joy!",
+        "Here's to a positive and fun stream!",
+        "You're going to do great things!",
+        "Believe in yourself!",
+        "Have a truly spectacular stream!",
+        "We're excited to watch!",
+        "Go forth and conquer!",
+        "Hope you have a memorable stream!",
+        "May your stream be filled with laughter!",
+        "Here's to a fantastic broadcast!",
+        "You're a streaming superstar!",
+        "Let your passion guide you!",
+        "Have a truly exceptional stream!",
+        "We're all here with you!",
+        "Go out there and shine!",
+        "Hope you have a truly remarkable stream!",
+        "May your stream be filled with positivity!",
+        "Here's to a truly outstanding stream!",
+        "You're an amazing streamer!",
+        "Let your enthusiasm be contagious!",
+        "Have a truly sensational stream!",
+        "We're all sending you good energy!",
+        "Go make it an unforgettable stream!",
+        "Hope you have a truly exceptional and amazing stream!",
+        "May your stream be filled with wonderful moments!",
+        "Here's to a truly spectacular and phenomenal stream!",
+        "You're a truly incredible streamer!",
+        "Let your unique spark shine brightly!",
+        "Have a truly sensational and outstanding stream!",
+        "We're all sending you the best of luck and positive vibes!",
+        "Go out there and create something truly amazing and unforgettable!",
+        "Hope you have a truly wonderful, exceptional, and amazing stream filled with joy, laughter, and positive interactions!"
+    ];
+
+    const titleStarters = {
+        witty: ["Witty adventures in", "Let's get witty with some", "Prepare for witty chaos in", "Snarky gameplay of"],
+        cheeky: ["Cheeky business in", "Getting cheeky with some", "Strap in for cheeky times in", "Some cheeky fun with"],
+        sussy: ["Something's sussy in", "Suspect gameplay of", "Don't trust anyone in this", "Being rather sussy with"],
+        energetic: ["High energy", "Let's goooo! Playing", "Get hyped for some", "Energetic vibes with"],
+        chilled: ["Chilled vibes playing", "Relaxed gaming in", "Come chill with some", "Taking it easy with"],
+        focused: ["Focused gameplay of", "Deep dive into", "Concentrating on some", "Serious business with"],
+        community: ["Community hangout playing", "Hanging with chat in", "Let's chill and play", "Community stream of"],
+        chaotic: ["Chaotic fun in", "Prepare for chaos with", "Unleashing the chaos in", "It's gonna get wild with"],
+        story: ["Story time with", "Unraveling the story of", "Diving into the narrative of", "Let's explore the world of"],
+        competitive: ["Competitive play of", "Climbing the ranks in", "Serious competition in", "Time to get competitive with"]
+    };
+
+    const goLiveStarters = {
+        witty: ["Going live with some witty gameplay in", "Time for some laughs and", "Witty streams incoming for", "Get ready for some witty"],
+        cheeky: ["Live and being cheeky in", "Come join the cheeky fun in", "Cheeky streams are now live for", "Having some cheeky fun with"],
+        sussy: ["Live and being sus in", "Who's the imposter? Find out in", "Sussy shenanigans live in", "Things are getting sussy with"],
+        energetic: ["LIVE! Let's get energetic with", "High energy stream starting now for", "Get ready to rumble! Playing", "Bringing the energy to"],
+        chilled: ["Chilled stream live with", "Come unwind with some", "Relaxed vibes and gameplay in", "Taking it easy and playing"],
+        focused: ["Focused stream now live with", "Diving deep into", "Concentrating live on", "Serious focus on"],
+        community: ["Community stream live! Hanging out with", "Come chat and game with", "Live with the community playing", "It's a community hangout for"],
+        chaotic: ["Chaos incoming! Live with", "Prepare for the mayhem in", "Unleashing the chaos live with", "Things are about to get chaotic with"],
+        story: ["Story stream live! Let's explore", "Diving into the story of", "Unraveling the narrative live with", "Join me for a story-driven"],
+        competitive: ["Competitive stream live! Climbing ranks in", "Time to get serious with", "Live competitive play of", "Let's get competitive in"]
+    };
+
+    const hashtagPhrases = {
+        "#FirstPlaythrough": ["Blind run!", "First time exploring!", "Fresh playthrough!", "Going in blind!"],
+        "#NoBackseating": ["No hints please!", "Discovering things myself!", "Keep the advice to yourselves!", "Let me figure it out!"],
+        "#TwitchDrops": ["Drops enabled!", "Grab your loot!", "Twitch Drops are active!", "Don't miss the drops!"],
+        "#NoSpoilers": ["Spoiler-free zone!", "Keep the story secrets!", "Let's experience this together!", "No spoilers allowed!"],
+        "#CosyVibes": ["Cosy gaming session!", "Relax and watch!", "Comfortable vibes only!", "Chilled and gaming!"],
+        "#ViewerInteractions": ["Chatting with viewers!", "Your input welcome!", "Interactive stream!", "Let's hang out!"],
+        "#LiveNow": ["Streaming live!", "Come watch!", "Going live now!", "Join the stream!"],
+        "#Gaming": ["Playing games!", "Gamer time!", "Let's game!", "Video games!"],
+        "#VTuber": ["VTubing!", "Virtual streamer!", "Animated adventures!", "See my virtual self!"],
+        "#Furry": ["Furry streamer!", "Pawsome gameplay!", "Into the furryverse!", "Fluffy fun!"],
+        "#JustChatting": ["Hanging out and chatting!", "Let's talk!", "Just chatting with you!", "Come say hello!"],
+        "#ArtStream": ["Creating art live!", "Watch me draw!", "Artistic vibes!", "Making art for you!"]
+        // Add more hashtags and their phrases as needed
+    };
+
+    document.getElementById('twitchBtn').addEventListener('click', function() {
+        window.open('https://www.twitch.tv/RearSilver', '_blank');
+    });
+
+    document.getElementById('discordBtn').addEventListener('click', function() {
+        window.open('https://discord.gg/RRbQ93Ceew', '_blank');
+    });
+
+    document.getElementById('generateBtn').addEventListener('click', function () {
+        const gameTitle = document.getElementById('gameTitle').value.trim();
+        const theme = document.getElementById('theme').value;
+        const emojiPack = document.getElementById('emojiPack').checked;
+        const customInput = document.getElementById('customHashtags').value.trim();
+
+        const gameSupportArray = getGameSupport(gameTitle);
+        const emoji = emojiPack ? getEmojiForTheme(theme) : '';
+
+        // Combine checked hashtags + custom ones
+        const checkedTags = [...document.querySelectorAll('.hashtag-options input[type="checkbox"]:checked')]
+            .map(tag => tag.value.trim());
+        const customTags = customInput.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+        const allTags = [...new Set([...checkedTags, ...customTags])]
+            .map(tag => tag.startsWith('#') ? tag : `#${tag}`);
+
+        const hashtags = allTags.join(' ');
+        const titleStarter = titleStarters[theme] ? titleStarters[theme][Math.floor(Math.random() * titleStarters[theme].length)] : 'Playing';
+        const goLiveStarter = goLiveStarters[theme] ? goLiveStarters[theme][Math.floor(Math.random() * goLiveStarters[theme].length)] : 'Going live with';
+        const generalSupport = generalSupportMessages[Math.floor(Math.random() * generalSupportMessages.length)];
+
+        let title = `${titleStarter} ${gameTitle}`;
+        let goLiveMessage = `🚨 ${goLiveStarter} ${gameTitle}!`;
+        let supportMessage = generalSupport; // Start with a general message
+
+        for (const tag of checkedTags) {
+            if (hashtagPhrases[tag]) {
+                goLiveMessage += ` ${hashtagPhrases[tag][Math.floor(Math.random() * hashtagPhrases[tag].length)]}`;
+            }
+            if (hashtagSupportMessages[tag]) {
+                supportMessage += ` ${hashtagSupportMessages[tag][Math.floor(Math.random() * hashtagSupportMessages[tag].length)]}`;
+            }
+        }
+        if (hashtags) {
+            title += ` ${hashtags}`;
+            goLiveMessage += ` ${hashtags}`;
+        }
+
+        title += ` ${emoji}`;
+        goLiveMessage += ` ${emoji}`;
+
+        document.getElementById('generatedTitle').textContent = title.trim();
+        document.getElementById('goLiveMessage').textContent = goLiveMessage.trim();
+
+        if (gameSupportArray) {
+            supportMessage = `${gameSupportArray[Math.floor(Math.random() * gameSupportArray.length)]} ${supportMessage}`;
+        } else if (gameTitle) {
+            supportMessage = `Good luck streaming ${gameTitle}! ${supportMessage}`;
+        }
+
+        document.getElementById('supportMessage').textContent = supportMessage.trim();
+
+        if (title.length > 140) {
+            document.getElementById('charWarning').textContent = `⚠️ This title is ${title.length} characters long, which exceeds Twitch's 140 character limit. Try reducing emojis or hashtags.`;
+        } else {
+            document.getElementById('charWarning').textContent = '';
+        }
+
+        this.textContent = 'Regenerate Title/Go Live Notification';
+    });
+
+    // Add functionality to copy the go live message
+    document.getElementById('copyGoLiveBtn').addEventListener('click', function () {
+        const goLiveMessage = document.getElementById('goLiveMessage').textContent;
+        navigator.clipboard.writeText(goLiveMessage).then(() => {
+            alert('Go Live Message copied to clipboard!');
+        });
+    });
+
+    document.getElementById('shareTwitter').addEventListener('click', function () {
+    const shareChoice = document.getElementById('shareContent').value;
+    const title = document.getElementById('generatedTitle').textContent;
+    const goLiveMessage = document.getElementById('goLiveMessage').textContent;
+    const channel = document.getElementById('twitchChannel').value.trim();
+    let tweetText = "";
+
+    if (shareChoice === 'title') {
+        tweetText = `${title} Live now at twitch.tv/${channel} #Twitch #LiveNow`;
+    } else if (shareChoice === 'golive') {
+        tweetText = `${goLiveMessage} Watch live at twitch.tv/${channel} #Twitch #LiveNow`;
+    }
+
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+    window.open(tweetUrl, '_blank');
+});
+
+document.getElementById('shareDiscord').addEventListener('click', function () {
+    const shareChoice = document.getElementById('shareContent').value;
+    const title = document.getElementById('generatedTitle').textContent;
+    const goLiveMessage = document.getElementById('goLiveMessage').textContent;
+    const channel = document.getElementById('twitchChannel').value.trim();
+    let discordMessage = "";
+
+    if (shareChoice === 'title') {
+        discordMessage = `${title} Live now at twitch.tv/${channel} #Twitch #LiveNow`;
+    } else if (shareChoice === 'golive') {
+        discordMessage = `${goLiveMessage} Watch live at twitch.tv/${channel} #Twitch #LiveNow`;
+    }
+
+    navigator.clipboard.writeText(discordMessage).then(() => {
+        alert('Message with Twitch link copied to clipboard! Paste it into Discord.');
+    });
+});
+
+    function getEmojiForTheme(theme) {
+        switch (theme) {
+            case 'witty': return '😂';
+            case 'cheeky': return '😉';
+            case 'sussy': return '💀';
+            case 'energetic': return '⚡';
+            case 'chilled': return '☕';
+            case 'focused': return '🎯';
+            case 'community': return '🫂';
+            case 'chaotic': return '💥';
+            case 'story': return '📖';
+            case 'competitive': return '🏆';
+            default: return '';
+        }
+    }
+
+    function getGameSupport(gameTitle) {
+        const game = predefinedGamesSupport.find(g => g.title.toLowerCase() === gameTitle.toLowerCase());
+        return game ? game.support : null; // Return null if not found
+    }
+
+    document.getElementById('copyBtn').addEventListener('click', function () {
+        const title = document.getElementById('generatedTitle').textContent;
+        navigator.clipboard.writeText(title).then(() => {
+            alert('Title copied to clipboard!');
+        });
+    });
+
+    document.getElementById('exportBtn').addEventListener('click', function () {
+        const title = document.getElementById('generatedTitle').textContent;
+        const blob = new Blob([title], { type: 'text/plain' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'generated_title.txt';
+        link.click();
+    });
+    </script>
+
+</body>
+</html>
