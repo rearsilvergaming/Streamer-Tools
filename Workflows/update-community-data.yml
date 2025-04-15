@@ -1,0 +1,31 @@
+name: Update Community Tags and Games
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # Every 5 minutes  workflow_dispatch: # Allows manual trigger #change to 0 when done
+
+jobs:
+  process_data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+
+      - name: Install dependencies
+        run: npm install google-spreadsheet papaparse node-fetch@2
+
+      - name: Get Google Sheet data and process
+        env:
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+        run: node scripts/process_sheet.js
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update community tags and games data"
+          push_options: '--force-with-lease'

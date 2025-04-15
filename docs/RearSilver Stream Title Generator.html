@@ -1,29 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Stream Title Generator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-        }
+    npm install google-spreadsheet papaparse
 
-        .container {
-            max-width: 650px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+    <meta charset="UTF-8" />
+    <meta name="description" content="Generate creative and engaging Twitch stream titles quickly and easily with RearSilver's free tool. Perfect for furry VTubers and adult content creators.">
+    <title>RearSilver's Free Twitch Stream Title Generator for Engaging Content</title>
+    
+    <style>
+        :root {
+    --bg-color: #f5f5f5;
+    --container-bg: white;
+    --text-color: #333;
+    --input-bg: white;
+    --input-border: #ddd;
+    --button-bg: #4CAF50;
+    --button-text: white;
+    --preview-bg: #f9f9f9;
+    --preview-border: #ddd;
+    --note-color: #666;
+    --checkbox-bg: #ccc;
+    --checkbox-checked: DodgerBlue;
+}
+
+         .dark-mode {
+    --bg-color: #222;
+    --container-bg: #333;
+    --text-color: #eee;
+    --input-bg: #444;
+    --input-border: #555;
+    --button-bg: #6441a5;
+    --button-text: white;
+    --preview-bg: #444;
+    --preview-border: #555;
+    --note-color: #eee;
+    --checkbox-bg: #555;
+    --checkbox-checked: #6441a5;
+}
+
+    body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: var(--container-bg);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.donate-text {
+    color: var(--text-color);
+    font-size: 16px;
+    font-weight: bolder;
+    margin-top: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#kofiBtn {
+    background-color: #29abe0;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+    border: none;
+    width: 250px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#kofiBtn:hover {
+    opacity: 0.9;
+}
+
+#kofiBtn img {
+    height: 20px;
+    margin-right: 8px;
+}
+
+#themeToggle {
+    width: 250px;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    cursor: pointer;
+}
+
+#themeToggle:hover {
+    opacity: 0.9;
+}
+
 
         h1 {
             text-align: center;
-            color: #333;
+    color: var(--text-color);
         }
 
         label {
@@ -33,17 +129,19 @@
         }
 
         input, select, button, textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
 
-        button {
-            background-color: #4CAF50;
-            color: white;
+button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
             font-size: 16px;
             cursor: pointer;
             margin-top: 15px;
@@ -60,6 +158,7 @@
             font-size: 1rem;
             user-select: none;
             gap: 10px;
+            
         }
 
         .custom-checkbox input {
@@ -69,13 +168,13 @@
         .custom-checkbox .checkmark {
             height: 20px;
             width: 20px;
-            background-color: #ccc;
+            background-color: var(--checkbox-bg);
             border-radius: 4px;
             position: relative;
         }
 
         .custom-checkbox input:checked + .checkmark {
-            background-color: DodgerBlue;
+            background-color: var(--checkbox-checked);
         }
 
         .custom-checkbox .checkmark::after {
@@ -105,16 +204,16 @@
 
         .note {
             font-size: 0.9em;
-            color: #666;
+            color: var(--note-color);
             margin-top: 5px;
         }
 
         #previewArea {
             margin-top: 20px;
             padding: 15px;
-            background-color: #f9f9f9;
             border-radius: 5px;
-            border: 1px solid #ddd;
+            background-color: var(--preview-bg);
+            border: 1px solid var(--preview-border);
         }
 
         #charWarning {
@@ -126,44 +225,67 @@
         #supportMessage {
             margin-top: 10px;
             font-style: italic;
-            color: #333;
-        }
+            color: var(--note-color);        }
 
         #goLiveMessageSection {
             margin-top: 20px;
             padding: 15px;
-            background-color: #f9f9f9;
             border-radius: 5px;
-            border: 1px solid #ddd;
+            background-color: var(--preview-bg);
+            border: 1px solid var(--preview-border);
         }
 
-        button#shareTwitter, button#shareDiscord {
-            background-color: #1DA1F2; /* Twitter Blue */
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-            margin-right: 5px; /* Add some spacing */
+        #shareSection button#shareFacebook {
+            background-color: #1877F2; /* Facebook Blue */
+        }
+        #shareSection button#shareThreads{
+            background-color: #000000; /* Black */
+        }
+        #shareSection button#shareBluesky {
+            background-color: #0080FF; /* Bluesky Blue */
+        }
+        #shareSection button#shareInstagram {
+            background-color: #833ab4; /* Instagram Pink */
         }
 
-        button#shareDiscord {
-            background-color: #7289DA; /* Discord Blurple */
-        }
-
-        button#shareTwitter:hover {
+        #shareSection button#shareTwitter:hover {
             background-color: #0C87C5;
         }
 
-        button#shareDiscord:hover {
+        #shareSection button#shareDiscord:hover {
+            background-color: #586EA6;
+        }
+        #shareSection button#shareFacebook:hover {
+            background-color: #145db4;
+        }
+        #shareSection button#shareThreads:hover {
+            background-color: #444444;
+        }
+        #shareSection button#shareBluesky:hover{
+            background-color: #0066CC;
+        }
+        #shareSection button#shareInstagram:hover {
+            background-color: #e1306c;
+        }
+
+        #shareSection button#shareDiscord {
+            background-color: #7289DA; /* Discord Blurple */
+        }
+
+        #shareSection button#shareTwitter:hover {
+            background-color: #0C87C5;
+        }
+
+        #shareSection button#shareDiscord:hover {
             background-color: #586EA6;
         }
 
         #shareSection {
             margin-top: 20px;
             padding: 15px;
-            background-color: #f9f9f9;
             border-radius: 5px;
-            border: 1px solid #ddd;
+            background-color: var(--preview-bg);
+            border: 1px solid var(--preview-border);
         }
 
         #shareSection label {
@@ -205,26 +327,29 @@
             background-color: #6441a5; /* Twitter Blue */
             color: white;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
             margin-right: 50px;
             border: none; /* Remove default button border */
             padding: 10px 15px;
             border-radius: 5px;
-            width: 295px;
+            width: 250px;
         }
 
         #discordBtn {
             background-color: #5865F2; /* Discord Blurple */
             color: white;
             font-size: 16px;
+            font-weight: bold;
+
             cursor: pointer;
             margin-top: 10px;
-            margin-right: 5px;
+            margin-left: 46px;
             border: none; /* Remove default button border */
             padding: 10px 15px;
             border-radius: 5px;
-            width: 295px;
+            width: 250px;
         }
 
         #twitchBtn:hover {
@@ -234,23 +359,231 @@
         #discordBtn:hover {
             opacity: 0.8;
         }
+
+        #historySection {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: var(--preview-bg);
+            border: 1px solid var(--preview-border);
+        }
+
+        .history-entry {
+    background-color: var(--preview-bg) !important;
+    border: 1px solid var(--preview-border) !important;
+}
+
+/* Hashtag tab styling */
+.hashtag-tabs {
+    display: flex;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--input-border);
+}
+
+.hashtag-tab {
+    flex: 1;
+    padding: 8px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.hashtag-tab:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+}
+
+.hashtag-tab.active {
+    border-bottom: 3px solid var(--button-bg);
+    font-weight: bold;
+}
+
+.hashtag-category {
+    display: none;
+    animation: fadeIn 0.3s;
+}
+
+.hashtag-category.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Emoji picker styling */
+.emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.emoji-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    font-size: 20px;
+    background-color: var(--preview-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.emoji-item:hover {
+    transform: scale(1.1);
+    background-color: var(--button-bg);
+    color: white;
+}
+
+.emoji-item.selected {
+    background-color: var(--button-bg);
+    color: white;
+    border-color: var(--button-bg);
+}
+
+.randomizer-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+.randomizer-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.randomizer-button:hover {
+    background-color: #1e7e34;
+}
+
+.mature-content-option {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: var(--preview-bg);
+    border: 1px solid var(--preview-border);
+}
+
+.hr {
+    border: none;
+    border-top: 1px solid var(--preview-border);
+    margin: 15px 0;
+}
+
+.footer-text {
+    font-size: 15px;
+    color: var(--text-color);
+    margin-top: 20px;
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+}
+
+a:link {
+  color: #6441a5;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:visited {
+  color: #6441a5;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 0.9;
+  text-decoration: underline;
+}
+
+a:active {
+  color: #6441a5;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+
     </style>
 </head>
 <body>
 
     <div class="container">
+        <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+        <script>
+            kofiWidgetOverlay.draw('rearsilver', {
+                'type': 'floating-chat',
+                'floating-chat.donateButton.text': 'Donate',
+                'floating-chat.donateButton.background-color': '#794bc4',
+                'floating-chat.donateButton.text-color': '#fff'
+            });
+        </script>
+        
+        <!-- Header section -->
+        <div class="header">
+            <!-- Donation text above the buttons -->
+            <div class="donate-text">
+                If you enjoy this tool, please consider supporting me on Ko-fi!
+            </div>
+            
+            <!-- Button container -->
+            <div class="button-container">
+                <!-- Ko-fi button on the left -->
+                <button id="kofiBtn">
+                    <img src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi">
+                    Buy me a coffee
+                </button>
+                
+                <!-- Theme toggle on the right -->
+                <button id="themeToggle">
+                    🌙 Dark Mode
+                </button>
+            </div>
+        </div>
+
+        
         <button id="twitchBtn">Follow me on Twitch</button>
-            <button id="discordBtn">Join my server for more streamer tools</button>
+            <button id="discordBtn">More streamer tools</button>
         <h1>Stream Title Generator</h1>
 
         <label for="gameTitle">Game Title:</label>
         <input type="text" id="gameTitle" placeholder="Enter game...">
 
-        <label class="custom-checkbox">
+        <label class="custom-checkbox" style="display: none;">
             <input type="checkbox" id="emojiPack">
             <span class="checkmark"></span>
             <span>Enable Emoji Pack</span>
         </label>
+        
+        <div id="emojiSection">
+            <label for="emojiSelector">Emoji Style:</label>
+            <select id="emojiSelector">
+                <option value="none">No Emojis</option>
+                <option value="theme">Theme-Based</option>
+                <option value="gaming">Gaming</option>
+                <option value="mood">Mood</option>
+                <option value="vibes">Vibes</option>
+                <option value="halloween">Halloween</option>
+                <option value="christmas">Christmas</option>
+                <option value="nsfw">NSFW *use with caution*</option>
+                <option value="custom">Custom Selection</option>
+            </select>
+            
+            <div id="emojiPickerContainer" style="display: none; margin-top: 10px;">
+                <div class="emoji-grid">
+                    <!-- Emojis will be added here dynamically -->
+                </div>
+            </div>
+        </div>
+        
 
 
         <label for="theme">Choose a Theme:</label>
@@ -265,64 +598,200 @@
             <option value="chaotic">Chaotic Fun</option>
             <option value="story">Story Driven</option>
             <option value="competitive">Competitive Play</option>
+            <option value="inspirational">Inspirational</option>
+            <option value="wholesome">Wholesome</option>
+            <option value="flirty">Flirty</option>
+            <option value="sarcastic">Sarcastic</option>
         </select>
+        
+
+        <div class="form-group">
+            <button id="randomizeBtn" class="btn btn-secondary">🎲 Randomize</button>
+          </div>
+          
+
+        <div class="mature-content-option">
+            <label class="custom-checkbox">
+                <input type="checkbox" id="matureContent">
+                <span class="checkmark"></span>
+                <span>Mature/Adult Content <span style="font-size: 1.2em;">🔞</span></span>
+            </label>
+            <p class="note">Adds the 18+ indicator (🔞) to your title, go-live message and a banner on the preview card!</p>
+        </div>
+        
 
         <label>Hashtags:</label>
-        <div class="hashtag-options">
-            <label class="custom-checkbox">
-                <input type="checkbox" class="hashtagOption" value="#FirstPlaythrough">
-                <span class="checkmark"></span>#FirstPlaythrough
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" class="hashtagOption" value="#NoBackseating">
-                <span class="checkmark"></span>#NoBackseating
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" class="hashtagOption" value="#TwitchDrops">
-                <span class="checkmark"></span>#TwitchDrops
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" class="hashtagOption" value="#NoSpoilers">
-                <span class="checkmark"></span>#NoSpoilers
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" class="hashtagOption" value="#CosyVibes">
-                <span class="checkmark"></span>#CosyVibes
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" class="hashtagOption" value="#ViewerInteractions">
-                <span class="checkmark"></span>#ViewerInteractions
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" class="hashtagOption" value="#LiveNow">
-                <span class="checkmark"></span>#LiveNow
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" class="hashtagOption" value="#Gaming">
-                <span class="checkmark"></span>#Gaming
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" class="hashtagOption" value="#VTuber">
-                <span class="checkmark"></span>#VTuber
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" class="hashtagOption" value="#Furry">
-                <span class="checkmark"></span>#Furry
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" class="hashtagOption" value="#JustChatting">
-                <span class="checkmark"></span>#JustChatting
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" class="hashtagOption" value="#ArtStream">
-                <span class="checkmark"></span>#ArtStream
-            </label>
-        </div>
+
+<!-- Hashtag category tabs -->
+<div class="hashtag-tabs" style="display: flex; margin-bottom: 10px; border-bottom: 1px solid var(--input-border);">
+    <button class="hashtag-tab active" data-category="content" style="flex: 1; padding: 8px; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer;">Content</button>
+    <button class="hashtag-tab" data-category="stream-type" style="flex: 1; padding: 8px; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer;">Stream Type</button>
+    <button class="hashtag-tab" data-category="community" style="flex: 1; padding: 8px; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer;">Community</button>
+    <button class="hashtag-tab" data-category="platform" style="flex: 1; padding: 8px; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer;">Platform</button>
+    <button class="hashtag-tab" data-category="mature" style="flex: 1; padding: 8px; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer;">18+ Content</button>
+</div>
+
+<!-- Content hashtags -->
+<div class="hashtag-category active" id="content-hashtags">
+    <div class="hashtag-options">
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#FirstPlaythrough">
+            <span class="checkmark"></span>#FirstPlaythrough
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#NoBackseating">
+            <span class="checkmark"></span>#NoBackseating
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#NoSpoilers">
+            <span class="checkmark"></span>#NoSpoilers
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#Gaming">
+            <span class="checkmark"></span>#Gaming
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#Speedrun">
+            <span class="checkmark"></span>#Speedrun
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#Blind">
+            <span class="checkmark"></span>#Blind
+        </label>
+    </div>
+</div>
+
+<!-- Stream Type hashtags -->
+<div class="hashtag-category" id="stream-type-hashtags" style="display: none;">
+    <div class="hashtag-options">
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#CosyVibes">
+            <span class="checkmark"></span>#CosyVibes
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#ChillStream">
+            <span class="checkmark"></span>#ChillStream
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#JustChatting">
+            <span class="checkmark"></span>#JustChatting
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#ArtStream">
+            <span class="checkmark"></span>#ArtStream
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#MusicStream">
+            <span class="checkmark"></span>#MusicStream
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#TalkShow">
+            <span class="checkmark"></span>#TalkShow
+        </label>
+    </div>
+</div>
+
+<!-- Community hashtags -->
+<div class="hashtag-category" id="community-hashtags" style="display: none;">
+    <div class="hashtag-options">
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#ViewerInteractions">
+            <span class="checkmark"></span>#ViewerInteractions
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#VTuber">
+            <span class="checkmark"></span>#VTuber
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#Furry">
+            <span class="checkmark"></span>#Furry
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#LGBTQ">
+            <span class="checkmark"></span>#LGBTQ
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#SmallStreamer">
+            <span class="checkmark"></span>#SmallStreamer
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#SupportSmallStreamers">
+            <span class="checkmark"></span>#SupportSmallStreamers
+        </label>
+    </div>
+</div>
+
+<!-- Platform hashtags -->
+<div class="hashtag-category" id="platform-hashtags" style="display: none;">
+    <div class="hashtag-options">
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#TwitchDrops">
+            <span class="checkmark"></span>#TwitchDrops
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#LiveNow">
+            <span class="checkmark"></span>#LiveNow
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#Twitch">
+            <span class="checkmark"></span>#Twitch
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#TwitchAffiliate">
+            <span class="checkmark"></span>#TwitchAffiliate
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#TwitchPartner">
+            <span class="checkmark"></span>#TwitchPartner
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#TwitchStreamer">
+            <span class="checkmark"></span>#TwitchStreamer
+        </label>
+    </div>
+</div>
+
+<!-- Mature Content hashtags -->
+<div class="hashtag-category" id="mature-hashtags" style="display: none;">
+    <div class="hashtag-options">
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#18Plus">
+            <span class="checkmark"></span>#18Plus
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#AdultContent">
+            <span class="checkmark"></span>#AdultContent
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#MatureStream">
+            <span class="checkmark"></span>#MatureStream
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#NSFW">
+            <span class="checkmark"></span>#NSFW
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#AdultsOnly">
+            <span class="checkmark"></span>#AdultsOnly
+        </label>
+        <label class="custom-checkbox">
+            <input type="checkbox" class="hashtagOption" value="#MatureAudience">
+            <span class="checkmark"></span>#MatureAudience
+        </label>
+    </div>
+</div>
+
 
         <label for="customHashtags">Custom Hashtags (comma separated):</label>
         <input type="text" id="customHashtags" placeholder="#chaotic, #pog, #lfg">
 
         <button id="generateBtn">Generate Title/Go Live Notification</button>
+        <label style="font-size: 0.9rem;">
+            
+            <input type="checkbox" id="optOutCheckbox">
+            Don't anonymously share tags and game data to improve the tool
+          </label>
+          
 
         <div id="previewArea">
             <h2>Generated Title:</h2>
@@ -353,11 +822,110 @@
             <input type="text" id="twitchChannel" value="" placeholder="your channel name only">
             <button id="shareTwitter">Share on Twitter</button>
             <button id="shareDiscord">Share on Discord</button>
+            <button id="shareFacebook">Share on Facebook</button>
+            <button id="shareThreads">Share on Threads</button>
+            <button id="shareBluesky">Share on Bluesky</button>
+            <button id="shareInstagram">Share on Instagram</button>
+            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--preview-border);">
+                <h3>Share Configuration</h3>
+                <p class="note">Share your generator settings with other streamers</p>
+                <button id="shareConfigBtn">Generate Shareable Link</button>
+                <div id="shareConfigLink" style="display: none; margin-top: 10px;">
+                    <input type="text" id="configLinkInput" readonly>
+                    <button id="copyConfigLinkBtn" style="margin-top: 5px;">Copy Link</button>
+                </div>
+            </div>
+            
         </div>
 
+        <div id="previewCardSection" class="container" style="margin-top: 20px;">
+            <h2>Preview Card Generator</h2>
+            <p class="note">Create a shareable image with your stream title</p>
+            
+            <div id="previewCardContainer" style="margin-top: 15px; text-align: center;">
+                <canvas id="previewCard" width="600" height="315" style="max-width: 100%; border: 1px solid var(--preview-border); border-radius: 5px;"></canvas>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <label for="cardTemplate">Card Style:</label>
+                <select id="cardTemplate">
+                    <option value="twitch">Twitch Style</option>
+                    <option value="minimal">Minimal</option>
+                    <option value="gaming">Gaming</option>
+                </select>
+                
+                <button id="generateCardBtn" style="margin-top: 15px;">Generate Preview Card</button>
+                <button id="downloadCardBtn" style="margin-top: 10px;">Download Card</button>
+            </div>
+        </div>
+        <hr>
+        <footer class="bg-light text-center text-lg-start mt-4 rounded-top">
+            <div class="footer-text">
+                Made by RearSilver Copyright &copy; 2025. All rights reserved. | Not affiliated with Twitch
+                <br>
+                <br>
+                Find me at: | <a href="https://twitch.tv/rearsilver" target="_blank">Twitch</a> | <a href="https://discord.com/invite/RRbQ93Ceew" target="_blank">Discord</a> | <a href="https://x.com/rearsilvergamer" target="_blank">Twitter</a> | <a href="https://www.youtube.com/rearsilvergaming" target="_blank">YouTube</a> | <a href="https://www.tiktok.com/@RearSilver" target="_blank">TikTok</a> | <a href="https://www.instagram.com/RearSilver.gaming" target="_blank">Instagram</a> |
+            </div>
+        </footer>
     </div>
 
     <script>
+         // Define emoji sets
+         const emojiSets = {
+    theme: {
+        witty: ['😂', '🤣', '😏', '😎', '🤪', '😜', '🤓', '🧠'],
+        cheeky: ['😉', '😜', '😏', '🤭', '😈', '🙊', '😝', '🤪'],
+        sussy: ['💀', '👀', '🤨', '😳', '🧐', '🤔', '😒', '🙄'],
+        energetic: ['⚡', '🔥', '💯', '🚀', '💪', '✨', '🎯', '🏆'],
+        chilled: ['☕', '🧘', '🌿', '🍃', '🌱', '🌈', '🌞', '🌙'],
+        focused: ['🎯', '👁️', '🧠', '💡', '🔍', '📊', '📈', '🧩'],
+        community: ['🫂', '👋', '🤝', '💬', '🎮', '🎲', '🎭', '🎨'],
+        chaotic: ['💥', '🌪️', '🔥', '⚡', '🎭', '🃏', '🎪', '🎢'],
+        story: ['📖', '🔮', '🧙', '🏰', '🌌', '🧩', '🎬', '📚'],
+        competitive: ['🏆', '🥇', '🎯', '⚔️', '🛡️', '🏅', '🎮', '🔝'],
+        spooky: ['🎃', '👻', '🕸️', '🕷️', '🧟', '🧛', '💀', '☠️'],
+        romantic: ['💖', '💘', '💞', '😘', '😍', '🥰', '🌹', '💌'],
+        futuristic: ['🤖', '🛸', '🚀', '🔋', '🧬', '💾', '📡', '🧠'],
+        magical: ['🧙', '🧝', '🪄', '🔮', '✨', '🌙', '📖', '🐉'],
+        comfy: ['🛋️', '🧦', '🫖', '🧸', '🛏️', '🪵', '🍪', '🌧️']
+    },
+
+    gaming: [
+        '🎮', '🎯', '🎲', '🎪', '🎭', '🎨', '🎧', '🎬',
+        '🏆', '🥇', '🥈', '🥉', '⚔️', '🛡️', '🧙',
+        '🧝', '🧟', '👾', '👻', '🤖', '🦸', '🦹',
+        '🔫', '💣', '🗡️', '🎮', '📦', '🪙'
+    ],
+
+    mood: [
+        '😊', '😂', '🤣', '😍', '🥰', '😎', '🤩', '😴',
+        '😭', '😱', '😡', '🥺', '😇', '🙃', '😌', '😔',
+        '😤', '😳', '🥴', '🤔', '🤗', '🤫', '🤭', '🤯'
+    ],
+
+    vibes: [
+        '🌅', '🌠', '🌌', '🛸', '🧘', '🎶', '📸', '🎈',
+        '🧃', '🍕', '🍿', '🎨', '🧩', '🪄', '🧸', '🌧️'
+    ],
+
+    halloween: [
+        '🎃', '👻', '🕸️', '🕷️', '🧛', '🧟', '💀', '☠️',
+        '🕯️', '🧙', '🪦', '🍬', '🍭', '🍫', '🧪', '🦇'
+    ],
+
+    christmas: [
+        '🎄', '🎅', '🤶', '❄️', '🎁', '🧑‍🎄', '🦌', '🍪',
+        '☃️', '🧦', '🌟', '🕯️', '🔔', '🎶', '🧣', '⛄'
+    ],
+
+    nsfw: [
+        '🍑', '🍆', '💋', '👅', '🖤', '🔥', '🥵', '🍌',
+        '💋', '😈', '🥂', '🍾', '💀', '🌶️', '🍒', '🥒'
+    ]
+};
+
+
+
 const predefinedGamesSupport = [
         { title: "Baldur's Gate 3", support: ["Have an epic adventure in Baldur's Gate 3!", "May your rolls be high in Baldur's Gate 3!", "Good luck exploring the Forgotten Realms in Baldur's Gate 3!"] },
         { title: "The Witcher 3", support: ["Good luck on the monster hunt in The Witcher 3!", "Hope you have a legendary journey in The Witcher 3!", "Slay those beasts in The Witcher 3, you got this!"] },
@@ -379,7 +947,14 @@ const predefinedGamesSupport = [
         "#CosyVibes": ["Hope you have a lovely and relaxed stream!", "Enjoy the cosy atmosphere!", "May your viewers feel right at home!"],
         "#ViewerInteractions": ["Hope you have some great interactions with your viewers!", "Enjoy connecting with your community!", "May the chat be lively and fun!"],
         "#LiveNow": ["Good luck with your live stream!", "Hope you have a great broadcast!", "Wishing you a successful stream!"],
-        "#Gaming": ["Have fun gaming!", "Hope you have an enjoyable session!", "May your skills shine!"]
+        "#Gaming": ["Have fun gaming!", "Hope you have an enjoyable session!", "May your skills shine!"],
+        "#18Plus": ["Hope your mature content stream goes well!", "Enjoy your adult-oriented stream!", "Have a great 18+ stream!"],
+        "#AdultContent": ["Hope your adult content is well-received!", "Enjoy discussing mature topics!", "Have a great mature stream!"],
+        "#MatureStream": ["Hope your mature audience enjoys the stream!", "Have a successful adult-oriented broadcast!", "Enjoy your mature content stream!"],
+        "#NSFW": ["Hope your NSFW content goes over well!", "Enjoy your explicit content stream!", "Have a great adult-oriented broadcast!"],
+        "#AdultsOnly": ["Hope your adults-only stream is successful!", "Enjoy your mature audience stream!", "Have a great 18+ broadcast!"],
+        "#MatureAudience": ["Hope your mature audience enjoys the content!", "Have a successful adult-oriented stream!", "Enjoy your mature broadcast!"]
+
         // Add more hashtag-specific support messages as needed
     };
 
@@ -465,46 +1040,545 @@ const predefinedGamesSupport = [
     ];
 
     const titleStarters = {
-        witty: ["Witty adventures in", "Let's get witty with some", "Prepare for witty chaos in", "Snarky gameplay of"],
-        cheeky: ["Cheeky business in", "Getting cheeky with some", "Strap in for cheeky times in", "Some cheeky fun with"],
-        sussy: ["Something's sussy in", "Suspect gameplay of", "Don't trust anyone in this", "Being rather sussy with"],
-        energetic: ["High energy", "Let's goooo! Playing", "Get hyped for some", "Energetic vibes with"],
-        chilled: ["Chilled vibes playing", "Relaxed gaming in", "Come chill with some", "Taking it easy with"],
-        focused: ["Focused gameplay of", "Deep dive into", "Concentrating on some", "Serious business with"],
-        community: ["Community hangout playing", "Hanging with chat in", "Let's chill and play", "Community stream of"],
-        chaotic: ["Chaotic fun in", "Prepare for chaos with", "Unleashing the chaos in", "It's gonna get wild with"],
-        story: ["Story time with", "Unraveling the story of", "Diving into the narrative of", "Let's explore the world of"],
-        competitive: ["Competitive play of", "Climbing the ranks in", "Serious competition in", "Time to get competitive with"]
-    };
+    witty: [
+        "Witty banter & wild adventures in", "Let's get clever with some", "Prepare for sharp humor & gameplay in", "Snarky commentary & solid plays in", "Brainy moves & amusing moments in",
+        "Slinging smart remarks & spells in", "Sharp tongues & even sharper skills in", "Prepare for puns & power-ups in", "Intellectual escapades in", "Humorous highlights in",
+        "Quick wit & quicker reflexes in", "Amusing antics & awesome plays in", "Clever commentary & captivating gameplay in", "Jesting journeys in", "Playful pronouncements in",
+        "Snappy sayings & stunning victories in", "Intelligent interactions in", "Hilarious happenings in", "Comical clashes in", "Waggish wonders in",
+        "Sharp-witted showdowns in", "Amusing undertakings in", "Clever capers in", "Jocular jaunts in", "Playful pursuits in",
+        "Snappy strategies in", "Intelligent insights in", "Humorous hurdles in", "Comical conquests in", "Waggish wins in"
+    ],
+    cheeky: [
+        "Cheeky business & bold moves in", "Getting playful with some", "Strap in for some lighthearted fun in", "A dash of mischief & some great gameplay in", "Waggish ways & winning moments in",
+        "Naughty notions & noteworthy noscopes in", "Saucy remarks & serious raiding in", "A bit of silliness & a lot of skill in", "Impish inclinations in", "Playful provocations in",
+        "Bold banter & brilliant plays in", "Mischievous moments & major victories in", "Saucy strategies & smooth gameplay in", "Impudent incursions in", "Playful ploys in",
+        "Bold beginnings in", "Mischievous maneuvers in", "Saucy skirmishes in", "Impudent improvisations in", "Playful performances in",
+        "Bold breakthroughs in", "Mischievous misadventures in", "Saucy successes in", "Impudent initiatives in", "Playful prowess in",
+        "Bold brilliance in", "Mischievous mastery in", "Saucy surprises in", "Impudent insights in", "Playful power in"
+    ],
+    sussy: [
+        "Something's a little sus in this", "Unraveling the mysteries (and maybe more) in", "Feelin' a bit sus, let's see what happens in", "Playing it cautiously in", "Trust your instincts (or don't) in",
+        "Suspect shenanigans in", "Don't trust anyone (including me) in", "Things are getting a bit strange in", "Mysterious maneuvers in", "Questionable quests in",
+        "Shady situations in", "Keep an eye on everyone in", "Something's not quite right in", "Dubious dealings in", "Fishy findings in",
+        "Unsettling events in", "Be wary of everyone in", "Something's lurking in", "Ominous occurrences in", "Perplexing predicaments in",
+        "Uncertain undertakings in", "Careful steps in", "Something's amiss in", "Doubtful decisions in", "Odd outcomes in",
+        "Unreliable realities in", "Circumspect circumstances in", "Something's off in", "Dubious developments in", "Peculiar plays in"
+    ],
+    energetic: [
+        "High energy vibes playing", "Let's goooo! Jumping into", "Get hyped for some action in", "Energetic gameplay & exciting moments in", "Pure energy engaging with",
+        "Unleashing the energy in", "Maximum effort & major moments in", "Buckle up, it's gonna be wild in", "Adrenaline-fueled adventures in", "Electrifying escapades in",
+        "High-octane husky hijinks in", "Unleashing the beast in", "Maximum intensity with", "Get ready for a rush in", "Dynamic domination in",
+        "Power-packed plays in", "Vibrant ventures in", "Thrilling triumphs in", "Exhilarating encounters in", "Animated antics in",
+        "High-powered performances in", "Vigorous victories in", "Thrilling takedowns in", "Exhilarating explorations in", "Animated adventures in",
+        "High-speed happenings in", "Vivacious ventures in", "Thrilling times in", "Exhilarating experiences in", "Animated actions in"
+    ],
+    chilled: [
+        "Chilled vibes & relaxed gaming in", "Come unwind with some", "Mellow gameplay & good company in", "Taking it easy with [Game Name] & chat", "Relaxing stream with",
+        "Sippin' & slayin' in a relaxed way", "Calm commentary & casual gameplay in", "Unwinding with some peaceful", "Gentle gaming in", "Serene streaming of",
+        "Easygoing entertainment with", "Laid-back adventures in", "Tranquil times playing", "Soothing streams of", "Mellow moments with",
+        "Comfortable camaraderie in", "Leisurely levels in", "Peaceful plays of", "Serene sessions of", "Easy entertainment with",
+        "Comfortable cruising through", "Leisurely loops in", "Peaceful progress in", "Serene sights in", "Easy escapades in",
+        "Comfortable conquering of", "Leisurely learning of", "Peaceful pastimes in", "Serene stories of", "Easy exploration of"
+    ],
+    focused: [
+        "Focused gameplay & deep dives into", "Concentrating on the intricacies of", "Serious business & strategic plays in", "Eyes on the objective in", "Dedicated gameplay of",
+        "Laser focus & legendary loot in", "Deep dive into the details of", "Tactical takedowns & thoughtful plays in", "Mind on the mission in", "Intentional interactions with",
+        "Sharp focus on the finer points of", "Deep analysis of", "Strategic skirmishes in", "Goal-oriented gaming in", "Deliberate decisions in",
+        "Intense concentration on", "Deep exploration of", "Strategic successes in", "Purposeful plays of", "Determined dedication to",
+        "Keen concentration on", "Deep understanding of", "Strategic solutions in", "Precise performances in", "Driven dedication to",
+        "Sharp attention to detail in", "Deep investigation into", "Strategic thinking in", "Methodical movements in", "Disciplined dedication to"
+    ],
+    community: [
+        "Community hangout & casual gaming in", "Hanging with chat & playing", "Let's chill & game together in", "Community stream of good times in", "Interactive fun with",
+        "Pack hangout & playful pounces in", "Good company & chaotic combos in", "Chillin' with the crew in", "Let's get comfy & conquer with", "Tail wags & top plays with chat in",
+        "Squad stream & shenanigans in", "Friendship fueled gameplay of", "Together we game in", "United in fun playing", "Teamwork triumphs in",
+        "Group gathering for gaming in", "Shared adventures in", "Collective conquering of", "Partnered plays of", "Collaborative chaos in",
+        "Crew camaraderie in", "Joint journeys in", "Combined campaigns in", "All together now playing", "United gaming front in",
+        "Fellowship of frags in", "Shared stories in", "Collective creations in", "All hands on deck for", "United in victory with"
+    ],
+    chaotic: [
+        "Chaotic fun & unexpected moments in", "Prepare for the beautiful chaos of", "Unleashing the mayhem in", "It's gonna get wild with", "Embrace the chaos playing",
+        "Pure pandemonium in", "Unpredictable plays & hilarious fails in", "Where sanity goes to die: playing", "Unleashing my inner gremlin in", "Absolute anarchy in",
+        "Wild and wacky times in", "Prepare for peak performance (and fails) in", "Controlled chaos (sort of) in", "Unforeseen events in", "Madness and mayhem with",
+        "Unruly romps in", "Expect the unexpected in", "Turbulent times playing", "Unscripted silliness in", "Rambunctious rounds of",
+        "Frenzied frolics in", "Brace for the bizarre in", "Unconventional conquests in", "Madcap maneuvers in", "Rowdy raids in",
+        "Hectic happenings in", "Get ready for the ridiculous in", "Unorthodox undertakings in", "Manic moments in", "Wacky warfare in"
+    ],
+    story: [
+        "Story-driven adventures in", "Unraveling the narrative of", "Diving into the world of", "Let's explore the rich story of", "Immersed in the tale of",
+        "Unfurling the forbidden tales of", "Lost in the lore of", "Whispers of wicked wonders in", "Delving into the dark depths of", "Let's get immersed in the world of",
+        "Exploring the epic saga of", "Discovering the secrets within", "Journeying through the realms of", "Following the fascinating plot of", "Engaged in the gripping story of",
+        "Witnessing the unfolding events of", "Embarking on a narrative quest in", "Experiencing the captivating world of", "Uncovering the mysteries of the story in", "Following the intricate threads of",
+        "Venturing into the lore-rich lands of", "Deciphering the ancient texts of", "Traversing the detailed world of", "Living the legend of", "Becoming part of the story in",
+        "Unlocking the hidden histories of", "Interacting with the characters of", "Navigating the branching paths of", "Witnessing the dramatic climax of", "Experiencing the emotional depth of"
+    ],
+    competitive: [
+        "Competitive action & rank climbing in", "Time to get serious with some", "High-stakes gameplay of", "The climb to the top in", "Competitive spirit engaged in",
+        "Clawing my way to the top in", "Serious snout-to-snout action in", "Unleashing my competitive canine spirit in", "Time to dominate (and maybe flirt a little) in", "The hunt for victory begins in",
+        "Ranked battles & relentless rivalry in", "Serious strategy for supremacy in", "Pushing the limits in", "Striving for the summit in", "Engaged in fierce competition in",
+        "Intense matches & masterful plays in", "Serious skill on display in", "Aiming for the apex in", "Focused on the fray in", "Dedicated to domination in",
+        "High-level gameplay of", "Strategic showdowns in", "Precision plays in", "Driven to dominate in", "Determined to defeat in",
+        "Skilled skirmishes in", "Tactical triumphs in", "Masterful maneuvers in", "Relentless ranking in", "Victorious ventures in"
+    ],
+    inspirational: [
+        "Inspiring moments & positive vibes in", "Bringing good energy to some", "Finding the fun & the wins in", "Let's create some great moments in", "Positive play through",
+        "Inspiring (and maybe a little indecent) adventures in", "Spreading positivity (and playful obscenity) in", "Finding the light (and the lewd) in", "Let's build something beautiful (or break something spectacularly) in", "Chasing dreams & dropping deams in",
+        "Uplifting experiences & engaging gameplay in", "Bringing smiles & solid plays in", "Focusing on the fun & the victories in", "Let's make some memorable moments in", "Positive power playing through",
+        "Heartwarming highlights & happy gaming in", "Sharing the joy of gaming in", "Celebrating the wins & the laughs in", "Let's cultivate some good times in", "Positive progression through",
+        "Encouraging entertainment with", "Spreading good vibes through", "Highlighting the best moments in", "Let's foster a positive community in", "Uplifting undertakings in",
+        "Motivating moves & masterful moments in", "Sharing the passion for gaming in", "Emphasizing the fun & friendship in", "Let's build each other up through", "Encouraging engagement through"
+    ],
+    wholesome: [
+        "Wholesome vibes & happy gaming in", "Join for some feel-good fun in", "Come experience some positive gameplay in", "Wholesome moments await in", "Pure and positive gaming with",
+        "Wholesome husky hugs & happy gaming in", "Pure joy & playful pounces in", "Good vibes & great games in", "A little bit of fluff & a lot of fun in", "Come for the cuddles, stay for the chaos in",
+        "Heartwarming highlights & happy gaming in", "Spreading smiles & sunshine through", "Focusing on the fun & friendship in", "Let's create a cozy atmosphere in", "Pure positivity playing through",
+        "Comforting camaraderie in", "Sharing the joy of gaming in a wholesome way", "Celebrating the good times & good plays in", "Let's build a supportive space in", "Pure and pleasant gaming through",
+        "Friendly faces & fantastic fun in", "Spreading kindness through gameplay in", "Highlighting the heartwarming moments in", "Let's foster a welcoming community in", "Pure and peaceful gaming through",
+        "Gentle gameplay & genuine joy in", "Sharing the love of gaming in a sweet way", "Emphasizing the good sportsmanship in", "Let's cultivate a caring community in", "Pure and playful gaming through"
+    ],
+    flirty: [
+        "Playful banter & fun times in", "Getting a little cheeky with some", "Prepare for some lighthearted fun in", "A bit of playful interaction with", "Fun & flirty (in a friendly way) in",
+        "Flirty growls & fantastic frags in", "Wagging tails & wicked wins in", "Sweet talk & savage skills in", "Come get a little closer while we play", "Serving looks & securing victories in",
+        "Playful pokes & pro plays in", "Witty whispers & wonderful wins in", "Charming challenges & captivating gameplay in", "Come for the laughs, stay for the plays", "Looking good & landing shots in",
+        "Teasing triumphs & terrific times in", "Sweet strategies & stunning successes in", "Come have some fun & maybe some wins", "Looking sharp & playing well in", "Playful prowess & pleasant personalities in",
+        "Charming chaos & clever clutches in", "Witty winks & wonderful worlds in", "Captivating camaraderie & cool conquests in", "Come for the good times & great plays", "Looking stylish & securing the dub in",
+        "Teasing tactics & terrific teamwork in", "Sweet synergy & stunning streams in", "Come hang out & have some laughs", "Looking fabulous & fragging out in", "Playful power & pleasant presence in"
+    ],
+    sarcastic: [
+        "Sarcastic commentary & questionable plays in", "Get ready for some dry humor in", "Sarcastic remarks & gaming in", "Witnessing my amazing skills (not really) in", "Lowering expectations now for some",
+        "Oh joy, another round of [Game Name]", "Prepare for my insightful (and likely incorrect) commentary on", "Just trying my best (spoiler: it won't be good)", "Witnessing my stunning incompetence in", "Lowering your expectations now for",
+        "Brace yourselves for my brilliance (or lack thereof) in", "Get ready for some expert (debatable) opinions on", "Just winging it (and probably failing spectacularly) in", "Witnessing my tactical genius (question mark?) in", "Prepare for a masterclass in mediocrity in",
+        "Oh goody, we're playing this again", "Prepare for my profound (and possibly pointless) insights on", "Just surviving (barely) in", "Witnessing my strategic blunders in", "Lowering the bar for entertainment in",
+        "Well, here we go again with", "Get ready for my highly accurate (citation needed) analysis of", "Just making it up as I go along in", "Witnessing my questionable decision-making in", "Prepare for peak performance (unlikely) in",
+        "Fantastic. Just fantastic. Playing", "Get ready for my world-class (self-proclaimed) skills in", "Just existing in this game called", "Witnessing my epic fails in glorious detail in", "Lowering the collective IQ with some"
+    ]
+};
 
-    const goLiveStarters = {
-        witty: ["Going live with some witty gameplay in", "Time for some laughs and", "Witty streams incoming for", "Get ready for some witty"],
-        cheeky: ["Live and being cheeky in", "Come join the cheeky fun in", "Cheeky streams are now live for", "Having some cheeky fun with"],
-        sussy: ["Live and being sus in", "Who's the imposter? Find out in", "Sussy shenanigans live in", "Things are getting sussy with"],
-        energetic: ["LIVE! Let's get energetic with", "High energy stream starting now for", "Get ready to rumble! Playing", "Bringing the energy to"],
-        chilled: ["Chilled stream live with", "Come unwind with some", "Relaxed vibes and gameplay in", "Taking it easy and playing"],
-        focused: ["Focused stream now live with", "Diving deep into", "Concentrating live on", "Serious focus on"],
-        community: ["Community stream live! Hanging out with", "Come chat and game with", "Live with the community playing", "It's a community hangout for"],
-        chaotic: ["Chaos incoming! Live with", "Prepare for the mayhem in", "Unleashing the chaos live with", "Things are about to get chaotic with"],
-        story: ["Story stream live! Let's explore", "Diving into the story of", "Unraveling the narrative live with", "Join me for a story-driven"],
-        competitive: ["Competitive stream live! Climbing ranks in", "Time to get serious with", "Live competitive play of", "Let's get competitive in"]
-    };
+const goLiveStarters = {
+    witty: [
+        "Going live with some witty gameplay in", "Time for some laughs and clever plays in", "Witty stream starting now for", "Get ready for some sharp humor playing", "Witty adventures live! Join me for",
+        "Snarky stream incoming! Let's dive into", "Wit's end? Nope, just getting started with", "Time for some brainy plays & bold banter in", "Prepare your funny bone, we're playing", "Witty streams await! Live now with",
+        "Quick wit & live gaming! Join me for", "Amusing antics are now live with", "Clever commentary & captivating stream starting!", "Jesting journey live! Come along for", "Playful pronouncements are now live!",
+        "Snappy sayings & live victories incoming!", "Intelligent interactions are happening live!", "Hilarious happenings are now streaming!", "Comical clashes are about to begin live!", "Waggish wonders are now live!",
+        "Sharp-witted showdowns are live! Tune in for", "Amusing undertakings are now live!", "Clever capers are starting live!", "Jocular jaunts are now live!", "Playful pursuits are live!",
+        "Snappy strategies are live! Watch now!", "Intelligent insights are being shared live!", "Humorous hurdles are being faced live!", "Comical conquests are underway live!", "Waggish wins are happening live!",
+        "Sharp-witted streams are now live for", "Amusing adventures are live! Come see!", "Clever challenges are live! Watch me try!", "Jocular gaming is live! Join the fun!", "Playful plays are live! Check it out!",
+        "Snappy streams are now live!", "Intelligent gaming live now!", "Humorous gameplay live!", "Comical moments live!", "Waggish streams are live!"
+    ],
+    cheeky: [
+        "Live and being playful in", "Come join the lighthearted fun in", "Cheeky stream now live for", "Having some fun and games with", "Getting playful with it! Live now",
+        "Cheeky business live! Tune in for", "Live & ready to be a little bit naughty in", "Strap in for some waggish gameplay of", "Saucy remarks & live shenanigans in", "Cheeky streams are now live for",
+        "Bold banter live! Come join the fun!", "Mischievous moments live! See what happens!", "Saucy strategies live! Watch me work!", "Impudent incursions live! Check it out!", "Playful ploys live! Come see!",
+        "Bold beginnings live! Join the adventure!", "Mischievous maneuvers live! See what I'm up to!", "Saucy skirmishes live! Tune in!", "Impudent improvisations live! Watch me go!", "Playful performances live! Come see!",
+        "Bold breakthroughs live! Don't miss it!", "Mischievous misadventures live! See what trouble I get into!", "Saucy successes live! Come celebrate!", "Impudent initiatives live! See what I try next!", "Playful prowess live! Check out the skills!",
+        "Bold brilliance live! Tune in now!", "Mischievous mastery live! See how it's done!", "Saucy surprises live! You won't expect this!", "Impudent insights live! Hear my thoughts!", "Playful power live! Check out the plays!",
+        "Cheeky vibes live! Come hang out!", "Live with some playful antics in", "Cheeky gameplay live now!", "Having some mischievous fun live!", "Playful streams are now live!"
+    ],
+    sussy: [
+        "Live and things are getting a little sus in", "Who's the imposter? Find out live in", "Slightly suspicious gameplay live in", "Things are getting interesting with", "Sussy stream live! What's going on in",
+        "Suspect shenanigans live! Come investigate!", "Don't trust anyone (including me) live!", "Things are getting a bit strange live!", "Mysterious maneuvers live! What's happening?", "Questionable quests live! Let's figure it out!",
+        "Shady situations live! Be careful!", "Keep an eye on everyone live!", "Something's not quite right live!", "Dubious dealings live! Watch closely!", "Fishy findings live! What did I find?",
+        "Unsettling events live! Brace yourselves!", "Be wary of everyone live! Trust no one!", "Something's lurking live! What could it be?", "Ominous occurrences live! Something's wrong!", "Perplexing predicaments live! Let's solve this!",
+        "Uncertain undertakings live! What am I doing?", "Careful steps live! Proceed with caution!", "Something's amiss live! What is it?", "Doubtful decisions live! Will it work?", "Odd outcomes live! You won't believe this!",
+        "Unreliable realities live! What's real?", "Circumspect circumstances live! Let's analyze!", "Something's off live! Can you spot it?", "Dubious developments live! What's next?", "Peculiar plays live! That was weird!",
+        "Sussy vibes live! Something's up!", "Live with some suspect gameplay in", "Sussy moments live now!", "Things are a bit strange live!", "Suspicious streams are now live!"
+    ],
+    energetic: [
+        "LIVE! Let's get energetic with", "High energy stream starting now for", "Get ready for some action! Playing", "Bringing the energy to some", "Energetic stream is now LIVE!",
+        "Unleashing the energy live! Join the hype!", "Maximum effort live! Let's go!", "Buckle up buttercups, it's gonna be wild!", "Adrenaline-fueled stream LIVE!", "Electrifying gameplay LIVE!",
+        "High-octane gaming LIVE now!", "Unleashing the beast live! Watch out!", "Maximum intensity live with", "Get ready for a rush LIVE!", "Dynamic domination LIVE!",
+        "Power-packed plays LIVE! Don't miss it!", "Vibrant ventures LIVE! Come along!", "Thrilling triumphs LIVE! Watch now!", "Exhilarating encounters LIVE! Tune in!", "Animated antics LIVE! Check it out!",
+        "High-powered performances LIVE! See the energy!", "Vigorous victories LIVE! Let's get it!", "Thrilling takedowns LIVE! Watch this!", "Exhilarating explorations LIVE! Come explore!", "Animated adventures LIVE! Join me!",
+        "High-speed happenings LIVE! Don't blink!", "Vivacious ventures LIVE! Come see!", "Thrilling times LIVE! You won't want to miss!", "Exhilarating experiences LIVE! Join the fun!", "Animated actions LIVE! Check it out!",
+        "Energetic vibes live! Let's go!", "Live with some high-energy gameplay in", "Energetic moments live now!", "Bringing the hype live!", "High-energy streams are now live!"
+    ],
+    chilled: [
+        "Chilled stream live with some", "Come unwind with some relaxed", "Relaxed vibes and gameplay in", "Taking it easy and playing some", "Mellow stream starting now with",
+        "Sippin' & slayin' live in a relaxed way!", "Calm commentary & casual stream starting!", "Unwinding with some peaceful gameplay live!", "Gentle gaming live! Come chill!", "Serene streaming of some relaxing",
+        "Easygoing entertainment live! Join me!", "Laid-back adventures live! Come hang!", "Tranquil times playing live!", "Soothing streams of some calm", "Mellow moments live! Come relax!",
+        "Comfortable camaraderie live! Let's chat!", "Leisurely levels live! Taking our time!", "Peaceful plays live! Come enjoy the vibes!", "Serene sessions live! Unwind with me!", "Easy entertainment live! Come hang out!",
+        "Comfortable cruising through live!", "Leisurely loops live! Just relaxing!", "Peaceful progress live! No rush!", "Serene sights live! Come enjoy the view!", "Easy escapades live! Let's take it slow!",
+        "Comfortable conquering live! No stress!", "Leisurely learning live! Taking it easy!", "Peaceful pastimes live! Come chill with me!", "Serene stories live! Relax and listen!", "Easy exploration live! Let's take our time!",
+        "Chilled vibes live! Come relax!", "Live with some relaxed gameplay in", "Chilled moments live now!", "Taking it easy live!", "Relaxed streams are now live!"
+    ],
+    focused: [
+        "Focused stream now live with some", "Diving deep into the world of", "Concentrating live on some serious", "Serious focus on some intense", "Dedicated gameplay live with",
+        "Laser focus live! Let's get this done!", "Deep dive live! Prepare for some serious", "Tactical takedowns incoming! Live with", "Mind on the mission! Focused gameplay of", "Intentional interactions live with",
+        "Sharp focus live on the finer points of", "Deep analysis live of", "Strategic skirmishes live! Watch the plays!", "Goal-oriented gaming live! Let's achieve!", "Deliberate decisions live! See the strategy!",
+        "Intense concentration live on", "Deep exploration live of", "Strategic successes live! Watch how it's done!", "Purposeful plays live! See the plan!", "Determined dedication live to",
+        "Keen concentration live on", "Deep understanding live of", "Strategic solutions live! Watch me solve it!", "Precise performances live! See the skill!", "Driven dedication live to",
+        "Sharp attention to detail live in", "Deep investigation live into", "Strategic thinking live in", "Methodical movements live in", "Disciplined dedication live to",
+        "Focused vibes live! Let's get it done!", "Live with some focused gameplay in", "Focused moments live now!", "Concentrating live!", "Dedicated streams are now live!"
+    ],
+    community: [
+        "Community stream live! Hanging out for some", "Come chat and game with the community in", "Live with the community playing some", "It's a community hangout for some", "Community fun live! Join the chat for",
+        "Pack hangout LIVE! Let's play together!", "Join the crew! Community stream of", "Chillin' with chat & conquering some", "Live with the best viewers in the world!", "It's a party! Community stream of",
+        "Squad stream LIVE! Shenanigans incoming!", "Friendship fueled gameplay live of", "Together we game LIVE!", "United in fun playing some", "Teamwork triumphs LIVE!",
+        "Group gathering for gaming LIVE!", "Shared adventures LIVE in", "Collective conquering LIVE of", "Partnered plays LIVE of", "Collaborative chaos LIVE in",
+        "Crew camaraderie LIVE! Come hang out!", "Joint journeys LIVE in", "Combined campaigns LIVE in", "All together now playing LIVE!", "United gaming front LIVE in",
+        "Fellowship of frags LIVE! Join the fun!", "Shared stories LIVE in", "Collective creations LIVE in", "All hands on deck for some LIVE", "United in victory LIVE with",
+        "Community vibes live! Come hang!", "Live with the community playing in", "Community moments live now!", "Hanging with chat live!", "Community streams are now live!"
+    ],
+    chaotic: [
+        "Chaos unleashed! Live with some", "Prepare for the pandemonium in some", "Unleashing the mayhem live with", "Things are about to get wild with some", "Chaotic stream starting NOW!",
+        "Pure pandemonium LIVE! Join the madness!", "Unpredictable plays & hilarious fails LIVE!", "Where sanity goes to die: playing LIVE!", "Unleashing my inner gremlin LIVE!", "Absolute anarchy LIVE!",
+        "Wild and wacky times LIVE in", "Prepare for peak performance (and fails) LIVE!", "Controlled chaos (sort of) LIVE in", "Unforeseen events LIVE! Anything can happen!", "Madness and mayhem LIVE with",
+        "Unruly romps LIVE in", "Expect the unexpected LIVE in", "Turbulent times playing LIVE!", "Unscripted silliness LIVE!", "Rambunctious rounds LIVE of",
+        "Frenzied frolics LIVE in", "Brace for the bizarre LIVE in", "Unconventional conquests LIVE in", "Madcap maneuvers LIVE!", "Rowdy raids LIVE in",
+        "Hectic happenings LIVE! Don't miss the crazy!", "Get ready for the ridiculous LIVE in", "Unorthodox undertakings LIVE!", "Manic moments LIVE!", "Wacky warfare LIVE!",
+        "Chaotic vibes live! Anything can happen!", "Live with some chaotic gameplay in", "Chaotic moments live now!", "Prepare for mayhem live!", "Wild streams are now live!"
+    ],
+    story: [
+        "Story stream live! Let's explore the world of", "Diving into the narrative of", "Unraveling the story live with some", "Join me for a story-driven", "Live with a captivating story in",
+        "Unfurling the forbidden tales live of", "Lost in the lore live of", "Whispers of wicked wonders live in", "Delving into the dark depths live of", "Let's get immersed in the world of",
+        "Exploring the epic saga live of", "Discovering the secrets within live in", "Journeying through the realms live of", "Following the fascinating plot live of", "Engaged in the gripping story live of",
+        "Witnessing the unfolding events live of", "Embarking on a narrative quest live in", "Experiencing the captivating world live of", "Uncovering the mysteries of the story live in", "Following the intricate threads live of",
+        "Venturing into the lore-rich lands live of", "Deciphering the ancient texts live of", "Traversing the detailed world live of", "Living the legend live of", "Becoming part of the story live in",
+        "Unlocking the hidden histories live of", "Interacting with the characters live of", "Navigating the branching paths live of", "Witnessing the dramatic climax live of", "Experiencing the emotional depth live of",
+        "Story vibes live! Let's get into it!", "Live with some story-rich gameplay in", "Story moments live now!", "Diving into the lore live!", "Narrative streams are now live!"
+    ],
+    competitive: [
+        "Competitive stream live! Climbing ranks in", "Time to get serious with some competitive", "Live competitive play of", "Let's get competitive in some", "Competitive action LIVE!",
+        "Clawing my way to the top LIVE in", "Serious snout-to-snout action LIVE in", "Unleashing my competitive spirit LIVE in", "Time to dominate LIVE in", "The hunt for victory begins LIVE in",
+        "Ranked battles & relentless rivalry LIVE!", "Serious strategy for supremacy LIVE!", "Pushing the limits LIVE in some", "Striving for the summit LIVE in", "Engaged in fierce competition LIVE in",
+        "Intense matches & masterful plays LIVE!", "Serious skill on display LIVE in", "Aiming for the apex LIVE in", "Focused on the fray LIVE in some", "Dedicated to domination LIVE in",
+        "High-level gameplay LIVE of", "Strategic showdowns LIVE in", "Precision plays LIVE of", "Driven to dominate LIVE in", "Determined to defeat LIVE in",
+        "Skilled skirmishes LIVE in", "Tactical triumphs LIVE in", "Masterful maneuvers LIVE in", "Relentless ranking LIVE in", "Victorious ventures LIVE in",
+        "Competitive vibes live! Let's go!", "Live with some competitive gameplay in", "Competitive moments live now!", "Getting serious live!", "Ranked streams are now live!"
+    ],
+    inspirational: [
+        "Live and inspiring with some", "Bringing positive vibes live with some", "Inspiring gameplay stream starting with", "Get ready to be inspired in some", "Positive play through",
+        "Uplifting experiences & engaging gameplay LIVE!", "Bringing smiles & solid plays LIVE!", "Focusing on the fun & the victories LIVE!", "Let's make some memorable moments LIVE!", "Positive power playing LIVE!",
+        "Heartwarming highlights & happy gaming LIVE!", "Sharing the joy of gaming LIVE!", "Celebrating the wins & the laughs LIVE!", "Let's cultivate some good times LIVE!", "Positive progression LIVE!",
+        "Encouraging entertainment LIVE with", "Spreading good vibes through some LIVE", "Highlighting the best moments LIVE in", "Let's foster a positive community LIVE in", "Uplifting undertakings LIVE in",
+        "Motivating moves & masterful moments LIVE!", "Sharing the passion for gaming LIVE!", "Emphasizing the fun & friendship LIVE!", "Let's build each other up through some LIVE", "Encouraging engagement through some LIVE",
+        "Creating positive moments LIVE!", "Spreading good energy through gameplay LIVE!", "Highlighting the awesome plays LIVE!", "Let's build a great community LIVE!", "Uplifting adventures LIVE!",
+        "Inspirational vibes live! Let's go!", "Live with some inspiring gameplay in", "Inspirational moments live now!", "Bringing the positivity live!", "Uplifting streams are now live!"
+    ],
+    wholesome: [
+        "Wholesome stream live! Join the fun for some", "Playing with some wholesome vibes live in", "Come and chill with some positive gameplay of", "Live now with some wholesome", "Wholesome gaming live! Come hang out for",
+        "Heartwarming highlights & happy gaming LIVE!", "Spreading smiles & sunshine through some", "Focusing on the fun & friendship LIVE in", "Let's create a cozy atmosphere LIVE in", "Pure positivity playing LIVE through",
+        "Comforting camaraderie LIVE in some", "Sharing the joy of gaming in a wholesome way LIVE!", "Celebrating the good times & good plays LIVE in", "Let's build a supportive space LIVE in", "Pure and pleasant gaming LIVE through",
+        "Friendly faces & fantastic fun LIVE in", "Spreading kindness through gameplay LIVE in", "Highlighting the heartwarming moments LIVE in", "Let's foster a welcoming community LIVE in", "Pure and peaceful gaming LIVE through",
+        "Gentle gameplay & genuine joy LIVE in", "Sharing the love of gaming in a sweet way LIVE!", "Emphasizing the good sportsmanship LIVE in", "Let's cultivate a caring community LIVE in", "Pure and playful gaming LIVE through",
+        "Kindness and gaming live! Come join the good vibes!", "Positive interactions and gameplay live!", "A happy place for gaming, live now!", "Come share some wholesome moments live!", "Good vibes and great games, live!",
+        "Wholesome adventures await! Live now!", "Spreading joy through gaming, live!", "A friendly stream for some fun gaming, live!", "Come relax and enjoy some wholesome gameplay!", "Live with all the good feels!",
+        "Wholesome community gaming, live!", "Positive and welcoming stream, live now!", "Come make some friends and play some games!", "Live with a focus on good times and good people!", "A wholesome escape into gaming, live!",
+        "Wholesome moments being made live!", "Spreading positivity one game at a time, live!", "A place for kind gamers, live now!", "Come join the wholesome fun!", "Live with nothing but good vibes and great games!"
+    ],
+    flirty: [
+        "Live and having some playful fun with", "Getting a little cheeky with gameplay in", "Fun stream live now with some", "Get ready for some lighthearted banter with", "Playful stream starting now with",
+        "Flirty growls & fantastic frags LIVE!", "Wagging my tail & winning hearts in some", "Sweet talk & slick plays LIVE!", "Come get a little closer while we play some", "Serving looks & securing victories in some",
+        "Playful pokes & pro plays LIVE!", "Witty whispers & wonderful wins in some", "Charming challenges & captivating gameplay LIVE!", "Come for the laughs, stay for the plays in some", "Looking good & landing shots in some",
+        "Teasing triumphs & terrific times LIVE in", "Sweet strategies & stunning successes in some", "Come have some fun & maybe some wins in", "Looking sharp & playing well in some", "Playful prowess & pleasant personalities LIVE!",
+        "Charming chaos & clever clutches LIVE in", "Witty winks & wonderful worlds in some", "Captivating camaraderie & cool conquests LIVE in", "Come for the good times & great plays in some", "Looking stylish & securing the dub in some",
+        "Teasing tactics & terrific teamwork LIVE!", "Sweet synergy & stunning streams LIVE!", "Come hang out & have some laughs with some", "Looking fabulous & fragging out in some", "Playful power & pleasant presence LIVE!",
+        "Flirty vibes live! Come say hi!", "Live with some playful interactions in", "Cheeky gameplay live now!", "Having some fun banter live!", "Playful streams are now live!",
+        "Come flirt with danger (and maybe me)! Live!", "Winking and winning live!", "Sweet moves and smooth talk live!", "Get ready for some playful teasing live!", "Live with a little bit of spice!",
+        "Flirty fun and fantastic games live!", "Come for the charm, stay for the gameplay!", "Live with some playful competition!", "Ready to charm your socks off! Live!", "A little bit naughty, a lot of fun! Live!"
+    ],
+    sarcastic: [
+        "Sarcastic stream live! Expect the unexpected with", "Going live with some sarcastic gameplay of", "Let's dive into sarcasm live with some", "Live with some dry humor incoming for", "Sarcastic fun live! Join me for some",
+        "Oh goody, I'm live! Witness the majesty of my gameplay in", "Sarcasm levels critical! Playing", "Prepare for my expert (debatable) opinions on", "Just trying my best (spoiler: it won't be good) in", "Lowering your expectations now for",
+        "Brace yourselves for my brilliance (or lack thereof) live!", "Get ready for some expert (debatable) opinions live on", "Just winging it (and probably failing spectacularly) live in", "Witnessing my tactical genius (question mark?) live in", "Prepare for a masterclass in mediocrity live in",
+        "Oh goody, we're playing this again live!", "Prepare for my profound (and possibly pointless) insights live on", "Just surviving (barely) live in", "Witnessing my strategic blunders live in", "Lowering the bar for entertainment live in",
+        "Well, here we go again live with", "Get ready for my highly accurate (citation needed) analysis live of", "Just making it up as I go along live in", "Witnessing my questionable decision-making live in", "Prepare for peak performance (unlikely) live in",
+        "Fantastic. Just fantastic. Playing live!", "Get ready for my world-class (self-proclaimed) skills live in", "Just existing in this game called live", "Witnessing my epic fails in glorious detail live in", "Lowering the collective IQ with some live",
+        "Sarcastic vibes live! You've been warned!", "Live with some cutting commentary on", "Dry humor live now!", "Prepare for the eye-rolls live!", "Sarcastic streams are now live!",
+        "Come watch me fail ironically! Live!", "My commentary will be *amazing* (not really)! Live!", "Prepare for my insightful (and likely wrong) takes! Live!", "Just here for the participation trophy! Live!", "Live with a healthy dose of cynicism!",
+        "Sarcasm and subpar gameplay live!", "Come witness my stunning lack of skill! Live!", "My predictions are always right (never)! Live!", "Just trying to have a good time (doubtful)! Live!", "Live with a side of sarcasm and a sprinkle of rage!"
+    ]
+};
 
-    const hashtagPhrases = {
-        "#FirstPlaythrough": ["Blind run!", "First time exploring!", "Fresh playthrough!", "Going in blind!"],
-        "#NoBackseating": ["No hints please!", "Discovering things myself!", "Keep the advice to yourselves!", "Let me figure it out!"],
-        "#TwitchDrops": ["Drops enabled!", "Grab your loot!", "Twitch Drops are active!", "Don't miss the drops!"],
-        "#NoSpoilers": ["Spoiler-free zone!", "Keep the story secrets!", "Let's experience this together!", "No spoilers allowed!"],
-        "#CosyVibes": ["Cosy gaming session!", "Relax and watch!", "Comfortable vibes only!", "Chilled and gaming!"],
-        "#ViewerInteractions": ["Chatting with viewers!", "Your input welcome!", "Interactive stream!", "Let's hang out!"],
-        "#LiveNow": ["Streaming live!", "Come watch!", "Going live now!", "Join the stream!"],
-        "#Gaming": ["Playing games!", "Gamer time!", "Let's game!", "Video games!"],
-        "#VTuber": ["VTubing!", "Virtual streamer!", "Animated adventures!", "See my virtual self!"],
-        "#Furry": ["Furry streamer!", "Pawsome gameplay!", "Into the furryverse!", "Fluffy fun!"],
-        "#JustChatting": ["Hanging out and chatting!", "Let's talk!", "Just chatting with you!", "Come say hello!"],
-        "#ArtStream": ["Creating art live!", "Watch me draw!", "Artistic vibes!", "Making art for you!"]
-        // Add more hashtags and their phrases as needed
-    };
+
+const hashtagPhrases = {
+    // Content hashtags
+    "#FirstPlaythrough": [
+        "Blind run!", "First time exploring!", "Fresh playthrough!", "Going in blind!", "New game adventure!",
+        "Uncharted territory!", "Virgin voyage!", "First impression gameplay!", "No prior knowledge!", "Experiencing for the first time!",
+        "Let's discover together!", "Completely new to this!", "Starting from scratch!", "The very beginning!", "A brand new journey!",
+        "Initial experience!", "First contact!", "Untouched gameplay!", "A clean slate!", "Pure discovery!",
+        "Maiden voyage!", "Fresh eyes on this!", "No spoilers, please!", "Learning as we go!", "The adventure begins now!",
+        "First look!", "Untainted experience!", "A fresh perspective!", "Embarking on the unknown!", "Completely unspoiled!"
+    ],
+    "#NoBackseating": [
+        "No hints please!", "Discovering things myself!", "Keep the advice to yourselves!", "Let me figure it out!", "Exploring at my own pace!",
+        "Learning through experience!", "Hands-off guidance only!", "Silence of the backseat!", "My way or the highway (of learning)!", "Trial and error time!",
+        "Let me stumble through!", "The joy of discovery!", "No unsolicited help!", "Figuring it out solo!", "The journey is the reward (and my mistakes)!",
+        "Please refrain from advice!", "I've got this (maybe)!", "The path of learning is paved with my fails!", "Let me experiment!", "Keep your strategies to yourself!",
+        "I'm on a learning curve!", "Enjoy the ride (of my confusion)!", "No backseat drivers!", "Let me lead the way (poorly)!", "The thrill of the unknown (and my bad decisions)!",
+        "Just watching my journey!", "Experiencing it my way!", "Let me solve the puzzle!", "The satisfaction of figuring it out!", "No help needed (yet)!"
+    ],
+    "#NoSpoilers": [
+        "Spoiler-free zone!", "Keep the story secrets!", "Let's experience this together!", "No spoilers allowed!", "Protect the surprises!",
+        "Keep the plot twists hidden!", "Don't ruin the magic!", "A fresh, unspoiled experience!", "Let the story unfold naturally!", "Preserve the mystery!",
+        "No future knowledge!", "Keep the surprises coming (naturally)!", "Let's react in real-time!", "Guard the narrative!", "Shield us from future events!",
+        "Maintain the suspense!", "Keep the secrets safe!", "Let's be surprised together!", "Don't unveil the ending!", "Protect the journey's end!",
+        "Keep the plot under wraps!", "Let the game speak for itself!", "No hints about what's to come!", "Experience the story as intended!", "Keep the twists and turns secret!",
+        "A blind eye to the future!", "Let's enjoy the unknown!", "Don't give away the big reveal!", "Keep the narrative pure!", "Preserve the first-time wonder!"
+    ],
+    "#Gaming": [
+        "Playing games!", "Gamer time!", "Let's game!", "Video games!", "Game on!",
+        "Leveling up!", "Virtual adventures!", "Digital escapades!", "Console gaming!", "PC gaming!",
+        "Mobile gaming!", "Indie gaming!", "Retro gaming!", "New releases!", "Playing through!",
+        "Gaming session!", "Virtual worlds!", "Digital adventures!", "Controller in hand!", "Keyboard and mouse!",
+        "Gaming community!", "Love gaming!", "Gamer for life!", "Just gaming!", "Time to play!",
+        "Into the game!", "Virtual reality!", "Augmented reality!", "Cloud gaming!", "Streaming games!"
+    ],
+    "#Speedrun": [
+        "Going fast!", "Optimizing routes!", "Speedrunning today!", "Racing the clock!", "Fastest time possible!",
+        "Efficiency is key!", "Gotta go fast!", "Breaking records!", "Time attack!", "Quick completion!",
+        "Speedy playthrough!", "Mastering the movement!", "Frame-perfect actions!", "Shaving off seconds!", "Pushing the limits of speed!",
+        "Optimized gameplay!", "Fast and furious gaming!", "Blazing through!", "Record attempt!", "The need for speed!",
+        "Speedy strategies!", "Precision movement!", "Fastest fingers first!", "Time trial!", "Conquering quickly!",
+        "Speed demon!", "Velocity victory!", "Rapid run!", "Swift completion!", "Lightning fast!"
+    ],
+    "#Blind": [
+        "First time playing!", "No spoilers please!", "Experiencing it fresh!", "Blind playthrough!", "New to this game!",
+        "Completely unaware!", "Going in without knowledge!", "A fresh perspective!", "Learning as I go!", "Untouched experience!",
+        "Discovering for the first time!", "No idea what to expect!", "A clean slate adventure!", "Pure, unspoiled gameplay!", "Maiden voyage into this game!",
+        "Fresh eyes on this world!", "No prior experience here!", "Untainted by spoilers!", "A journey of pure discovery!", "Experiencing it raw!",
+        "First contact with this game!", "Completely new to the mechanics!", "A truly blind run!", "Let's learn together!", "The thrill of the unknown!",
+        "Starting from zero!", "A genuine first impression!", "Uncharted gameplay for me!", "Completely clueless (in a good way)!", "Embarking on this blindly!"
+    ],
+    // Stream Type hashtags
+    "#CosyVibes": [
+        "Cosy gaming session!", "Relax and watch!", "Comfortable vibes only!", "Chilled and gaming!", "Snug stream!",
+        "Warm and welcoming!", "Relaxing atmosphere!", "Comfort zone gaming!", "Laid-back and playing!", "Soft and gentle vibes!",
+        "Comfortable and chill!", "Easygoing gaming!", "Relaxed and ready!", "Snuggle up and watch!", "Warm and fuzzy feels!",
+        "Comfortable gaming experience!", "Laid-back and loving it!", "Soft and peaceful vibes!", "Comfortable and content!", "Easy-breezy gaming!",
+        "Relaxing and enjoyable!", "Snug as a bug!", "Warm and inviting stream!", "Comfortable and happy!", "Easy-listening gaming!",
+        "Relaxing and unwinding!", "Snuggly stream time!", "Warm and friendly vibes!", "Comfortable and serene!", "Easy-paced gaming!"
+    ],
+    "#ChillStream": [
+        "Taking it easy today!", "Relaxed stream vibes!", "Chilling with chat!", "Low-key stream!", "Easygoing stream!",
+        "Mellow vibes here!", "Just hanging out and playing!", "Unwinding with some games!", "Casual gaming session!", "Laid-back streaming!",
+        "Relaxed and chatting!", "Keeping it calm today!", "Just vibing and gaming!", "No pressure, just play!", "Easy does it stream!",
+        "Chilled atmosphere here!", "Relaxed gaming experience!", "Just enjoying some downtime!", "Mellow gaming session!", "Laid-back and friendly!",
+        "Relaxed and ready to game!", "Keeping it smooth and chill!", "Just enjoying the company and the game!", "Easy and breezy stream!", "Chilled gaming vibes!",
+        "Relaxed and ready to chat!", "Keeping the energy low and the fun high!", "Just a casual gaming hangout!", "Easy-paced and enjoyable!", "Chilled vibes all around!"
+    ],
+    "#JustChatting": [
+        "Hanging out and chatting!", "Let's talk!", "Just chatting with you!", "Come say hello!", "Open conversation!",
+        "Talking about life, the universe, and games!", "Ask me anything!", "Let's catch up!", "Community hangout!", "Just me and you!",
+        "Heart-to-heart time!", "Spill the tea!", "What's on your mind?", "Let's have a conversation!", "Your thoughts welcome!",
+        "Chit-chatting live!", "Let's connect!", "Tell me about your day!", "Open floor for discussion!", "Interactive chat time!",
+        "Just talking and chilling!", "Let's get to know each other!", "Your questions answered!", "A casual conversation stream!", "Come join the discussion!",
+        "Talking about everything and nothing!", "Let's have a good chat!", "Your stories and my ears!", "A relaxed chat session!", "Come hang and talk!"
+    ],
+    "#ArtStream": [
+        "Creating art live!", "Watch me draw!", "Artistic vibes!", "Making art for you!", "Live drawing session!",
+        "Digital painting live!", "Sketching live!", "Illustrating live!", "Creative process!", "Art in progress!",
+        "Watch art come to life!", "Live illustration!", "Digital art creation!", "Sketching and chatting!", "Art for the community!",
+        "Painting live for you!", "Live digital art!", "Sketching session!", "Creating on the canvas!", "Artistic journey live!",
+        "Watch the magic happen!", "Live illustration session!", "Digital art in the making!", "Sketching and vibing!", "Art requests open!",
+        "Painting live and chatting!", "Live digital illustration!", "Sketching and creating!", "Artistic exploration live!", "Watch me create magic!"
+    ],
+    "#MusicStream": [
+        "Music time!", "Jamming live!", "Tunes and vibes!", "Musical stream!", "Live music session!",
+        "Playing some tunes!", "Live DJ set!", "Singing live!", "Instrumental performance!", "Music requests open!",
+        "Live acoustic set!", "Playing my favorite songs!", "Music and chat!", "Vibing with some music!", "Live covers!",
+        "Original music live!", "Jam session with chat!", "Musical journey live!", "Live instrumental covers!", "Music for your soul!",
+        "Playing some chill tunes!", "Live music and good vibes!", "Jamming out live for you!", "Musical exploration live!", "Live covers and originals!",
+        "Playing some upbeat music!", "Live music and fun times!", "Jamming with the community!", "Musical moments live!", "Live tunes and good company!"
+    ],
+    "#TalkShow": [
+        "Let's discuss!", "Talking about topics!", "Chat show live!", "Discussion stream!", "Live talk session!",
+        "Deep dive discussions!", "Talking about current events!", "Open forum for discussion!", "Let's debate!", "Your opinions matter!",
+        "Talking about [topic]!", "Live panel discussion!", "Exploring different perspectives!", "Engaging in conversation!", "Thought-provoking discussions!",
+        "Let's get into it!", "Live Q&A session!", "Talking about life and everything in between!", "Open mic discussion!", "Interactive talk show!",
+        "Discussing the latest news!", "Live interview session!", "Exploring various viewpoints!", "Engaging with the audience!", "Thought-provoking conversations live!",
+        "Let's have an open dialogue!", "Live discussion on [topic]!", "Sharing thoughts and ideas live!", "Engaging the community in discussion!", "Thoughtful conversations happening now!"
+    ],
+    // Community hashtags
+    "#ViewerInteractions": [
+        "Chatting with viewers!", "Your input welcome!", "Interactive stream!", "Let's hang out!", "Engaging with chat!",
+        "Your opinions matter here!", "Making the stream interactive!", "Come join the conversation!", "Your voice is heard!", "Let's connect!",
+        "Interactive fun with chat!", "Your participation encouraged!", "Making the stream about us!", "Come be a part of the show!", "Let's build this together!",
+        "Interactive moments happening now!", "Your feedback is valued!", "Making the most of our time together!", "Come share your thoughts!", "Let's have some interactive fun!",
+        "Engaging with the community live!", "Your questions and comments welcome!", "Making this a collaborative experience!", "Come join the interactive party!", "Let's make some memories together!",
+        "Interactive games with viewers!", "Your suggestions are welcome!", "Making this a two-way street!", "Come be an active part of the stream!", "Let's interact and have a blast!"
+    ],
+    "#VTuber": [
+        "VTubing!", "Virtual streamer!", "Animated adventures!", "See my virtual self!", "Virtual presence!",
+        "Live as my avatar!", "Animated streaming!", "Digital persona!", "Virtual entertainment!", "VTuber life!",
+        "Streaming in virtual reality!", "My animated adventures!", "The world of VTubing!", "See my virtual form!", "Animated gameplay!",
+        "Virtual me playing games!", "Live with my avatar!", "Digital streaming persona!", "Experiencing the virtual world!", "Animated fun!",
+        "VTuber community!", "Virtual streaming fun!", "My digital adventures live!", "See my virtual reactions!", "Animated chats!",
+        "VTuber streamer here!", "Virtual gaming live!", "My digital self playing!", "Animated interactions!", "The power of VTubing!"
+    ],
+    "#Furry": [
+        "Furry streamer!", "Pawsome gameplay!", "Into the furryverse!", "Fluffy fun!", "Furry and fabulous!",
+        "Pawsitively gaming!", "Furry adventures live!", "Embrace the fluff!", "Furry community!", "Pawsome streams!",
+        "Gaming with fur!", "Fluffy streamer here!", "Into the world of furries!", "Pawsome times!", "Furry friends unite!",
+        "Streaming with my fursona!", "Furry gaming live!", "Fluffy and fantastic!", "Pawsome interactions!", "Furry love!",
+        "Gaming in the furryverse!", "Fluffy adventures await!", "Pawsome community here!", "Furry and friendly!", "Streaming with pride!",
+        "Furry fun and games!", "Pawsome moments live!", "Embracing my furry side!", "Furry and fantastic streams!", "Pawsitively the best community!"
+    ],
+    "#LGBTQ": [
+        "LGBTQ+ friendly!", "Pride stream!", "Inclusive community!", "Everyone welcome!", "Love is love!",
+        "Queer streamer!", "Celebrating pride!", "A safe space for all!", "Allies welcome here!", "Proud to be LGBTQ+!",
+        "LGBTQ+ gaming!", "Pride and gaming!", "Inclusivity in gaming!", "A welcoming stream for everyone!", "Love wins!",
+        "Queer community!", "Celebrating diversity!", "A place for everyone to be themselves!", "Support LGBTQ+ streamers!", "Proud and playing!",
+        "LGBTQ+ streamer here!", "Pride and positivity!", "Inclusivity matters!", "A safe and supportive community!", "Love and acceptance!",
+        "Queer gaming community!", "Celebrating our identities!", "A welcoming space for LGBTQ+ folks!", "Support queer creators!", "Proudly LGBTQ+ and gaming!"
+    ],
+    "#SmallStreamer": [
+        "Growing community!", "Small but mighty!", "Building my channel!", "Join our community!", "Support small streams!",
+        "New streamer on the rise!", "Every follow helps!", "Let's grow together!", "Building a positive space!", "Come be a part of something new!",
+        "Small streamer love!", "Appreciate every viewer!", "Building a family here!", "Your support means the world!", "Join the journey!",
+        "Small streamer trying to make it!", "Every view counts!", "Building a supportive community!", "Come hang out and grow with us!", "Your support is amazing!",
+        "Small streamer with big dreams!", "Appreciate the support!", "Building a fun and friendly community!", "Come be an early supporter!", "Your follows and views are appreciated!",
+        "Small streamer, big heart!", "Thank you for the support!", "Building a great community one step at a time!", "Come join the adventure!", "Your support fuels the dream!"
+    ],
+    "#SupportSmallStreamers": [
+        "Supporting creators!", "Community love!", "Indie streamer!", "Growing together!", "Support the little guys!",
+        "Love for small streamers!", "Helping each other grow!", "Small streamer support!", "Building a supportive network!", "Lift each other up!",
+        "Support indie creators!", "Community supporting community!", "Growing together as streamers!", "Love and support for small channels!", "Helping dreams come true!",
+        "Support the hard workers!", "Community strength!", "Indie streamer love and support!", "Growing together, stronger!", "Lift up the small creators!",
+        "Support the passionate streamers!", "Community spirit!", "Indie love and support!", "Growing together, one stream at a time!", "Lift up the rising stars!",
+        "Support the dedicated streamers!", "Community power!", "Indie pride and support!", "Growing together with every view!", "Lift up the future of streaming!"
+    ],
+    // Platform hashtags
+    "#TwitchDrops": [
+        "Drops enabled!", "Grab your loot!", "Twitch Drops are active!", "Don't miss the drops!", "Free in-game items!",
+        "Claim your rewards!", "Twitch Drops are live!", "Get your free stuff!", "Earn rewards by watching!", "Don't forget to claim!",
+        "Drops are happening now!", "Unlock exclusive items!", "Twitch Drops are here!", "Get rewarded for watching!", "Limited-time drops!",
+        "Claim your free loot now!", "Twitch Drops are enabled for this stream!", "Earn while you watch!", "Don't miss out on freebies!", "Get your Twitch rewards!",
+        "Drops are active, come get yours!", "Unlock exclusive content with Twitch Drops!", "Twitch is giving away free stuff!", "Make sure your accounts are linked for drops!", "Free loot just for watching!",
+        "Twitch Drops are enabled, so watch and earn!", "Don't forget to claim your earned drops!", "Get exclusive in-game items with Twitch Drops!", "Twitch rewards you for watching!", "Free loot is waiting for you!"
+    ],
+    "#LiveNow": [
+        "Streaming live!", "Come watch!", "Going live now!", "Join the stream!", "Live and in action!",
+        "Tune in now!", "Live gameplay!", "Streaming right now!", "Come hang out live!", "Starting the stream!",
+        "Live and ready to play!", "Click to watch live!", "The stream has begun!", "Join the live fun!", "Watch the action unfold live!",
+        "Live entertainment!", "Streaming for you now!", "Don't miss the live show!", "Jump into the live chat!", "Live and kicking!",
+        "The broadcast has started!", "Come see what's happening live!", "Your live entertainment is here!", "Live and interactive!", "Join the live party!",
+        "Live stream alert!", "Now streaming live!", "Get your live dose of gaming!", "Live and ready for viewers!", "Come be part of the live audience!",
+        "Live stream engaged!", "Streaming live for your enjoyment!", "Get your live fix now!", "Live and ready to entertain!", "Join the live experience!"
+    ],
+    "#Twitch": [
+        "Live on Twitch!", "Twitch stream!", "Streaming platform!", "Watch on Twitch!", "Twitch gaming!",
+        "Twitch community!", "Twitch and chill!", "Streaming on Twitch!", "Find me on Twitch!", "Twitch live!",
+        "Twitch streamer!", "Twitch content!", "Twitch is the place to be!", "Join the Twitch fun!", "Live now on Twitch!",
+        "Twitch streams!", "Twitch gaming community!", "Streaming live on Twitch!", "Come hang on Twitch!", "Twitch vibes!",
+        "Twitch is where it's at!", "Twitch and game!", "Streaming exclusively on Twitch!", "Catch me live on Twitch!", "Twitch is my home!",
+        "Twitch streamer life!", "Twitch content creator!", "Building a community on Twitch!", "See you on Twitch!", "Twitch powered!"
+    ],
+    "#TwitchAffiliate": [
+        "Affiliate stream!", "Supporting the channel!", "Sub points growing!", "Affiliate vibes!", "Support the affiliate!",
+        "Twitch Affiliate streamer!", "Helping my channel grow!", "Every sub counts!", "Affiliate love!", "Supporting the dream!",
+        "Affiliate gaming!", "Building my affiliate journey!", "Subscribing helps a lot!", "Affiliate community!", "Thank you for the support!",
+        "Twitch Affiliate live!", "Growing as an affiliate!", "Subscribing is appreciated!", "Affiliate pride!", "Supporting the grind!",
+        "Affiliate streamer here!", "On the path to partnership!", "Sub love!", "Affiliate and proud!", "Supporting the growth!",
+        "Twitch Affiliate and loving it!", "Building an awesome affiliate community!", "Subscribing makes a difference!", "Affiliate journey!", "Supporting the small streamer!"
+    ],
+    "#TwitchPartner": [
+        "Partner stream!", "Official partner!", "Partnered content!", "Quality stream!", "Twitch Partner!",
+        "Partnered streamer!", "High-quality content!", "Supporting a partner!", "Official Twitch Partner!", "Dedicated streamer!",
+        "Partner gaming!", "Top-tier content!", "Supporting your favorite partner!", "Official Twitch content!", "Professional streaming!",
+        "Twitch Partner live!", "Experienced streamer!", "Supporting the best!", "Official partner stream!", "High-quality entertainment!",
+        "Partner streamer here!", "Committed to quality!", "Supporting the pros!", "Official Twitch content creator!", "Top-notch streaming!",
+        "Twitch Partner and proud!", "Delivering quality content!", "Supporting the best on Twitch!", "Official partner community!", "The best of Twitch!"
+    ],
+    "#TwitchStreamer": [
+        "Streaming on Twitch!", "Twitch content!", "Twitch community!", "Platform creator!", "Content creator!",
+        "Gamer on Twitch!", "Building a community on Twitch!", "Sharing my passion on Twitch!", "Twitch streaming life!", "Live content on Twitch!",
+        "Twitch streamer here!", "Creating content for you on Twitch!", "Building a positive community!", "Sharing the love of gaming on Twitch!", "Live entertainment on Twitch!",
+        "Twitch streamer for life!", "Dedicated to creating content on Twitch!", "Building a fun community!", "Bringing you the best on Twitch!", "Live and creating on Twitch!",
+        "Twitch streamer and proud!", "Passionate about content creation on Twitch!", "Building a supportive community!", "Sharing the joy of gaming with you on Twitch!", "Live and engaging on Twitch!",
+        "Twitch streamer journey!", "Committed to my Twitch community!", "Building something special on Twitch!", "Bringing my world to you on Twitch!", "Live and loving Twitch!"
+    ],
+    // 18+ hashtags
+    "#18Plus": [
+        "Adults only stream!", "18+ content!", "Mature viewers only!", "Not for minors!", "Adult stream!",
+        "18 and over only!", "Mature content stream!", "Strictly for adults!", "No underage viewers!", "Adult entertainment!",
+        "18+ gaming!", "Mature themes only!", "Adult audience only!", "Not suitable for children!", "Adult fun!",
+        "18+ community!", "Mature content ahead!", "Adults only please!", "Viewer discretion advised!", "Adult discussions!",
+        "18+ vibes!", "Mature gaming!", "Adults are welcome!", "Content for adults!", "Adulting in the stream!",
+        "18+ and proud!", "Mature content creators!", "Adults only zone!", "Not for the faint of heart (or under 18)!", "Adults unite!"
+    ],
+    "#AdultContent": [
+        "Adult themes ahead!", "Mature content warning!", "Adult discussions!", "Explicit content!", "NSFW stream!",
+        "Mature topics discussed!", "Adult language used!", "Content for grown-ups!", "Not family-friendly!", "Adult entertainment zone!",
+        "Adult content gaming!", "Mature themes explored!", "Adult audience stream!", "Explicit language!", "Adult fun and games!",
+        "Adult content community!", "Mature content discussed here!", "Adults only welcome for this!", "Viewer discretion is strongly advised!", "Explicit discussions!",
+        "Adult content vibes!", "Mature gaming content!", "Adults only content!", "Explicit themes!", "Adulting in explicit detail!",
+        "Adult content creators!", "Mature content and proud!", "Explicit content zone!", "Not for sensitive viewers!", "Adult content galore!"
+    ],
+    "#MatureStream": [
+        "Mature stream today!", "Adult themes discussed!", "Mature audience required!", "Not kid-friendly!", "Adult-oriented stream!",
+        "Stream for mature viewers!", "Adult topics and gameplay!", "Mature content throughout!", "Not for the young ones!", "Adult entertainment today!",
+        "Mature gaming stream!", "Adult themes explored here!", "Mature audience only for this!", "Not suitable for a younger audience!", "Adult fun streaming!",
+        "Mature stream community!", "Adult themes will be present!", "Mature viewers only please!", "Viewer discretion advised for this stream!", "Adult discussions and gameplay!",
+        "Mature stream vibes!", "Adult gaming content today!", "Mature audience welcome!", "Content geared towards adults!", "Adulting on stream today!",
+        "Mature content creators streaming!", "Adult themes and proud!", "Mature audience zone!", "Not intended for children!", "Mature and engaging stream!"
+    ],
+    "#NSFW": [
+        "NSFW content!", "Not safe for work!", "Adult content warning!", "Explicit stream!", "Uncensored stream!",
+        "Adults only - proceed with caution!", "Mature content - you've been warned!", "Explicit language and themes!", "Not for sensitive viewers!", "NSFW gaming!",
+        "Adult content ahead - you've been warned!", "Mature themes - enter at your own risk!", "Explicit content and discussions!", "Not safe for the easily offended!", "NSFW fun!",
+        "Adults only - this ain't your grandma's stream!", "Mature content - buckle up!", "Explicit language and gameplay!", "Not for the faint of heart!", "NSFW community!",
+        "Adult content - you've been warned, seriously!", "Mature themes - don't say I didn't tell you!", "Explicit content - get ready!", "Not safe for the workplace!", "NSFW vibes!",
+        "Adults only - enter if you dare!", "Mature content - prepare yourself!", "Explicit language and content - you know the drill!", "Not safe for innocent eyes!", "NSFW and proud!"
+    ],
+    "#AdultsOnly": [
+        "Adults only please!", "18+ viewers only!", "Mature audience required!", "No minors allowed!", "Strictly for adults!",
+        "Adults only beyond this point!", "18 and over only for this stream!", "Mature audience only - you've been warned!", "No one under 18 permitted!", "Adults only entertainment!",
+        "Adults only gaming!", "18+ audience only!", "Mature viewers required for this!", "No kiddies allowed!", "Adults only fun!",
+        "Adults only community!", "18+ viewers are welcome!", "Mature audience only please!", "This stream is for adults only!", "Adults only discussions!",
+        "Adults only vibes!", "18+ gaming only!", "Mature audience - thank you!", "This content is for adults!", "Adults only hanging out!",
+        "Adults only streamers!", "18+ and proud!", "Mature audience zone only!", "If you're under 18, please leave!", "Adults only - you're the best!"
+    ],
+    "#MatureAudience": [
+        "For mature viewers!", "Adult audience stream!", "Mature themes discussed!", "Explicit content warning!", "Stream for adults!",
+        "Intended for mature audiences!", "Adult themes and discussions here!", "Mature content throughout the stream!", "This stream is for adults!", "Adult audience entertainment!",
+        "Mature audience gaming!", "Adult themes explored in this stream!", "Mature audience only - thank you!", "This content is geared towards adults!", "Adult audience fun!",
+        "Mature audience community!", "Mature themes will be discussed!", "Adult audience only please - you've been warned!", "This stream is intended for mature viewers!", "Adult audience discussions and gameplay!",
+        "Mature audience vibes!", "Adult audience gaming content!", "Mature audience welcome here!", "Content specifically for adults!", "Adult audience hanging out!",
+        "Mature audience creators streaming!", "Intended for adults and proud!", "Mature audience zone only!", "This stream is not for children!", "Adult audience - thanks for being here!"
+    ]
+};
+
+    // implement the randomiser function
+    let selectedRandomEmoji = ''; // Stores the emoji chosen by the randomizer
+
+document.getElementById('randomizeBtn').addEventListener('click', function () {
+  const themeSelect = document.getElementById('theme');
+  const emojiSelector = document.getElementById('emojiSelector');
+
+  // Get all available themes
+  const themes = Array.from(themeSelect.options)
+    .map(opt => opt.value)
+    .filter(val => val);
+  const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+  themeSelect.value = randomTheme;
+
+  // Get all available emoji styles, excluding 'none'
+  const emojiOptions = Array.from(emojiSelector.options)
+    .map(opt => opt.value)
+    .filter(val => val !== 'none');
+  const randomEmojiStyle = emojiOptions[Math.floor(Math.random() * emojiOptions.length)];
+  emojiSelector.value = randomEmojiStyle;
+
+  // Trigger change event to update any dependent UI elements
+  const changeEvent = new Event('change');
+  emojiSelector.dispatchEvent(changeEvent);
+
+  // Select a random emoji based on the chosen style
+  if (randomEmojiStyle === 'theme') {
+    const emojis = emojiSets.theme[randomTheme] || [];
+    selectedRandomEmoji = emojis[Math.floor(Math.random() * emojis.length)] || '';
+  } else {
+    const emojis = emojiSets[randomEmojiStyle] || [];
+    selectedRandomEmoji = emojis[Math.floor(Math.random() * emojis.length)] || '';
+  }
+});
+
+document.getElementById('kofiBtn').addEventListener('click', function() {
+    window.open('https://ko-fi.com/rearsilver', '_blank');
+});
+
 
     document.getElementById('twitchBtn').addEventListener('click', function() {
         window.open('https://www.twitch.tv/RearSilver', '_blank');
@@ -514,14 +1588,68 @@ const predefinedGamesSupport = [
         window.open('https://discord.gg/RRbQ93Ceew', '_blank');
     });
 
+    // Google Form logging function
+function logToGoogleForm(game, tags) {
+    const optOut = document.querySelector("#optOutCheckbox");
+    if (optOut && optOut.checked) return;
+
+    const formURL = 'https://docs.google.com/forms/d/e/1FAIpQLSf0XdOjqD2oPmtI9uELfaEHcrnJKN_Jv2UjYaTSHfLDdQcPdQ/formResponse';
+
+    const formData = new FormData();
+    formData.append('entry.1228937960', game || '');        // Game title
+    formData.append('entry.1095075717', tags.join(', '));   // Tags
+    formData.append('entry.276544572', '1');                // Session marker
+
+
+    fetch(formURL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: formData
+    })
+    .then(response => {
+        // Optionally, handle a successful response
+        console.log('Form submitted successfully');
+    })
+    .catch(error => {
+        // Handle any errors that occur during the fetch request
+        console.error('Error submitting the form', error);
+    });
+}
+
     document.getElementById('generateBtn').addEventListener('click', function () {
         const gameTitle = document.getElementById('gameTitle').value.trim();
         const theme = document.getElementById('theme').value;
         const emojiPack = document.getElementById('emojiPack').checked;
         const customInput = document.getElementById('customHashtags').value.trim();
+        
+
+            // Add this line to get the mature content checkbox state
+    const matureContent = document.getElementById('matureContent').checked;
 
         const gameSupportArray = getGameSupport(gameTitle);
-        const emoji = emojiPack ? getEmojiForTheme(theme) : '';
+
+               // Add this line to create the mature indicator
+       const matureIndicator = matureContent ? '🔞 ' : '';
+// Create a bridge function to get emojis from either system
+function getEmoji(theme) {
+    // Check if the new emoji selector exists and is visible
+    const emojiSelector = document.getElementById('emojiSelector');
+    if (emojiSelector) {
+        // Use the new emoji system if it's available
+        if (typeof window.getSelectedEmojis === 'function') {
+            return window.getSelectedEmojis(theme);
+        }
+    }
+    
+
+       
+    // Fall back to the old system
+    const emojiPack = document.getElementById('emojiPack').checked;
+    return emojiPack ? getEmojiForTheme(theme) : '';
+}
+
+// Use the bridge function to get emojis
+const emoji = getEmoji(theme);
 
         // Combine checked hashtags + custom ones
         const checkedTags = [...document.querySelectorAll('.hashtag-options input[type="checkbox"]:checked')]
@@ -535,8 +1663,8 @@ const predefinedGamesSupport = [
         const goLiveStarter = goLiveStarters[theme] ? goLiveStarters[theme][Math.floor(Math.random() * goLiveStarters[theme].length)] : 'Going live with';
         const generalSupport = generalSupportMessages[Math.floor(Math.random() * generalSupportMessages.length)];
 
-        let title = `${titleStarter} ${gameTitle}`;
-        let goLiveMessage = `🚨 ${goLiveStarter} ${gameTitle}!`;
+        let title = `${titleStarter} ${gameTitle} ${matureIndicator}`;
+        let goLiveMessage = `🚨 ${goLiveStarter} ${gameTitle}! ${matureIndicator}`;
         let supportMessage = generalSupport; // Start with a general message
 
         for (const tag of checkedTags) {
@@ -549,11 +1677,10 @@ const predefinedGamesSupport = [
         }
         if (hashtags) {
             title += ` ${hashtags}`;
-            goLiveMessage += ` ${hashtags}`;
         }
-
         title += ` ${emoji}`;
         goLiveMessage += ` ${emoji}`;
+        
 
         document.getElementById('generatedTitle').textContent = title.trim();
         document.getElementById('goLiveMessage').textContent = goLiveMessage.trim();
@@ -572,8 +1699,66 @@ const predefinedGamesSupport = [
             document.getElementById('charWarning').textContent = '';
         }
 
-        this.textContent = 'Regenerate Title/Go Live Notification';
-    });
+        saveToHistory(title.trim(), goLiveMessage.trim());
+
+
+
+    // Add this new code for the character counter
+    const charCount = title.length;
+    const limit = 140;
+    
+    // Create or update the character counter element
+    let counterElement = document.getElementById('charCounter');
+    if (!counterElement) {
+        counterElement = document.createElement('div');
+        counterElement.id = 'charCounter';
+        // Insert before the copy button
+        document.getElementById('previewArea').insertBefore(
+            counterElement, 
+            document.getElementById('copyBtn')
+        );
+    }
+
+        // Call the log function to send the data to Google Form
+        logToGoogleForm(gameTitle, allTags);
+    
+    counterElement.textContent = `Character count: ${charCount}/${limit}`;
+    counterElement.style.color = charCount > 140 ? 'red' : (charCount > 120 ? 'orange' : 'green');
+    counterElement.style.fontWeight = 'bold';
+    counterElement.style.marginTop = '10px';
+    counterElement.style.marginBottom = '10px';
+
+    // Add this new code for the Go Live message character counter
+    const goLiveCharCount = goLiveMessage.length;
+    const goLiveLimit = 140; // Twitter/X character limit (adjust if needed)
+    
+    // Create or update the Go Live character counter element
+    let goLiveCounterElement = document.getElementById('goLiveCharCounter');
+if (!goLiveCounterElement) {
+    goLiveCounterElement = document.createElement('div');
+    goLiveCounterElement.id = 'goLiveCharCounter';
+    // Insert before the copy button in the Go Live section
+    document.getElementById('goLiveMessageSection').insertBefore(
+        goLiveCounterElement, 
+        document.getElementById('copyGoLiveBtn')
+    );
+}
+    
+goLiveCounterElement.innerHTML = `
+    <div>Character count: ${goLiveCharCount}/${goLiveLimit} 
+    ${goLiveCharCount > goLiveLimit ? '⚠️ Exceeds limit for Twitch!' : ''}</div>
+    <div style="font-size: 0.8em; color: var(--note-color); margin-top: 3px;">
+        Note: Hashtags are included in your stream title but omitted from the Go Live message to keep it under character limits.<br>When sharing to social media, your channel URL will be added automatically.
+        Keep your message shorter to accommodate this.
+    </div>
+`;
+goLiveCounterElement.style.color = goLiveCharCount > goLiveLimit ? 'red' : (goLiveCharCount > 120 ? 'orange' : 'green');
+goLiveCounterElement.style.fontWeight = 'bold';
+goLiveCounterElement.style.marginTop = '10px';
+goLiveCounterElement.style.marginBottom = '10px';
+
+    this.textContent = 'Regenerate Title/Go Live Notification';
+});
 
     // Add functionality to copy the go live message
     document.getElementById('copyGoLiveBtn').addEventListener('click', function () {
@@ -582,6 +1767,81 @@ const predefinedGamesSupport = [
             alert('Go Live Message copied to clipboard!');
         });
     });
+
+    // Add these event listeners for the new share buttons
+document.getElementById('shareFacebook').addEventListener('click', function () {
+    const shareChoice = document.getElementById('shareContent').value;
+    const title = document.getElementById('generatedTitle').textContent;
+    const goLiveMessage = document.getElementById('goLiveMessage').textContent;
+    const channel = document.getElementById('twitchChannel').value.trim();
+    let shareText = "";
+
+    if (shareChoice === 'title') {
+        shareText = `${title} Live now at twitch.tv/${channel}`;
+    } else if (shareChoice === 'golive') {
+        shareText = `${goLiveMessage} Watch live at twitch.tv/${channel}`;
+    }
+
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://twitch.tv/${channel}`)}&quote=${encodeURIComponent(shareText)}`;
+    window.open(facebookUrl, '_blank');
+});
+
+document.getElementById('shareThreads').addEventListener('click', function () {
+    const shareChoice = document.getElementById('shareContent').value;
+    const title = document.getElementById('generatedTitle').textContent;
+    const goLiveMessage = document.getElementById('goLiveMessage').textContent;
+    const channel = document.getElementById('twitchChannel').value.trim();
+    let threadsMessage = "";
+
+    if (shareChoice === 'title') {
+        threadsMessage = `${title} Live now at twitch.tv/${channel} #Twitch #LiveNow`;
+    } else if (shareChoice === 'golive') {
+        threadsMessage = `${goLiveMessage} Watch live at twitch.tv/${channel} #Twitch #LiveNow`;
+    }
+
+    // Since Threads doesn't have a direct share API, copy to clipboard for manual sharing
+    navigator.clipboard.writeText(threadsMessage).then(() => {
+        alert('Message copied to clipboard! Paste it into Threads app manually.');
+    });
+});
+
+document.getElementById('shareBluesky').addEventListener('click', function () {
+    const shareChoice = document.getElementById('shareContent').value;
+    const title = document.getElementById('generatedTitle').textContent;
+    const goLiveMessage = document.getElementById('goLiveMessage').textContent;
+    const channel = document.getElementById('twitchChannel').value.trim();
+    let blueskyText = "";
+
+    if (shareChoice === 'title') {
+        blueskyText = `${title} Live now at twitch.tv/${channel}`;
+    } else if (shareChoice === 'golive') {
+        blueskyText = `${goLiveMessage} Watch live at twitch.tv/${channel}`;
+    }
+
+    // Bluesky doesn't have a direct web intent API yet, so we'll copy to clipboard
+    navigator.clipboard.writeText(blueskyText).then(() => {
+        alert('Message copied to clipboard! Paste it into Bluesky app manually.');
+    });
+});
+
+document.getElementById('shareInstagram').addEventListener('click', function () {
+    const shareChoice = document.getElementById('shareContent').value;
+    const title = document.getElementById('generatedTitle').textContent;
+    const goLiveMessage = document.getElementById('goLiveMessage').textContent;
+    const channel = document.getElementById('twitchChannel').value.trim();
+    let instagramText = "";
+
+    if (shareChoice === 'title') {
+        instagramText = `${title} Live now at twitch.tv/${channel} #Twitch #LiveNow`;
+    } else if (shareChoice === 'golive') {
+        instagramText = `${goLiveMessage} Watch live at twitch.tv/${channel} #Twitch #LiveNow`;
+    }
+
+    // Instagram doesn't have a direct web share API, so copy to clipboard
+    navigator.clipboard.writeText(instagramText).then(() => {
+        alert('Message copied to clipboard! Paste it into Instagram app manually.');
+    });
+});
 
     document.getElementById('shareTwitter').addEventListener('click', function () {
     const shareChoice = document.getElementById('shareContent').value;
@@ -654,6 +1914,1041 @@ document.getElementById('shareDiscord').addEventListener('click', function () {
         link.download = 'generated_title.txt';
         link.click();
     });
+
+    // Add this after your existing JavaScript
+
+// Save preferences to localStorage
+function savePreferences() {
+    const gameTitle = document.getElementById('gameTitle').value;
+    const theme = document.getElementById('theme').value;
+    const emojiPack = document.getElementById('emojiPack').checked;
+    const channel = document.getElementById('twitchChannel').value;
+    
+    // Get checked hashtags
+    const checkedTags = [...document.querySelectorAll('.hashtag-options input[type="checkbox"]:checked')]
+        .map(tag => tag.value);
+    
+    const customTags = document.getElementById('customHashtags').value;
+    
+        // Add this line to get mature content setting
+        const matureContent = document.getElementById('matureContent').checked;
+
+    // Save to localStorage
+    localStorage.setItem('streamTitleGenerator', JSON.stringify({
+        gameTitle,
+        theme,
+        emojiPack,
+        channel,
+        checkedTags,
+        customTags,
+        matureContent,
+        lastSaved: new Date().toISOString()
+    }));
+}
+
+// Load preferences from localStorage
+function loadPreferences() {
+    const saved = localStorage.getItem('streamTitleGenerator');
+    if (!saved) return;
+    
+    const prefs = JSON.parse(saved);
+    
+    // Restore values
+    document.getElementById('gameTitle').value = prefs.gameTitle || '';
+    document.getElementById('theme').value = prefs.theme || 'witty';
+    document.getElementById('emojiPack').checked = prefs.emojiPack || false;
+    document.getElementById('twitchChannel').value = prefs.channel || '';
+    document.getElementById('customHashtags').value = prefs.customTags || '';
+
+            // Load mature content setting
+            if ('matureContent' in prefs) {
+        document.getElementById('matureContent').checked = prefs.matureContent;
+    }
+    
+    // Restore hashtags
+    if (prefs.checkedTags && prefs.checkedTags.length) {
+        document.querySelectorAll('.hashtag-options input[type="checkbox"]').forEach(checkbox => {
+            checkbox.checked = prefs.checkedTags.includes(checkbox.value);
+        });
+    }
+
+
+}
+
+
+// Add event listeners to save preferences
+document.getElementById('gameTitle').addEventListener('change', savePreferences);
+document.getElementById('theme').addEventListener('change', savePreferences);
+document.getElementById('emojiPack').addEventListener('change', savePreferences);
+document.getElementById('twitchChannel').addEventListener('change', savePreferences);
+document.getElementById('customHashtags').addEventListener('change', savePreferences);
+document.getElementById('matureContent').addEventListener('change', savePreferences);
+document.querySelectorAll('.hashtag-options input[type="checkbox"]').forEach(checkbox => {
+    checkbox.addEventListener('change', savePreferences);
+});
+
+// Load preferences when page loads
+document.addEventListener('DOMContentLoaded', loadPreferences);
+initThemeToggle();
+// Add this function to display the history
+displayHistory();
+// add this function for the preview card generator
+initPreviewCardGenerator();
+// Add this function for the hashtag tabs
+initHashtagTabs();
+// Add this function for the URL param sharing
+initUrlParamSharing();
+// Add this function for the emoji picker
+initEmojiPicker(); // ✅ now waits until DOM is ready
+
+
+
+
+// Function to save a title to history
+function saveToHistory(title, goLiveMessage) {
+    // Get existing history or create empty array if none exists
+    let history = JSON.parse(localStorage.getItem('titleHistory') || '[]');
+    
+    // Create a new history entry
+    const newEntry = {
+        title: title,
+        goLiveMessage: goLiveMessage,
+        timestamp: new Date().toISOString(),
+        game: document.getElementById('gameTitle').value,
+        matureContent: document.getElementById('matureContent').checked
+
+    };
+    
+    // Add new entry to the beginning (most recent first)
+    history.unshift(newEntry);
+    
+    // Keep only the 10 most recent entries to avoid filling localStorage
+    if (history.length > 10) {
+        history = history.slice(0, 10);
+    }
+    
+    // Save back to localStorage
+    localStorage.setItem('titleHistory', JSON.stringify(history));
+    
+    // Update the history display
+    displayHistory();
+}
+
+// Function to display history
+function displayHistory() {
+    // Get history from localStorage
+    const history = JSON.parse(localStorage.getItem('titleHistory') || '[]');
+    
+    // If no history, don't show anything
+    if (history.length === 0) {
+        // Remove history section if it exists but there's no history
+        const existingSection = document.getElementById('historySection');
+        if (existingSection) {
+            existingSection.remove();
+        }
+        return;
+    }
+    
+    // Check if history section already exists
+    let historySection = document.getElementById('historySection');
+    
+    // If it doesn't exist, create it
+    if (!historySection) {
+        historySection = document.createElement('div');
+        historySection.id = 'historySection';
+        historySection.className = 'container';
+        historySection.style.marginTop = '20px';
+        
+        // Add heading and container for history items
+        historySection.innerHTML = `
+            <h2>Title History</h2>
+            <div id="historyItems"></div>
+            <button id="clearHistoryBtn">Clear History</button>
+        `;
+        
+        // Add it to the page after the preview card section
+        document.getElementById('previewCardSection').after(historySection);
+        
+        // Add event listener for clear button
+        document.getElementById('clearHistoryBtn').addEventListener('click', function() {
+            localStorage.removeItem('titleHistory');
+            historySection.remove();
+        });
+    }
+    
+    // Get the container for history items
+    const historyItems = document.getElementById('historyItems');
+    historyItems.innerHTML = ''; // Clear existing items
+    
+    // Add each history entry
+    history.forEach((entry, index) => {
+        // Create a div for this history entry
+        const entryDiv = document.createElement('div');
+        entryDiv.className = 'history-entry';
+        entryDiv.style.padding = '10px';
+        entryDiv.style.margin = '10px 0';
+        entryDiv.style.backgroundColor = '#f9f9f9';
+        entryDiv.style.borderRadius = '5px';
+        entryDiv.style.border = '1px solid #ddd';
+        
+        // Format the date
+        const date = new Date(entry.timestamp);
+        const formattedDate = date.toLocaleString();
+        
+        // Add content to the entry
+        entryDiv.innerHTML = `
+            <div><strong>Game:</strong> ${entry.game || 'Not specified'}</div>
+            <div><strong>Title:</strong> ${entry.title}</div>
+            <div><strong>Go Live Message:</strong> ${entry.goLiveMessage}</div>
+            <div style="font-size: 0.8em; color: var(--note-color); margin-top: 5px;">${formattedDate}</div>
+            <button class="useHistoryBtn" data-index="${index}">Use This Title</button>
+        `;
+        
+        // Add to the history items container
+        historyItems.appendChild(entryDiv);
+    });
+    
+    // Add event listeners for "Use This Title" buttons
+    document.querySelectorAll('.useHistoryBtn').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            const entry = history[index];
+            
+            // Set the title and go live message
+            document.getElementById('generatedTitle').textContent = entry.title;
+            document.getElementById('goLiveMessage').textContent = entry.goLiveMessage;
+            
+            // Update character counters if they exist
+            updateCharacterCounters(entry.title, entry.goLiveMessage);
+            
+            // Scroll to the title section
+            document.getElementById('previewArea').scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+}
+
+// Helper function to update character counters
+function updateCharacterCounters(title, goLiveMessage) {
+    // Update title character counter
+    const titleCharCount = title.length;
+    const titleLimit = 140;
+    
+    let titleCounter = document.getElementById('charCounter');
+    if (titleCounter) {
+        titleCounter.textContent = `Character count: ${titleCharCount}/${titleLimit}`;
+        titleCounter.style.color = titleCharCount > titleLimit ? 'red' : (titleCharCount > 120 ? 'orange' : 'green');
+    }
+    
+    // Update go live message character counter
+    const goLiveCharCount = goLiveMessage.length;
+    const goLiveLimit = 140;
+    
+    let goLiveCounter = document.getElementById('goLiveCharCounter');
+    if (goLiveCounter) {
+        goLiveCounter.innerHTML = `
+            <div>Character count: ${goLiveCharCount}/${goLiveLimit} 
+            ${goLiveCharCount > goLiveLimit ? '⚠️ Exceeds limit!' : ''}</div>
+            <div style="font-size: 0.8em; color: var(--note-color); margin-top: 3px;">
+                Note: When sharing to social media, your channel URL will be added automatically.
+                Keep your message shorter to accommodate this.
+            </div>
+        `;
+        goLiveCounter.style.color = goLiveCharCount > goLiveLimit ? 'red' : (goLiveCharCount > 120 ? 'orange' : 'green');
+    }
+}
+
+// Theme toggle functionality
+function initThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    
+    // Check for saved theme preference or use default
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeToggle.textContent = '☀️ Light Mode';
+    }
+    
+    // Toggle theme when button is clicked
+    themeToggle.addEventListener('click', function() {
+        if (document.body.classList.contains('dark-mode')) {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('theme', 'light');
+            themeToggle.textContent = '🌙 Dark Mode';
+        } else {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('theme', 'dark');
+            themeToggle.textContent = '☀️ Light Mode';
+        }
+    });
+}
+
+// Preview Card Generator
+function initPreviewCardGenerator() {
+    const generateCardBtn = document.getElementById('generateCardBtn');
+    const downloadCardBtn = document.getElementById('downloadCardBtn');
+    const canvas = document.getElementById('previewCard');
+    const ctx = canvas.getContext('2d');
+    
+    // Disable download button initially
+    downloadCardBtn.disabled = true;
+    
+    generateCardBtn.addEventListener('click', function() {
+    const title = document.getElementById('generatedTitle').textContent;
+    const gameTitle = document.getElementById('gameTitle').value;
+    const template = document.getElementById('cardTemplate').value;
+    
+    // Get the channel name from the share section
+    const channelName = document.getElementById('twitchChannel').value.trim();
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Generate card based on selected template
+    switch(template) {
+        case 'twitch':
+            generateTwitchCard(ctx, gameTitle, title, channelName);
+            break;
+        case 'minimal':
+            generateMinimalCard(ctx, gameTitle, title, channelName);
+            break;
+        case 'gaming':
+            generateGamingCard(ctx, gameTitle, title, channelName);
+            break;
+        default:
+            generateTwitchCard(ctx, gameTitle, title, channelName);
+    }
+    
+    // Enable download button
+    downloadCardBtn.disabled = false;
+});
+
+    
+    downloadCardBtn.addEventListener('click', function() {
+        if (this.disabled) return;
+        
+        const link = document.createElement('a');
+        link.download = 'stream-preview.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
+}
+
+// Twitch style card - update the function
+function generateTwitchCard(ctx, gameTitle, title, channelName) {
+    const canvas = ctx.canvas;
+    const width = canvas.width;
+    const height = canvas.height;
+    
+    // Background gradient (Twitch purple)
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, '#6441a5');  // Twitch purple
+    gradient.addColorStop(1, '#392e5c');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+    
+    // Check if mature content is enabled
+    const matureContent = document.getElementById('matureContent').checked;
+    
+    // Add "LIVE" badge
+    ctx.fillStyle = '#e91916';  // Red
+    ctx.beginPath();
+    ctx.roundRect(20, 20, 80, 40, 5);
+    ctx.fill();
+    
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('LIVE', 60, 47);
+    
+    // Add mature content banner if enabled
+    if (matureContent) {
+        // Add a semi-transparent black banner across the top
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(0, 70, width, 30);
+        
+        // Add text
+        ctx.fillStyle = '#ff4040'; // Bright red for warning
+        ctx.font = 'bold 18px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('🔞 MATURE/ADULT CONTENT', width / 2, 90);
+    }
+    
+    // Game title - adjust position if mature banner is present
+    const gameTitleY = matureContent ? 130 : 100;
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 28px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillText(gameTitle || 'Awesome Stream', 20, gameTitleY);
+    
+    // Stream title - adjust starting position if mature banner is present
+    const titleStartY = matureContent ? 180 : 150;
+    ctx.font = '20px Arial';
+    const maxWidth = width - 40;
+    const lineHeight = 30;
+    const maxY = height - 60; // Reserve space for footer
+    
+    // Use the modified wrapText function that respects max height
+    wrapTextWithMaxHeight(ctx, title, 20, titleStartY, maxWidth, lineHeight, maxY);
+    
+    // Add channel at bottom
+    ctx.font = 'bold 18px Arial';
+    ctx.textAlign = 'center';
+    if (channelName) {
+        ctx.fillText(`Join now at twitch.tv/${channelName}`, width / 2, height - 30);
+    } else {
+        ctx.fillText('Join now on Twitch!', width / 2, height - 30);
+    }
+}
+
+
+// Minimal style card - update similarly
+function generateMinimalCard(ctx, gameTitle, title, channelName) {
+    const canvas = ctx.canvas;
+    const width = canvas.width;
+    const height = canvas.height;
+    
+    // Clean white background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, width, height);
+    
+    // Add a subtle border
+    ctx.strokeStyle = '#ddd';
+    ctx.lineWidth = 5;
+    ctx.strokeRect(0, 0, width, height);
+    
+    // Check if mature content is enabled
+    const matureContent = document.getElementById('matureContent').checked;
+    
+    // Add mature content banner if enabled
+    if (matureContent) {
+        // Add a red banner across the top
+        ctx.fillStyle = '#ff4040'; // Bright red for warning
+        ctx.fillRect(0, 0, width, 40);
+        
+        // Add text
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 20px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('🔞 MATURE/ADULT CONTENT', width / 2, 25);
+    }
+    
+    // Game title - adjust position if mature banner is present
+    const gameTitleY = matureContent ? 80 : 60;
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 32px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(gameTitle || 'Awesome Stream', width / 2, gameTitleY);
+    
+    // Divider line - adjust position if mature banner is present
+    const dividerY = matureContent ? 100 : 80;
+    ctx.strokeStyle = '#ddd';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(100, dividerY);
+    ctx.lineTo(width - 100, dividerY);
+    ctx.stroke();
+    
+    // Stream title - adjust position if mature banner is present
+    const titleStartY = matureContent ? 150 : 130;
+    ctx.font = '22px Arial';
+    ctx.textAlign = 'center';
+    const maxWidth = width - 100;
+    const lineHeight = 35;
+    const maxY = height - 60; // Reserve space for footer
+    
+    // Use the modified wrapTextCentered function that respects max height
+    wrapTextCenteredWithMaxHeight(ctx, title, width / 2, titleStartY, maxWidth, lineHeight, maxY);
+    
+    // Footer
+    ctx.fillStyle = '#333';
+    ctx.font = 'italic 18px Arial';
+    if (channelName) {
+        ctx.fillText(`Live Now • twitch.tv/${channelName}`, width / 2, height - 30);
+    } else {
+        ctx.fillText('Live Now', width / 2, height - 30);
+    }
+}
+
+
+// Gaming style card - update similarly
+function generateGamingCard(ctx, gameTitle, title, channelName) {
+    const canvas = ctx.canvas;
+    const width = canvas.width;
+    const height = canvas.height;
+    
+    // Dark gaming background
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(0, 0, width, height);
+    
+    // Add some "gaming" elements - hexagon pattern
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1;
+    const hexSize = 30;
+    for (let x = 0; x < width; x += hexSize * 1.5) {
+        for (let y = 0; y < height; y += hexSize * 1.7) {
+            drawHexagon(ctx, x, y, hexSize);
+        }
+    }
+    
+    // Check if mature content is enabled
+    const matureContent = document.getElementById('matureContent').checked;
+    
+    // Add mature content banner if enabled
+    if (matureContent) {
+        // Add a dark banner with warning pattern
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, width, 40);
+        
+        // Add diagonal warning stripes
+        ctx.fillStyle = '#ff4040';
+        for (let x = -height; x < width + height; x += 20) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x + 40, 40);
+            ctx.lineTo(x + 30, 40);
+            ctx.lineTo(x - 10, 0);
+            ctx.fill();
+        }
+        
+        // Add text
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 20px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('🔞 MATURE/ADULT CONTENT', width / 2, 25);
+    }
+    
+    // Add a highlight bar - adjust position if mature banner is present
+    const barY = matureContent ? 50 : 20;
+    const barGradient = ctx.createLinearGradient(0, 0, width, 0);
+    barGradient.addColorStop(0, '#ff4500');  // Orange-red
+    barGradient.addColorStop(1, '#ff8c00');  // Dark orange
+    ctx.fillStyle = barGradient;
+    ctx.fillRect(0, barY, width, 60);
+    
+    // Game title - adjust position if mature banner is present
+    const gameTitleY = matureContent ? 90 : 60;
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 28px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(gameTitle || 'Awesome Stream', width / 2, gameTitleY);
+    
+    // Stream title - adjust position if mature banner is present
+    const titleStartY = matureContent ? 180 : 150;
+    ctx.font = '20px Arial';
+    const maxWidth = width - 60;
+    const lineHeight = 30;
+    const maxY = height - 60; // Reserve space for footer
+    
+    // Use the modified wrapTextCentered function that respects max height
+    wrapTextCenteredWithMaxHeight(ctx, title, width / 2, titleStartY, maxWidth, lineHeight, maxY);
+    
+    // Footer with "gamer" style
+    ctx.fillStyle = '#ff4500';
+    ctx.font = 'bold 22px Arial';
+    if (channelName) {
+        ctx.fillText(`LIVE NOW • twitch.tv/${channelName}`, width / 2, height - 30);
+    } else {
+        ctx.fillText('LIVE NOW • JOIN THE ACTION', width / 2, height - 30);
+    }
+}
+
+
+// Helper function to wrap text
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    
+    for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        const testWidth = metrics.width;
+        
+        if (testWidth > maxWidth && n > 0) {
+            ctx.fillText(line, x, y);
+            line = words[n] + ' ';
+            y += lineHeight;
+        } else {
+            line = testLine;
+        }
+    }
+    
+    ctx.fillText(line, x, y);
+    return y;
+}
+
+// Helper function to wrap centered text
+function wrapTextCentered(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    
+    for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        const testWidth = metrics.width;
+        
+        if (testWidth > maxWidth && n > 0) {
+            ctx.fillText(line, x, y);
+            line = words[n] + ' ';
+            y += lineHeight;
+        } else {
+            line = testLine;
+        }
+    }
+    
+    ctx.fillText(line, x, y);
+    return y;
+}
+
+// Helper function to draw a hexagon
+function drawHexagon(ctx, x, y, size) {
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+        const angle = 2 * Math.PI / 6 * i;
+        const xPos = x + size * Math.cos(angle);
+        const yPos = y + size * Math.sin(angle);
+        
+        if (i === 0) {
+            ctx.moveTo(xPos, yPos);
+        } else {
+            ctx.lineTo(xPos, yPos);
+        }
+    }
+    ctx.closePath();
+    ctx.stroke();
+}
+
+// Helper function to wrap text with maximum height
+function wrapTextWithMaxHeight(ctx, text, x, y, maxWidth, lineHeight, maxY) {
+    const words = text.split(' ');
+    let line = '';
+    let currentY = y;
+    
+    for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        const testWidth = metrics.width;
+        
+        if (testWidth > maxWidth && n > 0) {
+            ctx.fillText(line, x, currentY);
+            line = words[n] + ' ';
+            currentY += lineHeight;
+            
+            // Check if we've reached the maximum height
+            if (currentY + lineHeight > maxY) {
+                // Add ellipsis to indicate truncated text
+                ctx.fillText(line + '...', x, currentY);
+                return currentY;
+            }
+        } else {
+            line = testLine;
+        }
+    }
+    
+    // Draw the last line if we haven't exceeded maxY
+    if (currentY <= maxY) {
+        ctx.fillText(line, x, currentY);
+    }
+    
+    return currentY;
+}
+
+// Helper function to wrap centered text with maximum height
+function wrapTextCenteredWithMaxHeight(ctx, text, x, y, maxWidth, lineHeight, maxY) {
+    const words = text.split(' ');
+    let line = '';
+    let currentY = y;
+    
+    for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        const testWidth = metrics.width;
+        
+        if (testWidth > maxWidth && n > 0) {
+            ctx.fillText(line, x, currentY);
+            line = words[n] + ' ';
+            currentY += lineHeight;
+            
+            // Check if we've reached the maximum height
+            if (currentY + lineHeight > maxY) {
+                // Add ellipsis to indicate truncated text
+                ctx.fillText(line + '...', x, currentY);
+                return currentY;
+            }
+        } else {
+            line = testLine;
+        }
+    }
+    
+    // Draw the last line if we haven't exceeded maxY
+    if (currentY <= maxY) {
+        ctx.fillText(line, x, currentY);
+    }
+    
+    return currentY;
+}
+
+
+// Polyfill for roundRect if not supported
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+        if (width < 2 * radius) radius = width / 2;
+        if (height < 2 * radius) radius = height / 2;
+        this.beginPath();
+        this.moveTo(x + radius, y);
+        this.arcTo(x + width, y, x + width, y + height, radius);
+        this.arcTo(x + width, y + height, x, y + height, radius);
+        this.arcTo(x, y + height, x, y, radius);
+        this.arcTo(x, y, x + width, y, radius);
+        this.closePath();
+        return this;
+    };
+}
+// Hashtag tab functionality
+function initHashtagTabs() {
+    const tabs = document.querySelectorAll('.hashtag-tab');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Remove active class from all tabs
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('active');
+            
+            // Hide all hashtag categories
+            document.querySelectorAll('.hashtag-category').forEach(category => {
+                category.classList.remove('active');
+                category.style.display = 'none';
+            });
+            
+            // Show the selected category
+            const categoryId = this.getAttribute('data-category') + '-hashtags';
+            const selectedCategory = document.getElementById(categoryId);
+            if (selectedCategory) {
+                selectedCategory.classList.add('active');
+                selectedCategory.style.display = 'block';
+            }
+        });
+    });
+}
+
+// URL Parameter Sharing functionality
+function initUrlParamSharing() {
+    // Get DOM elements
+    const shareConfigBtn = document.getElementById('shareConfigBtn');
+    const shareConfigLink = document.getElementById('shareConfigLink');
+    const configLinkInput = document.getElementById('configLinkInput');
+    const copyConfigLinkBtn = document.getElementById('copyConfigLinkBtn');
+    
+    // Add click handler for the share config button
+    shareConfigBtn.addEventListener('click', function() {
+        // Get current settings
+        const gameTitle = document.getElementById('gameTitle').value;
+        const theme = document.getElementById('theme').value;
+        const emojiPack = document.getElementById('emojiPack').checked;
+        
+        // Get selected hashtags
+        const selectedHashtags = [...document.querySelectorAll('.hashtagOption:checked')]
+            .map(tag => tag.value);
+        
+        // Get custom hashtags
+        const customHashtags = document.getElementById('customHashtags').value;
+        
+        // Create URL parameters
+        const params = new URLSearchParams();
+        if (gameTitle) params.set('game', encodeURIComponent(gameTitle));
+        if (theme) params.set('theme', theme);
+        const emojiSelector = document.getElementById('emojiSelector');
+if (emojiSelector) {
+    const emojiType = emojiSelector.value;
+    params.set('emojiType', emojiType);
+    
+    if (emojiType !== 'none' && emojiType !== 'theme' && typeof window.getSelectedEmojis === 'function') {
+        const selectedEmojis = window.getSelectedEmojis(theme);
+        if (selectedEmojis) {
+            params.set('selectedEmojis', selectedEmojis.replace(/ /g, ','));
+        }
+    }
+} else if (document.getElementById('emojiPack').checked) {
+    params.set('emoji', '1');
+}        if (selectedHashtags.length > 0) params.set('tags', selectedHashtags.join(','));
+        if (customHashtags) params.set('custom', encodeURIComponent(customHashtags));
+        
+        // Get Twitch channel if available
+        const twitchChannel = document.getElementById('twitchChannel').value;
+        if (twitchChannel) params.set('channel', encodeURIComponent(twitchChannel));
+        
+        // Generate the full URL
+        const url = `${window.location.href.split('?')[0]}?${params.toString()}`;
+        
+        // Show the link section and populate the input
+        shareConfigLink.style.display = 'block';
+        configLinkInput.value = url;
+        configLinkInput.focus();
+        configLinkInput.select();
+    });
+    
+    // Add click handler for the copy link button
+    copyConfigLinkBtn.addEventListener('click', function() {
+        configLinkInput.select();
+        document.execCommand('copy');
+        
+        // Provide feedback
+        const originalText = this.textContent;
+        this.textContent = 'Copied!';
+        setTimeout(() => {
+            this.textContent = originalText;
+        }, 2000);
+    });
+    
+    // Check for URL parameters when the page loads
+    loadFromUrlParams();
+}
+
+// Function to load settings from URL parameters
+function loadFromUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    
+    // Load game title
+    if (params.has('game')) {
+        const gameTitle = decodeURIComponent(params.get('game'));
+        document.getElementById('gameTitle').value = gameTitle;
+    }
+    
+    // Load theme
+    if (params.has('theme')) {
+        const theme = params.get('theme');
+        document.getElementById('theme').value = theme;
+    }
+    
+    // Load emoji pack setting
+    if (params.has('emojiType')) {
+    const emojiSelector = document.getElementById('emojiSelector');
+    if (emojiSelector) {
+        emojiSelector.value = params.get('emojiType');
+        
+        // Trigger the change event to update the UI
+        const event = new Event('change');
+        emojiSelector.dispatchEvent(event);
+        
+        // Load selected emojis if available
+        if (params.has('selectedEmojis') && typeof window.getSelectedEmojis === 'function') {
+            // This will be handled in the initEmojiPicker function
+        }
+    }
+} else if (params.has('emoji')) {
+    document.getElementById('emojiPack').checked = params.get('emoji') === '1';
+}
+    
+    // Load hashtags
+    if (params.has('tags')) {
+        const tags = params.get('tags').split(',');
+        // Uncheck all hashtags first
+        document.querySelectorAll('.hashtagOption').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        
+        // Check the ones from the URL
+        tags.forEach(tag => {
+            const checkbox = document.querySelector(`.hashtagOption[value="${tag}"]`);
+            if (checkbox) checkbox.checked = true;
+        });
+    }
+    
+    // Load custom hashtags
+    if (params.has('custom')) {
+        document.getElementById('customHashtags').value = decodeURIComponent(params.get('custom'));
+    }
+    
+    // Load Twitch channel
+    if (params.has('channel')) {
+        document.getElementById('twitchChannel').value = decodeURIComponent(params.get('channel'));
+    }
+    
+    // If any parameters were provided, automatically generate a title
+    if (window.location.search && params.size > 0) {
+        // Trigger the generate button click after a short delay to ensure all settings are loaded
+        setTimeout(() => {
+            document.getElementById('generateBtn').click();
+        }, 500);
+    }
+}
+// Enhanced Emoji Selection functionality
+function initEmojiPicker() {
+    const themeSelector = document.getElementById('theme');
+    const emojiSelector = document.getElementById('emojiSelector');
+    const emojiPickerContainer = document.getElementById('emojiPickerContainer');
+    const emojiGrid = document.querySelector('.emoji-grid');
+    
+    
+    // Selected emojis
+    let selectedEmojis = [];
+    
+    // Handle emoji selector change
+    emojiSelector.addEventListener('change', function() {
+        const selectedOption = this.value;
+        
+        if (selectedOption === 'none') {
+            emojiPickerContainer.style.display = 'none';
+            selectedEmojis = [];
+        } else if (selectedOption === 'theme') {
+            // For theme-based, we'll use the theme dropdown to determine emojis
+            emojiPickerContainer.style.display = 'none';
+            selectedEmojis = [];
+        } else {
+            // For other options, show the emoji picker
+            emojiPickerContainer.style.display = 'block';
+            populateEmojiGrid(selectedOption);
+        }
+    });
+    
+    // Populate the emoji grid based on selection
+    function populateEmojiGrid(type) {
+        // Clear the grid
+        emojiGrid.innerHTML = '';
+        
+        // Get the appropriate emoji set
+        let emojis = [];
+        if (type === 'custom') {
+            // For custom, show all available emojis
+            Object.values(emojiSets).forEach(set => {
+                if (Array.isArray(set)) {
+                    emojis = [...emojis, ...set];
+                } else {
+                    Object.values(set).forEach(subset => {
+                        emojis = [...emojis, ...subset];
+                    });
+                }
+            });
+            // Remove duplicates
+            emojis = [...new Set(emojis)];
+        } else {
+            emojis = emojiSets[type];
+        }
+        
+        // Add emojis to the grid
+        emojis.forEach(emoji => {
+            const emojiItem = document.createElement('div');
+            emojiItem.className = 'emoji-item';
+            emojiItem.textContent = emoji;
+            emojiItem.setAttribute('data-emoji', emoji);
+            
+            // Check if this emoji is already selected
+            if (selectedEmojis.includes(emoji)) {
+                emojiItem.classList.add('selected');
+            }
+            
+            // Add click handler
+            emojiItem.addEventListener('click', function() {
+                const emoji = this.getAttribute('data-emoji');
+                
+                if (this.classList.contains('selected')) {
+                    // Remove from selection
+                    this.classList.remove('selected');
+                    selectedEmojis = selectedEmojis.filter(e => e !== emoji);
+                } else {
+                    // Add to selection
+                    this.classList.add('selected');
+                    selectedEmojis.push(emoji);
+                }
+            });
+            
+            emojiGrid.appendChild(emojiItem);
+        });
+    }
+    
+    // Create a function to get emojis for the title
+    window.getSelectedEmojis = function(theme) {
+    const emojiType = emojiSelector.value;
+    
+    if (emojiType === 'none') {
+        return '';
+    } else if (emojiType === 'theme') {
+        // For theme-based, use random emojis from the theme
+        const themeEmojis = emojiSets.theme[theme] || [];
+        if (themeEmojis.length === 0) return '';
+        const count = Math.floor(Math.random() * 2) + 1;
+        const randomEmojis = [];
+        for (let i = 0; i < count; i++) {
+            const randomIndex = Math.floor(Math.random() * themeEmojis.length);
+            randomEmojis.push(themeEmojis[randomIndex]);
+        }
+        return randomEmojis.join(' ');
+    } else if (emojiType === 'custom') {
+        // For custom selection, use the manually selected emojis
+        return selectedEmojis.join(' ');
+    } else {
+        // For gaming and mood, check if there are manually selected emojis
+        if (selectedEmojis.length > 0) {
+            return selectedEmojis.join(' ');
+        } else {
+            // Fallback to random selection
+            const styleEmojis = emojiSets[emojiType] || [];
+            if (styleEmojis.length === 0) return '';
+            const count = Math.floor(Math.random() * 2) + 1;
+            const randomEmojis = [];
+            for (let i = 0; i < count; i++) {
+                const randomIndex = Math.floor(Math.random() * styleEmojis.length);
+                randomEmojis.push(styleEmojis[randomIndex]);
+            }
+            return randomEmojis.join(' ');
+        }
+    }
+};
+
+
+
+// Randomizer Button Functionality
+document.getElementById('randomizeBtn').addEventListener('click', function () {
+  const themeSelect = document.getElementById('theme');
+  const emojiSelector = document.getElementById('emojiSelector');
+  const emojiPickerContainer = document.getElementById('emojiPickerContainer');
+
+  // Get all available themes
+  const themes = Array.from(themeSelect.options)
+    .map(opt => opt.value)
+    .filter(val => val);
+  const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+  themeSelect.value = randomTheme;
+
+  // Get all available emoji styles, excluding 'none' AND 'custom'
+  const emojiOptions = Array.from(emojiSelector.options)
+    .map(opt => opt.value)
+    .filter(val => val !== 'none' && val !== 'custom');
+  const randomEmojiStyle = emojiOptions[Math.floor(Math.random() * emojiOptions.length)];
+  
+  // IMPORTANT: Hide the emoji picker container BEFORE changing the dropdown value
+  if (emojiPickerContainer) {
+    emojiPickerContainer.style.display = 'none';
+  }
+  
+  // Now set the value
+  emojiSelector.value = randomEmojiStyle;
+
+  // Instead of triggering the change event, which would show the emoji picker,
+  // we'll directly select a random emoji based on the chosen style
+  if (randomEmojiStyle === 'theme') {
+    const themeEmojis = emojiSets.theme[randomTheme] || [];
+    if (themeEmojis.length > 0) {
+      selectedRandomEmoji = themeEmojis[Math.floor(Math.random() * themeEmojis.length)];
+    }
+  } else if (randomEmojiStyle === 'gaming') {
+    const gamingEmojis = emojiSets.gaming || [];
+    if (gamingEmojis.length > 0) {
+      selectedRandomEmoji = gamingEmojis[Math.floor(Math.random() * gamingEmojis.length)];
+    }
+  } else if (randomEmojiStyle === 'mood') {
+    const moodEmojis = emojiSets.mood || [];
+    if (moodEmojis.length > 0) {
+      selectedRandomEmoji = moodEmojis[Math.floor(Math.random() * moodEmojis.length)];
+    }
+  }
+});
+
+}
+
+
+
     </script>
 
 </body>
