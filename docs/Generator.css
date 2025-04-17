@@ -1,0 +1,638 @@
+:root {
+    --bg-color: #f5f5f5;
+    --container-bg: white;
+    --text-color: #333;
+    --input-bg: white;
+    --input-border: #ddd;
+    --button-bg: #4CAF50;
+    --button-text: white;
+    --preview-bg: #f9f9f9;
+    --preview-border: #ddd;
+    --note-color: #666;
+    --checkbox-bg: #ccc;
+    --checkbox-checked: DodgerBlue;
+}
+
+         .dark-mode {
+    --bg-color: #222;
+    --container-bg: #333;
+    --text-color: #eee;
+    --input-bg: #444;
+    --input-border: #555;
+    --button-bg: #6441a5;
+    --button-text: white;
+    --preview-bg: #444;
+    --preview-border: #555;
+    --note-color: #eee;
+    --checkbox-bg: #555;
+    --checkbox-checked: #6441a5;
+}
+
+    body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+/* Add this to your CSS */
+.usage-stats-card {
+    background-color: var(--container-bg);
+     color: var(--text-color);
+  border-radius: 12px;
+}
+
+.usage-stats-card .fw-bold {
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+
+    /* Trending section styling */
+    .trending-container {
+    background-color: var(--container-bg);
+     color: var(--text-color);
+    padding: 1rem;
+  border-radius: 12px;
+  
+}
+
+.trending-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.trending-columns > div {
+  flex: 1;
+  min-width: 200px;
+}
+
+.trending-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 1rem;
+}
+
+.trending-list li {
+  background: #222;
+  border-left: 4px solid #5c4df4;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: transform 0.2s ease;
+}
+
+.trending-list li:hover {
+  transform: translateX(4px);
+  background: #2d2d2d;
+  cursor: default;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  padding: 4px 8px;
+  margin-bottom: 2px;
+  background: #111;
+  color: #fff;
+  border-radius: 5px;
+  font-family: sans-serif;
+  font-size: 0.9rem;
+}
+
+ul li:hover {
+  background-color: #333;
+}
+
+
+
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: var(--container-bg);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.donate-text {
+    color: var(--text-color);
+    font-size: 16px;
+    font-weight: bolder;
+    margin-top: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#kofiBtn {
+    background-color: #29abe0;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+    border: none;
+    width: 250px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#kofiBtn:hover {
+    opacity: 0.9;
+}
+
+#kofiBtn img {
+    height: 20px;
+    margin-right: 8px;
+}
+
+#themeToggle {
+    width: 250px;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    cursor: pointer;
+}
+
+#themeToggle:hover {
+    opacity: 0.9;
+}
+
+
+        h1 {
+            text-align: center;
+    color: var(--text-color);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input, select, button, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1rem;
+            user-select: none;
+            gap: 10px;
+            
+        }
+
+        .custom-checkbox input {
+            display: none;
+        }
+
+        .custom-checkbox .checkmark {
+            height: 20px;
+            width: 20px;
+            background-color: var(--checkbox-bg);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .custom-checkbox input:checked + .checkmark {
+            background-color: var(--checkbox-checked);
+        }
+
+        .custom-checkbox .checkmark::after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .custom-checkbox input:checked + .checkmark::after {
+            display: block;
+        }
+
+        .hashtag-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .tag-pill-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.tag-pill {
+  background-color: #444;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: fadeIn 0.3s ease;
+}
+
+.tag-pill.unsafe {
+  background-color: #a00;
+}
+
+.tag-pill button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+
+
+        .note {
+            font-size: 0.9em;
+            color: var(--note-color);
+            margin-top: 5px;
+        }
+
+        #previewArea {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: var(--preview-bg);
+            border: 1px solid var(--preview-border);
+        }
+
+        #charWarning {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        #supportMessage {
+            margin-top: 10px;
+            font-style: italic;
+            color: var(--note-color);        }
+
+        #goLiveMessageSection {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: var(--preview-bg);
+            border: 1px solid var(--preview-border);
+        }
+
+        #shareSection button#shareFacebook {
+            background-color: #1877F2; /* Facebook Blue */
+        }
+        #shareSection button#shareThreads{
+            background-color: #000000; /* Black */
+        }
+        #shareSection button#shareBluesky {
+            background-color: #0080FF; /* Bluesky Blue */
+        }
+        #shareSection button#shareInstagram {
+            background-color: #833ab4; /* Instagram Pink */
+        }
+
+        #shareSection button#shareTwitter:hover {
+            background-color: #0C87C5;
+        }
+
+        #shareSection button#shareDiscord:hover {
+            background-color: #586EA6;
+        }
+        #shareSection button#shareFacebook:hover {
+            background-color: #145db4;
+        }
+        #shareSection button#shareThreads:hover {
+            background-color: #444444;
+        }
+        #shareSection button#shareBluesky:hover{
+            background-color: #0066CC;
+        }
+        #shareSection button#shareInstagram:hover {
+            background-color: #e1306c;
+        }
+
+        #shareSection button#shareDiscord {
+            background-color: #7289DA; /* Discord Blurple */
+        }
+
+        #shareSection button#shareTwitter:hover {
+            background-color: #0C87C5;
+        }
+
+        #shareSection button#shareDiscord:hover {
+            background-color: #586EA6;
+        }
+
+        #shareSection {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: var(--preview-bg);
+            border: 1px solid var(--preview-border);
+        }
+
+        #shareSection label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        #shareSection input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        #shareSection button {
+            background-color: #1DA1F2; /* Twitter Blue */
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-right: 5px;
+            border: none; /* Remove default button border */
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        #shareSection button#shareDiscord {
+            background-color: #5865F2; /* Discord Blurple */
+        }
+
+        #shareSection button:hover {
+            opacity: 0.8;
+        }
+
+        #twitchBtn {
+            background-color: #6441a5; /* Twitter Blue */
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-right: 50px;
+            border: none; /* Remove default button border */
+            padding: 10px 15px;
+            border-radius: 5px;
+            width: 250px;
+        }
+
+        #discordBtn {
+            background-color: #5865F2; /* Discord Blurple */
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+            margin-top: 10px;
+            margin-left: 46px;
+            border: none; /* Remove default button border */
+            padding: 10px 15px;
+            border-radius: 5px;
+            width: 250px;
+        }
+
+        #twitchBtn:hover {
+            opacity: 0.8;
+        }
+
+        #discordBtn:hover {
+            opacity: 0.8;
+        }
+
+        #historySection {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: var(--preview-bg);
+            border: 1px solid var(--preview-border);
+        }
+
+        .history-entry {
+    background-color: var(--preview-bg) !important;
+    border: 1px solid var(--preview-border) !important;
+}
+
+/* Hashtag tab styling */
+.hashtag-tabs {
+    display: flex;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--input-border);
+}
+
+.hashtag-tab {
+    flex: 1;
+    padding: 8px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.hashtag-tab:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+}
+
+.hashtag-tab.active {
+    border-bottom: 3px solid var(--button-bg);
+    font-weight: bold;
+}
+
+.hashtag-category {
+    display: none;
+    animation: fadeIn 0.3s;
+}
+
+.hashtag-category.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Emoji picker styling */
+.emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.emoji-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    font-size: 20px;
+    background-color: var(--preview-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.emoji-item:hover {
+    transform: scale(1.1);
+    background-color: var(--button-bg);
+    color: white;
+}
+
+.emoji-item.selected {
+    background-color: var(--button-bg);
+    color: white;
+    border-color: var(--button-bg);
+}
+
+.randomizer-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+.randomizer-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.randomizer-button:hover {
+    background-color: #1e7e34;
+}
+
+.mature-content-option {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: var(--preview-bg);
+    border: 1px solid var(--preview-border);
+}
+
+.hr {
+    border: none;
+    border-top: 1px solid var(--preview-border);
+    margin: 15px 0;
+}
+
+.footer-text {
+    font-size: 15px;
+    color: var(--text-color);
+    margin-top: 20px;
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+}
+
+a:link {
+  color: #6441a5;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:visited {
+  color: #6441a5;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 0.9;
+  text-decoration: underline;
+}
+
+a:active {
+  color: #6441a5;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+.suggestion-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  position: absolute;
+  background-color: white;
+}
+
+.suggestion-list li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.suggestion-list li:hover {
+  background-color: #f0f0f0;
+}
