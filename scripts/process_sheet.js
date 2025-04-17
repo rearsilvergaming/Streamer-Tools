@@ -5,44 +5,66 @@ async function processSheet() {
     const sheetId = process.env.GOOGLE_SHEET_ID;
     const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
 
-    const response = await fetch(csvUrl);
-    if (!response.ok) throw new Error(`Failed to fetch CSV: ${response.statusText}`);
+    try {
+        const response = await fetch(csvUrl);
+        if (!response.ok) throw new Error(`Failed to fetch CSV: ${response.statusText}`);
 
-    const csvText = await response.text();
-    const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
+        const csvText = await response.text();
 
-    const tagCounts = {};
-    const gameCounts = {};
+        console.log("Fetched CSV Data:", csvText);
 
-    parsed.forEach(row => {
-        const game = row['Game (Optional)']?.trim();
-        const tags = row['Tags (Optional, comma-separated)']?.split(',').map(t => t.trim());
+        const parsed = Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            transformHeader: header => header.trim()
+        }).data;
 
-        if (game) gameCounts[game] = (gameCounts[game] || 0) + 1;
-        if (tags) {
-            tags.forEach(tag => {
-                if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-            });
-        }
-    });
+        const tagCounts = {};
+        const gameCounts = {};
+        let totalUsesCount = 0; // Initialize a counter for total uses
 
-    const trendingTags = Object.entries(tagCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10)
-        .map(([tag]) => tag);
+        parsed.forEach(row => {
+            const sessionId = (row['Session ID (Optional)'] || row['Session ID (Optional) '])?.trim();
+            if (sessionId) {
+                totalUsesCount++; // Increment the total uses counter for each row with a Session ID
+            }
 
-    const trendingGames = Object.entries(gameCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5)
-        .map(([game]) => game);
+            const game = (row['Game (Optional)'] || row['Game (Optional) '])?.trim();
 
-    await fs.writeFile('community-tags.json', JSON.stringify(trendingTags, null, 2));
-    await fs.writeFile('community-games.json', JSON.stringify(trendingGames, null, 2));
+            const tagsStr = row['Tags (Optional, comma-separated)'] || row[' Tags (Optional, comma-separated) '];
+            const tags = tagsStr?.split(',').map(t => t.trim()).filter(Boolean);
 
-    console.log('Successfully updated community data.');
+            if (game) gameCounts[game] = (gameCounts[game] || 0) + 1;
+            if (tags && tags.length > 0) {
+                tags.forEach(tag => {
+                    if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                });
+            }
+        });
+
+        const trendingTags = Object.entries(tagCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10)
+            .map(([tag, count]) => ({ name: tag, count }));
+
+        const trendingGames = Object.entries(gameCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(([game, count]) => ({ name: game, count }));
+
+        console.log('Trending Tags:', trendingTags);
+        console.log('Trending Games:', trendingGames);
+        console.log('Total Uses (counting all submissions):', totalUsesCount);
+
+        await fs.writeFile('docs/community-tags.json', JSON.stringify(trendingTags, null, 2));
+        await fs.writeFile('docs/community-games.json', JSON.stringify(trendingGames, null, 2));
+        await fs.writeFile('docs/total-uses.json', JSON.stringify({ total: totalUsesCount }, null, 2)); // Use totalUsesCount
+
+        console.log('Successfully updated community data.');
+    } catch (err) {
+        console.error('Error processing sheet:', err);
+        process.exit(1);
+    }
 }
 
-processSheet().catch(err => {
-    console.error('Error processing sheet:', err);
-    process.exit(1);
-});
+processSheet();
