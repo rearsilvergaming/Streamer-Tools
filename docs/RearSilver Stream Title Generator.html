@@ -1,521 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    npm install google-spreadsheet papaparse
-
+    <link rel="stylesheet" href="Generator.css">
     <meta charset="UTF-8" />
     <meta name="description" content="Generate creative and engaging Twitch stream titles quickly and easily with RearSilver's free tool. Perfect for furry VTubers and adult content creators.">
     <title>RearSilver's Free Twitch Stream Title Generator for Engaging Content</title>
     
-    <style>
-        :root {
-    --bg-color: #f5f5f5;
-    --container-bg: white;
-    --text-color: #333;
-    --input-bg: white;
-    --input-border: #ddd;
-    --button-bg: #4CAF50;
-    --button-text: white;
-    --preview-bg: #f9f9f9;
-    --preview-border: #ddd;
-    --note-color: #666;
-    --checkbox-bg: #ccc;
-    --checkbox-checked: DodgerBlue;
-}
-
-         .dark-mode {
-    --bg-color: #222;
-    --container-bg: #333;
-    --text-color: #eee;
-    --input-bg: #444;
-    --input-border: #555;
-    --button-bg: #6441a5;
-    --button-text: white;
-    --preview-bg: #444;
-    --preview-border: #555;
-    --note-color: #eee;
-    --checkbox-bg: #555;
-    --checkbox-checked: #6441a5;
-}
-
-    body {
-    font-family: Arial, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: var(--container-bg);
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.header {
-    width: 100%;
-    margin-bottom: 20px;
-}
-
-.donate-text {
-    color: var(--text-color);
-    font-size: 16px;
-    font-weight: bolder;
-    margin-top: 10px;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.button-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-#kofiBtn {
-    background-color: #29abe0;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-
-    cursor: pointer;
-    border: none;
-    width: 250px;
-    padding: 10px 15px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#kofiBtn:hover {
-    opacity: 0.9;
-}
-
-#kofiBtn img {
-    height: 20px;
-    margin-right: 8px;
-}
-
-#themeToggle {
-    width: 250px;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 10px 15px;
-    border-radius: 5px;
-    background-color: var(--button-bg);
-    color: var(--button-text);
-    border: none;
-    cursor: pointer;
-}
-
-#themeToggle:hover {
-    opacity: 0.9;
-}
-
-
-        h1 {
-            text-align: center;
-    color: var(--text-color);
-        }
-
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        input, select, button, textarea {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid var(--input-border);
-    border-radius: 5px;
-    box-sizing: border-box;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-}
-
-button {
-    background-color: var(--button-bg);
-    color: var(--button-text);
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .custom-checkbox {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            font-size: 1rem;
-            user-select: none;
-            gap: 10px;
-            
-        }
-
-        .custom-checkbox input {
-            display: none;
-        }
-
-        .custom-checkbox .checkmark {
-            height: 20px;
-            width: 20px;
-            background-color: var(--checkbox-bg);
-            border-radius: 4px;
-            position: relative;
-        }
-
-        .custom-checkbox input:checked + .checkmark {
-            background-color: var(--checkbox-checked);
-        }
-
-        .custom-checkbox .checkmark::after {
-            content: "";
-            position: absolute;
-            display: none;
-            left: 6px;
-            top: 2px;
-            width: 5px;
-            height: 10px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-        }
-
-        .custom-checkbox input:checked + .checkmark::after {
-            display: block;
-        }
-
-        .hashtag-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-
-        .note {
-            font-size: 0.9em;
-            color: var(--note-color);
-            margin-top: 5px;
-        }
-
-        #previewArea {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: var(--preview-bg);
-            border: 1px solid var(--preview-border);
-        }
-
-        #charWarning {
-            color: red;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        #supportMessage {
-            margin-top: 10px;
-            font-style: italic;
-            color: var(--note-color);        }
-
-        #goLiveMessageSection {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: var(--preview-bg);
-            border: 1px solid var(--preview-border);
-        }
-
-        #shareSection button#shareFacebook {
-            background-color: #1877F2; /* Facebook Blue */
-        }
-        #shareSection button#shareThreads{
-            background-color: #000000; /* Black */
-        }
-        #shareSection button#shareBluesky {
-            background-color: #0080FF; /* Bluesky Blue */
-        }
-        #shareSection button#shareInstagram {
-            background-color: #833ab4; /* Instagram Pink */
-        }
-
-        #shareSection button#shareTwitter:hover {
-            background-color: #0C87C5;
-        }
-
-        #shareSection button#shareDiscord:hover {
-            background-color: #586EA6;
-        }
-        #shareSection button#shareFacebook:hover {
-            background-color: #145db4;
-        }
-        #shareSection button#shareThreads:hover {
-            background-color: #444444;
-        }
-        #shareSection button#shareBluesky:hover{
-            background-color: #0066CC;
-        }
-        #shareSection button#shareInstagram:hover {
-            background-color: #e1306c;
-        }
-
-        #shareSection button#shareDiscord {
-            background-color: #7289DA; /* Discord Blurple */
-        }
-
-        #shareSection button#shareTwitter:hover {
-            background-color: #0C87C5;
-        }
-
-        #shareSection button#shareDiscord:hover {
-            background-color: #586EA6;
-        }
-
-        #shareSection {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: var(--preview-bg);
-            border: 1px solid var(--preview-border);
-        }
-
-        #shareSection label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        #shareSection input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        #shareSection button {
-            background-color: #1DA1F2; /* Twitter Blue */
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-            margin-right: 5px;
-            border: none; /* Remove default button border */
-            padding: 10px 15px;
-            border-radius: 5px;
-        }
-
-        #shareSection button#shareDiscord {
-            background-color: #5865F2; /* Discord Blurple */
-        }
-
-        #shareSection button:hover {
-            opacity: 0.8;
-        }
-
-        #twitchBtn {
-            background-color: #6441a5; /* Twitter Blue */
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            margin-right: 50px;
-            border: none; /* Remove default button border */
-            padding: 10px 15px;
-            border-radius: 5px;
-            width: 250px;
-        }
-
-        #discordBtn {
-            background-color: #5865F2; /* Discord Blurple */
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-
-            cursor: pointer;
-            margin-top: 10px;
-            margin-left: 46px;
-            border: none; /* Remove default button border */
-            padding: 10px 15px;
-            border-radius: 5px;
-            width: 250px;
-        }
-
-        #twitchBtn:hover {
-            opacity: 0.8;
-        }
-
-        #discordBtn:hover {
-            opacity: 0.8;
-        }
-
-        #historySection {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: var(--preview-bg);
-            border: 1px solid var(--preview-border);
-        }
-
-        .history-entry {
-    background-color: var(--preview-bg) !important;
-    border: 1px solid var(--preview-border) !important;
-}
-
-/* Hashtag tab styling */
-.hashtag-tabs {
-    display: flex;
-    margin-bottom: 10px;
-    border-bottom: 1px solid var(--input-border);
-}
-
-.hashtag-tab {
-    flex: 1;
-    padding: 8px;
-    background: none;
-    border: none;
-    border-bottom: 3px solid transparent;
-    cursor: pointer;
-    color: var(--text-color);
-    transition: all 0.3s ease;
-}
-
-.hashtag-tab:hover {
-    background-color: rgba(128, 128, 128, 0.1);
-}
-
-.hashtag-tab.active {
-    border-bottom: 3px solid var(--button-bg);
-    font-weight: bold;
-}
-
-.hashtag-category {
-    display: none;
-    animation: fadeIn 0.3s;
-}
-
-.hashtag-category.active {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* Emoji picker styling */
-.emoji-grid {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 5px;
-    margin-top: 10px;
-}
-
-.emoji-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    font-size: 20px;
-    background-color: var(--preview-bg);
-    border: 1px solid var(--input-border);
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.emoji-item:hover {
-    transform: scale(1.1);
-    background-color: var(--button-bg);
-    color: white;
-}
-
-.emoji-item.selected {
-    background-color: var(--button-bg);
-    color: white;
-    border-color: var(--button-bg);
-}
-
-.randomizer-section {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 15px;
-}
-.randomizer-button {
-    background-color: #28a745;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-.randomizer-button:hover {
-    background-color: #1e7e34;
-}
-
-.mature-content-option {
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: var(--preview-bg);
-    border: 1px solid var(--preview-border);
-}
-
-.hr {
-    border: none;
-    border-top: 1px solid var(--preview-border);
-    margin: 15px 0;
-}
-
-.footer-text {
-    font-size: 15px;
-    color: var(--text-color);
-    margin-top: 20px;
-    text-align: center;
-    font-weight: bold;
-    width: 100%;
-}
-
-a:link {
-  color: #6441a5;
-  background-color: transparent;
-  text-decoration: none;
-}
-
-a:visited {
-  color: #6441a5;
-  background-color: transparent;
-  text-decoration: none;
-}
-
-a:hover {
-  opacity: 0.9;
-  text-decoration: underline;
-}
-
-a:active {
-  color: #6441a5;
-  background-color: transparent;
-  text-decoration: underline;
-}
-
-
-    </style>
 </head>
 <body>
+    <div class="trending-container">
+        <div id="community-trending" class="trending-container">
+          <h2>🔥 Community Trending</h2>
+             <!-- Add the usage counter here as a small card -->
+             <div class="usage-stats-card mb-3">
+                <p>This tool has been used <span id="totalUses" class="fw-bold">0</span> times by streamers!</p>
+            </div>
+          <label class="custom-checkbox">
+              <input type="checkbox" id="sfw-toggle" checked>
+              <span class="checkmark"></span>Hide NSFW tags
+          </label>
+      
+          <div class="trending-columns">
+            <!-- Games Section -->
+            <div>
+                <h3>🎮 Popular Games</h3>
+              <input type="text" id="searchGames" placeholder="Search Games" oninput="filterGames()">
+              <select id="gamePopularityFilter" onchange="filterGames()">
+                <option value="all">All</option>
+                <option value="high">High Popularity</option>
+                <option value="low">Low Popularity</option>
+              </select>
+              <ul id="games-list" class="trending-list"></ul>
+            </div>
 
+  
+            <!-- Tags Section -->
+            <div>
+                <h3>🏷️ Popular Tags</h3>
+              <input type="text" id="searchTags" placeholder="Search Tags" oninput="filterTags()">
+              <select id="tagPopularityFilter" onchange="filterTags()">
+                <option value="all">All</option>
+                <option value="high">High Popularity</option>
+                <option value="low">Low Popularity</option>
+              </select>
+              <ul id="tags-list" class="trending-list"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      
     <div class="container">
         <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
         <script>
@@ -556,6 +89,45 @@ a:active {
 
         <label for="gameTitle">Game Title:</label>
         <input type="text" id="gameTitle" placeholder="Enter game...">
+        <ul id="gameSuggestions" class="suggestion-list"></ul>
+        
+<!-- Add this after the game title input section -->
+<div class="form-group">
+    <label class="custom-checkbox" style="font-size: 0.9rem;">
+        <input type="checkbox" id="isCollab">
+        <span class="checkmark"></span>
+        Is this a collab?
+    </label>
+</div>
+
+<!-- Change the ID here from 'collabOptions' to 'collabSection' to match your JS -->
+<div id="collabSection" style="display:none;">
+    <div class="form-group">
+        <label for="collabType">Collab Type:</label>
+        <select class="form-control" id="collabType">
+            <option value="">No Identifier</option>
+            <option value="co-op">Co-op</option>
+            <option value="vs">VS</option>
+            <option value="ft.">Featuring (ft.)</option>
+            <option value="w/">With (w/)</option>
+            <option value="&">&</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="numCollaborators">Number of Collaborators:</label>
+        <select class="form-control" id="numCollaborators">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+        </select>
+    </div>
+    <div id="collaboratorInputs">
+    </div>
+</div>
+
+
+  
 
         <label class="custom-checkbox" style="display: none;">
             <input type="checkbox" id="emojiPack">
@@ -784,13 +356,24 @@ a:active {
 
         <label for="customHashtags">Custom Hashtags (comma separated):</label>
         <input type="text" id="customHashtags" placeholder="#chaotic, #pog, #lfg">
+        <label style="font-size: 0.9rem;">
+            <ul id="tagSuggestions" class="suggestion-list"></ul>
+
+            <div id="customTagPills" class="tag-pill-container"></div>
+
+            
+            <label class="custom-checkbox" style="font-size: 0.9rem;">
+                <input type="checkbox" id="optOutCheckbox">
+                <span class="checkmark"></span>
+            Opt out to not anonymously share tags and game data to Community Trending.
+          </label>
+
+        <div id="customTagError" style="display: none; color: red; margin-top: 10px;">
+            Warning: Some hashtags contain potentially offensive content and won't be saved to community data.
+          </div>
 
         <button id="generateBtn">Generate Title/Go Live Notification</button>
-        <label style="font-size: 0.9rem;">
-            
-            <input type="checkbox" id="optOutCheckbox">
-            Don't anonymously share tags and game data to improve the tool
-          </label>
+
           
 
         <div id="previewArea">
@@ -1575,6 +1158,57 @@ document.getElementById('randomizeBtn').addEventListener('click', function () {
   }
 });
 
+// Event listener for the collab checkbox
+document.getElementById('isCollab').addEventListener('change', function() {
+  document.getElementById('collabSection').style.display = this.checked ? 'block' : 'none';
+});
+
+// Event listener for number of collaborators dropdown
+document.getElementById('numCollaborators').addEventListener('change', function() {
+  generateCollaboratorInputs();
+});
+
+// Function to generate collaborator input fields
+function generateCollaboratorInputs() {
+  const container = document.getElementById('collaboratorInputs');
+  const numCollabs = parseInt(document.getElementById('numCollaborators').value);
+  
+  // Clear existing inputs
+  container.innerHTML = '';
+  
+  // Create new inputs - always create at least one input field
+  for (let i = 1; i <= numCollabs; i++) {
+    const div = document.createElement('div');
+    div.className = 'form-group';
+    
+    const label = document.createElement('label');
+    label.textContent = `Collaborator ${i}:`;
+    label.setAttribute('for', `collaborator${i}`);
+    
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'form-control';
+    input.id = `collaborator${i}`;
+    input.name = `collaborator${i}`;
+    input.placeholder = 'Enter username';
+    
+    div.appendChild(label);
+    div.appendChild(input);
+    container.appendChild(div);
+  }
+}
+
+
+// Initialize collaborator inputs on page load
+document.addEventListener('DOMContentLoaded', function() {
+  // If the checkbox is already checked when the page loads
+  if (document.getElementById('isCollab').checked) {
+    document.getElementById('collabSection').style.display = 'block';
+    generateCollaboratorInputs();
+  }
+});
+
+
 document.getElementById('kofiBtn').addEventListener('click', function() {
     window.open('https://ko-fi.com/rearsilver', '_blank');
 });
@@ -1616,12 +1250,22 @@ function logToGoogleForm(game, tags) {
     });
 }
 
-    document.getElementById('generateBtn').addEventListener('click', function () {
-        const gameTitle = document.getElementById('gameTitle').value.trim();
-        const theme = document.getElementById('theme').value;
-        const emojiPack = document.getElementById('emojiPack').checked;
-        const customInput = document.getElementById('customHashtags').value.trim();
-        
+document.getElementById('generateBtn').addEventListener('click', function () {
+  // Check for unsafe tags
+  const customTagsInput = document.getElementById('customHashtags');
+  const offensiveTagWarning = document.getElementById('offensive-tag-warning');
+  
+  if (customTagsInput && offensiveTagWarning) {
+    const customTags = customTagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+    const hasUnsafeTags = customTags.some(tag => !isSafeTag(tag));
+    
+    offensiveTagWarning.style.display = hasUnsafeTags ? 'block' : 'none';
+  }
+    
+    const gameTitle = document.getElementById('gameTitle').value.trim();
+    const theme = document.getElementById('theme').value;
+    const emojiPack = document.getElementById('emojiPack').checked;
+    const customInput = document.getElementById('customHashtags').value.trim();
 
             // Add this line to get the mature content checkbox state
     const matureContent = document.getElementById('matureContent').checked;
@@ -1666,6 +1310,48 @@ const emoji = getEmoji(theme);
         let title = `${titleStarter} ${gameTitle} ${matureIndicator}`;
         let goLiveMessage = `🚨 ${goLiveStarter} ${gameTitle}! ${matureIndicator}`;
         let supportMessage = generalSupport; // Start with a general message
+
+  // Add this collaborator handling code:
+  if (document.getElementById('isCollab') && document.getElementById('isCollab').checked) {
+  const numCollabs = parseInt(document.getElementById('numCollaborators').value);
+  const collabType = document.getElementById('collabType').value;
+  
+  let collaborators = [];
+  for (let i = 1; i <= numCollabs; i++) {
+    const collabInput = document.getElementById(`collaborator${i}`);
+    if (collabInput && collabInput.value.trim()) {
+      collaborators.push(`@${collabInput.value.trim()}`);
+    }
+  }
+  
+  if (collaborators.length > 0) {
+    // Add collaborators to title with the selected type
+    if (collabType) {
+      // For formats like "@user1 vs @user2" or "@user1 & @user2"
+      if (collaborators.length === 1) {
+        // If there's only one collaborator, just append with the type
+        title += ` ${collabType} ${collaborators[0]}`;
+      } else {
+        // For multiple collaborators, insert the type between them
+        // First, get the first collaborator
+        title += ` with ${collaborators[0]}`;
+        
+        // Then add each additional collaborator with the type in between
+        for (let i = 1; i < collaborators.length; i++) {
+          title += ` ${collabType} ${collaborators[i]}`;
+        }
+      }
+    } else {
+      // If no collab type is selected, just join them with commas
+      title += ` with ${collaborators.join(', ')}`;
+    }
+    
+    // For Go Live message
+    const messageCollaborators = collaborators.map(c => c.substring(1)).join(' and '); // Remove @ symbols
+    goLiveMessage += ` Collaborating with ${messageCollaborators}!`;
+  }
+}
+
 
         for (const tag of checkedTags) {
             if (hashtagPhrases[tag]) {
@@ -1718,6 +1404,25 @@ const emoji = getEmoji(theme);
             document.getElementById('copyBtn')
         );
     }
+
+// Add this function to check custom hashtags and show warning if needed
+function checkCustomHashtags() {
+  const customTagsInput = document.getElementById('custom-hashtags');
+  const warningElement = document.getElementById('offensive-tag-warning');
+  
+  if (!customTagsInput || !warningElement) return;
+  
+  const customTags = customTagsInput.value
+    .split(',')
+    .map(tag => tag.trim())
+    .filter(tag => tag.length > 0);
+  
+  // Check if any custom tag contains offensive content
+  const hasOffensiveTags = customTags.some(tag => !isSafeTag(tag));
+  
+  // Show or hide warning based on result
+  warningElement.style.display = hasOffensiveTags ? 'block' : 'none';
+}
 
         // Call the log function to send the data to Google Form
         logToGoogleForm(gameTitle, allTags);
@@ -1915,36 +1620,77 @@ document.getElementById('shareDiscord').addEventListener('click', function () {
         link.click();
     });
 
-    // Add this after your existing JavaScript
+// ❌ Offensive words to filter from custom hashtags
+const offensiveWords = [
+  'fuck', 'shit', 'bitch', 'asshole', 'cunt',
+  'slut', 'dick', 'nigger', 'faggot', 'retard',
+  'whore', 'twat', 'rape', 'kill', 'suicide',
+  'gay' // add context-aware exceptions if needed
+];
+
+function isSafeTag(tag) {
+  const bannedWords = ['18', 'nsfw', 'horny', 'lewd', 'sus'];
+  return !bannedWords.some(word => tag.toLowerCase().includes(word));
+}
+function isOffensive(input) {
+  const normalised = input
+    .toLowerCase()
+    .replace(/[^a-zA-Z\s,]/g, '') // Remove symbols like # or !
+    .split(/[,\s]+/); // Split on commas or spaces
+
+  return offensiveWords.some(word => normalised.includes(word));
+}
 
 // Save preferences to localStorage
 function savePreferences() {
-    const gameTitle = document.getElementById('gameTitle').value;
-    const theme = document.getElementById('theme').value;
-    const emojiPack = document.getElementById('emojiPack').checked;
-    const channel = document.getElementById('twitchChannel').value;
-    
-    // Get checked hashtags
-    const checkedTags = [...document.querySelectorAll('.hashtag-options input[type="checkbox"]:checked')]
-        .map(tag => tag.value);
-    
-    const customTags = document.getElementById('customHashtags').value;
-    
-        // Add this line to get mature content setting
-        const matureContent = document.getElementById('matureContent').checked;
-
-    // Save to localStorage
-    localStorage.setItem('streamTitleGenerator', JSON.stringify({
-        gameTitle,
-        theme,
-        emojiPack,
-        channel,
-        checkedTags,
-        customTags,
-        matureContent,
-        lastSaved: new Date().toISOString()
-    }));
+  const gameTitle = document.getElementById('gameTitle').value;
+  const theme = document.getElementById('theme').value;
+  const emojiPack = document.getElementById('emojiPack').checked;
+  const channel = document.getElementById('twitchChannel').value;
+  
+  // Get checked hashtags
+  const checkedTags = [...document.querySelectorAll('.hashtag-options input[type="checkbox"]:checked')]
+    .map(tag => tag.value);
+  
+  const customTagInput = document.getElementById('customHashtags');
+  const customTags = customTagInput.value;
+  const customTagError = document.getElementById('customTagError');
+  const offensiveTagWarning = document.getElementById('offensive-tag-warning');
+  
+  // Check for offensive language
+  if (isOffensive(customTags)) {
+    customTagError.textContent = 'Please avoid using offensive or hateful language in custom hashtags.';
+    customTagError.style.display = 'block';
+    return; // Stop saving if offensive input
+  } else {
+    customTagError.textContent = '';
+    customTagError.style.display = 'none';
+  }
+  
+  // Check for unsafe tags (18+, NSFW, etc.)
+  const customTagsList = customTags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+  const hasUnsafeTags = customTagsList.some(tag => !isSafeTag(tag));
+  
+  if (hasUnsafeTags && offensiveTagWarning) {
+    offensiveTagWarning.style.display = 'block';
+  } else if (offensiveTagWarning) {
+    offensiveTagWarning.style.display = 'none';
+  }
+  
+  // Save to localStorage
+  localStorage.setItem('streamTitleGenerator', JSON.stringify({
+    gameTitle,
+    theme,
+    emojiPack,
+    channel,
+    checkedTags,
+    customTags,
+    matureContent: document.getElementById('matureContent').checked,
+    lastSaved: new Date().toISOString()
+  }));
 }
+
+
 
 // Load preferences from localStorage
 function loadPreferences() {
@@ -2181,6 +1927,31 @@ function initThemeToggle() {
         }
     });
 }
+
+// Event listener for the collab checkbox
+document.getElementById('isCollab').addEventListener('change', function() {
+  document.getElementById('collabSection').style.display = this.checked ? 'block' : 'none';
+  
+  // Generate the inputs when checkbox is checked
+  if (this.checked) {
+    generateCollaboratorInputs();
+  }
+});
+
+// Event listener for number of collaborators dropdown
+document.getElementById('numCollaborators').addEventListener('change', function() {
+  generateCollaboratorInputs();
+});
+
+// Initialize collaborator inputs on page load
+document.addEventListener('DOMContentLoaded', function() {
+  // If the checkbox is already checked when the page loads
+  if (document.getElementById('isCollab') && document.getElementById('isCollab').checked) {
+    document.getElementById('collabSection').style.display = 'block';
+    generateCollaboratorInputs();
+  }
+});
+
 
 // Preview Card Generator
 function initPreviewCardGenerator() {
@@ -2947,8 +2718,386 @@ document.getElementById('randomizeBtn').addEventListener('click', function () {
 
 }
 
+// Global toggles (set from checkboxes)
+let enableSFW = false;
+let sortByCount = true;
+
+let processedGames = [];
+let processedTags = [];
+
+//function for filtering games and tags
+function filterGames() {
+  const searchQuery = document.getElementById('searchGames').value.toLowerCase();
+  const popularityFilter = document.getElementById('gamePopularityFilter').value;
+
+  let filteredGames = processedGames.filter(({ name }) =>
+    name.toLowerCase().includes(searchQuery)
+  );
+
+  if (popularityFilter === 'high') {
+    filteredGames.sort((a, b) => b.count - a.count); // Descending
+  } else if (popularityFilter === 'low') {
+    filteredGames.sort((a, b) => a.count - b.count); // Ascending
+  }
+
+  displayGames(filteredGames);
+}
+
+function filterTags() {
+  const searchQuery = document.getElementById('searchTags').value.toLowerCase();
+  const popularityFilter = document.getElementById('tagPopularityFilter').value;
+
+  let filteredTags = processedTags.filter(({ name }) =>
+    name.toLowerCase().includes(searchQuery)
+  );
+
+  if (popularityFilter === 'high') {
+    filteredTags.sort((a, b) => b.count - a.count); // Descending
+  } else if (popularityFilter === 'low') {
+    filteredTags.sort((a, b) => a.count - b.count); // Ascending
+  }
+
+  displayTags(filteredTags);
+}
 
 
+// Function to display games and tags
+function displayGames(games) {
+  const gameList = document.getElementById('games-list');
+  gameList.innerHTML = '';
+  
+  games.forEach(({ name, count }) => {
+    const li = document.createElement('li');
+    li.textContent = `${name} (${count})`;
+    gameList.appendChild(li);
+  });
+}
+
+function displayTags(tags) {
+  const tagList = document.getElementById('tags-list');
+  tagList.innerHTML = '';
+  
+  tags.forEach(({ name, count }) => {
+    const li = document.createElement('li');
+    li.textContent = `${name} (${count})`;
+    tagList.appendChild(li);
+  });
+}
+
+async function fetchTrendingData() {
+  try {
+    const [gamesRes, tagsRes] = await Promise.all([
+      fetch('community-games.json'),
+      fetch('community-tags.json')
+    ]);
+
+    processedGames = await gamesRes.json();
+    processedTags = await tagsRes.json();
+    
+    const gameList = document.getElementById('games-list');
+    const tagList = document.getElementById('tags-list');
+    gameList.innerHTML = '';
+    tagList.innerHTML = '';
+    
+    // 🧼 SFW filter
+    if (enableSFW) {
+      processedTags = processedTags.filter(({ name }) => isSafeTag(name));
+    }
+    
+    
+    // 🎮 Display Games
+    processedGames.forEach(({ name, count }) => {
+      const li = document.createElement('li');
+      li.textContent = `${name} (${count})`;
+      gameList.appendChild(li);
+    });
+    
+    // 🏷️ Display Tags
+    processedTags.forEach(({ name, count }) => {
+      const li = document.createElement('li');
+      li.textContent = `${name} (${count})`;
+      tagList.appendChild(li);
+    });
+  } catch (err) {
+    console.error('Failed to load trending data:', err);
+  }
+}
+// event listener for game autofill
+document.getElementById('gameTitle').addEventListener('input', async (event) => {
+  const query = event.target.value.toLowerCase();
+  const filteredGames = processedGames.filter(({ name }) => name.toLowerCase().includes(query));
+  const gameSuggestions = document.getElementById('gameSuggestions');
+  gameSuggestions.innerHTML = '';
+  
+  filteredGames.forEach(({ name }) => {
+    const li = document.createElement('li');
+    li.textContent = name;
+    li.addEventListener('click', () => {
+      document.getElementById('gameTitle').value = name;
+      gameSuggestions.innerHTML = '';
+    });
+    gameSuggestions.appendChild(li);
+  });
+});
+
+// event listener for tag autofill
+document.getElementById('customHashtags').addEventListener('input', async (event) => {
+  const query = event.target.value.toLowerCase();
+  const filteredTags = processedTags.filter(({ name }) => name.toLowerCase().includes(query));
+  const tagSuggestions = document.getElementById('tagSuggestions');
+  tagSuggestions.innerHTML = '';
+  
+  filteredTags.forEach(({ name }) => {
+    const li = document.createElement('li');
+    li.textContent = name;
+    li.addEventListener('click', () => {
+      const currentValue = document.getElementById('customHashtags').value;
+      document.getElementById('customHashtags').value = currentValue ? `${currentValue}, ${name}` : name;
+      tagSuggestions.innerHTML = '';
+    });
+    tagSuggestions.appendChild(li);
+  });
+});
+
+
+// Event listeners to update the toggles
+document.addEventListener('DOMContentLoaded', () => {
+  const sortToggle = document.getElementById('sort-toggle');
+  const sfwToggle = document.getElementById('sfw-toggle');
+
+  // Set initial checkbox states
+
+  sfwToggle.checked = enableSFW;
+
+
+
+  sfwToggle.addEventListener('change', () => {
+    enableSFW = sfwToggle.checked;
+    localStorage.setItem('enableSFW', enableSFW);
+    fetchTrendingData();
+  });
+
+  // Initial load
+  fetchTrendingData();
+});
+
+// Make sure this runs after the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Get references to elements
+    const customTagsInput = document.getElementById('customHashtags');
+    const savedTags = JSON.parse(localStorage.getItem('customTags')) || [];
+    if (customTagsInput && savedTags.length > 0) {
+        customTagsInput.value = savedTags.join(', ');
+    }
+    const customTagError = document.getElementById('customTagError');
+    const offensiveTagWarning = document.getElementById('offensive-tag-warning');
+    const generateBtn = document.getElementById('generateBtn');
+    const tagPillsContainer = document.getElementById('customTagPills'); // First declaration
+
+    // Debug element existence
+    console.log('Custom tags input exists:', !!customTagsInput);
+    console.log('Custom tag error exists:', !!customTagError);
+    console.log('Offensive tag warning exists:', !!offensiveTagWarning);
+    console.log('Generate button exists:', !!generateBtn);
+    console.log('Tag pills container exists:', !!tagPillsContainer);
+
+    // Function to find specific offensive words in the input
+    function findOffensiveWords(input) {
+        if (!input) return [];
+        const normalised = input
+            .toLowerCase()
+            .replace(/[#@]/g, '') // Remove # and @ symbols but keep other punctuation
+            .split(/[,\s]+/); // Split on commas or spaces
+        return offensiveWords.filter(word =>
+            normalised.some(term => term.includes(word))
+        );
+    }
+
+    // Modified isOffensive function to handle hashtags better
+    function isOffensive(input) {
+        console.log('Checking if offensive:', input);
+        if (!input) return false;
+        const normalised = input
+            .toLowerCase()
+            .replace(/[#@]/g, '') // Remove # and @ symbols but keep other punctuation
+            .split(/[,\s]+/); // Split on commas or spaces
+        console.log('Normalized input:', normalised);
+        const result = offensiveWords.some(word =>
+            normalised.some(term => term.includes(word))
+        );
+        console.log('Is offensive:', result);
+        return result;
+    }
+
+    // Function to check both offensive words and unsafe tags
+    function checkCustomTags() {
+        console.log('Checking custom tags');
+        if (!customTagsInput) {
+            console.log('Custom tags input not found');
+            return;
+        }
+        const customTags = customTagsInput.value;
+        console.log('Custom tags value:', customTags);
+        const badWords = findOffensiveWords(customTags);
+        console.log('Found offensive words:', badWords);
+        if (badWords.length > 0 && customTagError) {
+            customTagError.textContent = `Please note: ${badWords.join(', ')} will be added to the generated content but not saved to the Community Trending Data` ;
+            customTagError.style.display = 'block';
+        } else if (customTagError) {
+            customTagError.style.display = 'none';
+        }
+        const tagsList = customTags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+        console.log('Tags list:', tagsList);
+        const hasUnsafeTags = tagsList.some(tag => !isSafeTag(tag));
+        console.log('Has unsafe tags:', hasUnsafeTags);
+        if (hasUnsafeTags && offensiveTagWarning) {
+            console.log('Showing unsafe tags warning');
+            offensiveTagWarning.style.display = 'block';
+            offensiveTagWarning.style.visibility = 'visible';
+            offensiveTagWarning.style.opacity = '1';
+        } else if (offensiveTagWarning) {
+            console.log('Hiding unsafe tags warning');
+            offensiveTagWarning.style.display = 'none';
+        }
+    }
+
+    // Function to render custom tags as pills
+    function renderCustomTags() {
+        if (!customTagsInput || !tagPillsContainer) {
+            console.log('Custom tags input or pills container not found');
+            return;
+        }
+
+        const input = customTagsInput.value;
+        const tags = input.split(',').map(t => t.trim()).filter(Boolean);
+
+        console.log('Rendering tags as pills:', tags);
+
+        tagPillsContainer.innerHTML = '';
+        tags.forEach(tag => {
+            const pill = document.createElement('div');
+            pill.classList.add('tag-pill');
+
+            // Flag as unsafe if needed
+            if (isOffensive(tag) || !isSafeTag(tag)) {
+                pill.classList.add('unsafe');
+            }
+
+            pill.textContent = tag;
+            const removeBtn = document.createElement('button');
+            removeBtn.innerHTML = '&times;';
+            removeBtn.setAttribute('aria-label', 'Remove tag');
+            removeBtn.setAttribute('role', 'button');
+            removeBtn.setAttribute('title', 'Remove Tag');
+
+            pill.appendChild(removeBtn);
+            tagPillsContainer.appendChild(pill);
+        });
+    }
+
+     // Add event listeners
+     customTagsInput.addEventListener('input', function() {
+        checkCustomTags();
+        renderCustomTags();
+        const inputTags = customTagsInput.value
+            .split(',')
+            .map(tag => tag.trim())
+            .filter(tag => tag.length > 0);
+        localStorage.setItem('customTags', JSON.stringify(inputTags));
+    });
+
+    if (customTagsInput) {
+        console.log('Adding input event listener');
+        customTagsInput.addEventListener('input', function() {
+            checkCustomTags();
+            renderCustomTags(); // Also render pills on input
+        });
+        customTagsInput.addEventListener('change', checkCustomTags);
+        customTagsInput.addEventListener('blur', function() {
+            checkCustomTags();
+            renderCustomTags(); // Also render pills on blur
+        });
+    }
+
+    if (generateBtn) {
+        console.log('Adding click event listener to generate button');
+        generateBtn.addEventListener('click', function(e) {
+            console.log('Generate button clicked');
+            checkCustomTags();
+            // Don't prevent default - let the original handler run
+        });
+    }
+
+    // Run once on page load
+    console.log('Running initial check');
+    setTimeout(function() {
+        checkCustomTags();
+        renderCustomTags(); // Initial render of pills
+    }, 500);
+
+// Modify the tag removal event listener
+if (tagPillsContainer) {
+    tagPillsContainer.addEventListener('click', function(event) {
+        if (event.target.tagName === 'BUTTON' && event.target.textContent === '×') {
+            console.log('Remove button (delegated) clicked!');
+            const tagToRemove = event.target.previousSibling.textContent;
+            console.log('Tag to remove (delegated):', tagToRemove);
+            const currentInputValue = customTagsInput.value;
+            console.log('Current input value (delegated):', currentInputValue);
+            const currentTagsArray = currentInputValue.split(',').map(t => t.trim()).filter(Boolean);
+            console.log('Current tags array (delegated):', currentTagsArray);
+            const newTagsArray = currentTagsArray.filter(t => t !== tagToRemove);
+            console.log('New tags array (delegated):', newTagsArray);
+            customTagsInput.value = newTagsArray.join(', ');
+            console.log('Input value after removal (delegated):', customTagsInput.value);
+            
+            // Save to both storage mechanisms
+            
+            // 1. Save to customTags localStorage
+            localStorage.setItem('customTags', JSON.stringify(newTagsArray));
+            
+            // 2. Trigger the main savePreferences function to update streamTitleGenerator
+            // Create and dispatch a change event on the customHashtags input
+            const changeEvent = new Event('change', { bubbles: true });
+            customTagsInput.dispatchEvent(changeEvent);
+            
+            renderCustomTags();
+            checkCustomTags();
+        }
+    });
+}
+    function loadTotalUses() {
+  fetch('total-uses.json')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Update the total uses counter on the page
+      if (document.getElementById('totalUses')) {
+        // Use the correct property name 'total'
+        if (data && typeof data.total !== 'undefined') {
+          document.getElementById('totalUses').textContent = data.total.toLocaleString();
+        } else {
+          console.error('Unexpected data format:', data);
+          document.getElementById('totalUses').textContent = "unavailable";
+        }
+      }
+    })
+    .catch(error => {
+      console.error('Error loading total uses data:', error);
+      if (document.getElementById('totalUses')) {
+        document.getElementById('totalUses').textContent = "unavailable";
+      }
+    });
+}
+
+
+// Call the function to load total uses
+loadTotalUses();
+});
     </script>
 
 </body>
