@@ -1,23 +1,23 @@
 [
   {
     "name": "#TwitchDrops",
-    "count": 29
+    "count": 33
   },
   {
     "name": "#LiveNow",
-    "count": 29
+    "count": 33
   },
   {
     "name": "#18Plus",
-    "count": 29
+    "count": 33
   },
   {
     "name": "#Furry",
-    "count": 29
+    "count": 33
   },
   {
     "name": "#VTuber",
-    "count": 28
+    "count": 32
   },
   {
     "name": "#fuck",
@@ -25,18 +25,18 @@
   },
   {
     "name": "#FirstPlaythrough",
-    "count": 1
+    "count": 4
   },
   {
     "name": "#NoBackseating",
-    "count": 1
+    "count": 4
+  },
+  {
+    "name": "#NoSpoilers",
+    "count": 2
   },
   {
     "name": "#JustChatting",
-    "count": 1
-  },
-  {
-    "name": "#KittyWolfStinks",
     "count": 1
   }
 ]
