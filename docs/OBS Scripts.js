@@ -27,7 +27,8 @@ function initThemeToggle() {
 function downloadFile(url, filename) {
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename; // Specify the filename for the download
+    a.download = filename;
+    a.type = 'application/octet-stream'; // Explicitly set the content type
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
