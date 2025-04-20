@@ -27,15 +27,10 @@ function initThemeToggle() {
 function downloadFile(url, filename) {
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename;
-    a.type = 'application/octet-stream';
+    a.download = filename; // Now this will be the .zip filename
     document.body.appendChild(a);
-
-    // Trigger the click event after a short delay
-    setTimeout(() => {
-        a.dispatchEvent(new MouseEvent('click'));
-        document.body.removeChild(a);
-    }, 100);
+    a.click();
+    document.body.removeChild(a);
 }
 
 // Ensure the script runs after the DOM is fully loaded
