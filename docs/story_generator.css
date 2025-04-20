@@ -245,6 +245,7 @@ button {
             font-size: 15px;
             color: var(--text-color);
             margin-top: 20px;
+            margin-bottom: 20px;
             text-align: center;
             font-weight: bold;
             width: 100%;
