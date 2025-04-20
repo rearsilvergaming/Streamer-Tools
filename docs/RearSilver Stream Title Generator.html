@@ -3,7 +3,6 @@
 <head>
     <link rel="stylesheet" href="Generator.css">
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
-    <script src="story_generator.js" defer></script>
     <meta charset="UTF-8" />
     <meta name="description" content="Generate creative and engaging Twitch stream titles quickly and easily with RearSilver's free tool. Perfect for furry VTubers and adult content creators.">
     <title>RearSilver's Free Twitch Stream Title Generator for Engaging Content</title>
@@ -328,7 +327,7 @@
         </label>
         <label class="custom-checkbox">
             <input type="checkbox" class="hashtagOption" value="#TwitchPartnerPush">
-            <span class="checkmark"></span>#TwitchPartnerPush
+            <span class="checkmark"></span>#TwitchStreamer
         </label>
         <label class="custom-checkbox">
             <input type="checkbox" class="hashtagOption" value="#TwitchStreamer">
@@ -375,12 +374,19 @@
 
             <div id="customTagPills" class="tag-pill-container"></div>
 
-            
             <label class="custom-checkbox" style="font-size: 0.9rem;">
-                <input type="checkbox" id="optOutCheckbox">
+                <input type="checkbox" id="customTitleCheckbox">
                 <span class="checkmark"></span>
-            Opt out to not anonymously share tags and game data to Community Trending.
-          </label>
+                Use custom stream title text
+            </label>
+            <div id="customTitleSection" style="display: none; margin-top: 10px;">
+                <label for="customTitle">Custom Title Text:</label>
+                <input type="text" id="customTitle" placeholder="Enter your custom title text">
+                <p class="note" style="font-size: 0.8rem; color: var(--note-color); margin-top: 5px;">
+                    If you enter custom text, it will override the generated title. Emojis and hashtags will still be added.
+                </p>
+            </div>
+            
 
         <div id="customTagError" style="display: none; color: red; margin-top: 10px;">
             Warning: Some hashtags contain potentially offensive content and won't be saved to community data.
@@ -388,7 +394,12 @@
 
         <button id="generateBtn">Generate Title/Go Live Notification</button>
 
-          
+                      <label class="custom-checkbox" style="font-size: 0.9rem;">
+                <input type="checkbox" id="optOutCheckbox">
+                <span class="checkmark"></span>
+            Opt out to not anonymously share tags and game data to Community Trending.
+          </label>
+
 
         <div id="previewArea">
             <h2>Generated Title:</h2>
@@ -479,6 +490,13 @@
         
 // Tab navigation
 document.addEventListener('DOMContentLoaded', function () {
+
+        // Ensure the toggle functionality is initialized
+        document.getElementById('customTitleCheckbox').addEventListener('change', function () {
+        document.getElementById('customTitleSection').style.display = this.checked ? 'block' : 'none';
+    });
+
+
     const tabs = document.querySelectorAll('.tab');
     const tabContents = document.querySelectorAll('.tab-content');
 
@@ -512,6 +530,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const generateBtn = document.getElementById('generateBtn');
     const downloadBtn = document.getElementById('downloadBtn');
     const canvas = document.getElementById('storyCanvas');
+
+    // Ensure the canvas element exists
+    if (!canvas) {
+        console.error('Canvas element with id "storyCanvas" not found.');
+        return; // Exit the function if the canvas is not found
+    }
+
     const ctx = canvas.getContext('2d');
     const storyTypeSelect = document.getElementById('storyType');
     const upcomingStreamOptions = document.getElementById('upcomingStreamOptions');
@@ -2161,6 +2186,8 @@ document.getElementById('generateBtn').addEventListener('click', function () {
     const theme = document.getElementById('theme').value;
     const emojiPack = document.getElementById('emojiPack').checked;
     const customInput = document.getElementById('customHashtags').value.trim();
+    const useCustomTitle = document.getElementById('customTitleCheckbox').checked;
+    const customTitleText = document.getElementById('customTitle').value.trim();
 
             // Add this line to get the mature content checkbox state
     const matureContent = document.getElementById('matureContent').checked;
@@ -2205,6 +2232,23 @@ const emoji = getEmoji(theme);
         let title = `${titleStarter} ${gameTitle} ${matureIndicator}`;
         let goLiveMessage = `🚨 ${goLiveStarter} ${gameTitle}! ${matureIndicator}`;
         let supportMessage = generalSupport; // Start with a general message
+
+        if (useCustomTitle && customTitleText !== '') {
+            // Only use the custom title, hashtags, and emojis
+            title = `${customTitleText} ${hashtags} ${emoji}`.trim();
+            goLiveMessage += `${customTitleText}! ${emoji}`;
+        } else {
+            // Fallback to the default title generation logic
+            title = `${titleStarter} ${gameTitle} ${matureIndicator} ${hashtags} ${emoji}`.trim();
+            goLiveMessage += `${goLiveStarter} ${gameTitle}! ${matureIndicator} ${emoji}`;
+        }
+
+                // Update the UI with the generated title and go-live message
+                document.getElementById('generatedTitle').textContent = title;
+        document.getElementById('goLiveMessage').textContent = goLiveMessage;
+
+        // Update character counters if needed
+        updateCharacterCounters(title, goLiveMessage);
 
   // Add this collaborator handling code:
   if (document.getElementById('isCollab') && document.getElementById('isCollab').checked) {
@@ -2859,45 +2903,51 @@ function initPreviewCardGenerator() {
     const generateCardBtn = document.getElementById('generateCardBtn');
     const downloadCardBtn = document.getElementById('downloadCardBtn');
     const canvas = document.getElementById('previewCard');
+
+    // Ensure the canvas element exists
+    if (!canvas) {
+        console.error('Canvas element with id "previewCard" not found.');
+        return; // Exit the function if the canvas is not found
+    }
+
     const ctx = canvas.getContext('2d');
     
     // Disable download button initially
     downloadCardBtn.disabled = true;
-    
-    generateCardBtn.addEventListener('click', function() {
-    const title = document.getElementById('generatedTitle').textContent;
-    const gameTitle = document.getElementById('gameTitle').value;
-    const template = document.getElementById('cardTemplate').value;
-    
-    // Get the channel name from the share section
-    const channelName = document.getElementById('twitchChannel').value.trim();
-    
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Generate card based on selected template
-    switch(template) {
-        case 'twitch':
-            generateTwitchCard(ctx, gameTitle, title, channelName);
-            break;
-        case 'minimal':
-            generateMinimalCard(ctx, gameTitle, title, channelName);
-            break;
-        case 'gaming':
-            generateGamingCard(ctx, gameTitle, title, channelName);
-            break;
-        default:
-            generateTwitchCard(ctx, gameTitle, title, channelName);
-    }
-    
-    // Enable download button
-    downloadCardBtn.disabled = false;
-});
 
-    
-    downloadCardBtn.addEventListener('click', function() {
+    generateCardBtn.addEventListener('click', function () {
+        const title = document.getElementById('generatedTitle').textContent;
+        const gameTitle = document.getElementById('gameTitle').value;
+        const template = document.getElementById('cardTemplate').value;
+
+        // Get the channel name from the share section
+        const channelName = document.getElementById('twitchChannel').value.trim();
+
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Generate card based on selected template
+        switch (template) {
+            case 'twitch':
+                generateTwitchCard(ctx, gameTitle, title, channelName);
+                break;
+            case 'minimal':
+                generateMinimalCard(ctx, gameTitle, title, channelName);
+                break;
+            case 'gaming':
+                generateGamingCard(ctx, gameTitle, title, channelName);
+                break;
+            default:
+                generateTwitchCard(ctx, gameTitle, title, channelName);
+        }
+
+        // Enable download button
+        downloadCardBtn.disabled = false;
+    });
+
+    downloadCardBtn.addEventListener('click', function () {
         if (this.disabled) return;
-        
+
         const link = document.createElement('a');
         link.download = 'stream-preview.png';
         link.href = canvas.toDataURL('image/png');
@@ -3999,6 +4049,12 @@ if (tagPillsContainer) {
 // Call the function to load total uses
 loadTotalUses();
 });
+
+window.onload = function () {
+    const customTitleCheckbox = document.getElementById('customTitle');
+    const customTitleSection = document.getElementById('customTitleSection');
+}
+
     </script>
 
 </body>
