@@ -25,14 +25,28 @@ function initThemeToggle() {
 
 // Function to handle file downloads
 function downloadFile(url, filename) {
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.type = 'application/octet-stream'; // Explicitly set the content type
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(blobUrl);
+        })
+        .catch(error => {
+            console.error('There was a problem downloading the file:', error);
+        });
 }
+
 
 // Ensure the script runs after the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function() {
