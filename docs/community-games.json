@@ -1,5 +1,9 @@
 [
   {
+    "name": "Dawn of war 2",
+    "count": 104
+  },
+  {
     "name": "Destiny 2",
     "count": 82
   },
@@ -14,9 +18,5 @@
   {
     "name": "Armored Core 6",
     "count": 9
-  },
-  {
-    "name": "Dawn of war 2",
-    "count": 6
   }
 ]
