@@ -1,3 +1,18 @@
+// Ensure this is in the global scope
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Add the scroll event listener
+window.addEventListener('scroll', function () {
+    const backToTop = document.getElementById('backToTop');
+    if (window.scrollY > 300) { // Show button after scrolling 300px
+        backToTop.style.display = 'block';
+    } else {
+        backToTop.style.display = 'none';
+    }
+});
+
 function initThemeToggle() {
     const themeToggle = document.getElementById('themeToggle');
 
