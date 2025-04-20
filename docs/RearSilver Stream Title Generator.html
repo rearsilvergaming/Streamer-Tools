@@ -2806,6 +2806,12 @@ function initThemeToggle() {
     });
 }
 
+// Ensure the script runs after the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initThemeToggle();
+});
+
+
 // Event listener for the collab checkbox
 document.getElementById('isCollab').addEventListener('change', function() {
   document.getElementById('collabSection').style.display = this.checked ? 'block' : 'none';
