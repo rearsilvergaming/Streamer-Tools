@@ -235,19 +235,19 @@ button {
             opacity: 0.8;
         }
 
-        .hr {
-            border: none;
-            border-top: 1px solid var(--preview-border);
+        hr {
+            border: 10px solid var(--button-bg);
+            border-radius: 5px;
             margin: 15px 0;
         }
         
         .footer-text {
-            font-size: 15px;
+            font-size: 18px;
             color: var(--text-color);
             margin-top: 20px;
             margin-bottom: 20px;
             text-align: center;
-            font-weight: bold;
+            font-weight: normal;
             width: 100%;
         }
         
