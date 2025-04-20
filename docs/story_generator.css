@@ -586,11 +586,12 @@ button:disabled {
     cursor: pointer;
     background-color: var(--button-bg);
     color: var(--button-text);
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 15px;
+    font-size: 16px;
+    cursor: pointer;
+     margin-top: 15px;
+     margin-bottom: 15px;
     border-bottom: none;
-    border-radius: 4px 4px 0 0;
+    border-radius: 4px 4px 4px 4px;
     margin-right: 5px;
 }
 
@@ -601,8 +602,8 @@ button:disabled {
 .menu.active {
     background-color: #6441a5; /* Twitch purple */
     color: var(--button-text);
-    margin-bottom: -1px;
-    font-weight: bold;
+    font-weight: bolder;
+    text-decoration: wavy underline;
 }
 
 .menu-content {
