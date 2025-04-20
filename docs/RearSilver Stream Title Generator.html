@@ -486,6 +486,21 @@
 <button id="backToTop" class="back-to-top" onclick="scrollToTop()">⬆️ Back to Top</button>
 
     <script>
+
+// Ensure this is in the global scope
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Add the scroll event listener
+window.addEventListener('scroll', function () {
+    const backToTop = document.getElementById('backToTop');
+    if (window.scrollY > 300) { // Show button after scrolling 300px
+        backToTop.style.display = 'block';
+    } else {
+        backToTop.style.display = 'none';
+    }
+});
         
 // Tab navigation
 document.addEventListener('DOMContentLoaded', function () {
@@ -4053,6 +4068,8 @@ if (tagPillsContainer) {
       }
     });
 }
+
+
 
 
 // Call the function to load total uses
