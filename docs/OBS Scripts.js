@@ -24,8 +24,13 @@ function initThemeToggle() {
 }
 
 // Function to handle file downloads
-function downloadFile(url) {
-    window.location.href = url;
+function downloadFile(url, filename) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename; // Specify the filename for the download
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 
 // Ensure the script runs after the DOM is fully loaded
