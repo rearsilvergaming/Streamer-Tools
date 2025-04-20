@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="OBS Scripts.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script src="OBS Scripts.js" defer></script>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Generate creative and engaging Twitch stream titles quickly and easily with RearSilver's free tool. Perfect for furry VTubers and adult content creators.">
+    <title>RearSilver's Free OBS Scripts for stream</title>
+    
+</head>
+<body>
+            
+    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+    <script>
+        kofiWidgetOverlay.draw('rearsilver', {
+            'type': 'floating-chat',
+            'floating-chat.donateButton.text': 'Donate',
+            'floating-chat.donateButton.background-color': '#794bc4',
+            'floating-chat.donateButton.text-color': '#fff'
+        });
+    </script>
+        <!-- Header section -->
+        <div class="header">
+            <div class="donate-text">
+                If you enjoy this tool, please consider supporting me on Ko-fi!
+            </div>
+            <div class="button-container">
+                <button id="kofiBtn">
+                    <img src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi">
+                    Buy me a coffee
+                </button>
+                <button id="twitchBtn">Follow me on Twitch</button>
+                <button id="discordBtn">More streamer tools</button>
+                <button id="themeToggle">🌙 Dark Mode</button>
+            </div>
+        </div>
+
+            
+        <div class="menus">
+            <button id="stream-title-generator" class="menu" onclick="window.location.href='RearSilver Stream Title Generator.html';">Stream Title Generator</button>
+            <button id="twitch-story-generator" class="menu" onclick="window.location.href='Twitch Story Generator.html';">Twitch Story Generator</button>
+            <button id="obs-scripts" class="menu active" onclick="window.location.href='OBS Scripts.html';">OBS Scripts</button>
+        </div>
+        <div class="container">
+
+    <h1>OBS Scripts</h1>
+    <h3>Pre-made scripts designed to make automation of streaming easier.</h3>
+    <!-- Script 1 -->
+    <div class="script-card">
+        <h3>RearSilver's Auto Start</h3>
+        <h4>
+            The RearSilver Auto Start script helps you automatically launch and close your essential streaming applications alongside OBS Studio.<br>
+            Configure a list of your favourite programs (like chatbots, music players, lighting controls, etc.), and this script will launch them when OBS starts and (attempts to) close them when OBS exits.<br>
+            You can also manually launch or close these programs using buttons in the script's UI or even trigger the launch with a dedicated hotkey! Get your stream ready with a single action.</h4>
+        <ul class="trending-list">
+            <li>Auto-Launch on OBS Start:<br>
+                Automatically launch your specified programs when you open OBS Studio.
+            </li>
+            <li>Graceful Close on OBS Exit:<br>
+                Attempts to close the launched programs when you close OBS.
+            </li>
+            <li>Manual Launch & Close Buttons:<br>
+                Provides "Launch Now" and "Close Now" buttons in the script UI for on-demand control.
+            </li>
+            <li>Optional Hotkey Trigger:<br>
+                Set up a hotkey in OBS to manually launch your configured programs whenever you need them.
+            </li>
+            <li>Run as Administrator Option:<br>
+                Allows you to specify if a program should be launched with administrator privileges<br>
+                (use with caution and ensure OBS is also run as admin for best results).
+            </li>
+            <li>Configurable Program List:<br>
+                Add up to 10 different programs with their executable paths and optional launch arguments.
+            </li>
+            <li>
+                Saves Configuration:<br>
+                Your program list and settings are saved between OBS sessions.
+            </li>
+        </ul>
+        <h4>Setup Instructions:</h4>
+        <ol class="script-setup">
+            <li>Download the Rearsilver Auto Start.lua file.
+            </li>
+            <li>In OBS Studio, go to Tools > Scripts.
+            </li>
+            <li>Click the "+" button in the Scripts window and add the Rearsilver Auto Start.lua file.
+            </li>
+            <li>In the script's UI, you will see a list of program configurations. For each program you want to manage:
+            </li>
+            <li>Click the "Browse" button to select the executable file (.exe on Windows) of the program.
+            </li>
+            <li>Optionally, enter any "Launch Arguments" the program might require.
+            </li>
+            <li>Toggle the "Run as Administrator" checkbox if the program needs elevated privileges.
+            </li>
+            <li>Check the "Auto-launch programs on OBS start" box if you want the programs to launch automatically when OBS opens.
+            </li>
+            <li>Alternatively, check the "Use hotkey instead of auto-launch" box if you prefer to trigger the launch manually using a hotkey. If you select this, you'll need to assign a hotkey in OBS Settings > Hotkeys under the "Launch Programs (RearSilver)" action.
+            </li>
+            <li>Click the "Launch Now" button to manually start all configured programs.
+            </li>
+            <li>Click the "Close Now" button to attempt to close all programs launched by the script.
+            </li>
+        </ol>
+        <button class="btn btn-secondary" id="downloadAutoStartBtn">Download Script</button>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const downloadAutoStartBtn = document.getElementById('downloadAutoStartBtn');
+        
+            downloadAutoStartBtn.addEventListener('click', function() {
+                const rawFileUrl = 'https://github.com/rearsilvergaming/Streamer-Tools/raw/main/Rearsilver%20Auto%20Start.lua';
+                const fileName = 'Rearsilver Auto Start.lua';
+        
+                fetch(rawFileUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = fileName;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    })
+                    .catch(error => {
+                        console.error('Error downloading the script:', error);
+                        alert('An error occurred while trying to download the script.');
+                    });
+            });
+        });
+        </script>    <div class="script-card">
+        <h3>RearSilver's Browser Source Refresh</h3>
+        <h4>Tired of your browser sources in OBS acting up, going blank, or just not updating correctly?<br>
+            The RearSilver Browser Refresh script is here to save the day!<br>
+            This handy tool allows you to easily refresh any selected browser source in your OBS scene with a single click of a button in the script's UI.<br>
+            No more fumbling through source properties or restarting OBS! Keep your overlays, widgets, and web elements running smoothly with this simple yet effective script.</h4>
+        <ul class="trending-list">
+            <li>Effortless Browser Source Refresh:<br>
+                Instantly refresh any browser source you've added to your OBS scene.
+            </li>
+            <li>Simple UI:<br>
+                A clean and straightforward interface within OBS allows you to select the browser source you want to refresh.
+            </li>
+            <li>Quick Troubleshooting:<br>
+                Easily fix temporary glitches or update issues with your browser-based overlays without interrupting your stream.
+            </li>
+            <li>Streamlined Workflow:<br>
+                Keep your focus on your content, not on troubleshooting technical hiccups with your browser sources.
+            </li>
+            <li>
+                Saves Configuration:<br>
+                Your program list and settings are saved between OBS sessions.
+            </li>
+        </ul>
+        <h4>Setup Instructions:</h4>
+        <ol class="script-setup">
+            <li>
+                Download the RearSilver Browser Refresh.lua file.
+            </li>
+            <li>
+                In OBS Studio, go to Tools > Scripts.
+            </li>
+            <li>
+                Click the "+" button in the Scripts window and add the RearSilver Browser Refresh.lua file.
+            </li>
+            <li>
+                In the script's UI, you will see a list of program configurations. For each program you want to manage:
+            </li>
+            <li>
+                In the script's UI, you will see a dropdown menu listing all your current browser sources in your active scene.
+            </li>
+            <li>
+                Select the browser source you want to be able to refresh.
+            </li>
+            <li>
+                Click the "Refresh Browser Source" button in the script's UI whenever you need to refresh the selected source or set a hotkey to make life easier!.
+            </li>
+
+        </ol>
+        <button class="btn btn-secondary" onclick="window.open('https://github.com/YourGitHubRepo/Script1', '_blank')">Download Script</button>
+    </div>
+
+        <!-- Script 3 -->
+        <div class="script-card">
+            <h3>RearSilver's Quick Text Source Creator</h3>
+            <h4>The RearSilver Text Source script provides a dynamic and convenient way to control the text displayed in a specific Text (GDI+) source within your OBS scene.<br>
+                Instead of constantly editing the text source properties, this script gives you a simple text input field in its UI where you can type or paste the desired text, and it will instantly update in your stream.<br>
+                Perfect for displaying quick messages, shoutouts, live reactions, or any other temporary text elements!</h4>
+            <ul class="trending-list">
+                <li>Real-time Text Updates:<br>
+                    Change the text displayed in your chosen Text (GDI+) source directly from the script's UI, with instant updates on your stream.
+                </li>
+                <li>Easy Text Input:<br>
+                    A simple text box allows for quick typing or pasting of the desired message.
+                </li>
+                <li>Source Selection:<br>
+                    A dropdown menu lets you select which of your existing Text (GDI+) sources you want to control with the script.
+                </li>
+                <li>Dynamic On-Screen Information:<br>
+                    Display temporary information or engage with your audience in real-time without interrupting your stream flow.
+                </li>
+                <li>
+                    Saves Configuration:<br>
+                    Your program list and settings are saved between OBS sessions.
+                </li>
+            </ul>
+            <h4>Setup Instructions:</h4>
+            <ol class="script-setup">
+                <li>Download the Rearsilver Auto Start.lua file.
+                </li>
+                <li>In OBS Studio, go to Tools > Scripts.
+                </li>
+                <li>Click the "+" button in the Scripts window and add the RearSilver Text Source.lua file.
+                </li>
+                <li>In the script's UI, you will see a dropdown menu listing all your current Text (GDI+) sources in your active scene.
+                </li>
+                <li>Select the Text (GDI+) source you want to control.
+                </li>
+                <li>Type or paste the text you want to display into the provided text field in the script's UI. The text in your selected source will update immediately.
+                </li>
+            </ol>
+            <button class="btn btn-secondary" onclick="window.open('https://github.com/YourGitHubRepo/Script1', '_blank')">Download Script</button>
+        </div>
+
+            <!-- Script 4 -->
+    <div class="script-card">
+        <h3>RearSilver's Mighty Muted Mic Reminder/Notice</h3>
+        <h4>You ever have those moments where you're chatting away on stream, only to realize you've been muted the whole time? Don't worry, this musky Husky has your back!<br>
+            Never let a muted microphone ruin your stream again!<br>
+            RearSilver's Mighty Muted Reminder is a simple yet powerful OBS script that helps you stay aware of your microphone's mute status.<br>
+            By automatically showing a customizable text indicator when your mic is muted, this script ensures you'll always know when your audience can (or can't) hear you.<br>
+            It's easy to set up, works across multiple scenes, and gives you full control over the styling of the text indicator.</h4>
+        <ul class="trending-list">
+            <li>Automatic Mute Detection:<br>
+                Displays a text indicator when your selected microphone is muted and hides it when unmuted.            </li>
+            <li>Customizable Text Source:<br>
+                Use any "Text (GDI+)" source in OBS to style the mute indicator exactly how you want.
+            </li>
+            <li>Scene Flexibility:<br>
+                Works across all scenes where the text source is present, so you don't need to configure it for each scene individually.
+            </li>
+            <li>Simple Setup:<br>
+                Just select your microphone and text source in the script's settings, and you're good to go.
+            </li>
+            <li>Set It and Forget It:<br>
+                Once configured, the script runs automatically in the background, keeping you informed without any extra effort.
+            </li>
+            <li>Streamer-Friendly Design:<br>
+                Created by a streamer for streamers, this script is designed to solve a common problem with minimal hassle.
+            </li>
+            <li>
+                Saves Configuration:<br>
+                Your program list and settings are saved between OBS sessions.
+            </li>
+        </ul>
+        <h4>Setup Instructions:</h4>
+        <ol class="script-setup">
+            <li>Download the RearSilver's Mighty Muted Reminder.lua file.
+            </li>
+            <li>In OBS Studio, go to Tools > Scripts.
+            </li>
+            <li>Click the "+" button in the Scripts window and add the Rearsilver Mighty Muted Reminder.lua file.
+            </li>
+            <li>In OBS, create a "Text (GDI+)" source in the scene(s) where you want the mute indicator to appear.
+            </li>
+            <li>Customize the text source's appearance (e.g., font, size, color, etc.) to your liking.
+            </li>
+            <li>Select your microphone input from the dropdown list.
+            </li>
+            <li>Enter the exact, case-sensitive name of the "Text (GDI+)" source you created.
+            </li>
+            <li>Follow the on-screen instructions in the script's UI for additional guidance.
+            </li>
+            <li>Alternatively, check the "Use hotkey instead of auto-launch" box if you prefer to trigger the launch manually using a hotkey. If you select this, you'll need to assign a hotkey in OBS Settings > Hotkeys under the "Launch Programs (RearSilver)" action.
+            </li>
+            <li>Mute and unmute your microphone to ensure the text indicator appears and disappears as expected.
+            </li>
+            <li>Copy and paste the text source into other scenes where you want the mute indicator to appear.
+            </li>
+        </ol>
+        <button class="btn btn-secondary" onclick="window.open('https://github.com/YourGitHubRepo/Script1', '_blank')">Download Script</button>
+    </div>
+</div> <!-- Closing obs-scripts-content -->
+
+</div> <!-- Closing tabs container -->
+
+<hr>
+<footer class="bg-light text-center text-lg-start mt-4 rounded-top">
+    <div class="footer-text">
+        Made by RearSilver Copyright &copy; 2025. All rights reserved. | Not affiliated with Twitch
+        <br>
+        <br>
+        Find me at: | <a href="https://twitch.tv/rearsilver" target="_blank">Twitch</a> | <a href="https://discord.com/invite/RRbQ93Ceew" target="_blank">Discord</a> | <a href="https://x.com/rearsilvergamer" target="_blank">Twitter</a> | <a href="https://www.youtube.com/rearsilvergaming" target="_blank">YouTube</a> | <a href="https://www.tiktok.com/@RearSilver" target="_blank">TikTok</a> | <a href="https://www.instagram.com/RearSilver.gaming" target="_blank">Instagram</a> |
+    </div>
+</footer>
+</div> <!-- Closing main container -->

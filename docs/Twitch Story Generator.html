@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="story_generator.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitch Story Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script src="story_generator.js" defer></script>
+</head>
+<body>
+    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+    <script>
+        kofiWidgetOverlay.draw('rearsilver', {
+            'type': 'floating-chat',
+            'floating-chat.donateButton.text': 'Donate',
+            'floating-chat.donateButton.background-color': '#794bc4',
+            'floating-chat.donateButton.text-color': '#fff'
+        });
+    </script>
+        <!-- Header section -->
+        <div class="header">
+            <div class="donate-text">
+                If you enjoy this tool, please consider supporting me on Ko-fi!
+            </div>
+            <div class="button-container">
+                <button id="kofiBtn">
+                    <img src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi">
+                    Buy me a coffee
+                </button>
+                <button id="twitchBtn">Follow me on Twitch</button>
+                <button id="discordBtn">More streamer tools</button>
+                <button id="themeToggle">🌙 Dark Mode</button>
+            </div>
+        </div>
+
+            
+        <div class="menus">
+            <button id="stream-title-generator" class="menu" onclick="window.location.href='RearSilver Stream Title Generator.html';">Stream Title Generator</button>
+            <button id="twitch-story-generator" class="menu active" onclick="window.location.href='Twitch Story Generator.html';">Twitch Story Generator</button>
+            <button id="obs-scripts" class="menu" onclick="window.location.href='OBS Scripts.html';">OBS Scripts</button>
+        </div>
+    <h1>Twitch Story Generator</h1>
+    <H3>Created for Twitch streamers to easily generate story images for Twitch scheduled stream and thank streamers for raiding.</H3>
+    
+    <div class="container">
+        <div class="controls">
+            <div class="tabs">
+                <div class="tab active" data-tab="content">Content</div>
+                <div class="tab" data-tab="style">Style</div>
+                <div class="tab" data-tab="profile">Profile</div>
+            </div>
+            
+            <div id="content-tab" class="tab-content active">
+                <h2>Story Content</h2>
+                
+                <div class="form-group">
+                    <label for="channelName">Twitch Channel Name:</label>
+                    <input type="text" id="channelName" placeholder="YourTwitchChannel">
+                </div>
+                
+                <div class="form-group">
+                    <label for="storyType">Story Type:</label>
+                    <select id="storyType">
+                        <option value="upcoming">Upcoming Stream</option>
+                        <option value="raid">Raid Thanker</option>
+                    </select>
+                </div>
+                
+                <div id="upcomingStreamOptions">
+                    <div class="form-group">
+                        <label for="gameTitle">Game/Category:</label>
+                        <input type="text" id="gameTitle" placeholder="Just Chatting, Valorant, etc.">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="streamTitle">Stream Title:</label>
+                        <textarea id="streamTitle" placeholder="Enter your stream title here..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="custom-checkbox" style="font-size: 0.9rem;">
+                            <input type="checkbox" id="matureContent">
+                            <span class="checkmark"></span>
+                            Mature Content
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="custom-checkbox" style="font-size: 0.9rem;">
+                            <input type="checkbox" id="scheduleStream" checked>
+                            <span class="checkmark"></span>
+                            Include Schedule
+                        </label>
+                    </div>
+                    
+                    <div id="scheduleOptions">
+                        <div class="form-group">
+                            <label for="streamDate">Stream Date:</label>
+                            <input type="date" id="streamDate">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="streamTime">Stream Time:</label>
+                            <input type="time" id="streamTime">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="timeZone">Time Zone:</label>
+                            <select id="timeZone">
+                                <option value="local">Local Time</option>
+                                <option value="ET">Eastern Time (ET)</option>
+                                <option value="CT">Central Time (CT)</option>
+                                <option value="MT">Mountain Time (MT)</option>
+                                <option value="PT">Pacific Time (PT)</option>
+                                <option value="GMT">Greenwich Mean Time (GMT)</option>
+                                <option value="BST">British Summer Time (BST)</option>
+                                <option value="CET">Central European Time (CET)</option>
+                                <option value="JST">Japan Standard Time (JST)</option>
+                                <option value="AEST">Australian Eastern Standard Time (AEST)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="raidThankerOptions" style="display: none;">
+                    <div class="form-group">
+                        <label for="raidCount">Number of Raids to Thank:</label>
+                        <input type="number" id="raidCount" min="1" max="5" value="1">
+                    </div>
+                    
+                    <div id="raidEntries" class="raid-entries">
+                        <!-- Raid entries will be dynamically added here -->
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="custom-checkbox" style="font-size: 0.9rem;">
+                        <input type="checkbox" id="includeQRCode" checked>
+                        <span class="checkmark"></span>
+                        Include QR Code to Channel
+                    </label>
+                </div>
+            </div>
+            
+            <div id="style-tab" class="tab-content">
+                <h2>Style Options</h2>
+                
+                <div class="form-group">
+                    <label for="backgroundStyle">Background Style:</label>
+                    <select id="backgroundStyle">
+                        <option value="gradient">Gradient (Default)</option>
+                        <option value="solid">Solid Color</option>
+                        <option value="image">Image</option>
+                    </select>
+                </div>
+                
+                <div id="gradientOptions">
+                    <div class="form-group">
+                        <label for="gradientTopColor">Top Color: 
+                            <span class="color-preview" id="topColorPreview"></span>
+                        </label>
+                        <input type="color" id="gradientTopColor" value="#6441a5">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="gradientBottomColor">Bottom Color: 
+                            <span class="color-preview" id="bottomColorPreview"></span>
+                        </label>
+                        <input type="color" id="gradientBottomColor" value="#392e5c">
+                    </div>
+                </div>
+                
+                <div id="solidColorOptions" style="display: none;">
+                    <div class="form-group">
+                        <label for="backgroundColor">Background Color: 
+                            <span class="color-preview" id="bgColorPreview"></span>
+                        </label>
+                        <input type="color" id="backgroundColor" value="#6441a5">
+                    </div>
+                </div>
+                
+                <div id="backgroundImageOptions" style="display: none;">
+                    <div class="form-group">
+                        <label for="backgroundImage">Background Image:</label>
+                        <input type="file" id="backgroundImage" accept="image/*">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="backgroundOpacity">Background Opacity:</label>
+                        <input type="range" id="backgroundOpacity" min="0.1" max="1" step="0.1" value="0.3">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="overlayColor">Overlay Color: 
+                            <span class="color-preview" id="overlayColorPreview"></span>
+                        </label>
+                        <input type="color" id="overlayColor" value="#6441a5">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fontStyle">Font Style:</label>
+                    <select id="fontStyle">
+                        <option value="Arial, sans-serif">Arial (Default)</option>
+                        <option value="'Segoe UI', sans-serif">Segoe UI</option>
+                        <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                        <option value="'Courier New', monospace">Courier New</option>
+                        <option value="Georgia, serif">Georgia</option>
+                        <option value="Impact, sans-serif">Impact</option>
+                        <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="textColor">Text Color: 
+                        <span class="color-preview" id="textColorPreview"></span>
+                    </label>
+                    <input type="color" id="textColor" value="#ffffff">
+                </div>
+                
+                <div class="form-group">
+                    <label for="accentColor">Accent Color: 
+                        <span class="color-preview" id="accentColorPreview"></span>
+                    </label>
+                    <input type="color" id="accentColor" value="#ff8c00">
+                </div>
+            </div>
+            
+            <div id="profile-tab" class="tab-content">
+                <h2>Profile Settings</h2>
+                
+                <div class="form-group">
+                    <label class="custom-checkbox" style="font-size: 0.9rem;">
+                        <input type="checkbox" id="includeProfilePic">
+                        <span class="checkmark"></span>
+                        Include Profile Picture
+                    </label>
+                </div>
+                
+                <div id="profilePicOptions" style="display: none;">
+                    <div class="form-group">
+                        <label for="profilePicture">Upload Profile Picture:</label>
+                        <input type="file" id="profilePicture" accept="image/*">
+                    </div>
+                    
+                    <img id="profilePreview" class="profile-preview" src="" alt="Profile Preview">
+                    
+                    <div class="form-group">
+                        <label for="profileSize">Profile Picture Size:</label>
+                        <input type="range" id="profileSize" min="100" max="250" step="10" value="200">
+                    </div>
+                    
+                    <button id="clearProfileBtn" class="btn-secondary">Clear Profile Picture</button>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button id="generateBtn">Generate Story</button>
+                <button id="downloadBtn" disabled>Download Image</button>
+            </div>
+        </div>
+        
+        <div class="preview">
+            <h2>Preview</h2>
+            <canvas id="storyCanvas" width="1080" height="1920"></canvas>
+        </div>
+    </div>
+    
