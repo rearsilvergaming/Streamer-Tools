@@ -28,10 +28,14 @@ function downloadFile(url, filename) {
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
-    a.type = 'application/octet-stream'; // Explicitly set the content type
+    a.type = 'application/octet-stream';
     document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+
+    // Trigger the click event after a short delay
+    setTimeout(() => {
+        a.dispatchEvent(new MouseEvent('click'));
+        document.body.removeChild(a);
+    }, 100);
 }
 
 // Ensure the script runs after the DOM is fully loaded
