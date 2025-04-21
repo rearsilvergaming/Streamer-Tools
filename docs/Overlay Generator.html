@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stream Overlay Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Roboto&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+:root {
+    --bg-color: #f5f5f5;
+    --container-bg: white;
+    --text-color: #333;
+    --input-bg: white;
+    --input-border: #ddd;
+    --button-bg: #4CAF50;
+    --button-text: white;
+    --preview-bg: #f9f9f9;
+    --preview-border: #ddd;
+    --note-color: #666;
+    --checkbox-bg: #ccc;
+    --checkbox-checked: DodgerBlue;
+}
+
+         .dark-mode {
+    --bg-color: #222;
+    --container-bg: #333;
+    --text-color: #eee;
+    --input-bg: #444;
+    --input-border: #555;
+    --button-bg: #6441a5;
+    --button-text: white;
+    --preview-bg: #444;
+    --preview-border: #555;
+    --note-color: #eee;
+    --checkbox-bg: #555;
+    --checkbox-checked: #6441a5;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    text-transform: capitalize;
+
+}
+
+.header {
+    width: auto;
+    margin-bottom: 20px;
+
+    padding: 50px;
+    justify-content: center; /* Space out buttons evenly */
+    align-items: center; /* Align buttons vertically */
+    gap: 10px; /* Add spacing between buttons */
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    text-transform: capitalize;
+
+}
+
+.donate-text {
+    color: var(--text-color);
+    font-size: 20px;
+    font-weight: bolder;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between; /* Space out buttons evenly */
+    align-items: center;
+    gap: 10px; /* Add spacing between buttons */
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    text-transform: capitalize;
+
+}
+
+#kofiBtn {
+    background-color: #29abe0;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+    border: none;
+    width: 250px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#kofiBtn:hover {
+    opacity: 0.9;
+}
+
+#kofiBtn img {
+    height: 20px;
+    margin-right: 8px;
+}
+
+#themeToggle {
+    width: 250px;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    cursor: pointer;
+}
+
+#themeToggle:hover {
+    opacity: 0.9;
+}
+
+
+        h1 {
+            text-align: center;
+    color: var(--text-color);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input, select, button, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    text-transform: capitalize;
+
+}
+
+button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #twitchBtn {
+            background-color: #6441a5; /* Twitter Blue */
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-right: 50px;
+            border: none; /* Remove default button border */
+            padding: 10px 15px;
+            border-radius: 5px;
+            width: 250px;
+        }
+
+        #discordBtn {
+            background-color: #5865F2; /* Discord Blurple */
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+            margin-top: 10px;
+            margin-left: 46px;
+            border: none; /* Remove default button border */
+            padding: 10px 15px;
+            border-radius: 5px;
+            width: 250px;
+        }
+
+        #twitchBtn:hover {
+            opacity: 0.8;
+        }
+
+        #discordBtn:hover {
+            opacity: 0.8;
+        }
+
+        hr {
+            border: 10px solid var(--button-bg);
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .footer-text {
+            font-size: 18px;
+            color: var(--text-color);
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: normal;
+            width: 100%;
+        }
+        
+        a:link {
+          color: #6441a5;
+          background-color: transparent;
+          text-decoration: none;
+        }
+        
+        a:visited {
+          color: #6441a5;
+          background-color: transparent;
+          text-decoration: none;
+        }
+        
+        a:hover {
+          opacity: 0.9;
+          text-decoration: underline;
+        }
+        
+        a:active {
+          color: #6441a5;
+          background-color: transparent;
+          text-decoration: underline;
+        }
+
+h1 {
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    text-transform: capitalize;
+
+}
+
+h2 {
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    text-transform: capitalize;
+
+}
+
+h3 {
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    font-size: medium;
+    text-transform: capitalize;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.custom-checkbox {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1rem;
+            user-select: none;
+            gap: 10px;
+            
+        }
+
+        .custom-checkbox input {
+            display: none;
+        }
+
+        .custom-checkbox .checkmark {
+            height: 20px;
+            width: 20px;
+            background-color: var(--checkbox-bg);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .custom-checkbox input:checked + .checkmark {
+            background-color: var(--checkbox-checked);
+        }
+
+        .custom-checkbox .checkmark::after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .custom-checkbox input:checked + .checkmark::after {
+            display: block;
+        }
+
+
+
+.btn {
+  background-color: var(--button-bg, #6441a5); /* Default to Twitch purple */
+  color: var(--button-text, #fff);
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: var(--button-hover-bg, #4b367c); /* Darker Twitch purple */
+}
+
+.btn-secondary {
+  background-color: var(--secondary-bg, #888);
+  color: var(--secondary-text, #fff);
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-hover-bg, #666);
+}
+
+.btn-success {
+  background-color: var(--success-bg, #28a745);
+  color: var(--success-text, #fff);
+}
+
+.btn-success:hover {
+  background-color: var(--success-hover-bg, #218838);
+}
+
+.style-options {
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-top: 15px;
+    border: 1px solid #ddd;
+}
+
+.style-options h3 {
+    margin-top: 0;
+    color: #6441a5;
+}
+
+.tabs {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.tab {
+    padding: 8px 15px;
+    cursor: pointer;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    margin-right: 5px;
+}
+
+.tab:hover {
+    background-color: #45a049;
+}
+
+.tab.active {
+    background-color: #6441a5; /* Twitch purple */
+    color: var(--button-text);
+    margin-bottom: -1px;
+    font-weight: bold;
+}
+
+.tab-content {
+    display: none;
+    font-weight: bold;
+}
+
+.tab-content.active {
+    display: block;
+    font-weight: bold;
+
+}
+
+.menus {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.menu {
+    padding: 8px 15px;
+    cursor: pointer;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    font-size: 16px;
+    cursor: pointer;
+     margin-top: 15px;
+     margin-bottom: 15px;
+    border-bottom: none;
+    border-radius: 4px 4px 4px 4px;
+    margin-right: 5px;
+}
+
+.menu:hover {
+    background-color: #45a049;
+}
+
+.menu.active {
+    background-color: #6441a5; /* Twitch purple */
+    color: var(--button-text);
+    font-weight: bolder;
+    text-decoration: wavy underline;
+}
+
+.menu-content {
+    display: none;
+    font-weight: bold;
+}
+
+.menu-content.active {
+    display: block;
+    font-weight: bold;
+
+}
+
+footer {
+    margin-top: 30px;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+}
+
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 50%;
+    width: 150px !important; /* Ensure the width is fixed */
+    height: 100px !important; /* Ensure the height is fixed */
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 0; /* Remove any padding */
+    text-align: center; /* Center the content */
+    line-height: 100px; /* Vertically center the arrow */
+}
+
+.back-to-top:hover {
+    background-color: #45a049; /* Darker purple */
+}
+
+/* General input styles */
+input, select, button, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    text-transform: capitalize;
+}
+
+/* Specific styles for color inputs */
+input[type="color"] {
+    width: 40px; /* Set a fixed width */
+    height: 40px; /* Set a fixed height */
+    padding: 0; /* Remove padding */
+    border: none; /* Remove border */
+    border-radius: 50%; /* Make it circular */
+    cursor: pointer; /* Show pointer cursor */
+    appearance: none; /* Remove default browser styling */
+    -webkit-appearance: none; /* Remove default styling for WebKit browsers */
+    -moz-appearance: none; /* Remove default styling for Firefox */
+    box-shadow: none; /* Remove any default shadow */
+    background: none; /* Remove default background */
+    outline: none; /* Remove the black focus outline */
+    overflow: hidden; /* Prevent overflow for circular shape */
+}
+
+/* Optional: Add a hover effect */
+input[type="color"]:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slightly increase shadow on hover */
+}
+
+/* Optional: Add a focus effect for accessibility */
+input[type="color"]:focus {
+    box-shadow: 0 0 0 3px rgba(100, 65, 165, 0.5); /* Add a purple focus ring */
+}
+
+textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+    .overlay-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: var(--container-bg, #f9f9f9);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.canvas-container {
+  position: relative;
+  width: 100%;
+  height: 450px;
+  border: 2px solid var(--input-border, #ccc);
+  background-color: var(--preview-bg, #fff);
+  margin-bottom: 20px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+    .draggable {
+        position: absolute;
+  cursor: move;
+  padding: 10px;
+  background-color: var(--container-bg, #f9f9f9);
+  color: var(--text-color, #333);
+  border: 1px dashed var(--input-border, #ccc);
+  border-radius: 5px;
+  white-space: pre;
+}
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .controls button {
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .controls button:hover {
+      background-color: #45a049;
+    }
+
+    /* Slide-in Style Panel */
+    .style-panel {
+  position: fixed;
+  right: -320px;
+  top: 0;
+  width: 300px;
+  height: 100%;
+  background: var(--container-bg, #f9f9f9);
+  color: var(--text-color, #333);
+  padding: 20px;
+  box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  overflow: visible; /* Ensure the panel does not hide child elements */
+
+  z-index: 999;
+}
+
+.style-panel.open {
+  right: 0;
+}
+
+.style-panel h2 {
+  margin-top: 0;
+  color: var(--text-color, #333);
+}
+
+.style-panel label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: bold;
+}
+
+.style-panel input,
+.style-panel select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid var(--input-border, #ccc);
+  border-radius: 5px;
+  background-color: var(--input-bg, #fff);
+  color: var(--text-color, #333);
+}
+
+    .preview-box {
+      background: #000;
+      padding: 10px;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .style-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+
+    .style-actions button {
+      flex: 1;
+      margin: 0 5px;
+    }
+
+    .editing {
+  outline: 2px dashed #00bfff;
+  outline-offset: 4px;
+}
+
+.suggestion-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  position: absolute;
+  background-color: white;
+}
+
+.suggestion-list li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.suggestion-list li:hover {
+  background-color: #f0f0f0;
+}
+
+/* OBS Script Cards */
+.script-card {
+    background-color: var(--container-bg);
+    color: var(--text-color);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--input-border);
+}
+
+.script-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.script-description {
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+.script-features {
+    list-style-type: disc;
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.script-setup {
+    list-style-type: decimal;
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.script-card button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.script-card button:hover {
+    background-color: #45a049; /* Adjust hover color */
+}
+
+.trending-container {
+    background-color: var(--container-bg);
+     color: var(--text-color);
+    padding: 1rem;
+  
+}
+
+.trending-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.trending-columns > div {
+  flex: 1;
+  min-width: 200px;
+}
+
+.trending-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 1rem;
+}
+
+.trending-list li {
+  background: #222;
+  border-left: 4px solid #5c4df4;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: transform 0.2s ease;
+}
+
+.trending-list li:hover {
+  transform: translateX(4px);
+  background: #2d2d2d;
+  cursor: default;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  padding: 4px 8px;
+  margin-bottom: 2px;
+  background: #111;
+  color: #fff;
+  border-radius: 5px;
+  font-family: sans-serif;
+  font-size: 0.9rem;
+}
+
+ul li:hover {
+  background-color: #333;
+}
+
+  </style>
+</head>
+<body>
+    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+    <script>
+        kofiWidgetOverlay.draw('rearsilver', {
+            'type': 'floating-chat',
+            'floating-chat.donateButton.text': 'Donate',
+            'floating-chat.donateButton.background-color': '#794bc4',
+            'floating-chat.donateButton.text-color': '#fff'
+        });
+    </script>
+        <!-- Header section -->
+        <div class="header">
+            <div class="donate-text">
+                If you enjoy this tool, please consider supporting me on Ko-fi!
+            </div>
+            <div class="button-container">
+                <button id="kofiBtn">
+                    <img src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi">
+                    Buy me a coffee
+                </button>
+                <button id="twitchBtn">Follow me on Twitch</button>
+                <button id="discordBtn">More streamer tools</button>
+                <button id="themeToggle">🌙 Dark Mode</button>
+            </div>
+        </div>
+
+            
+        <div class="menus">
+            <button id="stream-title-generator" class="menu" onclick="window.location.href='RearSilver Stream Title Generator.html';">Stream Title Generator</button>
+            <button id="twitch-story-generator" class="menu" onclick="window.location.href='Twitch Story Generator.html';">Twitch Story Generator</button>
+            <button id="overlay-generator" class="menu active" onclick="window.location.href='Overlay Generator.html';">Overlay Generator</button>
+            <button id="obs-scripts" class="menu" onclick="window.location.href='OBS Scripts.html';">OBS Scripts</button>
+        </div>
+
+<div class="overlay-container">
+
+    <div class="script-card">
+        <h1>Overlay Generator</h1>
+        <h2>Create basic overlays you can export into OBS</h2>
+
+        <h4>Setup Instructions:</h4>
+        <ol class="script-setup">
+            <li>Select the overlay element you want to add.
+            </li>
+        </li>
+        <li>style the element in the style UI panel.
+        </li>
+            <li>set the position of the element using the position mode dropdown.
+            </li>
+            <li>Click apply to save the changes or cancel to discard them.
+            </li>
+            <li>double click the element to edit it again.
+            </li>
+            <li>You can drag and drop the elements around the canvas to position them as you like.
+            </li>
+            <li>Click the "Export Overlay" button to export your overlay to a .html file.
+            </li>
+            <li>In OBS add a broswer source > Select Local File > Select the exported .html file.
+            </li>
+        </ol>
+        
+        <ul class="trending-list">
+            <li>Add text:<br>
+                Add static text with styling options.
+            </li>
+            <li>Add Image:<br>
+               Upload an image to display on your overlay.
+            </li>
+            <li>Add placeholders:<br>
+                Add placeholders for widgets like StreamElements, Streamlabs, and more that won't be exported but help you position things.
+            </li>
+            <li>Export overlay:<br>
+                This will export your overlay to a .html file that you can import into OBS.
+            </li>
+        </ul>
+        
+
+  <div class="canvas-container" id="canvasContainer"></div>
+
+  <div class="controls">
+    <button id="addText">Add Text</button>
+    <button id="addImage">Add Image</button>
+    <button id="addPlaceholderBtn">Add Placeholder</button> 
+    <button id="exportOverlay">Export Overlay</button>
+  </div>
+</div>
+
+<!-- Slide-in Styling Panel -->
+<div class="style-panel" id="stylePanel">
+
+
+<!-- Text Styling Options (independent of placeholder settings) -->
+<div id="textStylingOptions" style="display: none;">
+    <label for="styleText">Text:</label>
+    <input type="text" id="styleText">
+  
+    <label for="styleFont">Font:</label>
+    <select id="styleFont">
+      <option value="Roboto">Roboto</option>
+      <option value="Orbitron">Orbitron</option>
+      <option value="'Press Start 2P'">Press Start 2P</option>
+      <option value="sans-serif">Sans-serif</option>
+      <option value="serif">Serif</option>
+    </select>
+  
+    <label for="styleSize">Size (px):</label>
+    <input type="number" id="styleSize" value="24">
+  
+    <label for="styleColor">Text Colour:</label>
+    <input type="color" id="styleColor" value="#ffffff">
+  
+    <label for="styleAccent">Accent Colour (glow):</label>
+    <input type="color" id="styleAccent" value="#ff00ff">
+  
+    <label class="custom-checkbox">
+        <input type="checkbox" id="styleBold" checked>
+        <span class="checkmark"></span>Bold
+    </label>
+    <label class="custom-checkbox">
+        <input type="checkbox" id="styleItalic" checked>
+        <span class="checkmark"></span>Italic
+    </label>
+  </div>
+  
+  <!-- Placeholder Settings -->
+  <div id="placeholderSettings" style="display: none;">
+    <h3>Placeholder Settings</h3>
+  
+    <label for="placeholderType">Type:</label>
+    <select id="placeholderType">
+      <option value="chatbox">💬 Chat Box</option>
+      <option value="subgoal">🎯 Sub Goal</option>
+      <option value="followeralert">✨ Follower Alert</option>
+      <option value="webcam">📷 Webcam Frame</option>
+      <option value="gamecapture">🎮 Game Capture Frame</option>
+    </select>
+  
+    <label for="placeholderWidth">Width (px):</label>
+    <input type="number" id="placeholderWidth" min="10" value="300">
+  
+    <label for="placeholderHeight">Height (px):</label>
+    <input type="number" id="placeholderHeight" min="10" value="150">
+  
+    <label>
+      <input type="checkbox" id="maintainAspect" checked>
+      Maintain Aspect Ratio
+    </label>
+  </div>
+
+<!-- Position Mode (available for all elements) -->
+<label>Position Mode:</label>
+<select id="positionMode">
+  <option value="pixel">Pixel</option>
+  <option value="percent">Percent</option>
+  <option value="preset">Preset</option>
+</select>
+
+<div id="positionControls">
+  <label>Top:</label>
+  <input type="number" id="posTop" value="50">
+  <label>Left:</label>
+  <input type="number" id="posLeft" value="50">
+</div>
+
+<div id="presetControls" style="display: none;">
+  <label>Preset:</label>
+  <select id="presetPosition">
+    <option value="top-left">Top Left</option>
+    <option value="top-center">Top Center</option>
+    <option value="top-right">Top Right</option>
+    <option value="center-left">Center Left</option>
+    <option value="center">Center</option>
+    <option value="center-right">Center Right</option>
+    <option value="bottom-left">Bottom Left</option>
+    <option value="bottom-center">Bottom Center</option>
+    <option value="bottom-right">Bottom Right</option>
+  </select>
+</div>
+
+
+
+
+  <div class="preview-box" id="previewBox">Live Preview</div>
+
+  <div class="style-actions">
+    <button id="cancelStyle">Cancel</button>
+    <button id="applyStyle">Apply</button>
+  </div>
+  
+</div>
+</div>
+<footer class="bg-light text-center text-lg-start mt-4 rounded-top">
+    <hr>
+    <div class="footer-text">
+        Feedback? Suggestions? Bugs? Please let me know! <a href="mailto:rearsilvergaming@gmail.com" target="_blank">Drop me an email</a> and share your thoughts.
+        <br>
+        <br>
+        Find me at: | <a href="https://twitch.tv/rearsilver" target="_blank">Twitch</a> | <a href="https://discord.com/invite/RRbQ93Ceew" target="_blank">Discord</a> | <a href="https://x.com/rearsilvergamer" target="_blank">Twitter</a> | <a href="https://www.youtube.com/rearsilvergaming" target="_blank">YouTube</a> | <a href="https://www.tiktok.com/@RearSilver" target="_blank">TikTok</a> | <a href="https://www.instagram.com/RearSilver.gaming" target="_blank">Instagram</a> |
+        <br>
+        <br>
+        Made by RearSilver Copyright &copy; 2025. All rights reserved. | Not affiliated with Twitch
+    </div>
+    <hr>
+</footer>
+</div> <!-- Closing main container -->
+<button id="backToTop" class="back-to-top" onclick="scrollToTop()">⬆️ Back to Top</button>
+
+    <script>
+
+// Ensure this is in the global scope
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Add the scroll event listener
+window.addEventListener('scroll', function () {
+    const backToTop = document.getElementById('backToTop');
+    if (window.scrollY > 800) { // Show button after scrolling 600px
+        backToTop.style.display = 'block';
+    } else {
+        backToTop.style.display = 'none';
+    }
+});
+  const canvasContainer = document.getElementById('canvasContainer');
+  const addTextBtn = document.getElementById('addText');
+  const addImageBtn = document.getElementById('addImage');
+  const exportBtn = document.getElementById('exportOverlay');
+  const stylePanel = document.getElementById('stylePanel');
+
+  // Panel Inputs
+  const styleText = document.getElementById('styleText');
+  const styleFont = document.getElementById('styleFont');
+  const styleSize = document.getElementById('styleSize');
+  const styleColor = document.getElementById('styleColor');
+  const styleAccent = document.getElementById('styleAccent');
+  const styleBold = document.getElementById('styleBold');
+  const styleItalic = document.getElementById('styleItalic');
+  const previewBox = document.getElementById('previewBox');
+  const cancelStyle = document.getElementById('cancelStyle');
+  const applyStyle = document.getElementById('applyStyle');
+  const positionMode = document.getElementById('positionMode');
+  const placeholderSettings = document.getElementById('placeholderSettings');
+const placeholderType = document.getElementById('placeholderType');
+const placeholderWidth = document.getElementById('placeholderWidth');
+const placeholderHeight = document.getElementById('placeholderHeight');
+const maintainAspect = document.getElementById('maintainAspect');
+
+const posTop = document.getElementById('posTop');
+const posLeft = document.getElementById('posLeft');
+const positionControls = document.getElementById('positionControls');
+const presetControls = document.getElementById('presetControls');
+const presetPosition = document.getElementById('presetPosition');
+
+placeholderType.addEventListener('change', () => {
+    if (selectedElement && selectedElement.getAttribute('data-type') === 'placeholder') {
+        selectedElement.textContent = `Placeholder (${placeholderType.options[placeholderType.selectedIndex].text})`;
+        selectedElement.setAttribute('data-placeholder-type', placeholderType.value);
+    }
+});
+
+positionMode.addEventListener('change', () => {
+  const mode = positionMode.value;
+
+  // Toggle visibility of position controls based on the selected mode
+  positionControls.style.display = mode === 'pixel' || mode === 'percent' ? 'block' : 'none';
+  presetControls.style.display = mode === 'preset' ? 'block' : 'none';
+
+  // If an element is selected, update its position immediately based on the selected mode
+  if (selectedElement) {
+    let top = '50px', left = '50px';
+    if (mode === 'pixel') {
+      top = `${posTop.value}px`;
+      left = `${posLeft.value}px`;
+    } else if (mode === 'percent') {
+      top = `${posTop.value}%`;
+      left = `${posLeft.value}%`;
+    } else if (mode === 'preset') {
+      const posMap = {
+        'top-left': ['0px', '0px'],
+        'top-center': ['0px', '50%'],
+        'top-right': ['0px', '100%'],
+        'center-left': ['50%', '0px'],
+        'center': ['50%', '50%'],
+        'center-right': ['50%', '100%'],
+        'bottom-left': ['100%', '0px'],
+        'bottom-center': ['100%', '50%'],
+        'bottom-right': ['100%', '100%'],
+      };
+      [top, left] = posMap[presetPosition.value];
+    }
+    selectedElement.style.top = top;
+    selectedElement.style.left = left;
+  }
+});
+
+// Maintain aspect ratio for placeholders
+let aspectRatio = 300 / 150;
+
+placeholderWidth.addEventListener('input', () => {
+  if (maintainAspect.checked) {
+    placeholderHeight.value = Math.round(placeholderWidth.value / aspectRatio);
+  }
+});
+
+placeholderHeight.addEventListener('input', () => {
+  if (maintainAspect.checked) {
+    placeholderWidth.value = Math.round(placeholderHeight.value * aspectRatio);
+  }
+});
+
+// Add a new placeholder element
+const addPlaceholderBtn = document.getElementById('addPlaceholderBtn');
+
+addPlaceholderBtn.addEventListener('click', () => {
+  const placeholder = document.createElement('div');
+  placeholder.className = 'draggable';
+  placeholder.textContent = 'Placeholder (e.g. Chat Box)';
+  placeholder.style.cssText = `
+    top: 100px;
+    left: 100px;
+    width: 300px;
+    height: 200px;
+    border: 2px dashed #888;
+    color: #888;
+    font-style: italic;
+    background: rgba(0,0,0,0.05);
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `;
+  placeholder.setAttribute('data-type', 'placeholder');
+  canvasContainer.appendChild(placeholder);
+  makeDraggable(placeholder);
+
+    // Automatically open the style panel and show placeholder settings
+    selectedElement = placeholder;
+  currentElement = placeholder;
+
+  stylePanel.classList.add('open');
+  document.getElementById('textStylingOptions').style.display = 'none';
+  placeholderSettings.style.display = 'block';
+});
+
+// Track the selected element
+let selectedElement = null;
+let currentElement = null;
+
+function updatePreview() {
+    previewBox.textContent = styleText.value;
+    previewBox.style.fontFamily = styleFont.value;
+    previewBox.style.fontSize = `${styleSize.value}px`;
+    previewBox.style.color = styleColor.value;
+    previewBox.style.fontWeight = styleBold.checked ? 'bold' : 'normal';
+    previewBox.style.fontStyle = styleItalic.checked ? 'italic' : 'normal';
+    previewBox.style.textShadow = `0 0 10px ${styleAccent.value}`;
+}
+
+  [styleText, styleFont, styleSize, styleColor, styleAccent, styleBold, styleItalic].forEach(el =>
+    el.addEventListener('input', updatePreview)
+  );
+
+  addTextBtn.addEventListener('click', () => {
+    // Reset the current element and selected element
+    currentElement = null;
+    selectedElement = null;
+
+    // Open the style panel
+    stylePanel.classList.add('open');
+
+    // Show text styling options and hide placeholder settings
+    document.getElementById('textStylingOptions').style.display = 'block';
+    placeholderSettings.style.display = 'none';
+
+    // Ensure the Apply and Cancel buttons are visible
+    document.querySelector('.style-actions').style.display = 'flex';
+
+    // Set default values for text styling
+    styleText.value = 'New Text';
+    styleFont.value = 'Roboto';
+    styleSize.value = 24;
+    styleColor.value = '#ffffff';
+    styleAccent.value = '#ff00ff';
+    styleBold.checked = false;
+    styleItalic.checked = false;
+
+    // Update the preview box
+    updatePreview();
+});
+
+  cancelStyle.addEventListener('click', () => {
+    stylePanel.classList.remove('open');
+    currentElement = null;
+  });
+
+  applyStyle.addEventListener('click', () => {
+    let div = selectedElement;
+
+    if (div && div.getAttribute('data-type') === 'placeholder') {
+        div.setAttribute('data-placeholder-type', placeholderType.value);
+        div.textContent = `Placeholder (${placeholderType.options[placeholderType.selectedIndex].text})`;
+        div.style.width = `${placeholderWidth.value}px`;
+        div.style.height = `${placeholderHeight.value}px`;
+        aspectRatio = parseInt(placeholderWidth.value) / parseInt(placeholderHeight.value) || 1; // Update aspect ratio
+    } else if (div && div.getAttribute('data-type') === 'text') {
+        div.textContent = styleText.value;
+        div.style.fontFamily = `'${styleFont.value}'`;
+        div.style.fontSize = `${styleSize.value}px`;
+        div.style.color = styleColor.value;
+        div.style.fontWeight = styleBold.checked ? 'bold' : 'normal';
+        div.style.fontStyle = styleItalic.checked ? 'italic' : 'normal';
+        div.style.textShadow = `0 0 10px ${styleAccent.value}`;
+    } else if (!div && stylePanel.classList.contains('open') && styleText.value) {
+        // If no element is selected, and the panel is open with text, create a new text element
+        div = document.createElement('div');
+        div.className = 'draggable';
+        div.style.top = '50px';
+        div.style.left = '50px';
+        div.setAttribute('data-type', 'text');
+        div.textContent = styleText.value;
+        div.style.fontFamily = `'${styleFont.value}'`;
+        div.style.fontSize = `${styleSize.value}px`;
+        div.style.color = styleColor.value;
+        div.style.fontWeight = styleBold.checked ? 'bold' : 'normal';
+        div.style.fontStyle = styleItalic.checked ? 'italic' : 'normal';
+        div.style.textShadow = `0 0 10px ${styleAccent.value}`;
+        canvasContainer.appendChild(div);
+        makeDraggable(div);
+    }
+
+    // Handle positioning (applied to both text and placeholders if 'div' is set)
+    if (div) {
+        let top = '50px', left = '50px';
+        if (positionMode.value === 'pixel') {
+            top = `${posTop.value}px`;
+            left = `${posLeft.value}px`;
+        } else if (positionMode.value === 'percent') {
+            top = `${posTop.value}%`;
+            left = `${posLeft.value}%`;
+        } else if (positionMode.value === 'preset') {
+            const posMap = {
+                'top-left': ['0px', '0px'],
+                'top-center': ['0px', '50%'],
+                'top-right': ['0px', '100%'],
+                'center-left': ['50%', '0px'],
+                'center': ['50%', '50%'],
+                'center-right': ['50%', '100%'],
+                'bottom-left': ['100%', '0px'],
+                'bottom-center': ['100%', '50%'],
+                'bottom-right': ['100%', '100%'],
+            };
+            [top, left] = posMap[presetPosition.value];
+        }
+        div.style.top = top;
+        div.style.left = left;
+    }
+
+    // Remove highlight and reset panel
+    document.querySelectorAll('.editing').forEach(el => el.classList.remove('editing'));
+    stylePanel.classList.remove('open');
+    selectedElement = null;
+    currentElement = null;
+});
+
+
+  function makeDraggable(el) {
+    el.addEventListener('mousedown', (e) => {
+  const rect = canvasContainer.getBoundingClientRect();
+  let offsetX = e.clientX - el.offsetLeft - rect.left;
+  let offsetY = e.clientY - el.offsetTop - rect.top;
+
+  const onMouseMove = (event) => {
+    let newX = event.clientX - rect.left - offsetX;
+    let newY = event.clientY - rect.top - offsetY;
+    el.style.left = `${newX}px`;
+    el.style.top = `${newY}px`;
+  };
+
+  const onMouseUp = () => {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
+
+
+el.addEventListener('dblclick', (e) => {
+    if (e.target.classList.contains('draggable')) {
+        selectedElement = e.target;
+        currentElement = e.target;
+
+        document.querySelectorAll('.editing').forEach(element => element.classList.remove('editing'));
+        selectedElement.classList.add('editing');
+
+        stylePanel.classList.add('open');
+
+        if (selectedElement.getAttribute('data-type') === 'placeholder') {
+    // Hide all text styling options (labels and inputs)
+    document.querySelectorAll('#textStylingOptions, #previewBox').forEach(el => el.style.display = 'none');
+
+    // Show only placeholder settings
+    placeholderSettings.style.display = 'block';
+    placeholderType.value = selectedElement.getAttribute('data-placeholder-type') || 'chatbox';
+    placeholderWidth.value = parseInt(selectedElement.style.width) || 300;
+    placeholderHeight.value = parseInt(selectedElement.style.height) || 150;
+
+    // Update position inputs
+    posTop.value = parseInt(selectedElement.style.top) || 0;
+    posLeft.value = parseInt(selectedElement.style.left) || 0;
+} else if (selectedElement.getAttribute('data-type') === 'text') {
+    // Show all text styling options (labels and inputs)
+    document.querySelectorAll('#textStylingOptions, #previewBox').forEach(el => el.style.display = 'block');
+
+    // Hide placeholder settings
+    placeholderSettings.style.display = 'none';
+
+    // Populate text styling inputs
+    styleText.value = selectedElement.textContent;
+    styleFont.value = selectedElement.style.fontFamily.replace(/['"]/g, '');
+    styleSize.value = parseInt(selectedElement.style.fontSize);
+    styleColor.value = rgbToHex(selectedElement.style.color);
+    styleAccent.value = extractAccent(selectedElement.style.textShadow);
+    styleBold.checked = selectedElement.style.fontWeight === 'bold';
+    styleItalic.checked = selectedElement.style.fontStyle === 'italic';
+
+    // Update position inputs
+    posTop.value = parseInt(selectedElement.style.top) || 0;
+    posLeft.value = parseInt(selectedElement.style.left) || 0;
+
+    updatePreview();
+} else {
+    // Hide only the styling options and placeholder settings
+    document.querySelectorAll('#textStylingOptions, #placeholderSettings, #previewBox').forEach(el => el.style.display = 'none');
+}
+    }
+
+    updatePreview();
+});
+
+  }
+
+  function rgbToHex(rgb) {
+    const result = /^rgba?\((\d+),\s*(\d+),\s*(\d+)/i.exec(rgb);
+    return result ? "#" + result.slice(1, 4).map(x => (+x).toString(16).padStart(2, "0")).join('') : "#ffffff";
+  }
+
+  function extractAccent(shadow) {
+    const match = /0 0 \d+px (#[0-9a-fA-F]+)/.exec(shadow);
+    return match ? match[1] : '#000000';
+  }
+
+  addImageBtn.addEventListener('click', () => {
+    const imageElement = document.createElement('div');
+    imageElement.className = 'draggable';
+    imageElement.innerHTML = '<img src="https://via.placeholder.com/150" style="width: 100%; height: 100%;" />';
+    imageElement.style.top = '100px';
+    imageElement.style.left = '100px';
+    imageElement.style.width = '150px';
+    imageElement.style.height = '150px';
+    imageElement.setAttribute('data-type', 'image');
+    canvasContainer.appendChild(imageElement);
+    makeDraggable(imageElement);
+  });
+
+  exportBtn.addEventListener('click', () => {
+  const elements = Array.from(canvasContainer.children)
+    .filter(el => el.getAttribute('data-type') !== 'placeholder') // ✨ skip placeholders
+    .map(el => {
+      const rect = el.getBoundingClientRect();
+      return {
+        content: el.innerHTML,
+        top: el.style.top || `${rect.top}px`,
+        left: el.style.left || `${rect.left}px`,
+        width: el.style.width || `${rect.width}px`,
+        height: el.style.height || `${rect.height}px`,
+        fontFamily: el.style.fontFamily,
+        fontSize: el.style.fontSize,
+        color: el.style.color,
+        fontWeight: el.style.fontWeight,
+        fontStyle: el.style.fontStyle,
+        textShadow: el.style.textShadow,
+        dataType: el.getAttribute('data-type')
+      };
+    });
+
+  const overlayHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Roboto&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; overflow:hidden; background: transparent; }
+    .element { position: absolute; white-space: pre; }
+    .element img { width: 100%; height: 100%; object-fit: contain; }
+  </style>
+</head>
+<body>
+${elements.map(el => `
+  <div class="element" style="
+    top:${el.top};
+    left:${el.left};
+    width:${el.width};
+    height:${el.height};
+    font-family:${el.fontFamily};
+    font-size:${el.fontSize};
+    color:${el.color};
+    font-weight:${el.fontWeight};
+    font-style:${el.fontStyle};
+    text-shadow:${el.textShadow};
+  ">${el.content}</div>
+`).join('')}
+</body>
+</html>
+`;
+
+  const blob = new Blob([overlayHTML], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'custom-overlay.html';
+  link.click();
+  URL.revokeObjectURL(url);
+});
+
+// Theme toggle functionality
+function initThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+
+    if (!themeToggle) {
+        console.error('Theme toggle button not found.');
+        return;
+    }
+
+    // Remove any existing event listeners
+    const newThemeToggle = themeToggle.cloneNode(true);
+    themeToggle.parentNode.replaceChild(newThemeToggle, themeToggle);
+
+    // Check for saved theme preference or use default
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        newThemeToggle.textContent = '☀️ Light Mode';
+    }
+
+    // Toggle theme when button is clicked
+    newThemeToggle.addEventListener('click', function () {
+        if (document.body.classList.contains('dark-mode')) {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('theme', 'light');
+            newThemeToggle.textContent = '🌙 Dark Mode';
+        } else {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('theme', 'dark');
+            newThemeToggle.textContent = '☀️ Light Mode';
+        }
+    });
+}
+
+
+// Ensure the script runs after the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initThemeToggle();
+});
+
+</script>
+</body>
+</html>
