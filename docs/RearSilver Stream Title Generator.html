@@ -2232,33 +2232,30 @@ function getEmoji(theme) {
 // Use the bridge function to get emojis
 const emoji = getEmoji(theme);
 
-        // Combine checked hashtags + custom ones
-        const checkedTags = [...document.querySelectorAll('.hashtag-options input[type="checkbox"]:checked')]
-            .map(tag => tag.value.trim());
-        const customTags = customInput.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
-        const allTags = [...new Set([...checkedTags, ...customTags])]
-            .map(tag => tag.startsWith('#') ? tag : `#${tag}`);
+// Combine checked hashtags + custom ones
+const checkedTags = [...document.querySelectorAll('.hashtag-options input[type="checkbox"]:checked')]
+    .map(tag => tag.value.trim());
+const customTags = customInput.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+const allTags = [...new Set([...checkedTags, ...customTags])] // Deduplicate hashtags
+    .map(tag => tag.startsWith('#') ? tag : `#${tag}`);
 
-        const hashtags = allTags.join(' ');
-        const titleStarter = titleStarters[theme] ? titleStarters[theme][Math.floor(Math.random() * titleStarters[theme].length)] : 'Playing';
-        const goLiveStarter = goLiveStarters[theme] ? goLiveStarters[theme][Math.floor(Math.random() * goLiveStarters[theme].length)] : 'Going live with';
-        const generalSupport = generalSupportMessages[Math.floor(Math.random() * generalSupportMessages.length)];
+const hashtags = allTags.join(' ');
 
-        let title = `${titleStarter} ${gameTitle} ${matureIndicator}`;
-        let goLiveMessage = `🚨 ${goLiveStarter} ${gameTitle}! ${matureIndicator}`;
-        let supportMessage = generalSupport; // Start with a general message
-
-        if (useCustomTitle && customTitleText !== '') {
+// Generate the title
+let title = '';
+    if (useCustomTitle && customTitleText !== '') {
         // Use only the custom title text, hashtags, and emojis
         title = `${customTitleText} ${hashtags} ${emoji}`.trim();
     } else {
         // Generate the default title
         title = `${titleStarter} ${gameTitle} ${hashtags} ${emoji}`.trim();
     }
+    
+    // Update the UI with the generated title
+    document.getElementById('generatedTitle').textContent = title;
 
-                // Update the UI with the generated title and go-live message
-                document.getElementById('generatedTitle').textContent = title;
-        document.getElementById('goLiveMessage').textContent = goLiveMessage;
+// Ensure hashtags are not appended again
+document.getElementById('goLiveMessage').textContent = `${goLiveMessage} ${emoji}`.trim();
 
         // Update character counters if needed
         updateCharacterCounters(title, goLiveMessage);
@@ -2313,11 +2310,7 @@ const emoji = getEmoji(theme);
                 supportMessage += ` ${hashtagSupportMessages[tag][Math.floor(Math.random() * hashtagSupportMessages[tag].length)]}`;
             }
         }
-        if (hashtags) {
-            title += ` ${hashtags}`;
-        }
-        title += ` ${emoji}`;
-        goLiveMessage += ` ${emoji}`;
+
         
 
         document.getElementById('generatedTitle').textContent = title.trim();
