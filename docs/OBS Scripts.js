@@ -3,6 +3,32 @@ function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all tab elements
+    const tabs = document.querySelectorAll('.tab');
+    
+    // Add click event listener to each tab
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Remove active class from all tabs
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('active');
+            
+            // Get the tab content id from data-tab attribute
+            const tabId = this.getAttribute('data-tab');
+            
+            // Hide all tab content
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Show the selected tab content
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+});
+
 // Add the scroll event listener
 window.addEventListener('scroll', function () {
     const backToTop = document.getElementById('backToTop');
