@@ -21,22 +21,22 @@
   },
   {
     "name": "#FirstPlaythrough",
-    "count": 16
+    "count": 26
   },
   {
     "name": "#NoBackseating",
+    "count": 17
+  },
+  {
+    "name": "#NoSpoilers",
+    "count": 15
+  },
+  {
+    "name": "#Gaming",
     "count": 15
   },
   {
     "name": "#fuck",
     "count": 14
-  },
-  {
-    "name": "#NoSpoilers",
-    "count": 13
-  },
-  {
-    "name": "#Gaming",
-    "count": 12
   }
 ]
