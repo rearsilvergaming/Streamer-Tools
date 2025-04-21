@@ -178,6 +178,18 @@ color: var(--text-color);
     font-weight: bold;
 
 }
+.script-navigation {
+    position: sticky;
+    top: 0;
+    background-color: #333;
+    padding: 10px;
+    margin-bottom: 20px;
+    z-index: 100;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
 
 /* Add this to your CSS */
 .usage-stats-card {
