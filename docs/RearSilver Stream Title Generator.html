@@ -196,6 +196,60 @@
             </label>
             <p class="note">Adds the 18+ indicator (🔞) to your title, go-live message and a banner on the preview card!</p>
         </div>
+        <div class="mature-content-option">
+            <label class="custom-checkbox" style="font-size: 0.9rem;">
+                <input type="checkbox" id="contentWarningsCheckbox">
+                <span class="checkmark"></span>
+                <span>Content Warnings <span style="font-size: 1.2em;">⚠️</span></span>
+            </label>
+            <p class="note">Adds the content warning indicator (⚠️) to your title, & go-live message!</p>
+
+            <div id="contentWarningsSection" style="display: none; margin-top: 10px; margin-left: 20px;">
+                <p class="note" style="font-size: 0.8rem; color: var(--note-color); margin-bottom: 10px;">
+                    Select applicable warnings to include in your stream title.
+                </p>
+                <div class="checkbox-group">
+                    <div class="warning-option">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="photosensitivity">
+                            <span class="checkmark"></span>
+                            Photosensitivity/Flashing Lights
+                        </label>
+                    </div>
+                    <div class="warning-option">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="loudNoises">
+                            <span class="checkmark"></span>
+                            Loud Noises
+                        </label>
+                    </div>
+                    <div class="warning-option">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="violence">
+                            <span class="checkmark"></span>
+                            Violence/Gore
+                        </label>
+                    </div>
+                    <div class="warning-option">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="anxiety">
+                            <span class="checkmark"></span>
+                            Anxiety/Fear Triggers
+                        </label>
+                    </div>
+                    <div class="warning-option">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="customWarningCheckbox">
+                            <span class="checkmark"></span>
+                            Custom Warning
+                        </label>
+                        <div id="customWarningSection" style="display: none; margin-top: 5px; margin-left: 25px;">
+                            <input type="text" class="form-control" id="customWarningText" placeholder="Enter custom warning">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
 
         <label>Hashtags:</label>
@@ -492,6 +546,16 @@
 function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// Add the content
+document.getElementById('contentWarningsCheckbox').addEventListener('change', function() {
+    document.getElementById('contentWarningsSection').style.display = this.checked ? 'block' : 'none';
+});
+
+document.getElementById('customWarningCheckbox').addEventListener('change', function() {
+    document.getElementById('customWarningSection').style.display = this.checked ? 'block' : 'none';
+});
+
 
 // Add the scroll event listener
 window.addEventListener('scroll', function () {
@@ -2209,8 +2273,7 @@ document.getElementById('generateBtn').addEventListener('click', function () {
 
         const gameSupportArray = getGameSupport(gameTitle);
 
-               // Add this line to create the mature indicator
-       const matureIndicator = matureContent ? '🔞 ' : '';
+
 // Create a bridge function to get emojis from either system
 function getEmoji(theme) {
     // Check if the new emoji selector exists and is visible
@@ -2244,17 +2307,67 @@ const hashtags = allTags.join(' ');
 // Generate the title
 let title = '';
     if (useCustomTitle && customTitleText !== '') {
-        // Use only the custom title text, hashtags, and emojis
-        title = `${customTitleText} ${hashtags} ${emoji}`.trim();
-    } else {
-        // Generate the default title
-        title = `${titleStarters} ${gameTitle} ${hashtags} ${emoji}`.trim();
+    // Use only the custom title text, hashtags, and emojis
+    title = `${customTitleText} ${hashtags} ${emoji}`.trim();
+} else {
+    // Get a random title starter based on the selected theme
+    const themeStarters = titleStarters[theme] || titleStarters.witty;
+    const randomStarter = themeStarters[Math.floor(Math.random() * themeStarters.length)];
+    
+    // Generate the default title
+    title = `${randomStarter} ${gameTitle} ${hashtags} ${emoji}`.trim();
+}
+    
+               // Add this line to create the mature indicator
+               if (matureContent) {
+    title = `🔞 ${title}`;
+}
+
+    // Add content warnings if the checkbox is checked
+if (document.getElementById('contentWarningsCheckbox') && document.getElementById('contentWarningsCheckbox').checked) {
+    let warnings = [];
+    if (document.getElementById('photosensitivity') && document.getElementById('photosensitivity').checked) {
+        warnings.push("⚠️ Photosensitivity Warning");
     }
+    if (document.getElementById('loudNoises') && document.getElementById('loudNoises').checked) {
+        warnings.push("⚠️ Loud Noises");
+    }
+    if (document.getElementById('violence') && document.getElementById('violence').checked) {
+        warnings.push("⚠️ Violence/Gore");
+    }
+    if (document.getElementById('anxiety') && document.getElementById('anxiety').checked) {
+        warnings.push("⚠️ Anxiety Triggers");
+    }
+    if (document.getElementById('customWarningCheckbox') && document.getElementById('customWarningCheckbox').checked && 
+        document.getElementById('customWarningText') && document.getElementById('customWarningText').value.trim() !== '') {
+        warnings.push(`⚠️ ${document.getElementById('customWarningText').value.trim()}`);
+    }
+    
+    // Add warnings to title if any are selected
+    if (warnings.length > 0) {
+        title += " | " + warnings.join(", ");
+    }
+}
     
     // Update the UI with the generated title
     document.getElementById('generatedTitle').textContent = title;
 
 // Ensure hashtags are not appended again
+let goLiveMessage = '';
+
+// Get a random go live starter based on the selected theme
+const goLiveThemeStarters = goLiveStarters[theme] || goLiveStarters.witty;
+const randomGoLiveStarter = goLiveThemeStarters[Math.floor(Math.random() * goLiveThemeStarters.length)];
+
+// Generate the go live message
+goLiveMessage = `${randomGoLiveStarter} ${gameTitle}`;
+
+// ADD THIS: Add mature content indicator to the beginning if needed
+if (matureContent) {
+    goLiveMessage = `🔞 ${goLiveMessage}`;
+}
+
+// Then update the UI with the generated go live message
 document.getElementById('goLiveMessage').textContent = `${goLiveMessage} ${emoji}`.trim();
 
         // Update character counters if needed
@@ -2295,6 +2408,7 @@ document.getElementById('goLiveMessage').textContent = `${goLiveMessage} ${emoji
       title += ` with ${collaborators.join(', ')}`;
     }
     
+    
     // For Go Live message
     const messageCollaborators = collaborators.map(c => c.substring(1)).join(' and '); // Remove @ symbols
     goLiveMessage += ` Collaborating with ${messageCollaborators}!`;
@@ -2311,7 +2425,30 @@ document.getElementById('goLiveMessage').textContent = `${goLiveMessage} ${emoji
             }
         }
 
-        
+        if (document.getElementById('contentWarningsCheckbox') && document.getElementById('contentWarningsCheckbox').checked) {
+    let warnings = [];
+    if (document.getElementById('photosensitivity') && document.getElementById('photosensitivity').checked) {
+        warnings.push("⚠️ Photosensitivity Warning");
+    }
+    if (document.getElementById('loudNoises') && document.getElementById('loudNoises').checked) {
+        warnings.push("⚠️ Loud Noises");
+    }
+    if (document.getElementById('violence') && document.getElementById('violence').checked) {
+        warnings.push("⚠️ Violence/Gore");
+    }
+    if (document.getElementById('anxiety') && document.getElementById('anxiety').checked) {
+        warnings.push("⚠️ Anxiety Triggers");
+    }
+    if (document.getElementById('customWarningCheckbox') && document.getElementById('customWarningCheckbox').checked && 
+        document.getElementById('customWarningText') && document.getElementById('customWarningText').value.trim() !== '') {
+        warnings.push(`⚠️ ${document.getElementById('customWarningText').value.trim()}`);
+    }
+    
+    // Add warnings to go live message if any are selected
+    if (warnings.length > 0) {
+        goLiveMessage += " | " + warnings.join(", ");
+    }
+}
 
         document.getElementById('generatedTitle').textContent = title.trim();
         document.getElementById('goLiveMessage').textContent = goLiveMessage.trim();
@@ -2587,6 +2724,7 @@ function isOffensive(input) {
 }
 
 // Save preferences to localStorage
+// Save preferences to localStorage
 function savePreferences() {
   const gameTitle = document.getElementById('gameTitle').value;
   const theme = document.getElementById('theme').value;
@@ -2622,6 +2760,27 @@ function savePreferences() {
     offensiveTagWarning.style.display = 'none';
   }
   
+  // Get content warning settings
+  const contentWarningsEnabled = document.getElementById('contentWarningsCheckbox') ? 
+    document.getElementById('contentWarningsCheckbox').checked : false;
+  
+  // Create an object to store content warning settings
+  const contentWarnings = {
+    enabled: contentWarningsEnabled,
+    photosensitivity: document.getElementById('photosensitivity') ? 
+      document.getElementById('photosensitivity').checked : false,
+    loudNoises: document.getElementById('loudNoises') ? 
+      document.getElementById('loudNoises').checked : false,
+    violence: document.getElementById('violence') ? 
+      document.getElementById('violence').checked : false,
+    anxiety: document.getElementById('anxiety') ? 
+      document.getElementById('anxiety').checked : false,
+    customWarningEnabled: document.getElementById('customWarningCheckbox') ? 
+      document.getElementById('customWarningCheckbox').checked : false,
+    customWarningText: document.getElementById('customWarningText') ? 
+      document.getElementById('customWarningText').value : ''
+  };
+  
   // Save to localStorage
   localStorage.setItem('streamTitleGenerator', JSON.stringify({
     gameTitle,
@@ -2631,41 +2790,83 @@ function savePreferences() {
     checkedTags,
     customTags,
     matureContent: document.getElementById('matureContent').checked,
+    contentWarnings: contentWarnings,
     lastSaved: new Date().toISOString()
   }));
 }
 
-
-
 // Load preferences from localStorage
 function loadPreferences() {
-    const saved = localStorage.getItem('streamTitleGenerator');
-    if (!saved) return;
-    
-    const prefs = JSON.parse(saved);
-    
-    // Restore values
-    document.getElementById('gameTitle').value = prefs.gameTitle || '';
-    document.getElementById('theme').value = prefs.theme || 'witty';
-    document.getElementById('emojiPack').checked = prefs.emojiPack || false;
-    document.getElementById('twitchChannel').value = prefs.channel || '';
-    document.getElementById('customHashtags').value = prefs.customTags || '';
-
-            // Load mature content setting
-            if ('matureContent' in prefs) {
-        document.getElementById('matureContent').checked = prefs.matureContent;
+  const saved = localStorage.getItem('streamTitleGenerator');
+  if (!saved) return;
+  
+  const prefs = JSON.parse(saved);
+  
+  // Restore values
+  document.getElementById('gameTitle').value = prefs.gameTitle || '';
+  document.getElementById('theme').value = prefs.theme || 'witty';
+  document.getElementById('emojiPack').checked = prefs.emojiPack || false;
+  document.getElementById('twitchChannel').value = prefs.channel || '';
+  document.getElementById('customHashtags').value = prefs.customTags || '';
+  
+  // Load mature content setting
+  if ('matureContent' in prefs) {
+    document.getElementById('matureContent').checked = prefs.matureContent;
+  }
+  
+  // Restore hashtags
+  if (prefs.checkedTags && prefs.checkedTags.length) {
+    document.querySelectorAll('.hashtag-options input[type="checkbox"]').forEach(checkbox => {
+      checkbox.checked = prefs.checkedTags.includes(checkbox.value);
+    });
+  }
+  
+  // Restore content warnings if they exist in preferences
+  if (prefs.contentWarnings) {
+    // Enable content warnings checkbox if it was enabled
+    if (document.getElementById('contentWarningsCheckbox')) {
+      document.getElementById('contentWarningsCheckbox').checked = prefs.contentWarnings.enabled;
+      
+      // Make the content warnings section visible if it was enabled
+      const warningsSection = document.getElementById('contentWarningsSection');
+      if (warningsSection) {
+        warningsSection.style.display = prefs.contentWarnings.enabled ? 'block' : 'none';
+      }
     }
     
-    // Restore hashtags
-    if (prefs.checkedTags && prefs.checkedTags.length) {
-        document.querySelectorAll('.hashtag-options input[type="checkbox"]').forEach(checkbox => {
-            checkbox.checked = prefs.checkedTags.includes(checkbox.value);
-        });
+    // Restore individual warning settings
+    if (document.getElementById('photosensitivity')) {
+      document.getElementById('photosensitivity').checked = prefs.contentWarnings.photosensitivity;
     }
-
-
+    
+    if (document.getElementById('loudNoises')) {
+      document.getElementById('loudNoises').checked = prefs.contentWarnings.loudNoises;
+    }
+    
+    if (document.getElementById('violence')) {
+      document.getElementById('violence').checked = prefs.contentWarnings.violence;
+    }
+    
+    if (document.getElementById('anxiety')) {
+      document.getElementById('anxiety').checked = prefs.contentWarnings.anxiety;
+    }
+    
+    // Restore custom warning
+    if (document.getElementById('customWarningCheckbox')) {
+      document.getElementById('customWarningCheckbox').checked = prefs.contentWarnings.customWarningEnabled;
+    }
+    
+    if (document.getElementById('customWarningText')) {
+      document.getElementById('customWarningText').value = prefs.contentWarnings.customWarningText || '';
+      
+      // Show/hide the custom warning text field based on checkbox
+      const customWarningField = document.getElementById('customWarningField');
+      if (customWarningField) {
+        customWarningField.style.display = prefs.contentWarnings.customWarningEnabled ? 'block' : 'none';
+      }
+    }
+  }
 }
-
 
 // Add event listeners to save preferences
 document.getElementById('gameTitle').addEventListener('change', savePreferences);
@@ -2674,9 +2875,47 @@ document.getElementById('emojiPack').addEventListener('change', savePreferences)
 document.getElementById('twitchChannel').addEventListener('change', savePreferences);
 document.getElementById('customHashtags').addEventListener('change', savePreferences);
 document.getElementById('matureContent').addEventListener('change', savePreferences);
-document.querySelectorAll('.hashtag-options input[type="checkbox"]').forEach(checkbox => {
-    checkbox.addEventListener('change', savePreferences);
+
+// Add event listeners for content warnings
+if (document.getElementById('contentWarningsCheckbox')) {
+  document.getElementById('contentWarningsCheckbox').addEventListener('change', function() {
+    // Show/hide the content warnings section
+    const warningsSection = document.getElementById('contentWarningsSection');
+    if (warningsSection) {
+      warningsSection.style.display = this.checked ? 'block' : 'none';
+    }
+    savePreferences();
+  });
+}
+
+// Add event listeners for individual content warnings
+['photosensitivity', 'loudNoises', 'violence', 'anxiety'].forEach(warning => {
+  if (document.getElementById(warning)) {
+    document.getElementById(warning).addEventListener('change', savePreferences);
+  }
 });
+
+// Add event listener for custom warning checkbox
+if (document.getElementById('customWarningCheckbox')) {
+  document.getElementById('customWarningCheckbox').addEventListener('change', function() {
+    // Show/hide the custom warning text field
+    const customWarningField = document.getElementById('customWarningField');
+    if (customWarningField) {
+      customWarningField.style.display = this.checked ? 'block' : 'none';
+    }
+    savePreferences();
+  });
+}
+
+// Add event listener for custom warning text
+if (document.getElementById('customWarningText')) {
+  document.getElementById('customWarningText').addEventListener('change', savePreferences);
+}
+
+document.querySelectorAll('.hashtag-options input[type="checkbox"]').forEach(checkbox => {
+  checkbox.addEventListener('change', savePreferences);
+});
+
 
 // Load preferences when page loads
 document.addEventListener('DOMContentLoaded', loadPreferences);
@@ -2700,14 +2939,36 @@ function saveToHistory(title, goLiveMessage) {
     // Get existing history or create empty array if none exists
     let history = JSON.parse(localStorage.getItem('titleHistory') || '[]');
     
+    // Get content warning settings
+    const contentWarningsEnabled = document.getElementById('contentWarningsCheckbox') ? 
+        document.getElementById('contentWarningsCheckbox').checked : false;
+    
+    // Create a content warnings object if enabled
+    let contentWarnings = null;
+    if (contentWarningsEnabled) {
+        contentWarnings = {
+            photosensitivity: document.getElementById('photosensitivity') ? 
+                document.getElementById('photosensitivity').checked : false,
+            loudNoises: document.getElementById('loudNoises') ? 
+                document.getElementById('loudNoises').checked : false,
+            violence: document.getElementById('violence') ? 
+                document.getElementById('violence').checked : false,
+            anxiety: document.getElementById('anxiety') ? 
+                document.getElementById('anxiety').checked : false,
+            customWarning: document.getElementById('customWarningCheckbox') && 
+                document.getElementById('customWarningCheckbox').checked ? 
+                document.getElementById('customWarningText').value : ''
+        };
+    }
+    
     // Create a new history entry
     const newEntry = {
         title: title,
         goLiveMessage: goLiveMessage,
         timestamp: new Date().toISOString(),
         game: document.getElementById('gameTitle').value,
-        matureContent: document.getElementById('matureContent').checked
-
+        matureContent: document.getElementById('matureContent').checked,
+        contentWarnings: contentWarningsEnabled ? contentWarnings : null
     };
     
     // Add new entry to the beginning (most recent first)
@@ -2724,6 +2985,7 @@ function saveToHistory(title, goLiveMessage) {
     // Update the history display
     displayHistory();
 }
+
 
 // Function to display history
 function displayHistory() {
