@@ -1,15 +1,19 @@
 [
   {
+    "name": "#FirstPlaythrough",
+    "count": 54
+  },
+  {
     "name": "#Furry",
     "count": 53
   },
   {
-    "name": "#FirstPlaythrough",
-    "count": 48
-  },
-  {
     "name": "#18Plus",
     "count": 47
+  },
+  {
+    "name": "#NoBackseating",
+    "count": 42
   },
   {
     "name": "#TwitchDrops",
@@ -24,16 +28,12 @@
     "count": 41
   },
   {
-    "name": "#NoBackseating",
-    "count": 36
-  },
-  {
     "name": "#NoSpoilers",
-    "count": 34
+    "count": 40
   },
   {
     "name": "#Gaming",
-    "count": 34
+    "count": 40
   },
   {
     "name": "#fuck",
