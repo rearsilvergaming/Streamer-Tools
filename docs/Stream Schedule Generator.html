@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script src="stream schedule.js" defer></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="stream schedule.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stream Schedule Generator</title>
+    <style></style>
+  </head>
+  <body>
+    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+    <script>
+      kofiWidgetOverlay.draw("rearsilver", {
+        type: "floating-chat",
+        "floating-chat.donateButton.text": "Donate",
+        "floating-chat.donateButton.background-color": "#794bc4",
+        "floating-chat.donateButton.text-color": "#fff",
+      });
+    </script>
+    <!-- Header section -->
+    <div class="header">
+      <div class="donate-text">
+        If you enjoy this tool, please consider supporting me on Ko-fi!
+      </div>
+      <div class="button-container">
+        <button id="kofiBtn">
+          <img src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi" />
+          Buy me a coffee
+        </button>
+        <button id="twitchBtn">Follow me on Twitch</button>
+        <button id="discordBtn">More streamer tools</button>
+        <button id="themeToggle">🌙 Dark Mode</button>
+      </div>
+    </div>
+
+    <div class="menus">
+      <button
+        id="stream-title-generator"
+        class="menu"
+        onclick="window.location.href='RearSilver Stream Title Generator.html';"
+      >
+        Stream Title Generator
+      </button>
+      <button
+        id="twitch-story-generator"
+        class="menu"
+        onclick="window.location.href='Twitch Story Generator.html';"
+      >
+        Twitch Story Generator
+      </button>
+      <button
+        id="stream-schedule-generator"
+        class="menu active"
+        onclick="window.location.href='stream-schedule-generator.html';"
+      >
+        Stream Schedule Generator
+      </button>
+      <button
+        id="obs-scripts"
+        class="menu"
+        onclick="window.location.href='OBS Scripts.html';"
+      >
+        OBS Scripts
+      </button>
+    </div>
+    <div id="stream-title-generator-content" class="tab-content active">
+      <h1>Stream Title Generator</h1>
+      <h2>
+        Generate creative and engaging Twitch stream titles & go live
+        notifications made to share quickly and easily.
+      </h2>
+      <div class="container">
+        <div class="sidebar">
+          <h2>Schedule Options</h2>
+          <div class="schedule-option">
+            <label for="weekCount">Schedule Weeks:</label>
+            <select id="weekCount">
+              <option value="1">1 Week</option>
+              <option value="2">2 Weeks</option>
+              <option value="3">3 Weeks</option>
+              <option value="4">4 Weeks</option>
+            </select>
+          </div>
+
+          <div class="header-option">
+            <label for="scheduleHeader">Header Title:</label>
+            <select id="scheduleHeader">
+              <option>Upcoming Streams</option>
+              <option>What You Have to Look Forward To</option>
+              <option>This Week's Schedule</option>
+              <option>Next Week's Schedule</option>
+              <option>Monthly Stream Overview</option>
+              <option value="custom">Custom</option>
+            </select>
+            <input
+              type="text"
+              id="customHeader"
+              placeholder="Custom Header"
+              style="display: none"
+            />
+          </div>
+
+          <!-- Replace your existing date inputs with this -->
+          <div class="date-range-option">
+            <label>Schedule Date Range:</label>
+            <div class="date-inputs">
+              <div>
+                <label for="startDate">Start Date:</label>
+                <input
+                  type="date"
+                  id="startDate"
+                  onchange="updateDateRange()"
+                />
+              </div>
+              <div>
+                <label for="endDate">End Date:</label>
+                <input type="date" id="endDate" onchange="updateDateRange()" />
+              </div>
+            </div>
+            <div id="dateRangeInfo" class="date-range-info"></div>
+          </div>
+
+          <div class="time-zone-option">
+            <label for="timezone">Timezone:</label>
+            <select id="timezone" onchange="updatePreview()">
+              <option value="">(System Time)</option>
+              <option value="UTC">UTC</option>
+              <option value="GMT">GMT</option>
+              <option value="Europe/London">Europe/London</option>
+              <option value="America/New_York">America/New_York</option>
+              <option value="America/Los_Angeles">America/Los_Angeles</option>
+              <option value="America/Chicago">America/Chicago</option>
+              <option value="Australia/Sydney">Australia/Sydney</option>
+            </select>
+          </div>
+          <div class="channel-name-option">
+            <label for="channelName" class="input">Channel Name:</label>
+            <input
+              type="text"
+              id="channelName"
+              placeholder="Twitch Channel Name"
+            />
+          </div>
+
+          <div class="QR-code-option">
+            <label class="custom-checkbox">
+              <input type="checkbox" id="includeQR" />
+              <span class="checkmark"></span>
+              <span>Include QR Code?</span>
+            </label>
+            <p class="note">
+              Adds a QR code to the bottom of the image linking to your channel
+            </p>
+          </div>
+          <div class="export-option">
+            <label for="exportFormat">Export Format:</label>
+            <select id="exportFormat">
+              <option>Twitter</option>
+              <option>Discord</option>
+              <option>Instagram</option>
+              <option>Twitch Schedule Panel</option>
+              <option>Twitch Stories</option>
+              <option>OBS</option>
+              <option>iCal</option>
+            </select>
+          </div>
+          <button class="export-button" onclick="exportSchedule()">
+            Export Schedule
+          </button>
+        </div>
+
+        <div class="controls">
+          <h2 class="schedule-input-title">Schedule Input</h2>
+
+          <div id="week-1" class="week-section">
+            <h2>Week 1</h2>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-1-monday-toggle"
+                  onchange="toggleDayContent('week-1-monday')"
+                />
+                <span class="checkmark"></span>
+                <span>Monday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-1-monday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-1-monday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-1-monday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-1-monday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-1-monday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button type="button" onclick="addStreamInput('week-1-monday')">
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-1-tuesday-toggle"
+                  onchange="toggleDayContent('week-1-tuesday')"
+                />
+                <span class="checkmark"></span>
+                <span>Tuesday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-1-tuesday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-1-tuesday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-1-tuesday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-1-tuesday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-1-tuesday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-1-tuesday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-1-wednesday-toggle"
+                  onchange="toggleDayContent('week-1-wednesday')"
+                />
+                <span class="checkmark"></span>
+                <span>Wednesday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-1-wednesday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-1-wednesday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-1-wednesday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-1-wednesday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-1-wednesday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-1-wednesday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-1-thursday-toggle"
+                  onchange="toggleDayContent('week-1-thursday')"
+                />
+                <span class="checkmark"></span>
+                <span>Thursday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-1-thursday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-1-thursday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-1-thursday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-1-thursday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-1-thursday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-1-thursday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-1-friday-toggle"
+                  onchange="toggleDayContent('week-1-friday')"
+                />
+                <span class="checkmark"></span>
+                <span>Friday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-1-friday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-1-friday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-1-friday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-1-friday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-1-friday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button type="button" onclick="addStreamInput('week-1-friday')">
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-1-saturday-toggle"
+                  onchange="toggleDayContent('week-1-saturday')"
+                />
+                <span class="checkmark"></span>
+                <span>Saturday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-1-saturday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-1-saturday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-1-saturday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-1-saturday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-1-saturday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-1-saturday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-1-sunday-toggle"
+                  onchange="toggleDayContent('week-1-sunday')"
+                />
+                <span class="checkmark"></span>
+                <span>Sunday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-1-sunday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-1-sunday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-1-sunday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-1-sunday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-1-sunday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button type="button" onclick="addStreamInput('week-1-sunday')">
+                  Add Stream
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="week-2" class="week-section">
+            <h2>Week 2</h2>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-2-monday-toggle"
+                  onchange="toggleDayContent('week-2-monday')"
+                />
+                <span class="checkmark"></span>
+                <span>Monday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-2-monday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-2-monday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-2-monday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-2-monday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-2-monday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button type="button" onclick="addStreamInput('week-2-monday')">
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-2-tuesday-toggle"
+                  onchange="toggleDayContent('week-2-tuesday')"
+                />
+                <span class="checkmark"></span>
+                <span>Tuesday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-2-tuesday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-2-tuesday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-2-tuesday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-2-tuesday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-2-tuesday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-2-tuesday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-2-wednesday-toggle"
+                  onchange="toggleDayContent('week-2-wednesday')"
+                />
+                <span class="checkmark"></span>
+                <span>Wednesday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-2-wednesday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-2-wednesday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-2-wednesday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-2-wednesday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-2-wednesday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-2-wednesday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-2-thursday-toggle"
+                  onchange="toggleDayContent('week-2-thursday')"
+                />
+                <span class="checkmark"></span>
+                <span>Thursday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-2-thursday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-2-thursday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-2-thursday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-2-thursday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-2-thursday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-2-thursday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-2-friday-toggle"
+                  onchange="toggleDayContent('week-2-friday')"
+                />
+                <span class="checkmark"></span>
+                <span>Friday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-2-friday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-2-friday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-2-friday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-2-friday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-2-friday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button type="button" onclick="addStreamInput('week-2-friday')">
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-2-saturday-toggle"
+                  onchange="toggleDayContent('week-2-saturday')"
+                />
+                <span class="checkmark"></span>
+                <span>Saturday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-2-saturday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-2-saturday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-2-saturday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-2-saturday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-2-saturday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-2-saturday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-2-sunday-toggle"
+                  onchange="toggleDayContent('week-2-sunday')"
+                />
+                <span class="checkmark"></span>
+                <span>Sunday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-2-sunday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-2-sunday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-2-sunday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-2-sunday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-2-sunday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button type="button" onclick="addStreamInput('week-2-sunday')">
+                  Add Stream
+                </button>
+              </div>
+            </div>
+          </div>
+          <div id="week-3" class="week-section" style="display: none">
+            <h2>Week 3</h2>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-3-monday-toggle"
+                  onchange="toggleDayContent('week-3-monday')"
+                />
+                <span class="checkmark"></span>
+                <span>Monday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-3-monday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-3-monday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-3-monday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-3-monday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-3-monday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button type="button" onclick="addStreamInput('week-3-monday')">
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-3-tuesday-toggle"
+                  onchange="toggleDayContent('week-3-tuesday')"
+                />
+                <span class="checkmark"></span>
+                <span>Tuesday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-3-tuesday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-3-tuesday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-3-tuesday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-3-tuesday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-3-tuesday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-3-tuesday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-3-wednesday-toggle"
+                  onchange="toggleDayContent('week-3-wednesday')"
+                />
+                <span class="checkmark"></span>
+                <span>Wednesday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-3-wednesday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-3-wednesday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-3-wednesday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-3-wednesday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-3-wednesday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-3-wednesday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-3-thursday-toggle"
+                  onchange="toggleDayContent('week-3-thursday')"
+                />
+                <span class="checkmark"></span>
+                <span>Thursday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-3-thursday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-3-thursday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-3-thursday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-3-thursday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-3-thursday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-3-thursday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-3-friday-toggle"
+                  onchange="toggleDayContent('week-3-friday')"
+                />
+                <span class="checkmark"></span>
+                <span>Friday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-3-friday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-3-friday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-3-friday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-3-friday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-3-friday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button type="button" onclick="addStreamInput('week-3-friday')">
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-3-saturday-toggle"
+                  onchange="toggleDayContent('week-3-saturday')"
+                />
+                <span class="checkmark"></span>
+                <span>Saturday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-3-saturday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-3-saturday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-3-saturday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-3-saturday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-3-saturday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-3-saturday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-3-sunday-toggle"
+                  onchange="toggleDayContent('week-3-sunday')"
+                />
+                <span class="checkmark"></span>
+                <span>Sunday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-3-sunday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-3-sunday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-3-sunday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-3-sunday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-3-sunday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button type="button" onclick="addStreamInput('week-3-sunday')">
+                  Add Stream
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="week-4" class="week-section" style="display: none">
+            <h2>Week 4</h2>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-4-monday-toggle"
+                  onchange="toggleDayContent('week-4-monday')"
+                />
+                <span class="checkmark"></span>
+                <span>Monday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-4-monday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-4-monday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-4-monday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-4-monday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-4-monday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button type="button" onclick="addStreamInput('week-4-monday')">
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-4-tuesday-toggle"
+                  onchange="toggleDayContent('week-4-tuesday')"
+                />
+                <span class="checkmark"></span>
+                <span>Tuesday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-4-tuesday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-4-tuesday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-4-tuesday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-4-tuesday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-4-tuesday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-4-tuesday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-4-wednesday-toggle"
+                  onchange="toggleDayContent('week-4-wednesday')"
+                />
+                <span class="checkmark"></span>
+                <span>Wednesday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-4-wednesday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-4-wednesday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-4-wednesday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-4-wednesday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-4-wednesday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-4-wednesday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-4-thursday-toggle"
+                  onchange="toggleDayContent('week-4-thursday')"
+                />
+                <span class="checkmark"></span>
+                <span>Thursday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-4-thursday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-4-thursday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-4-thursday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-4-thursday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-4-thursday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-4-thursday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-4-friday-toggle"
+                  onchange="toggleDayContent('week-4-friday')"
+                />
+                <span class="checkmark"></span>
+                <span>Friday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-4-friday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-4-friday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-4-friday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-4-friday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-4-friday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button type="button" onclick="addStreamInput('week-4-friday')">
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-4-saturday-toggle"
+                  onchange="toggleDayContent('week-4-saturday')"
+                />
+                <span class="checkmark"></span>
+                <span>Saturday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-4-frisaturdayday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-4-saturday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-4-saturday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-4-saturday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-4-saturday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button
+                  type="button"
+                  onclick="addStreamInput('week-4-saturday')"
+                >
+                  Add Stream
+                </button>
+              </div>
+            </div>
+            <div class="day">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="week-4-sunday-toggle"
+                  onchange="toggleDayContent('week-4-sunday')"
+                />
+                <span class="checkmark"></span>
+                <span>Sunday</span>
+              </label>
+              <div class="stream-day-inputs" id="week-4-sunday-content">
+                <div class="form-group">
+                  <label
+                    >Start Time:
+                    <input
+                      type="time"
+                      id="week-4-sunday-start-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >End Time:
+                    <input
+                      type="time"
+                      id="week-4-sunday-end-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Game/Activity:
+                    <input
+                      type="text"
+                      id="week-4-sunday-game-0"
+                      onchange="updatePreview()" /></label
+                  ><br />
+                  <label
+                    >Colour:
+                    <input
+                      type="color"
+                      id="week-4-sunday-colour-0"
+                      value="#9146FF"
+                      onchange="updatePreview()"
+                  /></label>
+                </div>
+                <button type="button" onclick="addStreamInput('week-4-sunday')">
+                  Add Stream
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-panel preview">
+          <div class="preview-title"><h3>Schedule Preview</h3></div>
+          <div id="previewOutput"></div>
+        </div>
+      </div>
+
+      <footer class="bg-light text-center text-lg-start mt-4 rounded-top">
+        <hr />
+        <div class="footer-text">
+          Feedback? Suggestions? Bugs? Please let me know!
+          <a href="mailto:rearsilvergaming@gmail.com" target="_blank"
+            >Drop me an email</a
+          >
+          and share your thoughts.
+          <br />
+          <br />
+          Find me at: |
+          <a href="https://twitch.tv/rearsilver" target="_blank">Twitch</a> |
+          <a href="https://discord.com/invite/RRbQ93Ceew" target="_blank"
+            >Discord</a
+          >
+          |
+          <a href="https://x.com/rearsilvergamer" target="_blank">Twitter</a> |
+          <a href="https://www.youtube.com/rearsilvergaming" target="_blank"
+            >YouTube</a
+          >
+          |
+          <a href="https://www.tiktok.com/@RearSilver" target="_blank"
+            >TikTok</a
+          >
+          |
+          <a href="https://www.instagram.com/RearSilver.gaming" target="_blank"
+            >Instagram</a
+          >
+          |
+          <br />
+          <br />
+          Made by RearSilver Copyright &copy; 2025. All rights reserved. | Not
+          affiliated with Twitch
+        </div>
+        <hr />
+      </footer>
+    </div>
+    <!-- Closing main container -->
+    <button id="backToTop" class="back-to-top" onclick="scrollToTop()">
+      ⬆️ Back to Top
+    </button>
+  </body>
+</html>
