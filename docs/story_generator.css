@@ -594,6 +594,7 @@ button:disabled {
   background-color: #6441a5; /* Twitch purple */
   color: var(--button-text);
   font-weight: bolder;
+  font-size: x-large;
 }
 
 .menu-content {
