@@ -1,223 +1,212 @@
 :root {
-    --bg-color: #f5f5f5;
-    --container-bg: white;
-    --text-color: #333;
-    --input-bg: white;
-    --input-border: #ddd;
-    --button-bg: #4CAF50;
-    --button-text: white;
-    --preview-bg: #f9f9f9;
-    --preview-border: #ddd;
-    --note-color: #666;
-    --checkbox-bg: #ccc;
-    --checkbox-checked: DodgerBlue;
+  --bg-color: #f5f5f5;
+  --container-bg: white;
+  --text-color: #333;
+  --input-bg: white;
+  --input-border: #ddd;
+  --button-bg: #4caf50;
+  --button-text: white;
+  --preview-bg: #f9f9f9;
+  --preview-border: #ddd;
+  --note-color: #666;
+  --checkbox-bg: #ccc;
+  --checkbox-checked: DodgerBlue;
 }
 
-         .dark-mode {
-    --bg-color: #222;
-    --container-bg: #333;
-    --text-color: #eee;
-    --input-bg: #444;
-    --input-border: #555;
-    --button-bg: #6441a5;
-    --button-text: white;
-    --preview-bg: #444;
-    --preview-border: #555;
-    --note-color: #eee;
-    --checkbox-bg: #555;
-    --checkbox-checked: #6441a5;
+.dark-mode {
+  --bg-color: #222;
+  --container-bg: #333;
+  --text-color: #eee;
+  --input-bg: #444;
+  --input-border: #555;
+  --button-bg: #6441a5;
+  --button-text: white;
+  --preview-bg: #444;
+  --preview-border: #555;
+  --note-color: #eee;
+  --checkbox-bg: #555;
+  --checkbox-checked: #6441a5;
 }
 
-    body {
-    font-family: Arial, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 0;
-    text-transform: capitalize;
-
+body {
+  font-family: Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  text-transform: capitalize;
 }
 
 .menus {
-    display: flex;
-    margin-bottom: 15px;
+  display: flex;
+  margin-bottom: 15px;
 }
 
 .menu {
-    padding: 8px 15px;
-    cursor: pointer;
-    background-color: var(--button-bg);
-    color: var(--button-text);
-    font-size: 16px;
-    cursor: pointer;
-     margin-top: 15px;
-     margin-bottom: 15px;
-    border-bottom: none;
-    border-radius: 4px 4px 4px 4px;
-    margin-right: 5px;
+  padding: 8px 15px;
+  cursor: pointer;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-bottom: none;
+  border-radius: 4px 4px 4px 4px;
+  margin-right: 5px;
 }
 
 .menu:hover {
-    background-color: #45a049;
+  background-color: #45a049;
 }
 
 .menu.active {
-    background-color: #6441a5; /* Twitch purple */
-    color: var(--button-text);
-    font-weight: bolder;
-    text-decoration: wavy underline;
+  background-color: #6441a5; /* Twitch purple */
+  color: var(--button-text);
+  font-weight: bolder;
 }
 
 .menu-content {
-    display: none;
-    font-weight: bold;
+  display: none;
+  font-weight: bold;
 }
 
 .menu-content.active {
-    display: block;
-    font-weight: bold;
-
+  display: block;
+  font-weight: bold;
 }
 
-    h1 {
-        color: var(--text-color);
-        margin: 0;
-        padding: 0;
-        text-align: center;
-        text-transform: capitalize;
+h1 {
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  text-transform: capitalize;
+}
 
-    }
+h2 {
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  text-transform: capitalize;
+}
 
-    h2 {
-        color: var(--text-color);
-        margin: 0;
-        padding: 0;
-        text-align: center;
-        text-transform: capitalize;
+h3 {
+  color: var(--text-color);
+  margin: 0;
+  padding: 10px;
+  text-align: center;
+  font-size: medium;
+  text-transform: capitalize;
+}
 
-    }
+h4 {
+  color: var(--text-color);
+  margin: 0;
+  padding: 20px;
+  text-align: left;
+  font-size: medium;
+  font-weight: normal;
+  text-transform: capitalize;
+  line-height: 1.5rem;
+}
 
-    h3 {
-        color: var(--text-color);
-        margin: 0;
-        padding: 10px;
-        text-align: center;
-        font-size: medium;
-        text-transform: capitalize;
-    }
-
-    h4 {
-        color: var(--text-color);
-        margin: 0;
-        padding: 20px;
-        text-align: left;
-        font-size: medium;
-        font-weight: normal;
-        text-transform: capitalize;
-        line-height: 1.5rem;
-    }
-
-    .container {
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: var(--container-bg);
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: var(--container-bg);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
 .p {
-        text-align: center;
-color: var(--text-color);
-    }
+  text-align: center;
+  color: var(--text-color);
+}
 
-    .controls {
-        flex: 1;
-        min-width: 300px;
-        background-color: var(--container-bg);
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        display: flex; /* Add this */
-        flex-direction: column; /* Add this */
-        align-items: center; /* Add this to center children horizontally */
-    }
-    
+.controls {
+  flex: 1;
+  min-width: 300px;
+  background-color: var(--container-bg);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex; /* Add this */
+  flex-direction: column; /* Add this */
+  align-items: center; /* Add this to center children horizontally */
+}
 
 .tabs {
-    display: flex;
-    margin-bottom: 15px;
-    justify-content: center; /* This centers the tabs horizontally */
-    width: 100%; /* Ensure the tabs container takes full width */
+  display: flex;
+  margin-bottom: 15px;
+  justify-content: center; /* This centers the tabs horizontally */
+  width: 100%; /* Ensure the tabs container takes full width */
 }
 
-
 .tab {
-    padding: 8px 15px;
-    cursor: pointer;
-    background-color: var(--button-bg);
-    color: var(--button-text);
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 15px;
-    border-bottom: none;
-    border-radius: 4px 4px 0 0;
-    margin-right: 5px;
-    
+  padding: 8px 15px;
+  cursor: pointer;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  margin-right: 5px;
 }
 
 .tab:hover {
-    background-color: #45a049;
+  background-color: #45a049;
 }
 
 .tab.active {
-    background-color: #6441a5; /* Twitch purple */
-    color: var(--button-text);
-    margin-bottom: -1px;
-    font-weight: bold;
+  background-color: #6441a5; /* Twitch purple */
+  color: var(--button-text);
+  margin-bottom: -1px;
+  font-weight: bold;
 }
 
 .tab-content {
-    display: none;
-    font-weight: bold;
+  display: none;
+  font-weight: bold;
 }
 
 .tab-content.active {
-    display: block;
-    font-weight: bold;
-
+  display: block;
+  font-weight: bold;
 }
 .script-navigation {
-    position: sticky;
-    top: 0;
-    background-color: #333;
-    padding: 10px;
-    margin-bottom: 20px;
-    z-index: 100;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-  }
+  position: sticky;
+  top: 0;
+  background-color: #333;
+  padding: 10px;
+  margin-bottom: 20px;
+  z-index: 100;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
 
 /* Add this to your CSS */
 .usage-stats-card {
-    background-color: var(--container-bg);
-     color: var(--text-color);
+  background-color: var(--container-bg);
+  color: var(--text-color);
   border-radius: 12px;
 }
 
 .usage-stats-card .fw-bold {
-    color: var(--text-color);
-    font-weight: bold;
+  color: var(--text-color);
+  font-weight: bold;
 }
 
-
-    /* Trending section styling */
-    .trending-container {
-    background-color: var(--container-bg);
-     color: var(--text-color);
-    padding: 1rem;
-  
+/* Trending section styling */
+.trending-container {
+  background-color: var(--container-bg);
+  color: var(--text-color);
+  padding: 1rem;
 }
 
 .trending-columns {
@@ -274,178 +263,174 @@ ul li:hover {
   background-color: #333;
 }
 
-
-
 .container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: var(--container-bg);
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: var(--container-bg);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .header {
-    width: auto;
-    margin-bottom: 20px;
+  width: auto;
+  margin-bottom: 20px;
 
-    padding: 50px;
-    justify-content: center; /* Space out buttons evenly */
-    align-items: center; /* Align buttons vertically */
-    gap: 10px; /* Add spacing between buttons */
-    flex-wrap: wrap; /* Allow wrapping for smaller screens */
-    text-transform: capitalize;
-
+  padding: 50px;
+  justify-content: center; /* Space out buttons evenly */
+  align-items: center; /* Align buttons vertically */
+  gap: 10px; /* Add spacing between buttons */
+  flex-wrap: wrap; /* Allow wrapping for smaller screens */
+  text-transform: capitalize;
 }
 
 .donate-text {
-    color: var(--text-color);
-    font-size: 20px;
-    font-weight: bolder;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    text-align: center;
+  color: var(--text-color);
+  font-size: 20px;
+  font-weight: bolder;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .button-container {
-    display: flex;
-    justify-content: space-between; /* Space out buttons evenly */
-    align-items: center;
-    gap: 10px; /* Add spacing between buttons */
-    flex-wrap: wrap; /* Allow wrapping for smaller screens */
-    text-transform: capitalize;
-
+  display: flex;
+  justify-content: space-between; /* Space out buttons evenly */
+  align-items: center;
+  gap: 10px; /* Add spacing between buttons */
+  flex-wrap: wrap; /* Allow wrapping for smaller screens */
+  text-transform: capitalize;
 }
 
 #kofiBtn {
-    background-color: #29abe0;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
+  background-color: #29abe0;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
 
-    cursor: pointer;
-    border: none;
-    width: 250px;
-    padding: 10px 15px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  cursor: pointer;
+  border: none;
+  width: 250px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #kofiBtn:hover {
-    opacity: 0.9;
+  opacity: 0.9;
 }
 
 #kofiBtn img {
-    height: 20px;
-    margin-right: 8px;
+  height: 20px;
+  margin-right: 8px;
 }
 
 #themeToggle {
-    width: 250px;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 10px 15px;
-    border-radius: 5px;
-    background-color: var(--button-bg);
-    color: var(--button-text);
-    border: none;
-    cursor: pointer;
+  width: 250px;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  cursor: pointer;
 }
 
 #themeToggle:hover {
-    opacity: 0.9;
+  opacity: 0.9;
 }
 
+h1 {
+  text-align: center;
+  color: var(--text-color);
+}
 
-        h1 {
-            text-align: center;
-    color: var(--text-color);
-        }
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
 
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        input, select, button, textarea {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid var(--input-border);
-    border-radius: 5px;
-    box-sizing: border-box;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    text-transform: capitalize;
-
+input,
+select,
+button,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid var(--input-border);
+  border-radius: 5px;
+  box-sizing: border-box;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  text-transform: capitalize;
 }
 
 button {
-    background-color: var(--button-bg);
-    color: var(--button-text);
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 15px;
-        }
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+}
 
-        button:hover {
-            background-color: #45a049;
-        }
+button:hover {
+  background-color: #45a049;
+}
 
-        .custom-checkbox {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            font-size: 1rem;
-            user-select: none;
-            gap: 10px;
-            
-        }
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1rem;
+  user-select: none;
+  gap: 10px;
+}
 
-        .custom-checkbox input {
-            display: none;
-        }
+.custom-checkbox input {
+  display: none;
+}
 
-        .custom-checkbox .checkmark {
-            height: 20px;
-            width: 20px;
-            background-color: var(--checkbox-bg);
-            border-radius: 4px;
-            position: relative;
-        }
+.custom-checkbox .checkmark {
+  height: 20px;
+  width: 20px;
+  background-color: var(--checkbox-bg);
+  border-radius: 4px;
+  position: relative;
+}
 
-        .custom-checkbox input:checked + .checkmark {
-            background-color: var(--checkbox-checked);
-        }
+.custom-checkbox input:checked + .checkmark {
+  background-color: var(--checkbox-checked);
+}
 
-        .custom-checkbox .checkmark::after {
-            content: "";
-            position: absolute;
-            display: none;
-            left: 6px;
-            top: 2px;
-            width: 5px;
-            height: 10px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-        }
+.custom-checkbox .checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
 
-        .custom-checkbox input:checked + .checkmark::after {
-            display: block;
-        }
+.custom-checkbox input:checked + .checkmark::after {
+  display: block;
+}
 
-        .hashtag-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
+.hashtag-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
 
-        .tag-pill-container {
+.tag-pill-container {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -478,297 +463,306 @@ button {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
+.note {
+  font-size: 0.9em;
+  color: var(--note-color);
+  margin-top: 5px;
+}
 
+#previewArea {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: var(--preview-bg);
+  border: 1px solid var(--preview-border);
+}
 
-        .note {
-            font-size: 0.9em;
-            color: var(--note-color);
-            margin-top: 5px;
-        }
+#charWarning {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
 
-        #previewArea {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: var(--preview-bg);
-            border: 1px solid var(--preview-border);
-        }
+#supportMessage {
+  margin-top: 10px;
+  font-style: italic;
+  color: var(--note-color);
+}
 
-        #charWarning {
-            color: red;
-            font-weight: bold;
-            margin-top: 10px;
-        }
+#goLiveMessageSection {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: var(--preview-bg);
+  border: 1px solid var(--preview-border);
+}
 
-        #supportMessage {
-            margin-top: 10px;
-            font-style: italic;
-            color: var(--note-color);        }
+#shareSection button#shareFacebook {
+  background-color: #1877f2; /* Facebook Blue */
+}
+#shareSection button#shareThreads {
+  background-color: #000000; /* Black */
+}
+#shareSection button#shareBluesky {
+  background-color: #0080ff; /* Bluesky Blue */
+}
+#shareSection button#shareInstagram {
+  background-color: #833ab4; /* Instagram Pink */
+}
 
-        #goLiveMessageSection {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: var(--preview-bg);
-            border: 1px solid var(--preview-border);
-        }
+#shareSection button#shareTwitter:hover {
+  background-color: #0c87c5;
+}
 
-        #shareSection button#shareFacebook {
-            background-color: #1877F2; /* Facebook Blue */
-        }
-        #shareSection button#shareThreads{
-            background-color: #000000; /* Black */
-        }
-        #shareSection button#shareBluesky {
-            background-color: #0080FF; /* Bluesky Blue */
-        }
-        #shareSection button#shareInstagram {
-            background-color: #833ab4; /* Instagram Pink */
-        }
+#shareSection button#shareDiscord:hover {
+  background-color: #586ea6;
+}
+#shareSection button#shareFacebook:hover {
+  background-color: #145db4;
+}
+#shareSection button#shareThreads:hover {
+  background-color: #444444;
+}
+#shareSection button#shareBluesky:hover {
+  background-color: #0066cc;
+}
+#shareSection button#shareInstagram:hover {
+  background-color: #e1306c;
+}
 
-        #shareSection button#shareTwitter:hover {
-            background-color: #0C87C5;
-        }
+#shareSection button#shareDiscord {
+  background-color: #7289da; /* Discord Blurple */
+}
 
-        #shareSection button#shareDiscord:hover {
-            background-color: #586EA6;
-        }
-        #shareSection button#shareFacebook:hover {
-            background-color: #145db4;
-        }
-        #shareSection button#shareThreads:hover {
-            background-color: #444444;
-        }
-        #shareSection button#shareBluesky:hover{
-            background-color: #0066CC;
-        }
-        #shareSection button#shareInstagram:hover {
-            background-color: #e1306c;
-        }
+#shareSection button#shareTwitter:hover {
+  background-color: #0c87c5;
+}
 
-        #shareSection button#shareDiscord {
-            background-color: #7289DA; /* Discord Blurple */
-        }
+#shareSection button#shareDiscord:hover {
+  background-color: #586ea6;
+}
 
-        #shareSection button#shareTwitter:hover {
-            background-color: #0C87C5;
-        }
+#shareSection {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: var(--preview-bg);
+  border: 1px solid var(--preview-border);
+}
 
-        #shareSection button#shareDiscord:hover {
-            background-color: #586EA6;
-        }
+#shareSection label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
 
-        #shareSection {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: var(--preview-bg);
-            border: 1px solid var(--preview-border);
-        }
+#shareSection input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
 
-        #shareSection label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
+#shareSection button {
+  background-color: #1da1f2; /* Twitter Blue */
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-right: 5px;
+  border: none; /* Remove default button border */
+  padding: 10px 15px;
+  border-radius: 5px;
+}
 
-        #shareSection input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
+#shareSection button#shareDiscord {
+  background-color: #5865f2; /* Discord Blurple */
+}
 
-        #shareSection button {
-            background-color: #1DA1F2; /* Twitter Blue */
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-            margin-right: 5px;
-            border: none; /* Remove default button border */
-            padding: 10px 15px;
-            border-radius: 5px;
-        }
+#shareSection button:hover {
+  opacity: 0.8;
+}
 
-        #shareSection button#shareDiscord {
-            background-color: #5865F2; /* Discord Blurple */
-        }
+#twitchBtn {
+  background-color: #6441a5; /* Twitter Blue */
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-right: 50px;
+  border: none; /* Remove default button border */
+  padding: 10px 15px;
+  border-radius: 5px;
+  width: 250px;
+}
 
-        #shareSection button:hover {
-            opacity: 0.8;
-        }
+#discordBtn {
+  background-color: #5865f2; /* Discord Blurple */
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
 
-        #twitchBtn {
-            background-color: #6441a5; /* Twitter Blue */
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            margin-right: 50px;
-            border: none; /* Remove default button border */
-            padding: 10px 15px;
-            border-radius: 5px;
-            width: 250px;
-        }
+  cursor: pointer;
+  margin-top: 10px;
+  margin-left: 46px;
+  border: none; /* Remove default button border */
+  padding: 10px 15px;
+  border-radius: 5px;
+  width: 250px;
+}
 
-        #discordBtn {
-            background-color: #5865F2; /* Discord Blurple */
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
+#twitchBtn:hover {
+  opacity: 0.8;
+}
 
-            cursor: pointer;
-            margin-top: 10px;
-            margin-left: 46px;
-            border: none; /* Remove default button border */
-            padding: 10px 15px;
-            border-radius: 5px;
-            width: 250px;
-        }
+#discordBtn:hover {
+  opacity: 0.8;
+}
 
-        #twitchBtn:hover {
-            opacity: 0.8;
-        }
+#historySection {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: var(--preview-bg);
+  border: 1px solid var(--preview-border);
+}
 
-        #discordBtn:hover {
-            opacity: 0.8;
-        }
-
-        #historySection {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: var(--preview-bg);
-            border: 1px solid var(--preview-border);
-        }
-
-        .history-entry {
-    background-color: var(--preview-bg) !important;
-    border: 1px solid var(--preview-border) !important;
+.history-entry {
+  background-color: var(--preview-bg) !important;
+  border: 1px solid var(--preview-border) !important;
 }
 
 /* Hashtag tab styling */
 .hashtag-tabs {
-    display: flex;
-    margin-bottom: 10px;
-    border-bottom: 1px solid var(--input-border);
+  display: flex;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--input-border);
 }
 
 .hashtag-tab {
-    flex: 1;
-    padding: 8px;
-    background: none;
-    border: none;
-    border-bottom: 3px solid transparent;
-    cursor: pointer;
-    color: var(--text-color);
-    transition: all 0.3s ease;
+  flex: 1;
+  padding: 8px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  color: var(--text-color);
+  transition: all 0.3s ease;
 }
 
 .hashtag-tab:hover {
-    background-color: rgba(128, 128, 128, 0.1);
+  background-color: rgba(128, 128, 128, 0.1);
 }
 
 .hashtag-tab.active {
-    border-bottom: 3px solid var(--button-bg);
-    font-weight: bold;
+  border-bottom: 3px solid var(--button-bg);
+  font-weight: bold;
 }
 
 .hashtag-category {
-    display: none;
-    animation: fadeIn 0.3s;
+  display: none;
+  animation: fadeIn 0.3s;
 }
 
 .hashtag-category.active {
-    display: block;
+  display: block;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Emoji picker styling */
 .emoji-grid {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 5px;
-    margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+  margin-top: 10px;
 }
 
 .emoji-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    font-size: 20px;
-    background-color: var(--preview-bg);
-    border: 1px solid var(--input-border);
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  font-size: 20px;
+  background-color: var(--preview-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .emoji-item:hover {
-    transform: scale(1.1);
-    background-color: var(--button-bg);
-    color: white;
+  transform: scale(1.1);
+  background-color: var(--button-bg);
+  color: white;
 }
 
 .emoji-item.selected {
-    background-color: var(--button-bg);
-    color: white;
-    border-color: var(--button-bg);
+  background-color: var(--button-bg);
+  color: white;
+  border-color: var(--button-bg);
 }
 
 .randomizer-section {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
 }
 .randomizer-button {
-    background-color: #28a745;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  background-color: #28a745;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 .randomizer-button:hover {
-    background-color: #1e7e34;
+  background-color: #1e7e34;
 }
 
 .mature-content-option {
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: var(--preview-bg);
-    border: 1px solid var(--preview-border);
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: var(--preview-bg);
+  border: 1px solid var(--preview-border);
 }
 
 hr {
-    border: 10px solid var(--button-bg);
-    border-radius: 5px;
-    margin: 15px 0;
+  border: 10px solid var(--button-bg);
+  border-radius: 5px;
+  margin: 15px 0;
 }
 
 .footer-text {
-    font-size: 18px;
-    color: var(--text-color);
-    margin-top: 20px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-weight: normal;
-    width: 100%;
+  font-size: 18px;
+  color: var(--text-color);
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: normal;
+  width: 100%;
 }
 
 a:link {
@@ -816,71 +810,71 @@ a:active {
 
 /* OBS Script Cards */
 .script-card {
-    background-color: var(--container-bg);
-    color: var(--text-color);
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid var(--input-border);
+  background-color: var(--container-bg);
+  color: var(--text-color);
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--input-border);
 }
 
 .script-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
 }
 
 .script-description {
-    font-size: 1rem;
-    margin-bottom: 15px;
+  font-size: 1rem;
+  margin-bottom: 15px;
 }
 
 .script-features {
-    list-style-type: disc;
-    margin-left: 20px;
-    margin-bottom: 15px;
+  list-style-type: disc;
+  margin-left: 20px;
+  margin-bottom: 15px;
 }
 
 .script-setup {
-    list-style-type: decimal;
-    margin-left: 20px;
-    margin-bottom: 15px;
+  list-style-type: decimal;
+  margin-left: 20px;
+  margin-bottom: 15px;
 }
 
 .script-card button {
-    background-color: var(--button-bg);
-    color: var(--button-text);
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
 }
 
 .script-card button:hover {
-    background-color: #45a049; /* Adjust hover color */
+  background-color: #45a049; /* Adjust hover color */
 }
 
 .back-to-top {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    display: none;
-    background-color: var(--button-bg);
-    color: var(--button-text);
-    border: none;
-    border-radius: 5px;
-    width: 150px !important; /* Ensure the width is fixed */
-    height: 50px !important; /* Ensure the height is fixed */
-    font-size: 18px;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    padding: 0; /* Remove any padding */
-    text-align: center; /* Center the content */
-    line-height: 50px; /* Vertically center the arrow */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: none;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 5px;
+  width: 150px !important; /* Ensure the width is fixed */
+  height: 50px !important; /* Ensure the height is fixed */
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 0; /* Remove any padding */
+  text-align: center; /* Center the content */
+  line-height: 50px; /* Vertically center the arrow */
 }
 
 .back-to-top:hover {
-    background-color: #45a049; /* Darker purple */
+  background-color: #45a049; /* Darker purple */
 }
