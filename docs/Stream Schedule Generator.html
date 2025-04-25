@@ -127,14 +127,227 @@
           <div class="time-zone-option">
             <label for="timezone">Timezone:</label>
             <select id="timezone" onchange="updatePreview()">
-              <option value="">(System Time)</option>
-              <option value="UTC">UTC</option>
-              <option value="GMT">GMT</option>
-              <option value="Europe/London">Europe/London</option>
-              <option value="America/New_York">America/New_York</option>
-              <option value="America/Los_Angeles">America/Los_Angeles</option>
-              <option value="America/Chicago">America/Chicago</option>
-              <option value="Australia/Sydney">Australia/Sydney</option>
+              <optgroup label="(UTC-11:00)">
+                <option value="Pacific/Midway">
+                  Midway Island, American Samoa
+                </option>
+              </optgroup>
+              <optgroup label="(UTC-10:00)">
+                <option value="Pacific/Honolulu">Hawaii</option>
+              </optgroup>
+              <optgroup label="(UTC-08:00)">
+                <option value="America/Anchorage">Alaska</option>
+              </optgroup>
+              <optgroup label="(UTC-07:00)">
+                <option value="America/Tijuana">Baja California</option>
+                <option value="America/Los_Angeles">
+                  Pacific Time (US and Canada)
+                </option>
+                <option value="America/Phoenix">Arizona</option>
+              </optgroup>
+              <optgroup label="(UTC-06:00)">
+                <option value="America/Chihuahua">
+                  Chihuahua, La Paz, Mazatlan
+                </option>
+                <option value="America/Denver">
+                  Mountain Time (US and Canada)
+                </option>
+                <option value="America/Belize">Central America</option>
+                <option value="America/Regina">Saskatchewan</option>
+              </optgroup>
+              <optgroup label="(UTC-05:00)">
+                <option value="America/Chicago">
+                  Central Time (US and Canada)
+                </option>
+                <option value="America/Mexico_City">
+                  Guadalajara, Mexico City, Monterrey
+                </option>
+                <option value="America/Bogota">Bogota, Lima, Quito</option>
+                <option value="America/Jamaica">Kingston, George Town</option>
+              </optgroup>
+              <optgroup label="(UTC-04:00)">
+                <option value="America/New_York">
+                  Eastern Time (US and Canada)
+                </option>
+                <option value="America/Indiana/Indianapolis">
+                  Indiana (East)
+                </option>
+                <option value="America/Cuiaba">Cuiaba</option>
+                <option value="America/Manaus">
+                  Georgetown, La Paz, Manaus, San Juan
+                </option>
+              </optgroup>
+              <optgroup label="(UTC-04:30)">
+                <option value="America/Caracas">Caracas</option>
+              </optgroup>
+              <optgroup label="(UTC-03:00)">
+                <option value="America/Asuncion">Asuncion</option>
+                <option value="America/Halifax">Atlantic Time (Canada)</option>
+                <option value="America/St_Johns">
+                  Newfoundland and Labrador
+                </option>
+                <option value="America/Sao_Paulo">Brasilia</option>
+                <option value="America/Buenos_Aires">Buenos Aires</option>
+                <option value="America/Cayenne">Cayenne, Fortaleza</option>
+                <option value="America/Montevideo">Montevideo</option>
+                <option value="America/Bahia">Salvador</option>
+                <option value="America/Santiago">Santiago</option>
+              </optgroup>
+              <optgroup label="(UTC-02:30)">
+                <option value="America/St_Johns">
+                  Newfoundland and Labrador
+                </option>
+              </optgroup>
+              <optgroup label="(UTC-02:00)">
+                <option value="America/Godthab">Greenland</option>
+                <option value="America/Noronha">Mid-Atlantic</option>
+              </optgroup>
+              <optgroup label="(UTC-01:00)">
+                <option value="Atlantic/Cape_Verde">Cape Verde Islands</option>
+              </optgroup>
+              <optgroup label="(UTC+00:00)">
+                <option value="Atlantic/Azores">Azores</option>
+                <option value="Africa/Monrovia">Monrovia, Reykjavik</option>
+              </optgroup>
+              <optgroup label="(UTC+01:00)">
+                <option selected="selected" value="Europe/London">
+                  Dublin, Edinburgh, Lisbon, London
+                </option>
+                <option value="Africa/Casablanca">Casablanca</option>
+                <option value="Africa/Algiers">West Central Africa</option>
+              </optgroup>
+              <optgroup label="(UTC+02:00)">
+                <option value="Europe/Amsterdam">
+                  Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna
+                </option>
+                <option value="Europe/Belgrade">
+                  Belgrade, Bratislava, Budapest, Ljubljana, Prague
+                </option>
+                <option value="Europe/Brussels">
+                  Brussels, Copenhagen, Madrid, Paris
+                </option>
+                <option value="Europe/Warsaw">
+                  Sarajevo, Skopje, Warsaw, Zagreb
+                </option>
+                <option value="Africa/Windhoek">Windhoek</option>
+                <option value="Africa/Cairo">Cairo</option>
+                <option value="Europe/Kaliningrad">Kaliningrad</option>
+                <option value="Africa/Tripoli">Tripoli</option>
+                <option value="Africa/Harare">Harare, Pretoria</option>
+              </optgroup>
+              <optgroup label="(UTC+03:00)">
+                <option value="Europe/Athens">Athens, Bucharest</option>
+                <option value="Asia/Beirut">Beirut</option>
+                <option value="Asia/Damascus">Damascus</option>
+                <option value="EET">Eastern Europe</option>
+                <option value="Europe/Helsinki">
+                  Helsinki, Kiev, Riga, Sofia, Tallinn, Vilnius
+                </option>
+                <option value="Asia/Istanbul">Istanbul</option>
+                <option value="Asia/Jerusalem">Jerusalem</option>
+                <option value="Asia/Amman">Amman</option>
+                <option value="Asia/Baghdad">Baghdad</option>
+                <option value="Asia/Kuwait">Kuwait, Riyadh</option>
+                <option value="Europe/Minsk">Minsk</option>
+                <option value="Europe/Moscow">
+                  Moscow, St. Petersburg, Volgograd
+                </option>
+                <option value="Africa/Nairobi">Nairobi</option>
+              </optgroup>
+              <optgroup label="(UTC+03:30)">
+                <option value="Asia/Tehran">Tehran</option>
+              </optgroup>
+              <optgroup label="(UTC+04:00)">
+                <option value="Asia/Muscat">Abu Dhabi, Muscat</option>
+                <option value="Europe/Samara">Izhevsk, Samara</option>
+                <option value="Indian/Mauritius">Port Louis</option>
+                <option value="Asia/Tbilisi">Tbilisi</option>
+                <option value="Asia/Yerevan">Yerevan</option>
+              </optgroup>
+              <optgroup label="(UTC+04:30)">
+                <option value="Asia/Kabul">Kabul</option>
+              </optgroup>
+              <optgroup label="(UTC+05:00)">
+                <option value="Asia/Baku">Baku</option>
+                <option value="Asia/Tashkent">Tashkent, Ashgabat</option>
+                <option value="Asia/Yekaterinburg">Ekaterinburg</option>
+                <option value="Asia/Karachi">Islamabad, Karachi</option>
+              </optgroup>
+              <optgroup label="(UTC+05:30)">
+                <option value="Asia/Kolkata">
+                  Chennai, Kolkata, Mumbai, New Delhi
+                </option>
+                <option value="Asia/Colombo">Sri Jayawardenepura</option>
+              </optgroup>
+              <optgroup label="(UTC+05:45)">
+                <option value="Asia/Katmandu">Kathmandu</option>
+              </optgroup>
+              <optgroup label="(UTC+06:00)">
+                <option value="Asia/Almaty">Astana</option>
+                <option value="Asia/Dhaka">Dhaka</option>
+                <option value="Asia/Novosibirsk">Novosibirsk</option>
+              </optgroup>
+              <optgroup label="(UTC+06:30)">
+                <option value="Asia/Rangoon">Yangon (Rangoon)</option>
+              </optgroup>
+              <optgroup label="(UTC+07:00)">
+                <option value="Asia/Bangkok">Bangkok, Hanoi, Jakarta</option>
+                <option value="Asia/Krasnoyarsk">Krasnoyarsk</option>
+              </optgroup>
+              <optgroup label="(UTC+08:00)">
+                <option value="Asia/Chongqing">
+                  Beijing, Chongqing, Hong Kong SAR, Urumqi
+                </option>
+                <option value="Asia/Irkutsk">Irkutsk</option>
+                <option value="Asia/Kuala_Lumpur">
+                  Kuala Lumpur, Singapore
+                </option>
+                <option value="Australia/Perth">Perth</option>
+                <option value="Asia/Taipei">Taipei</option>
+                <option value="Asia/Ulaanbaatar">Ulaanbaatar</option>
+              </optgroup>
+              <optgroup label="(UTC+09:00)">
+                <option value="Asia/Tokyo">Osaka, Sapporo, Tokyo</option>
+                <option value="Asia/Seoul">Seoul</option>
+                <option value="Asia/Yakutsk">Yakutsk</option>
+              </optgroup>
+              <optgroup label="(UTC+09:30)">
+                <option value="Australia/Darwin">Darwin</option>
+              </optgroup>
+              <optgroup label="(UTC+10:00)">
+                <option value="Australia/Brisbane">Brisbane</option>
+                <option value="Pacific/Guam">Guam, Port Moresby</option>
+                <option value="Asia/Magadan">Magadan</option>
+                <option value="Asia/Vladivostok">Vladivostok, Magadan</option>
+              </optgroup>
+              <optgroup label="(UTC+10:30)">
+                <option value="Australia/Adelaide">Adelaide</option>
+              </optgroup>
+              <optgroup label="(UTC+11:00)">
+                <option value="Australia/Canberra">
+                  Canberra, Melbourne, Sydney
+                </option>
+                <option value="Australia/Hobart">Hobart</option>
+                <option value="Asia/Srednekolymsk">Chokirdakh</option>
+                <option value="Pacific/Guadalcanal">
+                  Solomon Islands, New Caledonia
+                </option>
+              </optgroup>
+              <optgroup label="(UTC+12:00)">
+                <option value="Asia/Anadyr">
+                  Anadyr, Petropavlovsk-Kamchatsky
+                </option>
+                <option value="Pacific/Fiji">
+                  Fiji Islands, Kamchatka, Marshall Islands
+                </option>
+              </optgroup>
+              <optgroup label="(UTC+13:00)">
+                <option value="Pacific/Auckland">Auckland, Wellington</option>
+                <option value="Pacific/Tongatapu">Nuku'alofa</option>
+              </optgroup>
+              <optgroup label="(UTC+14:00)">
+                <option value="Pacific/Apia">Samoa</option>
+              </optgroup>
             </select>
           </div>
           <div class="channel-name-option">
