@@ -1,0 +1,609 @@
+:root {
+  --bg-color: #f5f5f5;
+  --container-bg: white;
+  --text-color: #333;
+  --input-bg: white;
+  --input-border: #ddd;
+  --button-bg: #4caf50;
+  --button-text: white;
+  --preview-bg: #f9f9f9;
+  --preview-border: #ddd;
+  --note-color: #666;
+  --checkbox-bg: #ccc;
+  --checkbox-checked: DodgerBlue;
+}
+
+.dark-mode {
+  --bg-color: #222;
+  --container-bg: #333;
+  --text-color: #eee;
+  --input-bg: #444;
+  --input-border: #555;
+  --button-bg: #6441a5;
+  --button-text: white;
+  --preview-bg: #444;
+  --preview-border: #555;
+  --note-color: #eee;
+  --checkbox-bg: #555;
+  --checkbox-checked: #6441a5;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  text-transform: capitalize;
+}
+
+.header {
+  width: auto;
+  margin-bottom: 20px;
+  padding: 50px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  text-transform: capitalize;
+}
+
+.donate-text {
+  color: var(--text-color);
+  font-size: 20px;
+  font-weight: bolder;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  text-transform: capitalize;
+}
+
+#kofiBtn {
+  background-color: #29abe0;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  width: 250px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#kofiBtn:hover {
+  opacity: 0.9;
+}
+
+#kofiBtn img {
+  height: 20px;
+  margin-right: 8px;
+}
+
+#themeToggle {
+  width: 250px;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  cursor: pointer;
+}
+
+#themeToggle:hover {
+  opacity: 0.9;
+}
+
+/* Main container styles */
+.main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.container-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.container-header h1 {
+  font-size: 2rem;
+  margin: 0;
+  padding: 15px 0;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* Three equal columns */
+  gap: 20px;
+  background-color: var(--container-bg);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.column {
+  padding: 15px;
+}
+
+.controls-column {
+  /* Middle column - Controls */
+  border-left: 1px solid var(--input-border);
+  border-right: 1px solid var(--input-border);
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.tab {
+  padding: 8px 15px;
+  cursor: pointer;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  margin-right: 5px;
+}
+
+.tab:hover {
+  background-color: #45a049;
+}
+
+.tab.active {
+  background-color: #6441a5; /* Twitch purple */
+  color: var(--button-text);
+  margin-bottom: -1px;
+  font-weight: bold;
+}
+
+.tab-content {
+  display: none;
+  font-weight: bold;
+}
+
+.tab-content.active {
+  display: block;
+  font-weight: bold;
+}
+
+.menus {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.menu {
+  padding: 8px 15px;
+  cursor: pointer;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-bottom: none;
+  border-radius: 4px 4px 4px 4px;
+  margin-right: 5px;
+}
+
+.menu:hover {
+  background-color: #45a049;
+}
+
+.menu.active {
+  background-color: #6441a5; /* Twitch purple */
+  color: var(--button-text);
+  font-weight: bolder;
+  font-size: x-large;
+}
+
+.menu-content {
+  display: none;
+  font-weight: bold;
+}
+
+.menu-content.active {
+  display: block;
+  font-weight: bold;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input,
+select,
+button,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid var(--input-border);
+  border-radius: 5px;
+  box-sizing: border-box;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+button {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1rem;
+  user-select: none;
+  gap: 10px;
+}
+
+.custom-checkbox input {
+  display: none;
+}
+
+.custom-checkbox .checkmark {
+  height: 20px;
+  width: 20px;
+  background-color: var(--checkbox-bg);
+  border-radius: 4px;
+  position: relative;
+}
+
+.custom-checkbox input:checked + .checkmark {
+  background-color: var(--checkbox-checked);
+}
+
+.custom-checkbox .checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.custom-checkbox input:checked + .checkmark::after {
+  display: block;
+}
+
+#twitchBtn {
+  background-color: #6441a5;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  width: 250px;
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+#discordBtn {
+  background-color: #5865f2;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  width: 250px;
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+#twitchBtn:hover,
+#discordBtn:hover {
+  opacity: 0.8;
+}
+
+hr {
+  border: 10px solid var(--button-bg);
+  border-radius: 5px;
+  margin: 15px 0;
+}
+
+.footer-text {
+  font-size: 18px;
+  color: var(--text-color);
+  margin: 20px 0;
+  text-align: center;
+  font-weight: normal;
+  width: 100%;
+}
+
+a:link {
+  color: #6441a5;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:visited {
+  color: #6441a5;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 0.9;
+  text-decoration: underline;
+}
+
+a:active {
+  color: #6441a5;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+h1,
+h2 {
+  color: var(--text-color);
+  margin: 0;
+  padding-bottom: 10px;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+h3 {
+  color: var(--text-color);
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  font-size: medium;
+  text-transform: capitalize;
+}
+
+.timestamp-output {
+  padding: 1rem;
+  background: var(--preview-bg);
+  border-radius: 8px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.timestamp {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--container-bg);
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  margin: 0.5rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.copy-btn {
+  background: var(--button-bg);
+  border: none;
+  color: white;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 80px;
+  margin: 0;
+}
+
+.copy-btn:hover {
+  opacity: 0.8;
+}
+
+.section-title {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--input-border);
+  padding-bottom: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.toggle-section {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-section input[type="checkbox"] {
+  width: auto;
+  margin-right: 10px;
+}
+
+.advanced {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--input-bg);
+  color: var(--text-color);
+  border-radius: 8px;
+}
+
+.button-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.clear-btn {
+  background: #d32f2f;
+  border: none;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.clear-btn:hover {
+  background: #ef5350;
+}
+
+.copy-btn.copied {
+  background-color: #4caf50;
+}
+
+.tooltip {
+  cursor: help;
+  border-bottom: 1px dotted #aaa;
+  position: relative;
+}
+
+.tooltip::after {
+  content: attr(data-tip);
+  position: absolute;
+  background: #333;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.2s;
+  font-size: 0.9rem;
+  z-index: 10;
+  left: 0;
+  top: 100%;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.timezone-section {
+  margin-top: 1.5rem;
+}
+
+.timezone-section label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.timezone-section select {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+.controls {
+  background-color: var(--preview-bg);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.output-preview {
+  height: 100%;
+}
+
+#startDateButtons,
+#endDateButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+footer {
+  margin-top: 30px;
+  text-align: center;
+  color: var(--text-color);
+  font-size: 14px;
+  padding: 20px;
+}
+
+.back-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: none;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 5px;
+  width: 150px !important;
+  height: 50px !important;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 0;
+  text-align: center;
+  line-height: 50px;
+}
+
+.back-to-top:hover {
+  background-color: #45a049;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 992px) {
+  .container {
+    grid-template-columns: 1fr; /* Stack columns on smaller screens */
+  }
+
+  .controls-column {
+    border: none;
+    border-top: 1px solid var(--input-border);
+    border-bottom: 1px solid var(--input-border);
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .button-container {
+    flex-direction: column;
+  }
+
+  #kofiBtn,
+  #twitchBtn,
+  #discordBtn,
+  #themeToggle {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 20px;
+  }
+
+  .menus {
+    flex-direction: column;
+  }
+
+  .menu {
+    width: 100%;
+  }
+}

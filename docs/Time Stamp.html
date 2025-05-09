@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" href="Favicon.png" type="image/x-icon" />
+    <link rel="stylesheet" href="Time Stamp.css" />
+    <script src="Time Stamp.js" defer></script>
+    <meta charset="UTF-8" />
+    <title>Discord Timestamp Generator</title>
+    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        kofiWidgetOverlay.draw("rearsilver", {
+          type: "floating-chat",
+          "floating-chat.donateButton.text": "Donate",
+          "floating-chat.donateButton.background-color": "#794bc4",
+          "floating-chat.donateButton.text-color": "#fff",
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="header">
+      <div class="donate-text">
+        If you enjoy this tool, please consider supporting me on Ko-fi!
+      </div>
+      <div class="button-container">
+        <button id="kofiBtn">
+          <img src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi" />
+          Buy me a coffee
+        </button>
+        <button id="twitchBtn">Follow me on Twitch</button>
+        <button id="discordBtn">More streamer tools</button>
+        <button id="themeToggle">🌙 Dark Mode</button>
+      </div>
+    </div>
+
+    <div class="menus">
+      <button
+        id="stream-title-generator"
+        class="menu"
+        onclick="window.location.href='RearSilver Stream Title Generator.html';"
+      >
+        Stream Title Generator
+      </button>
+      <button
+        id="twitch-story-generator"
+        class="menu"
+        onclick="window.location.href='Twitch Story Generator.html';"
+      >
+        Twitch Story Generator
+      </button>
+      <button
+        id="stream-schedule-generator"
+        class="menu active"
+        onclick="window.location.href='Stream Schedule Generator.html';"
+      >
+        Discord Timestamps
+      </button>
+      <button
+        id="stream-schedule-generator"
+        class="menu"
+        onclick="window.location.href='Stream Schedule Generator.html';"
+      >
+        Stream Schedule Generator
+      </button>
+      <button
+        id="Time-Stamp"
+        class="menu"
+        onclick="window.location.href='Time-Stamp.html';"
+      >
+        OBS Scripts
+      </button>
+    </div>
+    <h1>🕒 Discord Timestamp Generator</h1>
+    <h3>
+      Created to generate a Discord timestamp that will show the local time
+      version of your input depending on who is viewing it.
+    </h3>
+
+    <div class="main-container">
+      <div class="container">
+        <!-- Left Column - Date/Time Inputs -->
+        <div class="column date-inputs-column">
+          <h2>Date/time inputs</h2>
+          <label for="startDateInput">
+            Select Start Date/Time
+            <span
+              class="tooltip"
+              data-tip="Pick the start date & time for your event."
+              >❔</span
+            >
+          </label>
+          <input type="datetime-local" id="startDateInput" />
+
+          <div id="startDateButtons">
+            <button type="button" onclick="adjustStartDate(-1)">-1 Day</button>
+            <button type="button" onclick="adjustStartDate(1)">+1 Day</button>
+            <button type="button" onclick="adjustStartTime(-60)">
+              -1 Hour
+            </button>
+            <button type="button" onclick="adjustStartTime(60)">+1 Hour</button>
+          </div>
+
+          <div class="form-group">
+            <label class="custom-checkbox">
+              <input type="checkbox" id="toggleCurrentTime" />
+              <span class="checkmark"></span>
+              Use Current Time (Updates Automatically) for Start
+            </label>
+          </div>
+
+          <label id="endDateLabel" style="display: none">
+            Select End Date/Time
+            <span
+              class="tooltip"
+              data-tip="Pick the end date & time for your event."
+              >❔</span
+            >
+          </label>
+          <input
+            type="datetime-local"
+            id="endDateInput"
+            style="display: none"
+          />
+
+          <div id="endDateButtons" style="display: none">
+            <button type="button" onclick="adjustEndDate(-1)">-1 Day</button>
+            <button type="button" onclick="adjustEndDate(1)">+1 Day</button>
+            <button type="button" onclick="adjustEndTime(-60)">-1 Hour</button>
+            <button type="button" onclick="adjustEndTime(60)">+1 Hour</button>
+          </div>
+
+          <div
+            class="form-group"
+            id="toggleCurrentTimeEndContainer"
+            style="display: none"
+          >
+            <label class="custom-checkbox" id="toggleCurrentTimeEndLabel">
+              <input type="checkbox" id="toggleCurrentTimeEnd" />
+              <span class="checkmark"></span>
+              Use Current Time (Updates Automatically) for End
+            </label>
+          </div>
+
+          <div class="button-container">
+            <button onclick="generateTimestamps()">Generate Timestamps</button>
+            <button class="clear-btn" onclick="clearTimestamps()">Clear</button>
+          </div>
+        </div>
+
+        <!-- Middle Column - Controls -->
+        <div class="column controls-column">
+          <h2>additional options</h2>
+          <div class="controls">
+            <label class="toggle-section">
+              <input type="checkbox" id="toggleEndTimeControl" />
+              Show End Time Options
+            </label>
+
+            <label class="toggle-section">
+              <input type="checkbox" id="toggle12hr" />
+              Preview in 12-hour format
+            </label>
+
+            <div class="advanced" id="advancedSection" style="display: block">
+              <label>
+                Test Existing Timestamp
+                <span
+                  class="tooltip"
+                  data-tip="Paste a timestamp here to see its formatted outputs."
+                  >❔</span
+                >
+              </label>
+              <input
+                type="number"
+                id="unixOverride"
+                placeholder="Enter existing timestamp (Unix)"
+              />
+              <div
+                id="existingTimestampPreview"
+                class="timestamp-preview"
+              ></div>
+            </div>
+
+            <div class="timezone-section">
+              <label for="timezoneSelect"
+                >View Preview in Timezone:
+                <span
+                  class="tooltip"
+                  data-tip="Used to preview the timestamp in a different timezone."
+                  >❔</span
+                >
+              </label>
+              <select id="timezoneSelect">
+                <option value="">(Your Local Timezone)</option>
+                <option value="UTC">UTC</option>
+                <option value="America/New_York">
+                  America/New_York (EST/EDT)
+                </option>
+                <option value="America/Los_Angeles">
+                  America/Los_Angeles (PST/PDT)
+                </option>
+                <option value="Europe/London">Europe/London (BST/GMT)</option>
+                <option value="Europe/Berlin">Europe/Berlin (CET/CEST)</option>
+                <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
+                <option value="Australia/Sydney">
+                  Australia/Sydney (AEST/AEDT)
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Output Preview -->
+        <div class="column output-column">
+          <h2>Date/time outputs</h2>
+          <div class="output-preview">
+            <div class="section-title">🧾 Start Time Timestamps</div>
+            <div class="timestamp-output" id="startTimeOutputSection">
+              <div class="timestamp">
+                <div>
+                  <strong>Short Time</strong>:
+                  <span class="formatted-time"></span><br />
+                  <small>Preview: <span class="preview-time"></span></small>
+                </div>
+                <button class="copy-btn">Copy</button>
+              </div>
+              <div class="timestamp">
+                <div>
+                  <strong>Long Time</strong>:
+                  <span class="formatted-time"></span><br />
+                  <small>Preview: <span class="preview-time"></span></small>
+                </div>
+                <button class="copy-btn">Copy</button>
+              </div>
+              <div class="timestamp">
+                <div>
+                  <strong>Short Date</strong>:
+                  <span class="formatted-time"></span><br />
+                  <small>Preview: <span class="preview-time"></span></small>
+                </div>
+                <button class="copy-btn">Copy</button>
+              </div>
+              <div class="timestamp">
+                <div>
+                  <strong>Long Date</strong>:
+                  <span class="formatted-time"></span><br />
+                  <small>Preview: <span class="preview-time"></span></small>
+                </div>
+                <button class="copy-btn">Copy</button>
+              </div>
+              <div class="timestamp">
+                <div>
+                  <strong>Short Date/Time</strong>:
+                  <span class="formatted-time"></span><br />
+                  <small>Preview: <span class="preview-time"></span></small>
+                </div>
+                <button class="copy-btn">Copy</button>
+              </div>
+              <div class="timestamp">
+                <div>
+                  <strong>Long Date/Time</strong>:
+                  <span class="formatted-time"></span><br />
+                  <small>Preview: <span class="preview-time"></span></small>
+                </div>
+                <button class="copy-btn">Copy</button>
+              </div>
+              <div class="timestamp">
+                <div>
+                  <strong>Relative Time</strong>:
+                  <span class="formatted-time"></span><br />
+                  <small>Preview: <span class="preview-time"></span></small>
+                </div>
+                <button class="copy-btn">Copy</button>
+              </div>
+            </div>
+
+            <div
+              class="section-title"
+              style="display: none"
+              id="endTimeSectionTitle"
+            >
+              🏁 End Time Timestamps
+            </div>
+            <div
+              class="timestamp-output"
+              id="endTimeOutputSection"
+              style="display: none"
+            >
+              <div class="timestamp">
+                <div>
+                  <strong>Short Time</strong>:
+                  <span class="formatted-time"></span><br />
+                  <small>Preview: <span class="preview-time"></span></small>
+                </div>
+                <button class="copy-btn">Copy</button>
+              </div>
+              <div class="timestamp">
+                <div>
+                  <strong>Long Time</strong>:
+                  <span class="formatted-time"></span><br />
+                  <small>Preview: <span class="preview-time"></span></small>
+                </div>
+                <button class="copy-btn">Copy</button>
+              </div>
+              <div class="timestamp">
+                <div>
+                  <strong>Short Date</strong>:
+                  <span class="formatted-time"></span><br />
+                  <small>Preview: <span class="preview-time"></span></small>
+                </div>
+                <button class="copy-btn">Copy</button>
+              </div>
+              <div class="timestamp">
+                <div>
+                  <strong>Long Date</strong>:
+                  <span class="formatted-time"></span><br />
+                  <small>Preview: <span class="preview-time"></span></small>
+                </div>
+                <button class="copy-btn">Copy</button>
+              </div>
+              <div class="timestamp">
+                <div>
+                  <strong>Short Date/Time</strong>:
+                  <span class="formatted-time"></span><br />
+                  <small>Preview: <span class="preview-time"></span></small>
+                </div>
+                <button class="copy-btn">Copy</button>
+              </div>
+              <div class="timestamp">
+                <div>
+                  <strong>Long Date/Time</strong>:
+                  <span class="formatted-time"></span><br />
+                  <small>Preview: <span class="preview-time"></span></small>
+                </div>
+                <button class="copy-btn">Copy</button>
+              </div>
+              <div class="timestamp">
+                <div>
+                  <strong>Relative Time</strong>:
+                  <span class="formatted-time"></span><br />
+                  <small>Preview: <span class="preview-time"></span></small>
+                </div>
+                <button class="copy-btn">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="bg-light text-center text-lg-start mt-4 rounded-top">
+      <hr />
+      <div class="footer-text">
+        Feedback? Suggestions? Bugs? Please let me know!
+        <a href="mailto:rearsilvergaming@gmail.com" target="_blank"
+          >Drop me an email</a
+        >
+        and share your thoughts.
+        <br />
+        <br />
+        Find me at: |
+        <a href="https://twitch.tv/rearsilver" target="_blank">Twitch</a> |
+        <a href="https://discord.com/invite/RRbQ93Ceew" target="_blank"
+          >Discord</a
+        >
+        | <a href="https://x.com/rearsilvergamer" target="_blank">Twitter</a> |
+        <a href="https://www.youtube.com/rearsilvergaming" target="_blank"
+          >YouTube</a
+        >
+        |
+        <a href="https://www.tiktok.com/@RearSilver" target="_blank">TikTok</a>
+        |
+        <a href="https://www.instagram.com/RearSilver.gaming" target="_blank"
+          >Instagram</a
+        >
+        |
+        <br />
+        <br />
+        Made by RearSilver Copyright &copy; 2025. All rights reserved. | Not
+        affiliated with Twitch
+      </div>
+      <hr />
+    </footer>
+
+    <button id="backToTop" class="back-to-top" onclick="scrollToTop()">
+      ⬆️ Back to Top
+    </button>
+  </body>
+</html>
