@@ -295,6 +295,15 @@ h3 {
   font-size: larger;
   text-transform: capitalize;
 }
+
+.time-result {
+  color: var(--text-color);
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  font-size: normal;
+  text-transform: capitalize;
+}
 .container {
   display: flex; /* Use flexbox for horizontal layout */
   flex-direction: row; /* Ensure children are laid out in a row */
