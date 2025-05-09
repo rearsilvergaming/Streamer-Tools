@@ -56,16 +56,24 @@
         class="menu active"
         onclick="window.location.href='Stream Schedule Generator.html';"
       >
+        Discord Timestamps
+      </button>
+      <button
+        id="stream-schedule-generator"
+        class="menu"
+        onclick="window.location.href='Stream Schedule Generator.html';"
+      >
         Stream Schedule Generator
       </button>
       <button
-        id="obs-scripts"
+        id="Time-Stamp"
         class="menu"
-        onclick="window.location.href='OBS Scripts.html';"
+        onclick="window.location.href='Time-Stamp.html';"
       >
         OBS Scripts
       </button>
     </div>
+
     <div id="stream-title-generator-content" class="tab-content active">
       <div class="WIP">WORK IN PROGRESS</div>
       <h1>Stream schedule Generator</h1>
@@ -127,6 +135,7 @@
           <div class="time-zone-option">
             <label for="timezone">Timezone:</label>
             <select id="timezone" onchange="updatePreview()">
+              <option disabled hidden selected>Select a timezone</option>
               <optgroup label="(UTC-11:00)">
                 <option value="Pacific/Midway">
                   Midway Island, American Samoa
@@ -140,7 +149,7 @@
               </optgroup>
               <optgroup label="(UTC-07:00)">
                 <option value="America/Tijuana">Baja California</option>
-                <option value="America/Los_Angeles">
+                <option value="America/Los Angeles">
                   Pacific Time (US and Canada)
                 </option>
                 <option value="America/Phoenix">Arizona</option>
@@ -159,14 +168,14 @@
                 <option value="America/Chicago">
                   Central Time (US and Canada)
                 </option>
-                <option value="America/Mexico_City">
+                <option value="America/Mexico City">
                   Guadalajara, Mexico City, Monterrey
                 </option>
                 <option value="America/Bogota">Bogota, Lima, Quito</option>
                 <option value="America/Jamaica">Kingston, George Town</option>
               </optgroup>
               <optgroup label="(UTC-04:00)">
-                <option value="America/New_York">
+                <option value="America/New York">
                   Eastern Time (US and Canada)
                 </option>
                 <option value="America/Indiana/Indianapolis">
@@ -183,18 +192,18 @@
               <optgroup label="(UTC-03:00)">
                 <option value="America/Asuncion">Asuncion</option>
                 <option value="America/Halifax">Atlantic Time (Canada)</option>
-                <option value="America/St_Johns">
+                <option value="America/St Johns">
                   Newfoundland and Labrador
                 </option>
-                <option value="America/Sao_Paulo">Brasilia</option>
-                <option value="America/Buenos_Aires">Buenos Aires</option>
+                <option value="America/Sao Paulo">Brasilia</option>
+                <option value="America/Buenos Aires">Buenos Aires</option>
                 <option value="America/Cayenne">Cayenne, Fortaleza</option>
                 <option value="America/Montevideo">Montevideo</option>
                 <option value="America/Bahia">Salvador</option>
                 <option value="America/Santiago">Santiago</option>
               </optgroup>
               <optgroup label="(UTC-02:30)">
-                <option value="America/St_Johns">
+                <option value="America/St Johns">
                   Newfoundland and Labrador
                 </option>
               </optgroup>
@@ -203,14 +212,14 @@
                 <option value="America/Noronha">Mid-Atlantic</option>
               </optgroup>
               <optgroup label="(UTC-01:00)">
-                <option value="Atlantic/Cape_Verde">Cape Verde Islands</option>
+                <option value="Atlantic/Cape Verde">Cape Verde Islands</option>
               </optgroup>
               <optgroup label="(UTC+00:00)">
                 <option value="Atlantic/Azores">Azores</option>
                 <option value="Africa/Monrovia">Monrovia, Reykjavik</option>
               </optgroup>
               <optgroup label="(UTC+01:00)">
-                <option selected="selected" value="Europe/London">
+                <option value="Europe/London">
                   Dublin, Edinburgh, Lisbon, London
                 </option>
                 <option value="Africa/Casablanca">Casablanca</option>
@@ -299,7 +308,7 @@
                   Beijing, Chongqing, Hong Kong SAR, Urumqi
                 </option>
                 <option value="Asia/Irkutsk">Irkutsk</option>
-                <option value="Asia/Kuala_Lumpur">
+                <option value="Asia/Kuala Lumpur">
                   Kuala Lumpur, Singapore
                 </option>
                 <option value="Australia/Perth">Perth</option>
@@ -349,7 +358,9 @@
                 <option value="Pacific/Apia">Samoa</option>
               </optgroup>
             </select>
+            <div class="time-result" id="time-result"></div>
           </div>
+
           <div class="channel-name-option">
             <label for="channelName" class="input">Channel Name:</label>
             <input
