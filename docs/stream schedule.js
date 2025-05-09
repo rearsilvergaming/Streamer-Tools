@@ -47,6 +47,22 @@ function initThemeToggle() {
   });
 }
 
+// Get the elements by their IDs
+let selection = document.querySelector("#timezone");
+let result = document.querySelector("#time-result");
+
+// Add event listener to the select element
+selection.addEventListener("change", () => {
+  // Update the result div with the selected option text
+  result.innerText = selection.options[selection.selectedIndex].text;
+});
+
+// Define the updatePreview function that's referenced in your HTML
+function updatePreview() {
+  // This function can call the same code as the event listener
+  result.innerText = selection.options[selection.selectedIndex].text;
+}
+
 // Ensure the script runs after the DOM is fully loaded
 document
   .getElementById("exportFormat")
@@ -377,11 +393,11 @@ function updatePreview() {
       month: "long",
       year: "numeric",
     });
-    previewHeaderDiv.innerHTML += `<div class="preview-date-range">Ending: ${formattedEndDate}</div>`;
+    previewHeaderDiv.innerHTML += `<div class="preview-date-range" style="font-weight: bold">Ending: ${formattedEndDate}</div>`;
   }
 
   if (timezone) {
-    previewHeaderDiv.innerHTML += `<div class="preview-timezone">Time Zone: ${timezone}</div>`;
+    previewHeaderDiv.innerHTML += `<div class="preview-timezone" style="font-weight: bold">Time Zone: ${timezone}</div>`;
   }
 
   preview.appendChild(previewHeaderDiv);
