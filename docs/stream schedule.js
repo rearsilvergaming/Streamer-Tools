@@ -164,30 +164,30 @@ window.onload = generateSchedule;
 
 function generateSchedule() {
   console.log("generateSchedule() called");
-  const weekCount = parseInt(document.getElementById("weekCount").value);
+  const weekCountElement = document.getElementById("weekCount");
+  console.log("weekCount element:", weekCountElement);
+  console.log("weekCount value:", weekCountElement.value);
+  const weekCount = parseInt(weekCountElement.value);
+  console.log(`Selected week count: ${weekCount}`);
   const weekSections = document.querySelectorAll(".week-section");
 
   // Initially hide all week sections
-  weekSections.forEach((section) => {
+  weekSections.forEach((section, index) => {
     section.style.display = "none";
+    console.log(`Hiding week ${index + 1}`);
   });
 
   // Show the required number of week sections
   for (let i = 0; i < weekCount; i++) {
     if (weekSections[i]) {
       weekSections[i].style.display = "block";
+      console.log(`Showing week ${i + 1}`);
     } else {
-      // If you need more weeks than initially in HTML, you can clone here
-      // For example:
-      // const firstWeek = document.getElementById('week-1');
-      // const newWeek = firstWeek.cloneNode(true);
-      // newWeek.id = `week-${i + 1}`;
-      // const controlsContainer = document.querySelector('.controls');
-      // controlsContainer.appendChild(newWeek);
-      // // You'd also need to reset IDs within the cloned week
+      console.warn(`Week ${i + 1} is not defined in the HTML.`);
     }
   }
 
+  // Clear and regenerate the preview
   const preview = document.getElementById("previewOutput");
   preview.innerHTML = ""; // Clear the preview
 
@@ -370,7 +370,12 @@ document.addEventListener("DOMContentLoaded", function () {
 // Update the existing updatePreview function to handle the formatting better
 function updatePreview() {
   console.log("updatePreview() called");
-  const weekCount = parseInt(document.getElementById("weekCount").value);
+  const weekCountElement = document.getElementById("weekCount");
+  console.log("weekCount element in updatePreview:", weekCountElement);
+  console.log("weekCount value in updatePreview:", weekCountElement.value);
+  const weekCount = parseInt(weekCountElement.value);
+  console.log(`Generating preview for ${weekCount} weeks`);
+  console.log(`Generating preview for ${weekCount} weeks`);
   const preview = document.getElementById("previewOutput");
   const exportFormat = document.getElementById("exportFormat").value;
 
@@ -462,6 +467,19 @@ function updatePreview() {
     const previewWeek = document.createElement("div");
     previewWeek.classList.add("preview-week");
 
+    // Add a debug border and margin to make each week clearly visible
+    previewWeek.style.margin = "0 20 0 0";
+    previewWeek.style.padding = "5px";
+
+    // Add a debug message at the top of each week
+    const debugElement = document.createElement("div");
+    debugElement.textContent = `DEBUG: This is week ${w} of ${weekCount}`;
+    debugElement.style.backgroundColor = "yellow";
+    debugElement.style.color = "black";
+    debugElement.style.padding = "5px";
+    debugElement.style.marginBottom = "5px";
+    previewWeek.appendChild(debugElement);
+
     // Adjust week title based on format
     if (exportFormat === "Twitch Schedule Panel") {
       previewWeek.innerHTML = `<h3 style="font-size: 16px; margin: 8px 0;">Week ${w}</h3>`;
@@ -471,6 +489,7 @@ function updatePreview() {
       previewWeek.innerHTML = `<h3>Week ${w}</h3>`;
     }
 
+    // Add logic for days of the week
     daysOfWeek.forEach((day) => {
       const dayId = `week-${w}-${day}`;
       const toggle = document.getElementById(`${dayId}-toggle`);
@@ -512,14 +531,6 @@ function updatePreview() {
             streamBlock.style.color = getContrastColor(color);
             streamBlock.innerHTML = `<strong>${startTime} - ${endTime}</strong><br>${game}`;
             previewDayContainer.appendChild(streamBlock);
-
-            // Add event to scheduleEvents array
-            scheduleEvents.push({
-              day: day.charAt(0).toUpperCase() + day.slice(1),
-              time: startTime,
-              endTime: endTime,
-              title: game,
-            });
           }
         });
       }
@@ -686,53 +697,43 @@ function updatePreviewFormat() {
 
   // Reset any previous styling
   previewOutput.style.width = "";
-  previewOutput.style.height = "";
+  previewOutput.style.height = "auto"; // Set to auto to allow content to determine height
   previewOutput.style.maxWidth = "";
-  previewOutput.style.aspectRatio = "";
+  previewOutput.style.aspectRatio = ""; // Remove aspect ratio constraint
   previewOutput.style.padding = "20px";
   previewOutput.style.boxSizing = "border-box";
+  previewOutput.style.overflow = "visible"; // Ensure content isn't clipped
 
   // Re-enable the preview if it was hidden
   previewOutput.style.display = "block";
 
-  // Apply format-specific dimensions
+  // Apply format-specific dimensions for width only
   switch (exportFormat) {
     case "Twitter":
-      // Twitter recommended image size is 1200x675 (16:9)
       previewOutput.style.width = "100%";
-      previewOutput.style.aspectRatio = "16/9";
       previewOutput.style.maxWidth = "1200px";
       break;
     case "Discord":
-      // Discord embeds work well with 16:9 or 4:3
       previewOutput.style.width = "100%";
-      previewOutput.style.aspectRatio = "16/9";
       previewOutput.style.maxWidth = "1200px";
       break;
     case "Instagram":
-      // Instagram post is 1:1 square
       previewOutput.style.width = "100%";
-      previewOutput.style.aspectRatio = "1/1";
       previewOutput.style.maxWidth = "1080px";
       break;
     case "Twitch Schedule Panel":
-      // Twitch panels are typically 320px wide with variable height
       previewOutput.style.width = "320px";
       previewOutput.style.maxWidth = "320px";
       break;
     case "Twitch Stories":
-      // Twitch Stories are vertical 9:16
       previewOutput.style.width = "100%";
-      previewOutput.style.aspectRatio = "9/16";
       previewOutput.style.maxWidth = "1080px";
       break;
     case "OBS":
-      // OBS exports should be flexible
       previewOutput.style.width = "100%";
       previewOutput.style.maxWidth = "1920px";
       break;
     case "iCal":
-      // iCal doesn't need a visual preview
       previewOutput.style.display = "none";
       return; // Exit early since no preview is needed
     default:
@@ -740,14 +741,19 @@ function updatePreviewFormat() {
       return;
   }
 
-  // Dynamically adjust height based on content
-  setTimeout(() => {
-    const contentHeight = previewOutput.scrollHeight;
-    previewOutput.style.height = `${contentHeight}px`;
-  }, 0);
-
   // Update the preview content
   updatePreview();
+
+  // After content is updated, ensure the container expands to fit all content
+  setTimeout(() => {
+    console.log("Preview scrollHeight:", previewOutput.scrollHeight);
+    console.log("Preview clientHeight:", previewOutput.clientHeight);
+
+    // Force the container to be at least as tall as its content
+    if (previewOutput.scrollHeight > previewOutput.clientHeight) {
+      previewOutput.style.minHeight = previewOutput.scrollHeight + "px";
+    }
+  }, 100);
 }
 
 // Update the exportSchedule function to ensure it captures the footer
