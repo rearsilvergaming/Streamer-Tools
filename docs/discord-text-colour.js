@@ -130,29 +130,19 @@ document.addEventListener("DOMContentLoaded", function () {
   function applyFormatting(ansiCode) {
     console.log("applyFormatting called with ansiCode:", ansiCode);
 
-    if (!ansiCode) {
+    if (!ansiCode || ansiCode === "0") {
       console.log("Reset all formatting triggered");
 
-      // Force a complete reset by replacing the entire element
-      const parent = textarea.parentNode;
+      // Get the plain text content of the textarea
       const plainText = textarea.textContent;
 
-      // Create a new textarea element
-      const newTextarea = document.createElement("div");
-      newTextarea.id = "textarea";
-      newTextarea.contentEditable = true;
-      newTextarea.textContent = plainText;
+      // Clear all child elements (e.g., <span> tags) from the textarea
+      textarea.innerHTML = "";
 
-      // Replace the old textarea with the new one
-      parent.replaceChild(newTextarea, textarea);
+      // Set the plain text back into the textarea
+      textarea.textContent = plainText;
 
-      // Update the textarea reference
-      textarea = newTextarea;
-
-      // Reattach event listeners if needed
-      textarea.addEventListener("input", handleTextareaInput);
-
-      console.log("Reset completed with element replacement");
+      console.log("Reset completed: All formatting removed");
       return;
     }
 
