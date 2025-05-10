@@ -147,6 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .addEventListener("input", function () {
       document.getElementById("topColorPreview").style.backgroundColor =
         this.value;
+      refreshPreview(); // ← add this
     });
 
   document
@@ -154,6 +155,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .addEventListener("input", function () {
       document.getElementById("bottomColorPreview").style.backgroundColor =
         this.value;
+      refreshPreview(); // ← add this
     });
 
   document
@@ -161,6 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .addEventListener("input", function () {
       document.getElementById("bgColorPreview").style.backgroundColor =
         this.value;
+      refreshPreview(); // ← add this
     });
 
   document
@@ -168,16 +171,19 @@ document.addEventListener("DOMContentLoaded", function () {
     .addEventListener("input", function () {
       document.getElementById("overlayColorPreview").style.backgroundColor =
         this.value;
+      refreshPreview(); // ← add this
     });
 
   document.getElementById("textColor").addEventListener("input", function () {
     document.getElementById("textColorPreview").style.backgroundColor =
       this.value;
+    refreshPreview(); // ← add this
   });
 
   document.getElementById("accentColor").addEventListener("input", function () {
     document.getElementById("accentColorPreview").style.backgroundColor =
       this.value;
+    refreshPreview(); // ← add this
   });
 
   // Initialize color previews
@@ -329,10 +335,7 @@ document.addEventListener("DOMContentLoaded", function () {
         channelName: "Your Channel",
         includeQRCode: true,
         storyType: "raid",
-        raids: [
-          { raiderName: "Raider1", raiderCount: 10 },
-          { raiderName: "Raider2", raiderCount: 15 },
-        ],
+        raids: [{ raiderName: "RearSilver", raiderCount: 15 }],
         styleOptions: {
           backgroundStyle: backgroundStyleSelect.value,
           gradientTopColor: document.getElementById("gradientTopColor").value,
@@ -362,13 +365,12 @@ document.addEventListener("DOMContentLoaded", function () {
   }); // Closing brace for storyTypeSelect event listener
 
   // Generate the story image
-  generateBtn.addEventListener("click", function () {
+  function refreshPreview() {
     const channelName =
       document.getElementById("channelName").value.trim() || "Your Channel";
     const storyType = storyTypeSelect.value;
     const includeQRCode = document.getElementById("includeQRCode").checked;
 
-    // Get style options
     const styleOptions = {
       backgroundStyle: backgroundStyleSelect.value,
       gradientTopColor: document.getElementById("gradientTopColor").value,
@@ -384,14 +386,12 @@ document.addEventListener("DOMContentLoaded", function () {
       accentColor: document.getElementById("accentColor").value,
     };
 
-    // Get profile options
     const profileOptions = {
       includeProfilePic: document.getElementById("includeProfilePic").checked,
       profilePicture: document.getElementById("profilePreview").src,
       profileSize: parseInt(document.getElementById("profileSize").value),
     };
 
-    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (storyType === "upcoming") {
@@ -403,7 +403,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const matureContent = document.getElementById("matureContent").checked;
       const scheduleStream = document.getElementById("scheduleStream").checked;
 
-      // Generate the upcoming stream story
       generateTwitchStory(ctx, {
         channelName,
         gameTitle,
@@ -416,13 +415,8 @@ document.addEventListener("DOMContentLoaded", function () {
         profileOptions,
       });
     } else if (storyType === "raid") {
-      // Collect raid data
-      console.log(
-        "Raid count input value before parsing:",
-        raidCountInput.value
-      );
-      const raidCount = parseInt(raidCountInput.value) || 1;
-      console.log("Parsed raid count:", raidCount);
+      const raidCount =
+        parseInt(document.getElementById("raidCount").value) || 1;
       const raids = [];
 
       for (let i = 0; i < raidCount; i++) {
@@ -434,7 +428,6 @@ document.addEventListener("DOMContentLoaded", function () {
         raids.push({ raiderName, raiderCount });
       }
 
-      // Generate the raid thanker story
       generateTwitchStory(ctx, {
         channelName,
         includeQRCode,
@@ -445,9 +438,11 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // Enable download button
     downloadBtn.disabled = false;
-  });
+  }
+
+  // Keep this line to allow manual clicking still
+  generateBtn.addEventListener("click", refreshPreview);
 
   // Download the generated image
   downloadBtn.addEventListener("click", function () {
