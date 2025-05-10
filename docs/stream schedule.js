@@ -94,8 +94,236 @@ selection.addEventListener("change", () => {
 
 // Define the updatePreview function that's referenced in your HTML
 function updatePreview() {
-  // This function can call the same code as the event listener
-  result.innerText = selection.options[selection.selectedIndex].text;
+  console.log("updatePreview() called");
+  const weekCount = parseInt(document.getElementById("weekCount").value);
+  console.log(`Generating preview for ${weekCount} weeks`);
+  const preview = document.getElementById("previewOutput");
+  const exportFormat = document.getElementById("exportFormat").value;
+
+  // Clear the preview
+  preview.innerHTML = "";
+
+  // Get schedule options
+  const scheduleHeader =
+    document.getElementById("scheduleHeader").value === "custom"
+      ? document.getElementById("customHeader").value
+      : document.getElementById("scheduleHeader").value;
+  const startDate = document.getElementById("startDate").value;
+  const endDate = document.getElementById("endDate").value;
+  const timezone = document.getElementById("timezone").value;
+  const channelName = document.getElementById("channelName").value;
+  const includeQR = document.getElementById("includeQR").checked;
+
+  // Create header section
+  const previewHeaderDiv = document.createElement("div");
+  previewHeaderDiv.classList.add("preview-header-info");
+  previewHeaderDiv.innerHTML = `<div class="preview-title">${scheduleHeader}</div>`;
+
+  if (startDate && endDate) {
+    const formattedStartDate = new Date(startDate).toLocaleDateString(
+      undefined,
+      { day: "numeric", month: "long" }
+    );
+    const formattedEndDate = new Date(endDate).toLocaleDateString(undefined, {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    previewHeaderDiv.innerHTML += `<div class="preview-date-range">${formattedStartDate} - ${formattedEndDate}</div>`;
+  } else if (startDate) {
+    const formattedStartDate = new Date(startDate).toLocaleDateString(
+      undefined,
+      { day: "numeric", month: "long", year: "numeric" }
+    );
+    previewHeaderDiv.innerHTML += `<div class="preview-date-range">Starting: ${formattedStartDate}</div>`;
+  } else if (endDate) {
+    const formattedEndDate = new Date(endDate).toLocaleDateString(undefined, {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    previewHeaderDiv.innerHTML += `<div class="preview-date-range">Ending: ${formattedEndDate}</div>`;
+  }
+
+  if (timezone) {
+    previewHeaderDiv.innerHTML += `<div class="preview-timezone">Time Zone: ${timezone}</div>`;
+  }
+
+  preview.appendChild(previewHeaderDiv);
+
+  // Create a container for the weeks
+  const previewContainer = document.createElement("div");
+  previewContainer.classList.add("preview-content");
+
+  // Always use grid layout for multiple weeks, regardless of format
+  if (weekCount > 1) {
+    previewContainer.style.display = "grid";
+    previewContainer.style.gap = "10px";
+    previewContainer.style.width = "100%";
+
+    if (weekCount === 2) {
+      // Two columns for two weeks
+      previewContainer.style.gridTemplateColumns = "1fr 1fr";
+    } else {
+      // 2x2 grid for 3-4 weeks
+      previewContainer.style.gridTemplateColumns = "1fr 1fr";
+      previewContainer.style.gridTemplateRows = "auto auto";
+    }
+  } else {
+    // Single column for one week
+    previewContainer.style.display = "flex";
+    previewContainer.style.flexDirection = "column";
+    previewContainer.style.width = "100%";
+  }
+
+  preview.appendChild(previewContainer);
+
+  const daysOfWeek = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+  ];
+
+  const scheduleEvents = []; // Array to store schedule data
+
+  // Create each week
+  for (let w = 1; w <= weekCount; w++) {
+    const previewWeek = document.createElement("div");
+    previewWeek.classList.add("preview-week");
+
+    // Style the week container
+    previewWeek.style.margin = "0";
+    previewWeek.style.border = "1px solid var(--preview-border)";
+    previewWeek.style.borderRadius = "8px";
+    previewWeek.style.padding = "10px";
+    previewWeek.style.backgroundColor = "var(--container-bg)";
+    previewWeek.style.width = "100%";
+    previewWeek.style.boxSizing = "border-box";
+
+    // Week title
+    previewWeek.innerHTML = `<h3 style="text-align: center; margin: 5px 0;">Week ${w}</h3>`;
+
+    // Add days of the week
+    daysOfWeek.forEach((day) => {
+      const dayId = `week-${w}-${day}`;
+      const toggle = document.getElementById(`${dayId}-toggle`);
+      const previewDayContainer = document.createElement("div");
+      previewDayContainer.classList.add("preview-day");
+
+      // Style the day container
+      previewDayContainer.style.width = "100%";
+      previewDayContainer.style.boxSizing = "border-box";
+      previewDayContainer.style.marginBottom = "8px";
+      previewDayContainer.style.padding = "5px";
+      previewDayContainer.style.fontSize = weekCount > 2 ? "12px" : "14px";
+      previewDayContainer.style.backgroundColor = "var(--day-bg-color)";
+      previewDayContainer.style.color = "var(--day-text-color)";
+
+      let hasStreamsForDay = false;
+
+      if (toggle && toggle.checked) {
+        const streamInputs = document.querySelectorAll(
+          `#${dayId}-content .form-group`
+        );
+
+        streamInputs.forEach((input, index) => {
+          const startTime = document.getElementById(
+            `${dayId}-start-${index}`
+          ).value;
+          const endTime = document.getElementById(
+            `${dayId}-end-${index}`
+          ).value;
+          const game = document.getElementById(`${dayId}-game-${index}`).value;
+          const color = document.getElementById(
+            `${dayId}-colour-${index}`
+          ).value;
+
+          if (startTime && endTime && game) {
+            hasStreamsForDay = true;
+
+            const streamBlock = document.createElement("div");
+            streamBlock.style.backgroundColor = color;
+            streamBlock.style.color = getContrastColor(color);
+            streamBlock.style.padding = "4px";
+            streamBlock.style.borderRadius = "4px";
+            streamBlock.style.marginBottom = "4px";
+            streamBlock.style.width = "100%";
+            streamBlock.style.boxSizing = "border-box";
+
+            // Adjust font size for grid layout with many weeks
+            if (weekCount > 2) {
+              streamBlock.style.fontSize = "11px";
+            }
+
+            streamBlock.innerHTML = `<strong>${startTime} - ${endTime}</strong><br>${game}`;
+            previewDayContainer.appendChild(streamBlock);
+
+            // Add to schedule events for iCal export
+            scheduleEvents.push({
+              day: day.charAt(0).toUpperCase() + day.slice(1),
+              time: startTime,
+              title: game,
+            });
+          }
+        });
+      }
+
+      if (!hasStreamsForDay) {
+        previewDayContainer.classList.add("no-stream");
+        previewDayContainer.innerHTML = `<strong>${
+          day.charAt(0).toUpperCase() + day.slice(1)
+        }</strong><br>No Stream`;
+      }
+
+      previewWeek.appendChild(previewDayContainer);
+    });
+
+    previewContainer.appendChild(previewWeek);
+  }
+
+  // Add channel link and QR code to the footer
+  if (channelName) {
+    const footerDiv = document.createElement("div");
+    footerDiv.id = "preview-footer";
+    footerDiv.classList.add("preview-footer");
+    footerDiv.style.width = "100%";
+    footerDiv.style.textAlign = "center";
+    footerDiv.style.marginTop = "10px";
+    footerDiv.style.paddingTop = "10px";
+    footerDiv.style.borderTop = "1px solid var(--preview-border)";
+    footerDiv.style.height = includeQR ? "auto" : "30px"; // Control height based on QR inclusion
+    footerDiv.style.backgroundColor = "var(--preview-bg)";
+    footerDiv.style.color = "var(--text-color)";
+
+    // Add channel link
+    const channelLinkDiv = document.createElement("div");
+    channelLinkDiv.classList.add("channel-link");
+    channelLinkDiv.textContent = `twitch.tv/${channelName}`;
+    channelLinkDiv.style.marginBottom = includeQR ? "5px" : "0";
+    footerDiv.appendChild(channelLinkDiv);
+
+    // Add QR code if selected
+    if (includeQR) {
+      const qrContainer = document.createElement("div");
+      qrContainer.id = "qr-code";
+      qrContainer.classList.add("qr-code");
+      qrContainer.style.margin = "0 auto"; // Center the QR code
+      qrContainer.style.width = "100px";
+      qrContainer.style.height = "100px";
+      footerDiv.appendChild(qrContainer);
+
+      generateQRCode(channelName, qrContainer);
+    }
+
+    preview.appendChild(footerDiv);
+  }
+
+  // Store scheduleEvents globally for export
+  window.scheduleEvents = scheduleEvents;
 }
 
 // Ensure the script runs after the DOM is fully loaded
@@ -367,216 +595,6 @@ document.addEventListener("DOMContentLoaded", function () {
   updateDateRange();
 });
 
-// Update the existing updatePreview function to handle the formatting better
-function updatePreview() {
-  console.log("updatePreview() called");
-  const weekCountElement = document.getElementById("weekCount");
-  console.log("weekCount element in updatePreview:", weekCountElement);
-  console.log("weekCount value in updatePreview:", weekCountElement.value);
-  const weekCount = parseInt(weekCountElement.value);
-  console.log(`Generating preview for ${weekCount} weeks`);
-  console.log(`Generating preview for ${weekCount} weeks`);
-  const preview = document.getElementById("previewOutput");
-  const exportFormat = document.getElementById("exportFormat").value;
-
-  // Clear the preview
-  preview.innerHTML = "";
-
-  // Get schedule options
-  const scheduleHeader =
-    document.getElementById("scheduleHeader").value === "custom"
-      ? document.getElementById("customHeader").value
-      : document.getElementById("scheduleHeader").value;
-  const startDate = document.getElementById("startDate").value;
-  const endDate = document.getElementById("endDate").value;
-  const timezone = document.getElementById("timezone").value;
-  const channelName = document.getElementById("channelName").value;
-  const includeQR = document.getElementById("includeQR").checked;
-
-  // Create header section
-  const previewHeaderDiv = document.createElement("div");
-  previewHeaderDiv.classList.add("preview-header-info");
-
-  // Adjust header size based on export format
-  if (exportFormat === "Twitch Stories") {
-    previewHeaderDiv.innerHTML = `<div class="preview-title" style="font-size: 28px; margin-bottom: 15px;">${scheduleHeader}</div>`;
-  } else if (exportFormat === "Twitch Schedule Panel") {
-    previewHeaderDiv.innerHTML = `<div class="preview-title" style="font-size: 18px; margin-bottom: 10px;">${scheduleHeader}</div>`;
-  } else {
-    previewHeaderDiv.innerHTML = `<div class="preview-title">${scheduleHeader}</div>`;
-  }
-
-  if (startDate && endDate) {
-    const formattedStartDate = new Date(startDate).toLocaleDateString(
-      undefined,
-      { day: "numeric", month: "long" }
-    );
-    const formattedEndDate = new Date(endDate).toLocaleDateString(undefined, {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-    previewHeaderDiv.innerHTML += `<div class="preview-date-range">${formattedStartDate} - ${formattedEndDate}</div>`;
-  } else if (startDate) {
-    const formattedStartDate = new Date(startDate).toLocaleDateString(
-      undefined,
-      { day: "numeric", month: "long", year: "numeric" }
-    );
-    previewHeaderDiv.innerHTML += `<div class="preview-date-range">Starting: ${formattedStartDate}</div>`;
-  } else if (endDate) {
-    const formattedEndDate = new Date(endDate).toLocaleDateString(undefined, {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-    previewHeaderDiv.innerHTML += `<div class="preview-date-range" style="font-weight: bold">Ending: ${formattedEndDate}</div>`;
-  }
-
-  if (timezone) {
-    previewHeaderDiv.innerHTML += `<div class="preview-timezone" style="font-weight: bold">Time Zone: ${timezone}</div>`;
-  }
-
-  preview.appendChild(previewHeaderDiv);
-
-  // Adjust layout based on export format
-  const previewContainer = document.createElement("div");
-  previewContainer.classList.add("preview-content");
-
-  if (exportFormat === "Twitch Stories") {
-    previewContainer.style.display = "flex";
-    previewContainer.style.flexDirection = "column";
-  } else {
-    previewContainer.style.display = "block";
-  }
-
-  preview.appendChild(previewContainer);
-
-  const daysOfWeek = [
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
-    "sunday",
-  ];
-
-  const scheduleEvents = []; // Array to store schedule data
-
-  for (let w = 1; w <= weekCount; w++) {
-    const previewWeek = document.createElement("div");
-    previewWeek.classList.add("preview-week");
-
-    // Add a debug border and margin to make each week clearly visible
-    previewWeek.style.margin = "0 20 0 0";
-    previewWeek.style.padding = "5px";
-
-    // Add a debug message at the top of each week
-    const debugElement = document.createElement("div");
-    debugElement.textContent = `DEBUG: This is week ${w} of ${weekCount}`;
-    debugElement.style.backgroundColor = "yellow";
-    debugElement.style.color = "black";
-    debugElement.style.padding = "5px";
-    debugElement.style.marginBottom = "5px";
-    previewWeek.appendChild(debugElement);
-
-    // Adjust week title based on format
-    if (exportFormat === "Twitch Schedule Panel") {
-      previewWeek.innerHTML = `<h3 style="font-size: 16px; margin: 8px 0;">Week ${w}</h3>`;
-    } else if (exportFormat === "Twitch Stories") {
-      previewWeek.innerHTML = `<h3 style="font-size: 22px; margin: 10px 0;">Week ${w}</h3>`;
-    } else {
-      previewWeek.innerHTML = `<h3>Week ${w}</h3>`;
-    }
-
-    // Add logic for days of the week
-    daysOfWeek.forEach((day) => {
-      const dayId = `week-${w}-${day}`;
-      const toggle = document.getElementById(`${dayId}-toggle`);
-      const previewDayContainer = document.createElement("div");
-      previewDayContainer.classList.add("preview-day");
-
-      // Adjust day container based on format
-      if (exportFormat === "Twitch Stories") {
-        previewDayContainer.style.marginBottom = "15px";
-      } else if (exportFormat === "Twitch Schedule Panel") {
-        previewDayContainer.style.marginBottom = "8px";
-        previewDayContainer.style.fontSize = "14px";
-      }
-
-      let hasStreamsForDay = false;
-
-      if (toggle && toggle.checked) {
-        const streamInputs = document.querySelectorAll(
-          `#${dayId}-content .form-group`
-        );
-
-        streamInputs.forEach((input, index) => {
-          const startTime = document.getElementById(
-            `${dayId}-start-${index}`
-          ).value;
-          const endTime = document.getElementById(
-            `${dayId}-end-${index}`
-          ).value;
-          const game = document.getElementById(`${dayId}-game-${index}`).value;
-          const color = document.getElementById(
-            `${dayId}-colour-${index}`
-          ).value;
-
-          if (startTime && endTime && game) {
-            hasStreamsForDay = true;
-
-            const streamBlock = document.createElement("div");
-            streamBlock.style.backgroundColor = color;
-            streamBlock.style.color = getContrastColor(color);
-            streamBlock.innerHTML = `<strong>${startTime} - ${endTime}</strong><br>${game}`;
-            previewDayContainer.appendChild(streamBlock);
-          }
-        });
-      }
-
-      if (!hasStreamsForDay) {
-        previewDayContainer.classList.add("no-stream");
-        previewDayContainer.innerHTML = `<strong>${
-          day.charAt(0).toUpperCase() + day.slice(1)
-        }</strong><br>No Stream`;
-      }
-
-      previewWeek.appendChild(previewDayContainer);
-    });
-
-    previewContainer.appendChild(previewWeek);
-  }
-
-  // Add channel link and QR code to the footer
-  if (channelName) {
-    const footerDiv = document.createElement("div");
-    footerDiv.id = "preview-footer";
-    footerDiv.classList.add("preview-footer");
-
-    // Add channel link
-    const channelLinkDiv = document.createElement("div");
-    channelLinkDiv.classList.add("channel-link");
-    channelLinkDiv.textContent = `twitch.tv/${channelName}`;
-    footerDiv.appendChild(channelLinkDiv);
-
-    // Add QR code if selected
-    if (includeQR) {
-      const qrContainer = document.createElement("div");
-      qrContainer.id = "qr-code";
-      qrContainer.classList.add("qr-code");
-      footerDiv.appendChild(qrContainer);
-
-      generateQRCode(channelName, qrContainer);
-    }
-
-    preview.appendChild(footerDiv);
-  }
-
-  // Store scheduleEvents globally for export
-  window.scheduleEvents = scheduleEvents;
-}
-
 // Add channel link and QR code to the footer
 if (channelName) {
   const preview = document.getElementById("previewOutput"); // Ensure preview is defined
@@ -645,13 +663,15 @@ function generateQRCode(channelName, container) {
     qr.make();
 
     // Calculate QR code size
-    const qrSize = 120; // Fixed size for the preview
+    const qrSize = 100; // Fixed size for the preview
 
     // Create a canvas for the QR code
     const qrCanvas = document.createElement("canvas");
     qrCanvas.width = qrSize;
     qrCanvas.height = qrSize;
     qrCanvas.id = "qr-code-canvas";
+    qrCanvas.style.display = "block"; // Ensure it's visible
+    qrCanvas.style.margin = "0 auto"; // Center it
 
     const qrCtx = qrCanvas.getContext("2d");
 
@@ -677,8 +697,8 @@ function generateQRCode(channelName, container) {
     // Add a label below the QR code
     const label = document.createElement("div");
     label.textContent = "Scan to visit channel";
-    label.style.fontSize = "20px";
-    label.style.marginTop = "20px";
+    label.style.fontSize = "12px";
+    label.style.marginTop = "5px";
     label.style.textAlign = "center";
     container.appendChild(label);
 
@@ -711,27 +731,27 @@ function updatePreviewFormat() {
   switch (exportFormat) {
     case "Twitter":
       previewOutput.style.width = "100%";
-      previewOutput.style.maxWidth = "1200px";
+      previewOutput.style.width = "600px";
       break;
     case "Discord":
       previewOutput.style.width = "100%";
-      previewOutput.style.maxWidth = "1200px";
+      previewOutput.style.width = "600px";
       break;
     case "Instagram":
       previewOutput.style.width = "100%";
-      previewOutput.style.maxWidth = "1080px";
+      previewOutput.style.width = "600px";
       break;
     case "Twitch Schedule Panel":
-      previewOutput.style.width = "320px";
-      previewOutput.style.maxWidth = "320px";
+      previewOutput.style.width = "100%";
+      previewOutput.style.width = "600px";
       break;
     case "Twitch Stories":
       previewOutput.style.width = "100%";
-      previewOutput.style.maxWidth = "1080px";
+      previewOutput.style.width = "600px";
       break;
     case "OBS":
       previewOutput.style.width = "100%";
-      previewOutput.style.maxWidth = "1920px";
+      previewOutput.style.width = "600px";
       break;
     case "iCal":
       previewOutput.style.display = "none";
@@ -761,100 +781,59 @@ function exportSchedule() {
   console.log("Exporting schedule...");
   const exportFormat = document.getElementById("exportFormat").value;
   const preview = document.getElementById("previewOutput");
-  const channelName = document.getElementById("channelName").value;
+  const channelName = document.getElementById("channelName").value || "stream";
 
-  // Set specific dimensions for each export format
-  let canvasWidth, canvasHeight;
-  switch (exportFormat) {
-    case "Twitter":
-      canvasWidth = 1200; // Twitter recommended width
-      canvasHeight = 675; // Twitter recommended height (16:9)
-      break;
-    case "Discord":
-      canvasWidth = 1200; // Discord embeds width
-      canvasHeight = 675; // Discord embeds height (16:9)
-      break;
-    case "Instagram":
-      canvasWidth = 1080; // Instagram post width
-      canvasHeight = 1080; // Instagram post height (1:1)
-      break;
-    case "Twitch Schedule Panel":
-      canvasWidth = 320; // Twitch panel width
-      canvasHeight = preview.scrollHeight; // Dynamic height based on content
-      break;
-    case "Twitch Stories":
-      canvasWidth = 1080; // Twitch Stories width
-      canvasHeight = 1920; // Twitch Stories height (9:16)
-      break;
-    case "OBS":
-      canvasWidth = 1920; // OBS width
-      canvasHeight = preview.scrollHeight; // Dynamic height based on content
-      break;
-    case "iCal":
-      // Use the global scheduleEvents array
-      const events = window.scheduleEvents || [];
-      const iCalContent = generateICalFile(events, channelName);
-      const iCalBlob = new Blob([iCalContent], { type: "text/calendar" });
-      const iCalLink = document.createElement("a");
-      iCalLink.href = URL.createObjectURL(iCalBlob);
-      iCalLink.download = `${channelName}-schedule.ics`;
-      document.body.appendChild(iCalLink);
-      iCalLink.click();
-      document.body.removeChild(iCalLink);
-      showNotification("iCal file exported successfully!", "success");
-      return; // Exit the function since no canvas is needed
-    default:
-      console.error("Unknown export format:", exportFormat);
-      showNotification("Error: Unknown export format", "error");
-      return;
+  // Handle iCal export separately
+  if (exportFormat === "iCal") {
+    const events = window.scheduleEvents || [];
+    const iCalContent = generateICalFile(events, channelName);
+    const iCalBlob = new Blob([iCalContent], { type: "text/calendar" });
+    const iCalLink = document.createElement("a");
+    iCalLink.href = URL.createObjectURL(iCalBlob);
+    iCalLink.download = `${channelName}-schedule.ics`;
+    document.body.appendChild(iCalLink);
+    iCalLink.click();
+    document.body.removeChild(iCalLink);
+    showNotification("iCal file exported successfully!", "success");
+    return;
   }
 
-  // Set specific options for html2canvas
-  const options = {
-    backgroundColor: null, // Transparent background
+  // Show a loading notification
+  showNotification("Preparing export...", "info");
+
+  // Get the computed styles to use for export
+  const isDarkMode = document.body.classList.contains("dark-mode");
+  const computedStyle = getComputedStyle(document.documentElement);
+  const bgColor = computedStyle.getPropertyValue("--preview-bg").trim();
+
+  // Simply capture the preview as-is
+  html2canvas(preview, {
+    backgroundColor: bgColor || (isDarkMode ? "#444" : "#f9f9f9"),
     scale: 2, // Higher resolution
-    width: canvasWidth,
-    height: canvasHeight,
     logging: false,
-    useCORS: true, // Allow cross-origin images
-  };
-
-  // Create a canvas from the preview content
-  html2canvas(preview, options)
-    .then((canvas) => {
-      switch (exportFormat) {
-        case "Twitter":
-        case "Discord":
-        case "Instagram":
-        case "Twitch Stories":
-          // For social media, download the image
-          const image = canvas.toDataURL("image/png");
-          const link = document.createElement("a");
-          link.href = image;
-          link.download = `${channelName}-schedule.png`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          break;
-
-        case "Twitch Schedule Panel":
-        case "OBS":
-          // For OBS or Twitch panels, download the image
-          const obsImage = canvas.toDataURL("image/png");
-          const obsLink = document.createElement("a");
-          obsLink.href = obsImage;
-          obsLink.download = `${channelName}-schedule-obs.png`;
-          document.body.appendChild(obsLink);
-          obsLink.click();
-          document.body.removeChild(obsLink);
-          break;
-
-        default:
-          console.error("Unknown export format:", exportFormat);
-          showNotification("Error: Unknown export format", "error");
+    useCORS: true,
+    allowTaint: true,
+    onclone: function (clonedDoc) {
+      // Make any necessary adjustments to the cloned document
+      const clonedPreview = clonedDoc.getElementById("previewOutput");
+      if (clonedPreview) {
+        // Ensure the preview has a white background
+        clonedPreview.style.backgroundColor = "white";
       }
+    },
+  })
+    .then((canvas) => {
+      // Download the image
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = image;
+      link.download = `${channelName}-schedule-${exportFormat
+        .toLowerCase()
+        .replace(/\s+/g, "-")}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-      // Show success notification
       showNotification(`Schedule exported for ${exportFormat}!`, "success");
     })
     .catch((error) => {
