@@ -817,8 +817,39 @@ function exportSchedule() {
       // Make any necessary adjustments to the cloned document
       const clonedPreview = clonedDoc.getElementById("previewOutput");
       if (clonedPreview) {
-        // Ensure the preview has a white background
-        clonedPreview.style.backgroundColor = "white";
+        // Set background color based on theme
+        clonedPreview.style.backgroundColor = isDarkMode ? "#222" : "#f5f5f5";
+
+        // Remove border radius to prevent white corners
+        clonedPreview.style.borderRadius = "0";
+
+        // Get the actual computed styles from the original elements
+        const headerInfo = clonedPreview.querySelector(".preview-header-info");
+        if (headerInfo) {
+          // Get the original header info element
+          const originalHeaderInfo = preview.querySelector(
+            ".preview-header-info"
+          );
+
+          // Apply the actual computed color from the original element
+          const computedHeaderColor =
+            window.getComputedStyle(originalHeaderInfo).color;
+          headerInfo.style.color = computedHeaderColor;
+
+          // Do the same for all child elements
+          const headerElements = headerInfo.querySelectorAll("*");
+          headerElements.forEach((el, index) => {
+            // Find the corresponding original element
+            const originalElements = originalHeaderInfo.querySelectorAll("*");
+            if (originalElements[index]) {
+              // Get and apply the actual computed color
+              const computedColor = window.getComputedStyle(
+                originalElements[index]
+              ).color;
+              el.style.color = computedColor;
+            }
+          });
+        }
       }
     },
   })
