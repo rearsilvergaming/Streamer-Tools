@@ -50,10 +50,40 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function updateRaidEntries() {
-    const raidCount = parseInt(document.getElementById("raidCount").value) || 1;
-    const raidEntriesContainer = document.getElementById("raidEntries");
+    const raidCountInput = document.getElementById("raidCount");
+
+    if (raidCountInput) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          console.log("Mutation observed:", mutation);
+        });
+      });
+
+      observer.observe(raidCountInput, {
+        attributes: true,
+        childList: true,
+        subtree: true,
+      });
+    }
+
+    // Debugging: Log the raidCountInput element and its value
+    console.log("Raid count input element:", raidCountInput);
+    console.log("Raid count input value before parsing:", raidCountInput.value);
+
+    const raidCount = parseInt(raidCountInput.value, 10) || 1;
+
+    // Debugging: Log the parsed raidCount value
+    console.log(
+      "Number of raids to thank (inside updateRaidEntries):",
+      raidCount
+    );
 
     // Clear existing raid entries
+    const raidEntriesContainer = document.getElementById("raidEntries");
+    if (!raidEntriesContainer) {
+      console.error("Element with ID 'raidEntries' not found.");
+      return;
+    }
     raidEntriesContainer.innerHTML = "";
 
     // Dynamically create raid input fields
@@ -387,7 +417,12 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     } else if (storyType === "raid") {
       // Collect raid data
+      console.log(
+        "Raid count input value before parsing:",
+        raidCountInput.value
+      );
       const raidCount = parseInt(raidCountInput.value) || 1;
+      console.log("Parsed raid count:", raidCount);
       const raids = [];
 
       for (let i = 0; i < raidCount; i++) {
@@ -448,6 +483,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Initialize first raid entry
   updateRaidEntries();
+
+  // Delegated event listeners for raidCount input
+  document.addEventListener("input", function (e) {
+    if (e.target && e.target.id === "raidCount") {
+      console.log(
+        "Delegated: raidCount input event. Current value:",
+        e.target.value
+      );
+      updateRaidEntries();
+    }
+  });
+
+  document.addEventListener("change", function (e) {
+    if (e.target && e.target.id === "raidCount") {
+      console.log(
+        "Delegated: raidCount change event. Current value:",
+        e.target.value
+      );
+      updateRaidEntries();
+    }
+  });
 
   // Check if we have a saved profile picture
   if (localStorage.getItem("profilePicture")) {
