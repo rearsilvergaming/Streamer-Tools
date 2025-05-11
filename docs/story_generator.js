@@ -27,6 +27,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const raidThankerOptions = document.getElementById("raidThankerOptions");
   const raidCountInput = document.getElementById("raidCount");
   const raidEntriesContainer = document.getElementById("raidEntries");
+  const fontStyle = document.getElementById("fontStyle");
+  const textColor = document.getElementById("textColor");
+  const includeQRCode = document.getElementById("includeQRCode");
 
   // Handle story type switching
   storyTypeSelect.addEventListener("change", function () {
@@ -71,6 +74,9 @@ document.addEventListener("DOMContentLoaded", function () {
     "streamTime",
     "timeZone",
     "profilePicture",
+    "textColor",
+    "fontStyle",
+    "includeQRCode",
   ].forEach((id) => {
     const input = document.getElementById(id);
     if (!input) {
