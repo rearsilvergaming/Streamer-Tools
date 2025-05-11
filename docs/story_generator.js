@@ -70,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
     "streamDate",
     "streamTime",
     "timeZone",
+    "profilePicture",
   ].forEach((id) => {
     const input = document.getElementById(id);
     if (!input) {
@@ -252,7 +253,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const profilePreview = document.getElementById("profilePreview");
   const clearProfileBtn = document.getElementById("clearProfileBtn");
 
-  includeProfilePic.addEventListener("change", refreshPreview, function () {
+  includeProfilePic.addEventListener("change", function () {
     profilePicOptions.style.display = this.checked ? "block" : "none";
 
     // Load profile from localStorage if available
@@ -260,10 +261,11 @@ document.addEventListener("DOMContentLoaded", function () {
       profilePreview.src = localStorage.getItem("profilePicture");
       profilePreview.style.display = "block";
     }
+    refreshPreview(); // Trigger once after rebuilding
   });
 
   // Handle profile picture upload
-  profilePicture.addEventListener("change", refreshPreview, function (e) {
+  profilePicture.addEventListener("change", function (e) {
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
 
@@ -280,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Clear profile picture
-  clearProfileBtn.addEventListener("click", refreshPreview, function () {
+  clearProfileBtn.addEventListener("click", function () {
     profilePreview.src = "";
     profilePreview.style.display = "none";
     profilePicture.value = "";
