@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
     "backgroundImageOptions"
   );
 
-  backgroundStyleSelect.addEventListener("change", refreshPreview, function () {
+  backgroundStyleSelect.addEventListener("change", function () {
     gradientOptions.style.display = "none";
     solidColorOptions.style.display = "none";
     backgroundImageOptions.style.display = "none";
@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const profilePreview = document.getElementById("profilePreview");
   const clearProfileBtn = document.getElementById("clearProfileBtn");
 
-  includeProfilePic.addEventListener("change", refreshPreview, function () {
+  includeProfilePic.addEventListener("change", function () {
     profilePicOptions.style.display = this.checked ? "block" : "none";
 
     // Load profile from localStorage if available
@@ -218,7 +218,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Handle profile picture upload
-  profilePicture.addEventListener("change", refreshPreview, function (e) {
+  profilePicture.addEventListener("change", function (e) {
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
 
@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Clear profile picture
-  clearProfileBtn.addEventListener("click", refreshPreview, function () {
+  clearProfileBtn.addEventListener("click", function () {
     profilePreview.src = "";
     profilePreview.style.display = "none";
     profilePicture.value = "";
@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const backgroundImage = document.getElementById("backgroundImage");
   let backgroundImageData = null;
 
-  backgroundImage.addEventListener("change", refreshPreview, function (e) {
+  backgroundImage.addEventListener("change", function (e) {
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
 
@@ -270,14 +270,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // Toggle schedule options visibility
   document
     .getElementById("scheduleStream")
-    .addEventListener("change", refreshPreview, function () {
+    .addEventListener("change", function () {
       document.getElementById("scheduleOptions").style.display = this.checked
         ? "block"
         : "none";
     });
 
   // Toggle between story types
-  storyTypeSelect.addEventListener("change", refreshPreview, function () {
+  storyTypeSelect.addEventListener("change", function () {
     const selectedStoryType = this.value;
 
     // Debugging: Log the selected story type
