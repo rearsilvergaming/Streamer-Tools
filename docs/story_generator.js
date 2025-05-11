@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const raiderNameInput = document.createElement("input");
       raiderNameInput.type = "text";
       raiderNameInput.id = `raider${i}`;
-      raiderNameInput.placeholder = `Raider ${i + 1}`;
+      raiderNameInput.placeholder = `RearSilver`;
       raidEntry.appendChild(raiderNameInput);
 
       // Raider count input
