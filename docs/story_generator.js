@@ -28,11 +28,27 @@ document.addEventListener("DOMContentLoaded", function () {
   const raidCountInput = document.getElementById("raidCount");
   const raidEntriesContainer = document.getElementById("raidEntries");
 
+  // Handle story type switching
+  storyTypeSelect.addEventListener("change", function () {
+    refreshPreview();
+
+    const selectedStoryType = this.value;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (selectedStoryType === "upcoming") {
+      upcomingStreamOptions.style.display = "block";
+      raidThankerOptions.style.display = "none";
+    } else if (selectedStoryType === "raid") {
+      upcomingStreamOptions.style.display = "none";
+      raidThankerOptions.style.display = "block";
+      updateRaidEntries();
+    }
+  });
+
   // Tab navigation
   const tabs = document.querySelectorAll(".tab");
   tabs.forEach((tab) => {
     tab.addEventListener("click", function () {
-      // Remove active class from all tabs and contents
       document
         .querySelectorAll(".tab")
         .forEach((t) => t.classList.remove("active"));
@@ -40,14 +56,38 @@ document.addEventListener("DOMContentLoaded", function () {
         .querySelectorAll(".tab-content")
         .forEach((c) => c.classList.remove("active"));
 
-      // Add active class to clicked tab
       this.classList.add("active");
-
-      // Show corresponding content
       const tabId = this.getAttribute("data-tab");
       document.getElementById(`${tabId}-tab`).classList.add("active");
     });
   });
+
+  // ✅ HERE is the correct place to register preview-updating inputs
+  [
+    "gameTitle",
+    "streamTitle",
+    "matureContent",
+    "streamDate",
+    "streamTime",
+    "timeZone",
+  ].forEach((id) => {
+    const input = document.getElementById(id);
+    if (!input) {
+      console.warn(`Input #${id} not found`);
+      return;
+    }
+
+    const type = input.type;
+    const eventType =
+      type === "checkbox" || type === "radio" ? "change" : "input";
+
+    input.addEventListener(eventType, function () {
+      console.log(`Preview refreshed from #${id}`);
+      refreshPreview();
+    });
+  });
+
+  // 🧼 You can put other preview-related logic and color pickers below here
 
   function updateRaidEntries() {
     const raidCountInput = document.getElementById("raidCount");
@@ -127,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
     "backgroundImageOptions"
   );
 
-  backgroundStyleSelect.addEventListener("change", function () {
+  backgroundStyleSelect.addEventListener("change", refreshPreview, function () {
     gradientOptions.style.display = "none";
     solidColorOptions.style.display = "none";
     backgroundImageOptions.style.display = "none";
@@ -207,7 +247,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const profilePreview = document.getElementById("profilePreview");
   const clearProfileBtn = document.getElementById("clearProfileBtn");
 
-  includeProfilePic.addEventListener("change", function () {
+  includeProfilePic.addEventListener("change", refreshPreview, function () {
     profilePicOptions.style.display = this.checked ? "block" : "none";
 
     // Load profile from localStorage if available
@@ -218,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Handle profile picture upload
-  profilePicture.addEventListener("change", function (e) {
+  profilePicture.addEventListener("change", refreshPreview, function (e) {
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
 
@@ -235,7 +275,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Clear profile picture
-  clearProfileBtn.addEventListener("click", function () {
+  clearProfileBtn.addEventListener("click", refreshPreview, function () {
     profilePreview.src = "";
     profilePreview.style.display = "none";
     profilePicture.value = "";
@@ -246,7 +286,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const backgroundImage = document.getElementById("backgroundImage");
   let backgroundImageData = null;
 
-  backgroundImage.addEventListener("change", function (e) {
+  backgroundImage.addEventListener("change", refreshPreview, function (e) {
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
 
@@ -270,7 +310,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Toggle schedule options visibility
   document
     .getElementById("scheduleStream")
-    .addEventListener("change", function () {
+    .addEventListener("change", refreshPreview, function () {
       document.getElementById("scheduleOptions").style.display = this.checked
         ? "block"
         : "none";
@@ -278,7 +318,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Toggle between story types
   storyTypeSelect.addEventListener("change", function () {
+    refreshPreview();
+
     const selectedStoryType = this.value;
+
+    console.log("Selected story type:", selectedStoryType);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (selectedStoryType === "upcoming") {
+      upcomingStreamOptions.style.display = "block";
+      raidThankerOptions.style.display = "none";
+    } else if (selectedStoryType === "raid") {
+      upcomingStreamOptions.style.display = "none";
+      raidThankerOptions.style.display = "block";
+      updateRaidEntries();
+    }
 
     // Debugging: Log the selected story type
     console.log("Selected story type:", selectedStoryType);
