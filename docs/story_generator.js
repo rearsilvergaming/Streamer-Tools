@@ -154,9 +154,14 @@ document.addEventListener("DOMContentLoaded", function () {
       raiderCountInput.placeholder = "Viewer Count";
       raidEntry.appendChild(raiderCountInput);
 
+      // 🧠 Attach live preview update listeners here:
+      raiderNameInput.addEventListener("input", refreshPreview);
+      raiderCountInput.addEventListener("input", refreshPreview);
+
       // Append the raid entry to the container
       raidEntriesContainer.appendChild(raidEntry);
     }
+    refreshPreview(); // Trigger once after rebuilding
   }
 
   // Background style options
