@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Get DOM elements
   const generateBtn = document.getElementById("generateBtn");
   const downloadBtn = document.getElementById("downloadBtn");
+
   const canvas = document.getElementById("storyCanvas");
   const ctx = canvas.getContext("2d");
   const storyTypeSelect = document.getElementById("storyType");
@@ -121,6 +122,225 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Trigger preview generation
     refreshPreview();
+  });
+
+  const twitterBtn = document.getElementById("twitterBtn");
+  const shareInstructions = document.getElementById("shareInstructions");
+
+  twitterBtn.addEventListener("click", function () {
+    if (this.disabled) return;
+
+    // First, trigger the download
+    const link = document.createElement("a");
+    link.download = "twitch-story.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+
+    // Show the instructions
+    shareInstructions.style.display = "block";
+
+    // Scroll to instructions
+    setTimeout(() => {
+      shareInstructions.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+
+    // Get story type and channel name
+    const storyType = document.getElementById("storyType").value;
+    const channelName =
+      document.getElementById("channelName").value.trim() || "Your Channel";
+
+    // Create appropriate message based on story type with specific details
+    let tweetText = "";
+
+    if (storyType === "upcoming") {
+      const gameTitle =
+        document.getElementById("gameTitle").value.trim() || "Awesome Stream";
+      const streamTitle =
+        document.getElementById("streamTitle").value.trim() ||
+        "Come hang out with me!";
+
+      // Include schedule information if available
+      let scheduleInfo = "";
+      if (document.getElementById("scheduleStream").checked) {
+        const dateInput = document.getElementById("streamDate").value;
+        const timeInput = document.getElementById("streamTime").value;
+        const timeZone = document.getElementById("timeZone").value;
+
+        if (dateInput && timeInput) {
+          // Format the date nicely
+          const dateObj = new Date(dateInput + "T" + timeInput);
+          const options = {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+          };
+
+          let formattedDate = dateObj.toLocaleDateString("en-US", options);
+
+          // Add time zone if not local
+          if (timeZone !== "local") {
+            formattedDate += ` ${timeZone}`;
+          }
+
+          scheduleInfo = ` ${formattedDate}`;
+        }
+      }
+
+      tweetText = `I'm going live on Twitch${scheduleInfo}! Join me for ${gameTitle}: "${streamTitle}" at https://twitch.tv/${channelName} #Twitch #TwitchStreamer`;
+
+      // If tweet is too long, simplify it
+      if (tweetText.length > 280) {
+        tweetText = `I'm going live on Twitch${scheduleInfo}! Join me for ${gameTitle} at https://twitch.tv/${channelName} #Twitch`;
+      }
+    } else if (storyType === "raid") {
+      // Get raid information
+      const raidCount =
+        parseInt(document.getElementById("raidCount").value) || 1;
+
+      // Limit to top 3 raiders to keep tweet concise
+      const maxRaiders = Math.min(raidCount, 3);
+
+      // Format each raider's entry differently when building the list
+      let formattedRaidersList = "";
+
+      for (let i = 0; i < maxRaiders; i++) {
+        const raiderName = document.getElementById(`raider${i}`)?.value.trim();
+        const raiderCount = document.getElementById(`raiderCount${i}`)?.value;
+
+        if (raiderName) {
+          if (formattedRaidersList) formattedRaidersList += ", ";
+          formattedRaidersList += `${raiderName} for raiding with ${raiderCount} viewers`;
+        }
+      }
+
+      if (raidCount > 3 && formattedRaidersList) {
+        formattedRaidersList += ` and ${raidCount - 3} more raiders`;
+      }
+
+      if (formattedRaidersList) {
+        tweetText = `Thank you to ${formattedRaidersList}! Come join us at https://twitch.tv/${channelName} #Twitch #TwitchCommunity`;
+      } else {
+        tweetText = `Big thanks to everyone who raided my channel! Come join us at https://twitch.tv/${channelName} #Twitch #TwitchCommunity`;
+      }
+    } else if (storyType === "subscriber") {
+      // Get subscriber information
+      const subCount = parseInt(document.getElementById("subCount").value) || 1;
+
+      // Define maxSubs before using it
+      const maxSubs = Math.min(subCount, 3);
+
+      // Format each subscriber's entry
+      let formattedSubsList = "";
+
+      for (let i = 0; i < maxSubs; i++) {
+        const subName = document.getElementById(`subName${i}`)?.value.trim();
+        const subType = document.getElementById(`subType${i}`)?.value;
+        const months =
+          subType === "resub"
+            ? parseInt(document.getElementById(`months${i}`)?.value) || 1
+            : 0;
+
+        if (subName) {
+          if (formattedSubsList) formattedSubsList += ", ";
+
+          if (subType === "resub") {
+            formattedSubsList += `${subName} for resubbing for ${months} ${
+              months === 1 ? "month" : "months"
+            }`;
+          } else if (subType === "prime") {
+            formattedSubsList += `${subName} for the Prime sub`;
+          } else {
+            formattedSubsList += `${subName} for subscribing`;
+          }
+        }
+      }
+
+      if (subCount > 3 && formattedSubsList) {
+        formattedSubsList += ` and ${subCount - 3} more subscribers`;
+      }
+
+      if (formattedSubsList) {
+        tweetText = `Thank you to ${formattedSubsList}! Join our community at https://twitch.tv/${channelName} #Twitch #TwitchSubscriber`;
+      } else {
+        tweetText = `Thank you to all my subscribers for the amazing support! Join the community at https://twitch.tv/${channelName} #Twitch #TwitchSubscriber`;
+      }
+    } else if (storyType === "gifted") {
+      // Get gifter information
+      const gifterCount =
+        parseInt(document.getElementById("gifterCount").value) || 1;
+
+      // Limit to top 3 gifters to keep tweet concise
+      const maxGifters = Math.min(gifterCount, 3);
+
+      // Format each gifter's entry
+      let formattedGiftersList = "";
+
+      for (let i = 0; i < maxGifters; i++) {
+        const gifterName = document
+          .getElementById(`gifterName${i}`)
+          ?.value.trim();
+        const giftCount = document.getElementById(`giftCount${i}`)?.value;
+
+        if (gifterName) {
+          if (formattedGiftersList) formattedGiftersList += ", ";
+          formattedGiftersList += `${gifterName} for gifting ${giftCount} ${
+            giftCount == 1 ? "sub" : "subs"
+          }`;
+        }
+      }
+
+      if (gifterCount > 3 && formattedGiftersList) {
+        formattedGiftersList += ` and ${gifterCount - 3} more gifters`;
+      }
+
+      if (formattedGiftersList) {
+        tweetText = `Huge thanks to ${formattedGiftersList}! Join our community at https://twitch.tv/${channelName} #Twitch #TwitchGifts`;
+      } else {
+        tweetText = `Huge thanks for all the gifted subs! You're amazing! Come join us at https://twitch.tv/${channelName} #Twitch #TwitchGifts`;
+      }
+    } else if (storyType === "follower") {
+      // Get follower information
+      const followerCount =
+        parseInt(document.getElementById("followerCount").value) || 5;
+      let followersList = "";
+
+      // Limit to top 3 followers to keep tweet concise
+      const maxFollowers = Math.min(followerCount, 3);
+      for (let i = 0; i < maxFollowers; i++) {
+        const followerName = document
+          .getElementById(`followerName${i}`)
+          ?.value.trim();
+
+        if (followerName) {
+          if (followersList) followersList += ", ";
+          followersList += followerName;
+        }
+      }
+
+      if (followerCount > 3 && followersList) {
+        followersList += ` and ${followerCount - 3} more`;
+      }
+
+      if (followersList) {
+        tweetText = `Thank you to ${followersList} for following the channel! Come hang out at https://twitch.tv/${channelName} #Twitch #TwitchStreamer`;
+      } else {
+        tweetText = `Thank you to all my new followers! Come hang out at https://twitch.tv/${channelName} #Twitch #TwitchStreamer`;
+      }
+    }
+
+    // Ensure tweet is within Twitter's character limit (280)
+    if (tweetText.length > 280) {
+      // Truncate and add ellipsis
+      tweetText = tweetText.substring(0, 277) + "...";
+    }
+
+    // Open Twitter intent URL in a new tab
+    const twitterIntentURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      tweetText
+    )}`;
+    window.open(twitterIntentURL, "_blank");
   });
 
   // Set up header style dropdown event listener
@@ -730,6 +950,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     downloadBtn.disabled = false;
+    twitterBtn.disabled = false;
   }
 
   // Initialize the new entry forms
