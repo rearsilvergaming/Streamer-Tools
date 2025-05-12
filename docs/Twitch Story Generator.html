@@ -105,13 +105,77 @@
                     <input type="text" id="channelName" placeholder="Your Twitch Channel Name here. 'RearSilver' for example.">
                 </div>
                 
-                <div class="form-group">
-                    <label for="storyType">Story Type:</label>
-                    <select id="storyType">
-                        <option value="upcoming">Upcoming Stream</option>
-                        <option value="raid">Raid Thanker</option>
-                    </select>
-                </div>
+<!-- Update the story type dropdown -->
+<div class="form-group">
+    <label for="storyType">Story Type:</label>
+    <select id="storyType">
+        <option value="upcoming">Upcoming Stream</option>
+        <option value="raid">Raid Thanker</option>
+        <option value="subscriber">Subscriber Thanker</option>
+        <option value="gifted">Gifted Subs Thanker</option>
+        <option value="follower">Follower Thanker</option>
+    </select>
+</div>
+
+<!-- Add header style options for upcoming streams -->
+<div id="upcomingHeaderOptions" style="display: none;">
+    <div class="form-group">
+        <label for="upcomingHeader">Header Style:</label>
+        <select id="upcomingHeader">
+            <option value="upcoming">UPCOMING STREAM</option>
+            <option value="lookforward">WHAT YOU HAVE TO LOOK FORWARD TO</option>
+            <option value="joinme">JOIN ME LIVE</option>
+            <option value="nextstream">NEXT STREAM</option>
+            <option value="comingup">COMING UP</option>
+            <option value="custom">Custom Text...</option>
+        </select>
+    </div>
+    
+    <!-- Custom header text input (shows only when custom is selected) -->
+    <div id="customHeaderInput" style="display: none;">
+        <div class="form-group">
+            <label for="customHeaderText">Custom Header Text:</label>
+            <input type="text" id="customHeaderText" placeholder="Enter your custom header text">
+        </div>
+    </div>
+</div>
+
+<!-- Add subscriber thanker options -->
+<div id="subscriberThankerOptions" style="display: none;">
+    <div class="form-group">
+        <label for="subCount">Number of Subscribers to Thank:</label>
+        <input type="number" id="subCount" min="1" max="5" value="1">
+    </div>
+    
+    <div id="subEntries" class="sub-entries">
+        <!-- Sub entries will be dynamically added here -->
+    </div>
+</div>
+
+<!-- Add gifted subs thanker options -->
+<div id="giftedThankerOptions" style="display: none;">
+    <div class="form-group">
+        <label for="gifterCount">Number of Gifters to Thank:</label>
+        <input type="number" id="gifterCount" min="1" max="5" value="1">
+    </div>
+    
+    <div id="gifterEntries" class="gifter-entries">
+        <!-- Gifter entries will be dynamically added here -->
+    </div>
+</div>
+
+<!-- Add follower thanker options -->
+<div id="followerThankerOptions" style="display: none;">
+    <div class="form-group">
+        <label for="followerCount">Number of Followers to Thank:</label>
+        <input type="number" id="followerCount" min="1" max="10" value="1">
+    </div>
+    
+    <div id="followerEntries" class="follower-entries">
+        <!-- Follower entries will be dynamically added here -->
+    </div>
+</div>
+
                 
                 <div id="upcomingStreamOptions">
                     <div class="form-group">
