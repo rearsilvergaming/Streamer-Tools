@@ -86,6 +86,26 @@ document.addEventListener("DOMContentLoaded", function () {
   const textColor = document.getElementById("textColor");
   const includeQRCode = document.getElementById("includeQRCode");
 
+  // Add this function after your existing event listeners
+  function updateTwitterButtonState() {
+    const channelName = document.getElementById("channelName").value.trim();
+    const twitterBtn = document.getElementById("twitterBtn");
+
+    if (!channelName) {
+      twitterBtn.title = "Please enter your Twitch channel name first";
+      // We don't disable the button, but will show a warning if clicked
+    } else {
+      twitterBtn.title = "Share to Twitter/X";
+    }
+
+    // Only enable if the image has been generated
+    twitterBtn.disabled = downloadBtn.disabled;
+  }
+  // Add event listener to channel name input
+  document
+    .getElementById("channelName")
+    .addEventListener("input", updateTwitterButtonState);
+
   // Handle story type switching
   storyTypeSelect.addEventListener("change", function () {
     const selectedStoryType = this.value;
@@ -146,8 +166,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Get story type and channel name
     const storyType = document.getElementById("storyType").value;
-    const channelName =
-      document.getElementById("channelName").value.trim() || "Your Channel";
+    const channelName = document.getElementById("channelName").value.trim();
+
+    // Check if channel name is empty
+    if (!channelName) {
+      // Show warning with option to continue
+      if (
+        !confirm(
+          "You haven't entered a Twitch channel name, so your tweet won't include a channel link. Continue anyway?"
+        )
+      ) {
+        return; // Exit if user cancels
+      }
+    }
 
     // Create appropriate message based on story type with specific details
     let tweetText = "";
@@ -188,11 +219,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
-      tweetText = `I'm going live on Twitch${scheduleInfo}! Join me for ${gameTitle}: "${streamTitle}" at https://twitch.tv/${channelName} #Twitch #TwitchStreamer`;
-
+      tweetText = `I'm going live on Twitch${scheduleInfo}! Join me for ${gameTitle}: "${streamTitle}"${
+        channelName ? ` at https://twitch.tv/${channelName}` : ""
+      } #Twitch #TwitchStreamer`;
       // If tweet is too long, simplify it
       if (tweetText.length > 280) {
-        tweetText = `I'm going live on Twitch${scheduleInfo}! Join me for ${gameTitle} at https://twitch.tv/${channelName} #Twitch`;
+        tweetText = `I'm going live on Twitch${scheduleInfo}! Join me for ${gameTitle}${
+          channelName ? ` at https://twitch.tv/${channelName}` : ""
+        } #Twitch`;
       }
     } else if (storyType === "raid") {
       // Get raid information
@@ -220,9 +254,13 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       if (formattedRaidersList) {
-        tweetText = `Thank you to ${formattedRaidersList}! Come join us at https://twitch.tv/${channelName} #Twitch #TwitchCommunity`;
+        tweetText = `Thank you to ${formattedRaidersList}!${
+          channelName ? ` Come join us at https://twitch.tv/${channelName}` : ""
+        } #Twitch #TwitchCommunity`;
       } else {
-        tweetText = `Big thanks to everyone who raided my channel! Come join us at https://twitch.tv/${channelName} #Twitch #TwitchCommunity`;
+        tweetText = `Big thanks to everyone who raided my channel!${
+          channelName ? ` Come join us at https://twitch.tv/${channelName}` : ""
+        } #Twitch #TwitchCommunity`;
       }
     } else if (storyType === "subscriber") {
       // Get subscriber information
@@ -262,9 +300,17 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       if (formattedSubsList) {
-        tweetText = `Thank you to ${formattedSubsList}! Join our community at https://twitch.tv/${channelName} #Twitch #TwitchSubscriber`;
+        tweetText = `Thank you to ${formattedSubsList}!${
+          channelName
+            ? ` Join our community at https://twitch.tv/${channelName}`
+            : ""
+        } #Twitch #TwitchSubscriber`;
       } else {
-        tweetText = `Thank you to all my subscribers for the amazing support! Join the community at https://twitch.tv/${channelName} #Twitch #TwitchSubscriber`;
+        tweetText = `Thank you to all my subscribers for the amazing support!${
+          channelName
+            ? ` Join the community at https://twitch.tv/${channelName}`
+            : ""
+        } #Twitch #TwitchSubscriber`;
       }
     } else if (storyType === "gifted") {
       // Get gifter information
@@ -296,9 +342,15 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       if (formattedGiftersList) {
-        tweetText = `Huge thanks to ${formattedGiftersList}! Join our community at https://twitch.tv/${channelName} #Twitch #TwitchGifts`;
+        tweetText = `Huge thanks to ${formattedGiftersList}!${
+          channelName
+            ? ` Join our community at https://twitch.tv/${channelName}`
+            : ""
+        } #Twitch #TwitchGifts`;
       } else {
-        tweetText = `Huge thanks for all the gifted subs! You're amazing! Come join us at https://twitch.tv/${channelName} #Twitch #TwitchGifts`;
+        tweetText = `Huge thanks for all the gifted subs! You're amazing!${
+          channelName ? ` Come join us at https://twitch.tv/${channelName}` : ""
+        } #Twitch #TwitchGifts`;
       }
     } else if (storyType === "follower") {
       // Get follower information
@@ -324,9 +376,17 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       if (followersList) {
-        tweetText = `Thank you to ${followersList} for following the channel! Come hang out at https://twitch.tv/${channelName} #Twitch #TwitchStreamer`;
+        tweetText = `Thank you to ${followersList} for following the channel!${
+          channelName
+            ? ` Come hang out at https://twitch.tv/${channelName}`
+            : ""
+        } #Twitch #TwitchStreamer`;
       } else {
-        tweetText = `Thank you to all my new followers! Come hang out at https://twitch.tv/${channelName} #Twitch #TwitchStreamer`;
+        tweetText = `Thank you to all my new followers!${
+          channelName
+            ? ` Come hang out at https://twitch.tv/${channelName}`
+            : ""
+        } #Twitch #TwitchStreamer`;
       }
     }
 
@@ -950,7 +1010,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     downloadBtn.disabled = false;
-    twitterBtn.disabled = false;
+    updateTwitterButtonState();
   }
 
   // Initialize the new entry forms
@@ -1054,6 +1114,8 @@ document.addEventListener("DOMContentLoaded", function () {
   if (localStorage.getItem("profilePicture")) {
     profilePreview.src = localStorage.getItem("profilePicture");
   }
+  // Call it once on page load
+  updateTwitterButtonState();
 });
 
 // Update the generateTwitchStory function to handle new story types
