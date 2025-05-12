@@ -101,13 +101,25 @@
                 <h2>Story Content</h2>
                 
                 <div class="form-group">
-                    <label for="channelName">Twitch Channel Name:</label>
+                    <label for="channelName">Twitch Channel Name:
+                        <span
+              class="tooltip"
+              data-tip="enter channel name for QR code generation and channel link in Tweet."
+              >❔</span
+            >
+                    </label>
                     <input type="text" id="channelName" placeholder="Your Twitch Channel Name here. 'RearSilver' for example.">
                 </div>
                 
 <!-- Update the story type dropdown -->
 <div class="form-group">
-    <label for="storyType">Story Type:</label>
+    <label for="storyType">Story Type:
+                                <span
+              class="tooltip"
+              data-tip="Choose between upcoming stream, raid thanker, subscriber/gifted sub thanker and a new follower."
+              >❔</span
+            >
+    </label>
     <select id="storyType">
         <option value="upcoming">Upcoming Stream</option>
         <option value="raid">Raid Thanker</option>
@@ -120,13 +132,19 @@
 <!-- Add header style options for upcoming streams -->
 <div id="upcomingHeaderOptions" style="display: none;">
     <div class="form-group">
-        <label for="upcomingHeader">Header Style:</label>
+        <label for="upcomingHeader">Header Style:
+                                    <span
+              class="tooltip"
+              data-tip="choose between different header styles for upcoming streams."
+              >❔</span
+            >
+        </label>
         <select id="upcomingHeader">
-            <option value="upcoming">UPCOMING STREAM</option>
-            <option value="lookforward">WHAT YOU HAVE TO LOOK FORWARD TO</option>
-            <option value="joinme">JOIN ME LIVE</option>
-            <option value="nextstream">NEXT STREAM</option>
-            <option value="comingup">COMING UP</option>
+            <option value="upcoming">Upcoming Stream</option>
+            <option value="lookforward">What You Have To Look Forward To</option>
+            <option value="joinme">Join Me Live</option>
+            <option value="nextstream">Next Stream</option>
+            <option value="comingup">Coming Up</option>
             <option value="custom">Custom Text...</option>
         </select>
     </div>
@@ -134,7 +152,13 @@
     <!-- Custom header text input (shows only when custom is selected) -->
     <div id="customHeaderInput" style="display: none;">
         <div class="form-group">
-            <label for="customHeaderText">Custom Header Text:</label>
+            <label for="customHeaderText">Custom Header Text:
+                                        <span
+              class="tooltip"
+              data-tip="enter custom header text for upcoming streams."
+              >❔</span
+            >
+            </label>
             <input type="text" id="customHeaderText" placeholder="Enter your custom header text">
         </div>
     </div>
@@ -193,6 +217,11 @@
                             <input type="checkbox" id="matureContent">
                             <span class="checkmark"></span>
                             Mature Content
+                                                    <span
+              class="tooltip"
+              data-tip="Add a 🔞 to your stream title to indicate that it contains mature content."
+              >❔</span
+            >
                         </label>
                     </div>
                     
@@ -201,6 +230,11 @@
                             <input type="checkbox" id="scheduleStream" checked>
                             <span class="checkmark"></span>
                             Include Schedule
+                                                    <span
+              class="tooltip"
+              data-tip="Include a schedule for your stream in the upcoming stream header."
+              >❔</span
+            >
                         </label>
                     </div>
                     
@@ -249,6 +283,11 @@
                         <input type="checkbox" id="includeQRCode" checked>
                         <span class="checkmark"></span>
                         Include QR Code to Channel
+                                                <span
+              class="tooltip"
+              data-tip="add a QR code to your stream title to make it easier for viewers to find your channel."
+              >❔</span
+            >
                     </label>
                 </div>
             </div>
