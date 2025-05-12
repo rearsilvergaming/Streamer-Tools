@@ -24,6 +24,25 @@ document.addEventListener("DOMContentLoaded", function () {
   const upcomingStreamOptions = document.getElementById(
     "upcomingStreamOptions"
   );
+  const upcomingHeaderOptions = document.getElementById(
+    "upcomingHeaderOptions"
+  );
+  const upcomingHeader = document.getElementById("upcomingHeader");
+  const customHeaderInput = document.getElementById("customHeaderInput");
+  const customHeaderText = document.getElementById("customHeaderText");
+  const subscriberThankerOptions = document.getElementById(
+    "subscriberThankerOptions"
+  );
+  const subCount = document.getElementById("subCount");
+  const subEntries = document.getElementById("subEntries");
+  const giftedThankerOptions = document.getElementById("giftedThankerOptions");
+  const gifterCount = document.getElementById("gifterCount");
+  const gifterEntries = document.getElementById("gifterEntries");
+  const followerThankerOptions = document.getElementById(
+    "followerThankerOptions"
+  );
+  const followerCount = document.getElementById("followerCount");
+  const followerEntries = document.getElementById("followerEntries");
   const raidThankerOptions = document.getElementById("raidThankerOptions");
   const raidCountInput = document.getElementById("raidCount");
   const raidEntriesContainer = document.getElementById("raidEntries");
@@ -33,20 +52,208 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Handle story type switching
   storyTypeSelect.addEventListener("change", function () {
-    refreshPreview();
-
     const selectedStoryType = this.value;
+    console.log("Selected story type:", selectedStoryType);
+
+    // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Hide all options first
+    upcomingStreamOptions.style.display = "none";
+    upcomingHeaderOptions.style.display = "none";
+    raidThankerOptions.style.display = "none";
+    subscriberThankerOptions.style.display = "none";
+    giftedThankerOptions.style.display = "none";
+    followerThankerOptions.style.display = "none";
+
+    // Show relevant options based on selection
     if (selectedStoryType === "upcoming") {
       upcomingStreamOptions.style.display = "block";
-      raidThankerOptions.style.display = "none";
+      upcomingHeaderOptions.style.display = "block";
     } else if (selectedStoryType === "raid") {
-      upcomingStreamOptions.style.display = "none";
       raidThankerOptions.style.display = "block";
       updateRaidEntries();
+    } else if (selectedStoryType === "subscriber") {
+      subscriberThankerOptions.style.display = "block";
+      updateSubscriberEntries();
+    } else if (selectedStoryType === "gifted") {
+      giftedThankerOptions.style.display = "block";
+      updateGifterEntries();
+    } else if (selectedStoryType === "follower") {
+      followerThankerOptions.style.display = "block";
+      updateFollowerEntries();
     }
+
+    // Trigger preview generation
+    refreshPreview();
   });
+
+  // Set up header style dropdown event listener
+  upcomingHeader.addEventListener("change", function () {
+    if (this.value === "custom") {
+      customHeaderInput.style.display = "block";
+    } else {
+      customHeaderInput.style.display = "none";
+    }
+    refreshPreview();
+  });
+
+  customHeaderText.addEventListener("input", refreshPreview);
+
+  // Add functions to update entries for each new type
+  function updateSubscriberEntries() {
+    const count = parseInt(subCount.value, 10) || 1;
+    console.log("Updating subscriber entries, count:", count);
+    subEntries.innerHTML = "";
+
+    for (let i = 0; i < count; i++) {
+      const subEntry = document.createElement("div");
+      subEntry.classList.add("form-group");
+
+      // Subscriber name input
+      const subNameLabel = document.createElement("label");
+      subNameLabel.textContent = `Subscriber ${i + 1} Name:`;
+      subEntry.appendChild(subNameLabel);
+
+      const subNameInput = document.createElement("input");
+      subNameInput.type = "text";
+      subNameInput.id = `subName${i}`;
+      subNameInput.placeholder = `Subscriber${i + 1}`;
+      subEntry.appendChild(subNameInput);
+
+      // Subscription type
+      const subTypeLabel = document.createElement("label");
+      subTypeLabel.textContent = `Subscription Type:`;
+      subEntry.appendChild(subTypeLabel);
+
+      const subTypeSelect = document.createElement("select");
+      subTypeSelect.id = `subType${i}`;
+
+      const options = [
+        { value: "new", text: "New Subscription" },
+        { value: "prime", text: "Prime Subscription" },
+        { value: "resub", text: "Resubscription" },
+      ];
+
+      options.forEach((option) => {
+        const optionEl = document.createElement("option");
+        optionEl.value = option.value;
+        optionEl.textContent = option.text;
+        subTypeSelect.appendChild(optionEl);
+      });
+
+      subEntry.appendChild(subTypeSelect);
+
+      // Months (for resubs)
+      const monthsLabel = document.createElement("label");
+      monthsLabel.textContent = `Months (for resubs):`;
+      monthsLabel.id = `monthsLabel${i}`;
+      monthsLabel.style.display = "none";
+      subEntry.appendChild(monthsLabel);
+
+      const monthsInput = document.createElement("input");
+      monthsInput.type = "number";
+      monthsInput.id = `months${i}`;
+      monthsInput.min = 1;
+      monthsInput.value = 1;
+      monthsInput.style.display = "none";
+      subEntry.appendChild(monthsInput);
+
+      // Show/hide months input based on sub type
+      subTypeSelect.addEventListener("change", function () {
+        if (this.value === "resub") {
+          monthsLabel.style.display = "block";
+          monthsInput.style.display = "block";
+        } else {
+          monthsLabel.style.display = "none";
+          monthsInput.style.display = "none";
+        }
+        refreshPreview();
+      });
+
+      // Attach event listeners
+      subNameInput.addEventListener("input", refreshPreview);
+      subTypeSelect.addEventListener("change", refreshPreview);
+      monthsInput.addEventListener("input", refreshPreview);
+
+      subEntries.appendChild(subEntry);
+    }
+    refreshPreview();
+  }
+
+  function updateGifterEntries() {
+    const count = parseInt(gifterCount.value, 10) || 1;
+    console.log("Updating gifter entries, count:", count);
+    gifterEntries.innerHTML = "";
+
+    for (let i = 0; i < count; i++) {
+      const gifterEntry = document.createElement("div");
+      gifterEntry.classList.add("form-group");
+
+      // Gifter name input
+      const gifterNameLabel = document.createElement("label");
+      gifterNameLabel.textContent = `Gifter ${i + 1} Name:`;
+      gifterEntry.appendChild(gifterNameLabel);
+
+      const gifterNameInput = document.createElement("input");
+      gifterNameInput.type = "text";
+      gifterNameInput.id = `gifterName${i}`;
+      gifterNameInput.placeholder = `Gifter${i + 1}`;
+      gifterEntry.appendChild(gifterNameInput);
+
+      // Gift count input
+      const giftCountLabel = document.createElement("label");
+      giftCountLabel.textContent = `Number of Subs Gifted:`;
+      gifterEntry.appendChild(giftCountLabel);
+
+      const giftCountInput = document.createElement("input");
+      giftCountInput.type = "number";
+      giftCountInput.id = `giftCount${i}`;
+      giftCountInput.min = 1;
+      giftCountInput.value = 5;
+      gifterEntry.appendChild(giftCountInput);
+
+      // Attach event listeners
+      gifterNameInput.addEventListener("input", refreshPreview);
+      giftCountInput.addEventListener("input", refreshPreview);
+
+      gifterEntries.appendChild(gifterEntry);
+    }
+    refreshPreview();
+  }
+
+  function updateFollowerEntries() {
+    const count = parseInt(followerCount.value, 10) || 5;
+    console.log("Updating follower entries, count:", count);
+    followerEntries.innerHTML = "";
+
+    for (let i = 0; i < count; i++) {
+      const followerEntry = document.createElement("div");
+      followerEntry.classList.add("form-group");
+
+      // Follower name input
+      const followerNameLabel = document.createElement("label");
+      followerNameLabel.textContent = `Follower ${i + 1} Name:`;
+      followerEntry.appendChild(followerNameLabel);
+
+      const followerNameInput = document.createElement("input");
+      followerNameInput.type = "text";
+      followerNameInput.id = `followerName${i}`;
+      followerNameInput.placeholder = `Follower${i + 1}`;
+      followerEntry.appendChild(followerNameInput);
+
+      // Attach event listener
+      followerNameInput.addEventListener("input", refreshPreview);
+
+      followerEntries.appendChild(followerEntry);
+    }
+    refreshPreview();
+  }
+
+  // Add event listeners for count inputs
+  subCount.addEventListener("input", updateSubscriberEntries);
+  gifterCount.addEventListener("input", updateGifterEntries);
+  followerCount.addEventListener("input", updateFollowerEntries);
 
   // Tab navigation
   const tabs = document.querySelectorAll(".tab");
@@ -179,11 +386,11 @@ document.addEventListener("DOMContentLoaded", function () {
     "backgroundImageOptions"
   );
 
-  backgroundStyleSelect.addEventListener("change", refreshPreview, function () {
+  backgroundStyleSelect.addEventListener("change", function () {
+    refreshPreview();
     gradientOptions.style.display = "none";
     solidColorOptions.style.display = "none";
     backgroundImageOptions.style.display = "none";
-
     if (this.value === "gradient") {
       gradientOptions.style.display = "block";
     } else if (this.value === "solid") {
@@ -299,14 +506,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const backgroundImage = document.getElementById("backgroundImage");
   let backgroundImageData = null;
 
-  backgroundImage.addEventListener("change", refreshPreview, function (e) {
+  backgroundImage.addEventListener("change", function (e) {
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
-
       reader.onload = function (event) {
         backgroundImageData = event.target.result;
+        refreshPreview(); // Call refreshPreview after the image is loaded
       };
-
       reader.readAsDataURL(e.target.files[0]);
     }
   });
@@ -328,108 +534,6 @@ document.addEventListener("DOMContentLoaded", function () {
         ? "block"
         : "none";
     });
-
-  // Toggle between story types
-  storyTypeSelect.addEventListener("change", function () {
-    refreshPreview();
-
-    const selectedStoryType = this.value;
-
-    console.log("Selected story type:", selectedStoryType);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (selectedStoryType === "upcoming") {
-      upcomingStreamOptions.style.display = "block";
-      raidThankerOptions.style.display = "none";
-    } else if (selectedStoryType === "raid") {
-      upcomingStreamOptions.style.display = "none";
-      raidThankerOptions.style.display = "block";
-      updateRaidEntries();
-    }
-
-    // Debugging: Log the selected story type
-    console.log("Selected story type:", selectedStoryType);
-
-    // Clear the canvas before redrawing
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (selectedStoryType === "upcoming") {
-      // Show "Upcoming Stream" options and hide "Raid Thanker" options
-      upcomingStreamOptions.style.display = "block";
-      raidThankerOptions.style.display = "none";
-
-      // Update the preview with default "Upcoming Stream" values
-      generateTwitchStory(ctx, {
-        channelName: "Your Channel",
-        gameTitle: "Awesome Stream",
-        streamTitle: "Come hang out with me!",
-        matureContent: false,
-        scheduleStream: true,
-        includeQRCode: true,
-        storyType: "upcoming",
-        styleOptions: {
-          backgroundStyle: backgroundStyleSelect.value,
-          gradientTopColor: document.getElementById("gradientTopColor").value,
-          gradientBottomColor: document.getElementById("gradientBottomColor")
-            .value,
-          backgroundColor: document.getElementById("backgroundColor").value,
-          backgroundImage: backgroundImageData,
-          backgroundOpacity: parseFloat(
-            document.getElementById("backgroundOpacity").value
-          ),
-          overlayColor: document.getElementById("overlayColor").value,
-          fontStyle: document.getElementById("fontStyle").value,
-          textColor: document.getElementById("textColor").value,
-          accentColor: document.getElementById("accentColor").value,
-        },
-        profileOptions: {
-          includeProfilePic:
-            document.getElementById("includeProfilePic").checked,
-          profilePicture: document.getElementById("profilePreview").src,
-          profileSize: parseInt(document.getElementById("profileSize").value),
-        },
-      });
-    } else if (selectedStoryType === "raid") {
-      // Show "Raid Thanker" options and hide "Upcoming Stream" options
-      upcomingStreamOptions.style.display = "none";
-      raidThankerOptions.style.display = "block";
-
-      // Clear the canvas before redrawing
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Update the preview with default "Raid Thanker" values
-      generateTwitchStory(ctx, {
-        channelName: "Your Channel",
-        includeQRCode: true,
-        storyType: "raid",
-        raids: [{ raiderName: "RearSilver", raiderCount: 15 }],
-        styleOptions: {
-          backgroundStyle: backgroundStyleSelect.value,
-          gradientTopColor: document.getElementById("gradientTopColor").value,
-          gradientBottomColor: document.getElementById("gradientBottomColor")
-            .value,
-          backgroundColor: document.getElementById("backgroundColor").value,
-          backgroundImage: backgroundImageData,
-          backgroundOpacity: parseFloat(
-            document.getElementById("backgroundOpacity").value
-          ),
-          overlayColor: document.getElementById("overlayColor").value,
-          fontStyle: document.getElementById("fontStyle").value,
-          textColor: document.getElementById("textColor").value,
-          accentColor: document.getElementById("accentColor").value,
-        },
-        profileOptions: {
-          includeProfilePic:
-            document.getElementById("includeProfilePic").checked,
-          profilePicture: document.getElementById("profilePreview").src,
-          profileSize: parseInt(document.getElementById("profileSize").value),
-        },
-      });
-
-      // Update the raid entries dynamically
-      updateRaidEntries();
-    }
-  }); // Closing brace for storyTypeSelect event listener
 
   // Generate the story image
   function refreshPreview() {
@@ -462,6 +566,22 @@ document.addEventListener("DOMContentLoaded", function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (storyType === "upcoming") {
+      // Get header style
+      let headerText = "UPCOMING STREAM";
+      const headerStyle = upcomingHeader.value;
+
+      if (headerStyle === "lookforward") {
+        headerText = "What You Have To Look Forward To";
+      } else if (headerStyle === "joinme") {
+        headerText = "Join Me Live";
+      } else if (headerStyle === "nextstream") {
+        headerText = "Next Stream";
+      } else if (headerStyle === "comingup") {
+        headerText = "Coming Up";
+      } else if (headerStyle === "custom") {
+        headerText = customHeaderText.value.trim() || "Upcoming Stream";
+      }
+
       const gameTitle =
         document.getElementById("gameTitle").value.trim() || "Awesome Stream";
       const streamTitle =
@@ -478,6 +598,7 @@ document.addEventListener("DOMContentLoaded", function () {
         scheduleStream,
         includeQRCode,
         storyType,
+        headerText, // Pass the custom header text
         styleOptions,
         profileOptions,
       });
@@ -503,12 +624,118 @@ document.addEventListener("DOMContentLoaded", function () {
         styleOptions,
         profileOptions,
       });
+    } else if (storyType === "subscriber") {
+      const subCount = parseInt(document.getElementById("subCount").value) || 1;
+      const subscribers = [];
+
+      for (let i = 0; i < subCount; i++) {
+        const subName =
+          document.getElementById(`subName${i}`)?.value.trim() ||
+          `Subscriber${i + 1}`;
+        const subType = document.getElementById(`subType${i}`)?.value || "new";
+        const months =
+          subType === "resub"
+            ? parseInt(document.getElementById(`months${i}`)?.value) || 1
+            : 0;
+
+        subscribers.push({ subName, subType, months });
+      }
+
+      generateTwitchStory(ctx, {
+        channelName,
+        includeQRCode,
+        storyType,
+        subscribers,
+        styleOptions,
+        profileOptions,
+      });
+    } else if (storyType === "gifted") {
+      const gifterCount =
+        parseInt(document.getElementById("gifterCount").value) || 1;
+      const gifters = [];
+
+      for (let i = 0; i < gifterCount; i++) {
+        const gifterName =
+          document.getElementById(`gifterName${i}`)?.value.trim() ||
+          `Gifter${i + 1}`;
+        const giftCount =
+          parseInt(document.getElementById(`giftCount${i}`)?.value) || 5;
+
+        gifters.push({ gifterName, giftCount });
+      }
+
+      generateTwitchStory(ctx, {
+        channelName,
+        includeQRCode,
+        storyType,
+        gifters,
+        styleOptions,
+        profileOptions,
+      });
+    } else if (storyType === "follower") {
+      const followerCount =
+        parseInt(document.getElementById("followerCount").value) || 5;
+      const followers = [];
+
+      for (let i = 0; i < followerCount; i++) {
+        const followerName =
+          document.getElementById(`followerName${i}`)?.value.trim() ||
+          `Follower${i + 1}`;
+        followers.push({ followerName });
+      }
+
+      generateTwitchStory(ctx, {
+        channelName,
+        includeQRCode,
+        storyType,
+        followers,
+        styleOptions,
+        profileOptions,
+      });
     }
 
     downloadBtn.disabled = false;
   }
 
-  // Keep this line to allow manual clicking still
+  // Initialize the new entry forms
+  function initializeNewStoryTypes() {
+    const storyTypeSelect = document.getElementById("storyType");
+    const upcomingHeaderOptions = document.getElementById(
+      "upcomingHeaderOptions"
+    );
+
+    if (
+      storyTypeSelect &&
+      storyTypeSelect.value === "upcoming" &&
+      upcomingHeaderOptions
+    ) {
+      upcomingHeaderOptions.style.display = "block";
+    }
+
+    // Set up subscriber entries
+    const subCount = document.getElementById("subCount");
+    if (subCount) {
+      subCount.addEventListener("input", updateSubscriberEntries);
+      updateSubscriberEntries();
+    }
+
+    // Set up gifter entries
+    const gifterCount = document.getElementById("gifterCount");
+    if (gifterCount) {
+      gifterCount.addEventListener("input", updateGifterEntries);
+      updateGifterEntries();
+    }
+
+    // Set up follower entries
+    const followerCount = document.getElementById("followerCount");
+    if (followerCount) {
+      followerCount.addEventListener("input", updateFollowerEntries);
+      updateFollowerEntries();
+    }
+  }
+  initializeNewStoryTypes(); // ✅ This stays
+
+  // Keep existing event listeners
   generateBtn.addEventListener("click", refreshPreview);
 
   // Download the generated image
@@ -573,7 +800,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-// Function to generate the Twitch story
+// Update the generateTwitchStory function to handle new story types
 function generateTwitchStory(ctx, options) {
   const {
     channelName,
@@ -603,10 +830,8 @@ function generateTwitchStory(ctx, options) {
   // Start with proportional spacing from top
   let currentY = headerHeight;
 
-  // Replace it with this (which essentially does nothing, just keeps the spacing consistent):
   // Skip Twitch branding to save space
   const headerFontSize = Math.max(20, Math.floor(height * 0.035));
-  // No text rendering here
   // Just a minimal spacing adjustment
   currentY += headerFontSize * 0.5; // Reduced from 1.5 to 0.5
 
@@ -652,6 +877,59 @@ function generateTwitchStory(ctx, options) {
     currentY += headerHeight * 1.2;
   }
 
+  // Add QR code and footer for all story types
+  if (includeQRCode) {
+    try {
+      const qr = qrcode(0, "L");
+      qr.addData(`https://twitch.tv/${channelName}`);
+      qr.make();
+
+      // Get canvas dimensions from the context
+      const canvasWidth = ctx.canvas.width;
+      const canvasHeight = ctx.canvas.height;
+
+      const qrSize = Math.min(canvasWidth / 4, canvasHeight * 0.12);
+      const qrX = (canvasWidth - qrSize) / 2;
+      const qrY = canvasHeight - qrSize - canvasHeight * 0.05;
+
+      const qrCanvas = document.createElement("canvas");
+      qrCanvas.width = qrSize;
+      qrCanvas.height = qrSize;
+      const qrCtx = qrCanvas.getContext("2d");
+
+      // Fill with white background
+      qrCtx.fillStyle = "white";
+      qrCtx.fillRect(0, 0, qrSize, qrSize);
+
+      // Draw QR code
+      const cellSize = qrSize / qr.getModuleCount();
+      qrCtx.fillStyle = "black";
+      for (let row = 0; row < qr.getModuleCount(); row++) {
+        for (let col = 0; col < qr.getModuleCount(); col++) {
+          if (qr.isDark(row, col)) {
+            qrCtx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+          }
+        }
+      }
+
+      // Draw QR code on main canvas
+      ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+
+      // Add text below QR code
+      const scanFontSize = Math.max(12, Math.floor(canvasHeight * 0.02));
+      ctx.fillStyle = textColor;
+      ctx.font = `${scanFontSize}px ${fontFamily}`;
+      ctx.textAlign = "center";
+      ctx.fillText(
+        "Scan to visit channel",
+        canvasWidth / 2,
+        qrY + qrSize + scanFontSize
+      );
+    } catch (error) {
+      console.error("Error generating QR code:", error);
+    }
+  }
+
   // Set text alignment to center for all subsequent text
   ctx.textAlign = "center";
   ctx.fillStyle = textColor;
@@ -668,7 +946,13 @@ function generateTwitchStory(ctx, options) {
   const sectionSpacing = availableContentHeight * sectionSpacingFactor;
 
   if (storyType === "upcoming") {
-    const { gameTitle, streamTitle, matureContent, scheduleStream } = options;
+    const {
+      gameTitle,
+      streamTitle,
+      matureContent,
+      scheduleStream,
+      headerText,
+    } = options;
 
     // Add mature content warning if needed
     if (matureContent) {
@@ -695,16 +979,21 @@ function generateTwitchStory(ctx, options) {
       currentY = bannerY + bannerHeight + warningFontSize * 0.3; // Small additional spacing
     }
 
-    // Add "UPCOMING STREAM" text with proportional spacing
-    const sectionSpacing = availableContentHeight * 0.1; // Increased from 0.1 to 0.15
-    currentY += sectionSpacing * 0.5;
-    const upcomingFontSize = Math.max(20, Math.floor(height * 0.03));
+    // Add header text with proportional spacing
+    currentY += sectionSpacing * 0.5; // Use the already declared sectionSpacing
+    const headerFontSize = Math.max(20, Math.floor(height * 0.03));
     ctx.fillStyle = textColor;
-    ctx.font = `bold ${upcomingFontSize}px ${fontFamily}`;
-    ctx.fillText("UPCOMING STREAM", width / 2, currentY);
+    ctx.font = `bold ${headerFontSize}px ${fontFamily}`;
 
-    // Add game title with increased spacing - THIS PART WAS MISSING
-    currentY += sectionSpacing; // Increased spacing here too
+    // Use the custom header text if provided, otherwise use default
+    const headerTextToUse = headerText || "UPCOMING STREAM";
+    ctx.fillText(headerTextToUse, width / 2, currentY);
+
+    // Add spacing for the next element
+    currentY += sectionSpacing * 0.5;
+
+    // Add game title with increased spacing
+    currentY += sectionSpacing;
     const gameFontSize = Math.max(28, Math.floor(height * 0.045));
     ctx.font = `bold ${gameFontSize}px ${fontFamily}`;
 
@@ -724,7 +1013,7 @@ function generateTwitchStory(ctx, options) {
     }
 
     // Add stream title with increased spacing
-    currentY += sectionSpacing; // Increased spacing here too
+    currentY += sectionSpacing;
     const titleFontSize = Math.max(20, Math.floor(height * 0.035));
     ctx.font = `${titleFontSize}px ${fontFamily}`;
     const maxWidth = width * 0.85;
@@ -820,8 +1109,11 @@ function generateTwitchStory(ctx, options) {
       width / 2,
       height - footerHeight + reminderFontSize
     );
+
+    // Remove this extra closing brace
+    // }
   } else if (storyType === "raid") {
-    // Handle raid thanker story
+    // Existing raid thanker code
     const { raids } = options;
 
     // Add "RAID THANKER" text
@@ -912,59 +1204,280 @@ function generateTwitchStory(ctx, options) {
     }
 
     ctx.fillText(supportText, width / 2, thankY);
-  }
+  } else if (storyType === "subscriber") {
+    // Subscriber thanker implementation
+    const { subscribers } = options;
 
-  // Add QR code if enabled
-  if (includeQRCode) {
-    try {
-      // Generate QR code for Twitch channel URL
-      const qr = qrcode(0, "L");
-      qr.addData(`https://twitch.tv/${channelName}`);
-      qr.make();
+    // Add "SUBSCRIBER THANKER" text
+    const titleFontSize = Math.max(28, Math.floor(height * 0.045));
+    ctx.fillStyle = textColor;
+    ctx.font = `bold ${titleFontSize}px ${fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.fillText("SUBSCRIBER THANKER", width / 2, currentY);
 
-      // Calculate QR code size and position (centered at bottom)
-      const qrSize = Math.min(width / 4, height * 0.12); // Reduced from 0.15 to 0.12
-      const qrX = (width - qrSize) / 2;
-      const qrY = height - qrSize - height * 0.05; // Reduced spacing above QR code
+    // Add thank you message
+    currentY += titleFontSize * 1.5;
+    const thanksFontSize = Math.max(20, Math.floor(height * 0.035));
+    ctx.font = `bold ${thanksFontSize}px ${fontFamily}`;
 
-      // Create a temporary canvas for the QR code
-      const qrCanvas = document.createElement("canvas");
-      qrCanvas.width = qrSize;
-      qrCanvas.height = qrSize;
-      const qrCtx = qrCanvas.getContext("2d");
+    const thanksText = "THANK YOU FOR THE SUPPORT!";
+    const thanksWidth = ctx.measureText(thanksText).width;
+    if (thanksWidth > width * 0.9) {
+      const scaledFontSize = Math.floor(
+        ((width * 0.9) / thanksWidth) * thanksFontSize
+      );
+      ctx.font = `bold ${scaledFontSize}px ${fontFamily}`;
+    }
 
-      // Draw white background for QR code
-      qrCtx.fillStyle = "white";
-      qrCtx.fillRect(0, 0, qrSize, qrSize);
+    ctx.fillText(thanksText, width / 2, currentY);
 
-      // Draw QR code cells
-      const cellSize = qrSize / qr.getModuleCount();
-      qrCtx.fillStyle = "black";
+    // Add each subscriber with their details
+    currentY += thanksFontSize * 1.5;
+    const subFontSize = Math.max(18, Math.floor(height * 0.03));
 
-      for (let row = 0; row < qr.getModuleCount(); row++) {
-        for (let col = 0; col < qr.getModuleCount(); col++) {
-          if (qr.isDark(row, col)) {
-            qrCtx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
-          }
+    // Calculate available space for subscribers
+    const maxY = contentEndY - subFontSize * 2;
+    const availableHeight = maxY - currentY;
+
+    // Distribute subscribers evenly in the available space
+    const itemHeight = Math.min(
+      subFontSize * 2.5,
+      availableHeight / subscribers.length
+    );
+
+    subscribers.forEach((sub, index) => {
+      const y = currentY + index * itemHeight;
+
+      // Skip if we're out of space
+      if (y > maxY) return;
+
+      // Draw subscriber name
+      ctx.fillStyle = accentColor;
+      ctx.font = `bold ${subFontSize}px ${fontFamily}`;
+
+      // Check if subscriber name fits
+      const subNameWidth = ctx.measureText(sub.subName).width;
+      if (subNameWidth > width * 0.8) {
+        let truncatedName = sub.subName;
+        while (
+          ctx.measureText(truncatedName + "...").width > width * 0.8 &&
+          truncatedName.length > 0
+        ) {
+          truncatedName = truncatedName.slice(0, -1);
         }
+        ctx.fillText(truncatedName + "...", width / 2, y);
+      } else {
+        ctx.fillText(sub.subName, width / 2, y);
       }
 
-      // Draw QR code on main canvas
-      ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
-
-      // Add "Scan to visit channel" text
-      const scanFontSize = Math.max(12, Math.floor(height * 0.02)); // Reduced font size
+      // Draw subscription type
       ctx.fillStyle = textColor;
-      ctx.font = `${scanFontSize}px ${fontFamily}`;
-      ctx.textAlign = "center";
-      ctx.fillText(
-        "Scan to visit channel",
-        width / 2,
-        qrY + qrSize + scanFontSize
+      ctx.font = `${subFontSize * 0.9}px ${fontFamily}`;
+
+      let subTypeText = "";
+      if (sub.subType === "new") {
+        subTypeText = "New Subscriber";
+      } else if (sub.subType === "prime") {
+        subTypeText = "Prime Subscriber";
+      } else if (sub.subType === "resub") {
+        subTypeText = `${sub.months} Month Resubscriber`;
+      }
+
+      ctx.fillText(subTypeText, width / 2, y + subFontSize * 1.2);
+    });
+
+    // Add thank you message at bottom
+    const thankY = contentEndY - subFontSize;
+    ctx.fillStyle = textColor;
+    ctx.font = `bold ${subFontSize}px ${fontFamily}`;
+    ctx.textAlign = "center";
+
+    const supportText = "Your support means the world to me!";
+    const supportWidth = ctx.measureText(supportText).width;
+    if (supportWidth > width * 0.9) {
+      const scaledFontSize = Math.floor(
+        ((width * 0.9) / supportWidth) * subFontSize
       );
-    } catch (e) {
-      console.error("Error generating QR code:", e);
+      ctx.font = `bold ${scaledFontSize}px ${fontFamily}`;
     }
+
+    ctx.fillText(supportText, width / 2, thankY);
+  } else if (storyType === "gifted") {
+    // Gifted subs thanker implementation
+    const { gifters } = options;
+
+    // Add "GIFTED SUBS THANKER" text
+    const titleFontSize = Math.max(28, Math.floor(height * 0.045));
+    ctx.fillStyle = textColor;
+    ctx.font = `bold ${titleFontSize}px ${fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.fillText("GIFTED SUBS THANKER", width / 2, currentY);
+
+    // Add thank you message
+    currentY += titleFontSize * 1.5;
+    const thanksFontSize = Math.max(20, Math.floor(height * 0.035));
+    ctx.font = `bold ${thanksFontSize}px ${fontFamily}`;
+
+    const thanksText = "THANK YOU FOR THE GIFTED SUBS!";
+    const thanksWidth = ctx.measureText(thanksText).width;
+    if (thanksWidth > width * 0.9) {
+      const scaledFontSize = Math.floor(
+        ((width * 0.9) / thanksWidth) * thanksFontSize
+      );
+      ctx.font = `bold ${scaledFontSize}px ${fontFamily}`;
+    }
+
+    ctx.fillText(thanksText, width / 2, currentY);
+
+    // Add each gifter with their count
+    currentY += thanksFontSize * 1.5;
+    const gifterFontSize = Math.max(18, Math.floor(height * 0.03));
+
+    // Calculate available space for gifters
+    const maxY = contentEndY - gifterFontSize * 2;
+    const availableHeight = maxY - currentY;
+
+    // Distribute gifters evenly in the available space
+    const itemHeight = Math.min(
+      gifterFontSize * 2.5,
+      availableHeight / gifters.length
+    );
+
+    gifters.forEach((gifter, index) => {
+      const y = currentY + index * itemHeight;
+
+      // Skip if we're out of space
+      if (y > maxY) return;
+
+      // Draw gifter name
+      ctx.fillStyle = accentColor;
+      ctx.font = `bold ${gifterFontSize}px ${fontFamily}`;
+
+      // Check if gifter name fits
+      const gifterNameWidth = ctx.measureText(gifter.gifterName).width;
+      if (gifterNameWidth > width * 0.8) {
+        let truncatedName = gifter.gifterName;
+        while (
+          ctx.measureText(truncatedName + "...").width > width * 0.8 &&
+          truncatedName.length > 0
+        ) {
+          truncatedName = truncatedName.slice(0, -1);
+        }
+        ctx.fillText(truncatedName + "...", width / 2, y);
+      } else {
+        ctx.fillText(gifter.gifterName, width / 2, y);
+      }
+
+      // Draw gift count
+      ctx.fillStyle = textColor;
+      ctx.font = `${gifterFontSize * 0.9}px ${fontFamily}`;
+
+      const giftText =
+        gifter.giftCount === 1
+          ? "gifted 1 subscription"
+          : `gifted ${gifter.giftCount} subscriptions`;
+
+      ctx.fillText(giftText, width / 2, y + gifterFontSize * 1.2);
+    });
+
+    // Add thank you message at bottom
+    const thankY = contentEndY - gifterFontSize;
+    ctx.fillStyle = textColor;
+    ctx.font = `bold ${gifterFontSize}px ${fontFamily}`;
+    ctx.textAlign = "center";
+
+    const supportText = "Your generosity helps grow our community!";
+    const supportWidth = ctx.measureText(supportText).width;
+    if (supportWidth > width * 0.9) {
+      const scaledFontSize = Math.floor(
+        ((width * 0.9) / supportWidth) * gifterFontSize
+      );
+      ctx.font = `bold ${scaledFontSize}px ${fontFamily}`;
+    }
+
+    ctx.fillText(supportText, width / 2, thankY);
+  } else if (storyType === "follower") {
+    // Follower thanker implementation
+    const { followers } = options;
+
+    // Add "NEW FOLLOWER THANKER" text
+    const titleFontSize = Math.max(20, Math.floor(height * 0.035));
+    ctx.fillStyle = textColor;
+    ctx.font = `bold ${titleFontSize}px ${fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.fillText("NEW FOLLOWER THANKER", width / 2, currentY);
+
+    // Add thank you message
+    currentY += titleFontSize * 1.5;
+    const thanksFontSize = Math.max(20, Math.floor(height * 0.035));
+    ctx.font = `bold ${thanksFontSize}px ${fontFamily}`;
+
+    const thanksText = "THANK YOU FOR FOLLOWING!";
+    const thanksWidth = ctx.measureText(thanksText).width;
+    if (thanksWidth > width * 0.9) {
+      const scaledFontSize = Math.floor(
+        ((width * 0.9) / thanksWidth) * thanksFontSize
+      );
+      ctx.font = `bold ${scaledFontSize}px ${fontFamily}`;
+    }
+
+    ctx.fillText(thanksText, width / 2, currentY);
+
+    // Add each follower
+    currentY += thanksFontSize * 1.5;
+    const followerFontSize = Math.max(18, Math.floor(height * 0.03));
+
+    // Calculate available space for followers
+    const maxY = contentEndY - followerFontSize * 2;
+    const availableHeight = maxY - currentY;
+
+    // Distribute followers evenly in the available space
+    const itemHeight = Math.min(
+      followerFontSize * 1.8,
+      availableHeight / followers.length
+    );
+
+    followers.forEach((follower, index) => {
+      const y = currentY + index * itemHeight;
+
+      // Skip if we're out of space
+      if (y > maxY) return;
+
+      // Draw follower name
+      ctx.fillStyle = accentColor;
+      ctx.font = `bold ${followerFontSize}px ${fontFamily}`;
+
+      // Check if follower name fits
+      const followerNameWidth = ctx.measureText(follower.followerName).width;
+      if (followerNameWidth > width * 0.8) {
+        let truncatedName = follower.followerName;
+        while (
+          ctx.measureText(truncatedName + "...").width > width * 0.8 &&
+          truncatedName.length > 0
+        ) {
+          truncatedName = truncatedName.slice(0, -1);
+        }
+        ctx.fillText(truncatedName + "...", width / 2, y);
+      } else {
+        ctx.fillText(follower.followerName, width / 2, y);
+      }
+    });
+
+    // Add thank you message at bottom
+    const thankY = contentEndY - followerFontSize;
+    ctx.fillStyle = textColor;
+    ctx.font = `bold ${followerFontSize}px ${fontFamily}`;
+    ctx.textAlign = "center";
+
+    const supportText = "Welcome to the community!";
+    const supportWidth = ctx.measureText(supportText).width;
+    if (supportWidth > width * 0.9) {
+      const scaledFontSize = Math.floor(
+        ((width * 0.9) / supportWidth) * followerFontSize
+      );
+      ctx.font = `bold ${scaledFontSize}px ${fontFamily}`;
+    }
+    ctx.fillText(supportText, width / 2, thankY);
   }
 }
 
@@ -1197,8 +1710,3 @@ function initThemeToggle() {
     }
   });
 }
-
-// Ensure the script runs after the DOM is fully loaded
-document.addEventListener("DOMContentLoaded", function () {
-  initThemeToggle();
-});
