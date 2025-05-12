@@ -14,7 +14,42 @@ window.addEventListener("scroll", function () {
   }
 });
 
+function initThemeToggle() {
+  const themeToggle = document.getElementById("themeToggle");
+
+  if (!themeToggle) {
+    console.error("Theme toggle button not found.");
+    return;
+  }
+
+  // Remove any existing event listeners
+  const newThemeToggle = themeToggle.cloneNode(true);
+  themeToggle.parentNode.replaceChild(newThemeToggle, themeToggle);
+
+  // Check for saved theme preference or use default
+  const savedTheme = localStorage.getItem("theme") || "light";
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+    newThemeToggle.textContent = "☀️ Light Mode";
+  }
+
+  // Toggle theme when button is clicked
+  newThemeToggle.addEventListener("click", function () {
+    if (document.body.classList.contains("dark-mode")) {
+      document.body.classList.remove("dark-mode");
+      localStorage.setItem("theme", "light");
+      newThemeToggle.textContent = "🌙 Dark Mode";
+    } else {
+      document.body.classList.add("dark-mode");
+      localStorage.setItem("theme", "dark");
+      newThemeToggle.textContent = "☀️ Light Mode";
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
+  // Initialize theme toggle
+  initThemeToggle();
   // Get DOM elements
   const generateBtn = document.getElementById("generateBtn");
   const downloadBtn = document.getElementById("downloadBtn");
