@@ -640,3 +640,33 @@ footer {
 .back-to-top:hover {
   background-color: #45a049; /* Darker purple */
 }
+
+.share-instructions button {
+  background-color: #1da1f2; /* Twitter Blue */
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-right: 5px;
+  border: none; /* Remove default button border */
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+.share-instructions button:hover {
+  background-color: #1a91da; /* Darker Twitter Blue */
+}
+
+.share-instructions {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: var(--container-bg);
+  color: var(--text-color);
+  border-radius: 5px;
+  border-left: 4px solid #1da1f2;
+  border-right: 4px solid #1da1f2;
+  font-size: 0.9rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
