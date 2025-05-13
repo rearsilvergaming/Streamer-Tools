@@ -50,19 +50,6 @@ body {
   text-transform: capitalize;
 }
 
-.title {
-  color: #fff;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-  text-transform: capitalize;
-  font-size: 2.5rem;
-  font-weight: bold;
-  text-shadow: 0 0 5px #6441a5, 0 0 10px #6441a5, 0 0 20px #6441a5,
-    0 0 40px #6441a5, 0 0 80px #6441a5, 0 0 100px #6441a5, 0 0 120px #6441a5,
-    0 0 140px #6441a5;
-}
-
 .donate-text {
   color: var(--text-color);
   font-size: 20px;
@@ -583,6 +570,19 @@ button:disabled {
 .tab-content.active {
   display: block;
   font-weight: bold;
+}
+
+.title {
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  text-transform: capitalize;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-shadow: 0 0 5px #6441a5, 0 0 10px #6441a5, 0 0 20px #6441a5,
+    0 0 40px #6441a5, 0 0 80px #6441a5, 0 0 100px #6441a5, 0 0 120px #6441a5,
+    0 0 140px #6441a5;
 }
 
 .menus {
