@@ -670,3 +670,32 @@ footer {
   margin-left: auto;
   margin-right: auto;
 }
+
+.tooltip {
+  cursor: help;
+  border-bottom: 1px dotted #aaa;
+  position: relative;
+}
+
+.tooltip::after {
+  content: attr(data-tip);
+  position: absolute;
+  background: #333;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.2s;
+  font-size: 0.9rem;
+  z-index: 10;
+  left: 0;
+  top: 100%;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
