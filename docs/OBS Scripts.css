@@ -11,6 +11,7 @@
   --note-color: #666;
   --checkbox-bg: #ccc;
   --checkbox-checked: DodgerBlue;
+  --active-tab-bg: #6441a5; /* Purple for active tabs in light mode */
 }
 
 .dark-mode {
@@ -26,6 +27,7 @@
   --note-color: #eee;
   --checkbox-bg: #555;
   --checkbox-checked: #6441a5;
+  --active-tab-bg: #4caf50; /* Green for active tabs in dark mode */
 }
 
 body {
@@ -35,6 +37,19 @@ body {
   margin: 0;
   padding: 0;
   text-transform: capitalize;
+}
+
+.title {
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  text-transform: capitalize;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-shadow: 0 0 5px #6441a5, 0 0 10px #6441a5, 0 0 20px #6441a5,
+    0 0 40px #6441a5, 0 0 80px #6441a5, 0 0 100px #6441a5, 0 0 120px #6441a5,
+    0 0 140px #6441a5;
 }
 
 .menus {
@@ -65,6 +80,32 @@ body {
   color: var(--button-text);
   font-weight: bold;
   font-size: large;
+}
+
+.menu,
+.tab {
+  padding: 8px 15px;
+  cursor: pointer;
+  background-color: var(--button-bg); /* Regular tabs use button-bg */
+  color: var(--button-text);
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+  border-bottom: none;
+  border-radius: 4px 4px 4px 4px;
+  margin-right: 5px;
+}
+
+.menu:hover,
+.tab:hover {
+  opacity: 0.9;
+}
+
+.menu.active,
+.tab.active {
+  background-color: var(--active-tab-bg); /* Active tabs use active-tab-bg */
+  color: var(--button-text);
+  font-weight: bold;
 }
 
 .menu-content {
