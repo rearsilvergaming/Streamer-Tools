@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="icon" href="Favicon.png" type="image/x-icon" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twitch Story Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script src="story_generator.js" defer></script>
+  </head>
+  <body>
+    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+    <script>
+      kofiWidgetOverlay.draw("rearsilver", {
+        type: "floating-chat",
+        "floating-chat.donateButton.text": "Donate",
+        "floating-chat.donateButton.background-color": "#794bc4",
+        "floating-chat.donateButton.text-color": "#fff",
+      });
+    </script>
+    <!-- Header section -->
+    <div class="header">
+      <div class="title">Free Twitch Streamer Toolkit</div>
+      <br />
+      <div class="donate-text">
+        If you enjoy this tool, please consider supporting me on Ko-fi!
+      </div>
+      <div class="button-container">
+        <button id="kofiBtn">
+          <img src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi" />
+          Buy me a coffee
+        </button>
+        <button id="twitchBtn">Follow me on Twitch</button>
+        <button id="discordBtn">More streamer tools</button>
+        <button id="themeToggle">🌙 Dark Mode</button>
+      </div>
+    </div>
+
+    <div class="menus">
+      <button
+        id="home"
+        class="menu active"
+        onclick="window.location.href='Stream Schedule Generator.html';"
+      >
+        Home
+      </button>
+
+      <button
+        id="stream-title-generator"
+        class="menu"
+        onclick="window.location.href='RearSilver Stream Title Generator.html';"
+      >
+        Stream Title Generator
+      </button>
+
+      <button
+        id="twitch-story-generator"
+        class="menu"
+        onclick="window.location.href='Twitch Story Generator.html';"
+      >
+        Twitch Story Generator
+      </button>
+
+      <button
+        id="stream-schedule-generator"
+        class="menu"
+        onclick="window.location.href='Stream Schedule Generator.html';"
+      >
+        Stream Schedule Generator
+      </button>
+
+      <button
+        id="obs-scripts"
+        class="menu"
+        onclick="window.location.href='OBS Scripts.html';"
+      >
+        OBS Scripts
+      </button>
+
+      <button
+        id="time-stamp"
+        class="menu"
+        onclick="window.location.href='Time Stamp.html';"
+      >
+        Discord Timestamps
+      </button>
+      <button
+        id="time-stamp"
+        class="menu"
+        onclick="window.location.href='discord-text-colour.html';"
+      >
+        Discord Text Colour
+      </button>
+    </div>
+
+    <h1>🎮 Welcome to the Streamer Toolkit</h1>
+    <br />
+    <h2><strong>Everything you need to stream smarter, not harder!</strong></h2>
+    <h3>
+      Whether you’re just starting out or looking to level up your stream, the
+      Streamer Toolkit is here to help you create, manage, and enhance your
+      content—all in one convenient place.
+    </h3>
+
+    <div class="container">
+      <div class="why">
+        <div class="why-title">
+          <h2>🚀 Why This Toolkit Exists</h2>
+          <div class="why-text">
+            <h3>Built by streamers, for streamers.</h3>
+            Streaming is an incredible creative outlet—but let’s face it, it can
+            also be overwhelming. Between setting up overlays, managing bots,
+            building a schedule, and making your channel look good, there’s a
+            lot to juggle.
+            <br />
+            <br />
+            This toolkit was designed to remove the guesswork and make streaming
+            easier. Everything here is:
+            <br />
+            <br />
+            As a streamer, I know how hard it can be to come up with new ideas
+            for your streams. This tool is designed to help you generate unique
+            and engaging stories for your Twitch streams.
+            <br />
+            <br />
+            Whether you're looking for a fun way to engage your audience or just
+            want to spice up your content, this tool has you covered.
+            <br />
+            <br />
+            <ul>
+              <li>Free to use</li>
+              <li>Beginner-friendly</li>
+              <li>Customisable</li>
+              <li>Designed to save you time</li>
+              <li>No logins or tokens needed</li>
+              <li>Fully browser-based and open-source</li>
+            </ul>
+          </div>
+        </div>
+        <br />
+        <hr />
+        <div class="about">
+          <div class="about-title">
+            <h2>🧰 About the Tools</h2>
+            <div class="about-text">
+              <h3>Simple tools to solve real streamer problems.</h3>
+              This toolkit isn’t a bloated app—it’s a lightweight collection of
+              stream-specific utilities that help with everyday tasks:
+              <br />
+              <br />
+              <ul>
+                <li>
+                  📝 Stream Title Generator - Generate creative and engaging
+                  Twitch stream titles & go live notifications made to share
+                  quickly and easily.
+                </li>
+                <li>
+                  📒 Twitch Story Generator – Created for Twitch streamers to
+                  easily generate story images for Twitch scheduled stream, raid
+                  thanker, subscriber/gifted sub thanker and a new follower.
+                </li>
+                <li>
+                  📅 Schedule Builder – Quickly create stream schedules with
+                  exportable visuals and time zone conversions.
+                </li>
+                <li>
+                  💻 OBS Scripts – Pre-made scripts designed to make automation
+                  of streaming easier.
+                </li>
+                <li>
+                  🕒 Discord Timestamp Generator – Created to generate a Discord
+                  timestamp that will show the local time version of your input
+                  depending on who is viewing it.
+                </li>
+                <li>
+                  🌈 Discord Coloured Text Generator - Create colourful messages
+                  for Discord using ANSI colour codes
+                </li>
+              </ul>
+              <br />
+              More tools are always in the works based on community feedback.
+            </div>
+          </div>
+          <br />
+          <hr />
+          <div class="why">
+            <div class="why-title">
+              <h2>🫶 Who It's For</h2>
+              <div class="why-text">
+                <h3>
+                  New streamers. Busy streamers. Anyone who wants to save time.
+                </h3>
+                You don’t need to be tech-savvy. Whether you're streaming from
+                your bedroom or building a brand, these tools are made to be:
+                <br />
+                <br />
+                <ul>
+                  <li>Intuitive</li>
+                  <li>Customisable</li>
+                  <li>Lightweight</li>
+                  <li>And <i>actually</i> useful</li>
+                </ul>
+              </div>
+            </div>
+            <br />
+            <hr />
+            <div class="why">
+              <div class="why-title">
+                <h2>💡 What Makes It Different</h2>
+                <div class="why-text">
+                  <h3>No logins. No installs. No gatekeeping.</h3>
+                  This toolkit is desinged so:
+                  <br />
+                  <br />
+                  <ul>
+                    <li>No need to connect Twitch or Discord</li>
+                    <li>Works entirely in your browser</li>
+                    <li>Designed with feedback from real streamers</li>
+                    <li>
+                      Aims to empower streamers without adding clutter or
+                      complexity
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <br />
+              <hr />
+              <div class="why">
+                <div class="why-title">
+                  <h2>✨ Stay Updated</h2>
+                  <div class="why-text">
+                    <h3>New tools drop regularly.</h3>
+                    Want to know when new features are added? Follow the creator
+                    on Twitch, join the Discord, drop me an email or bookmark
+                    the site. Feedback is always welcome, and this toolkit will
+                    grow based on what you need.
+                    <br />
+                    <br />
+                    <h3>
+                      💬 Got an idea for a tool or feature? Let me know—this
+                      toolkit exists because streamers like you asked for it.
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <footer class="bg-light text-center text-lg-start mt-4 rounded-top">
+              <hr />
+              <div class="footer-text">
+                Feedback? Suggestions? Bugs? Please let me know!
+                <a href="mailto:rearsilvergaming@gmail.com" target="_blank"
+                  >Drop me an email</a
+                >
+                and share your thoughts.
+                <br />
+                <br />
+                Find me at: |
+                <a href="https://twitch.tv/rearsilver" target="_blank"
+                  >Twitch</a
+                >
+                |
+                <a href="https://discord.com/invite/RRbQ93Ceew" target="_blank"
+                  >Discord</a
+                >
+                |
+                <a href="https://x.com/rearsilvergamer" target="_blank"
+                  >Twitter</a
+                >
+                |
+                <a
+                  href="https://www.youtube.com/rearsilvergaming"
+                  target="_blank"
+                  >YouTube</a
+                >
+                |
+                <a href="https://www.tiktok.com/@RearSilver" target="_blank"
+                  >TikTok</a
+                >
+                |
+                <a
+                  href="https://www.instagram.com/RearSilver.gaming"
+                  target="_blank"
+                  >Instagram</a
+                >
+                |
+                <br />
+                <br />
+                Made by RearSilver Copyright &copy; 2025. All rights reserved. |
+                Not affiliated with Twitch
+              </div>
+              <hr />
+            </footer>
+          </div>
+          <!-- Closing main container -->
+          <button id="backToTop" class="back-to-top" onclick="scrollToTop()">
+            ⬆️ Back to Top
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
