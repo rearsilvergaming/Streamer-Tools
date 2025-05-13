@@ -269,14 +269,14 @@ h4 {
 }
 
 .trending-list li {
-  background: #222;
+  padding: 4px 8px;
   border-left: 4px solid #5c4df4;
-  padding: 0.5rem 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 0.95rem;
-  transition: transform 0.2s ease;
+  margin-bottom: 2px;
+  background: var(--note-color);
+  color: var(--preview-bg);
+  border-radius: 5px;
+  font-family: sans-serif;
+  font-size: 1rem;
 }
 
 .trending-list li:hover {
