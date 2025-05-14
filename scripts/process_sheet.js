@@ -19,106 +19,71 @@ async function processSheet() {
     }
 
     const csvText = await response.text();
-    
-    // Parse the CSV with explicit handling of blank rows
-    const parsedData = Papa.parse(csvText, {
-      header: false,
-      skipEmptyLines: true, // Skip completely empty rows
+
+    const parsed = Papa.parse(csvText, {
+      header: true,
+      skipEmptyLines: true,
+      transformHeader: (header) => {
+        const trimmedHeader = header.trim();
+        //  Standardize header names and handle potential timestamp issue.  Crucially, do NOT filter out the main columns.
+        if (
+          trimmedHeader === "Game (Optional)" ||
+          trimmedHeader === "Game (Optional) "
+        ) {
+          return "Game (Optional)";
+        }
+        if (
+          trimmedHeader === "Tags (Optional, comma-separated)" ||
+          trimmedHeader === "Tags (Optional, comma-separated) "
+        ) {
+          return "Tags (Optional, comma-separated)";
+        }
+        if (
+          trimmedHeader === "Session ID (Optional)" ||
+          trimmedHeader === "Session ID (Optional) "
+        ) {
+          return "Session ID (Optional)";
+        }
+        return trimmedHeader; // Return the trimmed header
+      },
     }).data;
-    
-    // The first row contains the headers
-    const headers = parsedData[0];
-    console.log("CSV headers:", headers);
-    
-    // Find the index of each column we care about
-    const timestampIndex = headers.findIndex(h => h.trim().includes("Timestamp"));
-    const gameIndex = headers.findIndex(h => h.trim().includes("Game"));
-    const tagsIndex = headers.findIndex(h => h.trim().includes("Tags"));
-    const sessionIdIndex = headers.findIndex(h => h.trim().includes("Session"));
-    
-    console.log("Column indices:", {
-      timestampIndex,
-      gameIndex,
-      tagsIndex,
-      sessionIdIndex
-    });
-    
-    // Process the data rows (skip the header row)
+
     const tagCounts = {};
     const gameCounts = {};
     let totalUsesCount = 0;
-    let rowsWithTimestamp = 0;
-    let rowsWithGame = 0;
-    let rowsWithTags = 0;
-    
-    for (let i = 1; i < parsedData.length; i++) {
-      const row = parsedData[i];
-      
-      // Skip rows that don't have enough columns
-      if (row.length <= Math.max(timestampIndex, gameIndex, tagsIndex, sessionIdIndex)) {
-        console.log(`Skipping row ${i} - insufficient columns:`, row);
-        continue;
-      }
-      
-      // Check if this row has a timestamp
-      const hasTimestamp = row[timestampIndex] && row[timestampIndex].trim() !== "";
-      if (hasTimestamp) rowsWithTimestamp++;
-      
-      // Process session ID
-      const sessionId = row[sessionIdIndex] && row[sessionIdIndex].trim();
-      if (sessionId) {
-        totalUsesCount++;
-      }
-      
-      // Process game
-      const game = row[gameIndex] && row[gameIndex].trim();
-      if (game) {
-        rowsWithGame++;
-        gameCounts[game] = (gameCounts[game] || 0) + 1;
-      }
-      
-      // Process tags
-      const tagsStr = row[tagsIndex] && row[tagsIndex].trim();
-      if (tagsStr) {
-        rowsWithTags++;
+
+    parsed.forEach((row) => {
+      // Check if row is defined and not null
+      if (row) {
+        const sessionId = row["Session ID (Optional)"];
+        if (sessionId) {
+          totalUsesCount++;
+        }
+
+        const game = row["Game (Optional)"];
+        const tagsStr = row["Tags (Optional, comma-separated)"];
         const tags = tagsStr
-          .split(",")
-          .map(t => t.trim())
+          ?.split(",")
+          .map((t) => t.trim())
           .filter(Boolean);
-          
-        tags.forEach(tag => {
-          if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-        });
+
+        if (game) gameCounts[game] = (gameCounts[game] || 0) + 1;
+        if (tags && tags.length > 0) {
+          tags.forEach((tag) => {
+            if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+          });
+        }
       }
-    }
-    
-    console.log("Total rows processed:", parsedData.length - 1); // Subtract 1 for header row
-    console.log("Rows with timestamp:", rowsWithTimestamp);
-    console.log("Rows with game:", rowsWithGame);
-    console.log("Rows with tags:", rowsWithTags);
-    
-    // Show all games and their counts
-    console.log("All games and their counts:");
-    const allGames = Object.entries(gameCounts)
-      .sort(([, countA], [, countB]) => countB - countA)
-      .map(([game, count]) => ({ name: game, count }));
-    
-    allGames.forEach(game => {
-      console.log(`${game.name}: ${game.count}`);
     });
-    
-    // Calculate total game counts for verification
-    const totalGameCount = Object.values(gameCounts).reduce((sum, count) => sum + count, 0);
-    console.log("Total game entries:", totalGameCount);
 
     const trendingTags = Object.entries(tagCounts)
       .sort(([, countA], [, countB]) => countB - countA)
       .slice(0, 10)
       .map(([tag, count]) => ({ name: tag, count }));
 
+    // Remove the slice(0, 5) to include ALL games, not just the top 5
     const trendingGames = Object.entries(gameCounts)
       .sort(([, countA], [, countB]) => countB - countA)
-      .slice(0, 5)
       .map(([game, count]) => ({ name: game, count }));
 
     console.log("Trending Tags:", trendingTags);
