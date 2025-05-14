@@ -3,10 +3,9 @@ name: Update Community Tags and Games
 on:
   schedule:
     - cron: '*/5 * * * *'  # Every 5 minutes
-  workflow_dispatch: # Allows manual trigger
+  workflow_dispatch:  # Allows manual trigger
 
 jobs:
-
   process_data:
     runs-on: ubuntu-latest
     steps:
@@ -26,8 +25,12 @@ jobs:
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
         run: node scripts/process_sheet.js
 
+      - name: Check file diff
+        run: git diff --stat
+
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update community tags, games, and usage count"
+          commit_message: "Update community tags and games data"
+          file_pattern: docs/*.json
           push_options: '--force-with-lease'
