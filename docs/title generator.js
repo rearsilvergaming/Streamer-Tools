@@ -3179,7 +3179,7 @@ const offensiveWords = [
 ];
 
 function isSafeTag(tag) {
-  const bannedWords = ["18", "nsfw", "horny", "lewd", "sus"];
+  const bannedWords = ["18", "nsfw", "horny", "lewd", "sus", "fuck", "porn"];
   return !bannedWords.some((word) => tag.toLowerCase().includes(word));
 }
 function isOffensive(input) {
