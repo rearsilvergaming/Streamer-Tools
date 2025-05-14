@@ -2,7 +2,6 @@ const Papa = require("papaparse");
 const fs = require("node:fs/promises");
 
 async function processSheet() {
-  const sheetId = process.env.GOOGLE_SHEET_ID;
   const csvUrl =
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQPTO-Vj3MsRi-oSC6gTl-G7eUFB-U-AT2-NFYbsRoRtECyUzcP1luYvcIy7nOBCp724p8UE1WX9dhu/pub?output=csv&cachebust=" +
     Date.now();
@@ -14,31 +13,24 @@ async function processSheet() {
 
     const csvText = await response.text();
 
-    console.log("Fetched CSV Data:", csvText);
-
     const parsed = Papa.parse(csvText, {
       header: true,
       skipEmptyLines: true,
-      transformHeader: (header) => header.trim(),
+      transformHeader: (header) => header.trim().replace(/\s+/g, " "), // Normalise header spacing
     }).data;
 
     const tagCounts = {};
     const gameCounts = {};
-    let totalUsesCount = 0; // Initialize a counter for total uses
+    let totalUsesCount = 0;
 
     parsed.forEach((row) => {
-      const sessionId = (
-        row["Session ID (Optional)"] || row["Session ID (Optional) "]
-      )?.trim();
-      if (sessionId) {
-        totalUsesCount++; // Increment the total uses counter for each row with a Session ID
-      }
+      const sessionId = row["Session ID (Optional)"]?.trim();
+      if (!sessionId) return; // Skip rows without a session ID
 
-      const game = (row["Game (Optional)"] || row["Game (Optional) "])?.trim();
+      totalUsesCount++;
 
-      const tagsStr =
-        row["Tags (Optional, comma-separated)"] ||
-        row[" Tags (Optional, comma-separated) "];
+      const game = row["Game (Optional)"]?.trim();
+      const tagsStr = row["Tags (Optional, comma-separated)"];
       const tags = tagsStr
         ?.split(",")
         .map((t) => t.trim())
@@ -47,7 +39,7 @@ async function processSheet() {
       if (game) gameCounts[game] = (gameCounts[game] || 0) + 1;
       if (tags && tags.length > 0) {
         tags.forEach((tag) => {
-          if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+          tagCounts[tag] = (tagCounts[tag] || 0) + 1;
         });
       }
     });
@@ -62,10 +54,6 @@ async function processSheet() {
       .slice(0, 5)
       .map(([game, count]) => ({ name: game, count }));
 
-    console.log("Trending Tags:", trendingTags);
-    console.log("Trending Games:", trendingGames);
-    console.log("Total Uses (counting all submissions):", totalUsesCount);
-
     await fs.writeFile(
       "docs/community-tags.json",
       JSON.stringify(trendingTags, null, 2)
@@ -77,7 +65,7 @@ async function processSheet() {
     await fs.writeFile(
       "docs/total-uses.json",
       JSON.stringify({ total: totalUsesCount }, null, 2)
-    ); // Use totalUsesCount
+    );
 
     console.log("Successfully updated community data.");
   } catch (err) {
