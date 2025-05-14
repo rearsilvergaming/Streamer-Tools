@@ -234,12 +234,21 @@ h3 {
   min-width: 200px;
 }
 
+/* Update the trending-list class to prevent horizontal scrolling */
 .trending-list {
   list-style: none;
   padding-left: 0;
   margin-top: 1rem;
+  max-height: 250px; /* Height to show about 5 items */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: var(--button-bg) var(--preview-bg); /* For Firefox */
+  width: 100%; /* Ensure it takes full width of parent */
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
+/* Ensure list items don't overflow */
 .trending-list li {
   background: #222;
   border-left: 4px solid #5c4df4;
@@ -249,8 +258,13 @@ h3 {
   font-weight: bold;
   font-size: 0.95rem;
   transition: transform 0.2s ease;
+  white-space: normal; /* Allow text to wrap */
+  word-break: break-word; /* Break long words if needed */
+  box-sizing: border-box; /* Include padding in width calculation */
+  width: 100%; /* Take full width of parent */
 }
 
+/* Keep your existing hover effect */
 .trending-list li:hover {
   transform: translateX(4px);
   background: #2d2d2d;
