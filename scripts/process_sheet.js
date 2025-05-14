@@ -2,8 +2,8 @@ const Papa = require("papaparse");
 const fs = require("node:fs/promises");
 
 async function processSheet() {
-  const sheetId = process.env.GOOGLE_SHEET_ID;
-  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
+  const sheetId = process.env.GOOGLE_SHEET_ID; // Use the sheet ID from the environment variable
+  const csvUrl = `https://docs.google.com/spreadsheets/${sheetId}/gviz/tq?tqx=out:csv&gid=303206144`;
 
   try {
     const response = await fetch(csvUrl);
@@ -27,6 +27,9 @@ async function processSheet() {
       transformHeader: (header) => {
         const trimmedHeader = header.trim();
         // Standardize header names and handle potential timestamp issue
+        if (trimmedHeader.startsWith("Timestamp")) {
+          return null; // Ignore the timestamp column
+        }
         if (
           trimmedHeader === "Game (Optional)" ||
           trimmedHeader === "Game (Optional) "
