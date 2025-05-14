@@ -3,7 +3,7 @@ const fs = require('node:fs/promises');
 
 async function processSheet() {
     const sheetId = '1GOtN3YE0hcnulWBJSn-2tt-sf2xXoljPiwRwUdLOhis'; // Use the sheet ID directly
-    const csvUrl = `https://docs.google.com/spreadsheets/${sheetId}/gviz/tq?tqx=out:csv`;
+    const csvUrl = `https://docs.google.com/spreadsheets/${sheetId}/gviz/tq?tqx=out:csv&gid=303206144`; // Include the gid
 
     try {
         const response = await fetch(csvUrl);
