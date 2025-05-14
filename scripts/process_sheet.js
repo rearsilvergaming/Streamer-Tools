@@ -1,10 +1,8 @@
 const Papa = require("papaparse");
-
 const fs = require("node:fs/promises");
 
 async function processSheet() {
   const sheetId = process.env.GOOGLE_SHEET_ID;
-
   const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
 
   try {
@@ -13,23 +11,27 @@ async function processSheet() {
     if (!response.ok) {
       console.error(
         `Failed to fetch CSV: ${response.status} ${response.statusText}`
-      ); // Include the URL in the error message for easier debugging
-
+      );
       console.error(`CSV URL: ${csvUrl}`);
-
       throw new Error(
         `Failed to fetch CSV. Status: ${response.status}, Text: ${response.statusText}, URL: ${csvUrl}`
       );
     }
 
-    const csvText = await response.text(); // console.log("Fetched CSV Data:", csvText); // Remove this line to reduce verbosity
+    const csvText = await response.text();
 
     const parsed = Papa.parse(csvText, {
       header: true,
       skipEmptyLines: true,
       transformHeader: (header) => {
         const trimmedHeader = header.trim();
-        //  Standardize header names and handle potential timestamp issue.  Crucially, do NOT filter out the main columns.
+        
+        // Ignore Timestamp column by returning a special marker
+        if (trimmedHeader === "Timestamp" || trimmedHeader.includes("Timestamp")) {
+          return "_TIMESTAMP_COLUMN_";
+        }
+        
+        // Handle the other important columns
         if (
           trimmedHeader === "Game (Optional)" ||
           trimmedHeader === "Game (Optional) "
@@ -51,6 +53,8 @@ async function processSheet() {
         return trimmedHeader; // Return the trimmed header
       },
     }).data;
+
+    console.log("Parsed headers:", Object.keys(parsed[0] || {}));
 
     const tagCounts = {};
     const gameCounts = {};
@@ -81,12 +85,12 @@ async function processSheet() {
     });
 
     const trendingTags = Object.entries(tagCounts)
-      .sort(([, countA], [, countB]) => countB - countA) // Destructure for clarity
+      .sort(([, countA], [, countB]) => countB - countA)
       .slice(0, 10)
       .map(([tag, count]) => ({ name: tag, count }));
 
     const trendingGames = Object.entries(gameCounts)
-      .sort(([, countA], [, countB]) => countB - countA) // Destructure for clarity
+      .sort(([, countA], [, countB]) => countB - countA)
       .slice(0, 5)
       .map(([game, count]) => ({ name: game, count }));
 
@@ -96,10 +100,10 @@ async function processSheet() {
 
     // Ensure the 'docs' directory exists before writing files.
     try {
-      await fs.mkdir("docs", { recursive: true }); // Create directory if it doesn't exist
+      await fs.mkdir("docs", { recursive: true });
     } catch (mkdirErr) {
       console.error("Error creating 'docs' directory:", mkdirErr);
-      throw mkdirErr; // Re-throw to stop processing if directory creation fails
+      throw mkdirErr;
     }
 
     await fs.writeFile(
@@ -118,7 +122,7 @@ async function processSheet() {
     console.log("Successfully updated community data.");
   } catch (err) {
     console.error("Error processing sheet:", err);
-    process.exit(1); // Explicitly exit on error
+    process.exit(1);
   }
 }
 
