@@ -1,25 +1,28 @@
 const Papa = require("papaparse");
+
 const fs = require("node:fs/promises");
 
 async function processSheet() {
-  const sheetId = process.env.GOOGLE_SHEET_ID; // Use the sheet ID from the environment variable
-  const csvUrl = `https://docs.google.com/spreadsheets/${sheetId}/gviz/tq?tqx=out:csv&gid=303206144`;
+  const sheetId = process.env.GOOGLE_SHEET_ID;
+
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
 
   try {
     const response = await fetch(csvUrl);
+
     if (!response.ok) {
       console.error(
         `Failed to fetch CSV: ${response.status} ${response.statusText}`
-      );
-      // Include the URL in the error message for easier debugging
+      ); // Include the URL in the error message for easier debugging
+
       console.error(`CSV URL: ${csvUrl}`);
+
       throw new Error(
         `Failed to fetch CSV. Status: ${response.status}, Text: ${response.statusText}, URL: ${csvUrl}`
       );
     }
 
-    const csvText = await response.text();
-    // console.log("Fetched CSV Data:", csvText); // Remove this line to reduce verbosity
+    const csvText = await response.text(); // console.log("Fetched CSV Data:", csvText); // Remove this line to reduce verbosity
 
     const parsed = Papa.parse(csvText, {
       header: true,
