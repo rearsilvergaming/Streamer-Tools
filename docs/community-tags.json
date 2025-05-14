@@ -1,19 +1,27 @@
 [
   {
     "name": "#FirstPlaythrough",
-    "count": 56
+    "count": 62
   },
   {
     "name": "#Furry",
     "count": 53
   },
   {
+    "name": "#NoBackseating",
+    "count": 48
+  },
+  {
     "name": "#18Plus",
     "count": 47
   },
   {
-    "name": "#NoBackseating",
-    "count": 43
+    "name": "#NoSpoilers",
+    "count": 47
+  },
+  {
+    "name": "#Gaming",
+    "count": 45
   },
   {
     "name": "#TwitchDrops",
@@ -24,16 +32,8 @@
     "count": 42
   },
   {
-    "name": "#NoSpoilers",
-    "count": 42
-  },
-  {
     "name": "#VTuber",
     "count": 41
-  },
-  {
-    "name": "#Gaming",
-    "count": 40
   },
   {
     "name": "#fuck",
