@@ -29,10 +29,7 @@ async function processSheet() {
       skipEmptyLines: true,
       transformHeader: (header) => {
         const trimmedHeader = header.trim();
-        // Standardize header names and handle potential timestamp issue
-        if (trimmedHeader.startsWith("Timestamp")) {
-          return null; // Ignore the timestamp column
-        }
+        //  Standardize header names and handle potential timestamp issue.  Crucially, do NOT filter out the main columns.
         if (
           trimmedHeader === "Game (Optional)" ||
           trimmedHeader === "Game (Optional) "
@@ -60,23 +57,26 @@ async function processSheet() {
     let totalUsesCount = 0;
 
     parsed.forEach((row) => {
-      const sessionId = row["Session ID (Optional)"]; // Access directly
-      if (sessionId) {
-        totalUsesCount++;
-      }
+      // Check if row is defined and not null
+      if (row) {
+        const sessionId = row["Session ID (Optional)"];
+        if (sessionId) {
+          totalUsesCount++;
+        }
 
-      const game = row["Game (Optional)"]; // Access directly
-      const tagsStr = row["Tags (Optional, comma-separated)"]; // Access directly
-      const tags = tagsStr
-        ?.split(",")
-        .map((t) => t.trim())
-        .filter(Boolean);
+        const game = row["Game (Optional)"];
+        const tagsStr = row["Tags (Optional, comma-separated)"];
+        const tags = tagsStr
+          ?.split(",")
+          .map((t) => t.trim())
+          .filter(Boolean);
 
-      if (game) gameCounts[game] = (gameCounts[game] || 0) + 1;
-      if (tags && tags.length > 0) {
-        tags.forEach((tag) => {
-          if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-        });
+        if (game) gameCounts[game] = (gameCounts[game] || 0) + 1;
+        if (tags && tags.length > 0) {
+          tags.forEach((tag) => {
+            if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+          });
+        }
       }
     });
 
