@@ -20,105 +20,96 @@ async function processSheet() {
 
     const csvText = await response.text();
     
-    // Let's try parsing without any header transformation first
-    const rawParsed = Papa.parse(csvText, {
-      header: true,
-      skipEmptyLines: true,
+    // Parse the CSV with explicit handling of blank rows
+    const parsedData = Papa.parse(csvText, {
+      header: false,
+      skipEmptyLines: true, // Skip completely empty rows
     }).data;
     
-    console.log("Raw parsed headers:", Object.keys(rawParsed[0] || {}));
-    console.log("Raw parsed row count:", rawParsed.length);
+    // The first row contains the headers
+    const headers = parsedData[0];
+    console.log("CSV headers:", headers);
     
-    // Now let's count all entries in the raw data
-    let rawGameCount = 0;
-    let rawTagCount = 0;
-    let rawSessionCount = 0;
+    // Find the index of each column we care about
+    const timestampIndex = headers.findIndex(h => h.trim().includes("Timestamp"));
+    const gameIndex = headers.findIndex(h => h.trim().includes("Game"));
+    const tagsIndex = headers.findIndex(h => h.trim().includes("Tags"));
+    const sessionIdIndex = headers.findIndex(h => h.trim().includes("Session"));
     
-    // Find the exact header names from the raw data
-    const gameHeader = Object.keys(rawParsed[0] || {}).find(h => h.includes("Game"));
-    const tagsHeader = Object.keys(rawParsed[0] || {}).find(h => h.includes("Tags"));
-    const sessionHeader = Object.keys(rawParsed[0] || {}).find(h => h.includes("Session"));
-    
-    console.log("Exact headers from raw data:", { gameHeader, tagsHeader, sessionHeader });
-    
-    // Count entries using the exact headers
-    rawParsed.forEach(row => {
-      if (row[gameHeader] && row[gameHeader].trim()) rawGameCount++;
-      if (row[tagsHeader] && row[tagsHeader].trim()) rawTagCount++;
-      if (row[sessionHeader] && row[sessionHeader].trim()) rawSessionCount++;
+    console.log("Column indices:", {
+      timestampIndex,
+      gameIndex,
+      tagsIndex,
+      sessionIdIndex
     });
     
-    console.log("Raw counts:", { rawGameCount, rawTagCount, rawSessionCount });
-    
-    // Now parse with our standardized headers
-    const parsed = Papa.parse(csvText, {
-      header: true,
-      skipEmptyLines: true,
-      transformHeader: (header) => {
-        const trimmedHeader = header.trim();
-        
-        if (trimmedHeader.includes("Game")) {
-          return "Game (Optional)";
-        }
-        if (trimmedHeader.includes("Tags")) {
-          return "Tags (Optional, comma-separated)";
-        }
-        if (trimmedHeader.includes("Session")) {
-          return "Session ID (Optional)";
-        }
-        if (trimmedHeader.includes("Timestamp")) {
-          return "Timestamp";
-        }
-        return trimmedHeader;
-      },
-    }).data;
-
-    console.log("Transformed headers:", Object.keys(parsed[0] || {}));
-    console.log("Transformed parsed row count:", parsed.length);
-    
-    // Count entries in the transformed data
-    let transformedGameCount = 0;
-    let transformedTagCount = 0;
-    let transformedSessionCount = 0;
-    
-    parsed.forEach(row => {
-      if (row["Game (Optional)"] && row["Game (Optional)"].trim()) transformedGameCount++;
-      if (row["Tags (Optional, comma-separated)"] && row["Tags (Optional, comma-separated)"].trim()) transformedTagCount++;
-      if (row["Session ID (Optional)"] && row["Session ID (Optional)"].trim()) transformedSessionCount++;
-    });
-    
-    console.log("Transformed counts:", { transformedGameCount, transformedTagCount, transformedSessionCount });
-
+    // Process the data rows (skip the header row)
     const tagCounts = {};
     const gameCounts = {};
     let totalUsesCount = 0;
-
-    // Use the raw parsed data with exact headers to ensure we get all entries
-    rawParsed.forEach((row) => {
-      if (row) {
-        const sessionId = row[sessionHeader];
-        if (sessionId && sessionId.trim()) {
-          totalUsesCount++;
-        }
-
-        const game = row[gameHeader];
-        if (game && game.trim()) {
-          gameCounts[game.trim()] = (gameCounts[game.trim()] || 0) + 1;
-        }
-
-        const tagsStr = row[tagsHeader];
-        if (tagsStr && tagsStr.trim()) {
-          const tags = tagsStr
-            .split(",")
-            .map((t) => t.trim())
-            .filter(Boolean);
-
-          tags.forEach((tag) => {
-            if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-          });
-        }
+    let rowsWithTimestamp = 0;
+    let rowsWithGame = 0;
+    let rowsWithTags = 0;
+    
+    for (let i = 1; i < parsedData.length; i++) {
+      const row = parsedData[i];
+      
+      // Skip rows that don't have enough columns
+      if (row.length <= Math.max(timestampIndex, gameIndex, tagsIndex, sessionIdIndex)) {
+        console.log(`Skipping row ${i} - insufficient columns:`, row);
+        continue;
       }
+      
+      // Check if this row has a timestamp
+      const hasTimestamp = row[timestampIndex] && row[timestampIndex].trim() !== "";
+      if (hasTimestamp) rowsWithTimestamp++;
+      
+      // Process session ID
+      const sessionId = row[sessionIdIndex] && row[sessionIdIndex].trim();
+      if (sessionId) {
+        totalUsesCount++;
+      }
+      
+      // Process game
+      const game = row[gameIndex] && row[gameIndex].trim();
+      if (game) {
+        rowsWithGame++;
+        gameCounts[game] = (gameCounts[game] || 0) + 1;
+      }
+      
+      // Process tags
+      const tagsStr = row[tagsIndex] && row[tagsIndex].trim();
+      if (tagsStr) {
+        rowsWithTags++;
+        const tags = tagsStr
+          .split(",")
+          .map(t => t.trim())
+          .filter(Boolean);
+          
+        tags.forEach(tag => {
+          if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        });
+      }
+    }
+    
+    console.log("Total rows processed:", parsedData.length - 1); // Subtract 1 for header row
+    console.log("Rows with timestamp:", rowsWithTimestamp);
+    console.log("Rows with game:", rowsWithGame);
+    console.log("Rows with tags:", rowsWithTags);
+    
+    // Show all games and their counts
+    console.log("All games and their counts:");
+    const allGames = Object.entries(gameCounts)
+      .sort(([, countA], [, countB]) => countB - countA)
+      .map(([game, count]) => ({ name: game, count }));
+    
+    allGames.forEach(game => {
+      console.log(`${game.name}: ${game.count}`);
     });
+    
+    // Calculate total game counts for verification
+    const totalGameCount = Object.values(gameCounts).reduce((sum, count) => sum + count, 0);
+    console.log("Total game entries:", totalGameCount);
 
     const trendingTags = Object.entries(tagCounts)
       .sort(([, countA], [, countB]) => countB - countA)
@@ -133,10 +124,6 @@ async function processSheet() {
     console.log("Trending Tags:", trendingTags);
     console.log("Trending Games:", trendingGames);
     console.log("Total Uses (counting all submissions):", totalUsesCount);
-    
-    // Calculate total game counts for verification
-    const totalGameCount = Object.values(gameCounts).reduce((sum, count) => sum + count, 0);
-    console.log("Total game entries:", totalGameCount);
 
     // Ensure the 'docs' directory exists before writing files.
     try {
