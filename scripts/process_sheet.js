@@ -20,31 +20,44 @@ async function processSheet() {
 
     const csvText = await response.text();
 
+    // First, let's examine the raw CSV headers
+    const firstLine = csvText.split('\n')[0];
+    console.log("Raw CSV headers:", firstLine);
+
+    // Parse the CSV with a custom header transform
     const parsed = Papa.parse(csvText, {
       header: true,
       skipEmptyLines: true,
       transformHeader: (header) => {
+        // Trim any whitespace
         const trimmedHeader = header.trim();
         
-        // Handle the headers with consistent naming regardless of spaces
-        if (trimmedHeader === "Game (Optional)" || trimmedHeader === "Game (Optional)") {
+        // Map headers to consistent names regardless of spaces or exact format
+        if (trimmedHeader.includes("Game")) {
           return "Game (Optional)";
         }
-        if (trimmedHeader === "Tags (Optional, comma-separated)" || 
-            trimmedHeader === "Tags (Optional, comma-separated)") {
+        if (trimmedHeader.includes("Tags")) {
           return "Tags (Optional, comma-separated)";
         }
-        if (trimmedHeader === "Session ID (Optional)" || trimmedHeader === "Session ID (Optional)") {
+        if (trimmedHeader.includes("Session ID")) {
           return "Session ID (Optional)";
         }
-        if (trimmedHeader === "Timestamp") {
+        if (trimmedHeader.includes("Timestamp")) {
           return "Timestamp";
         }
         return trimmedHeader;
       },
     }).data;
 
-    console.log("Parsed headers:", Object.keys(parsed[0] || {}));
+    console.log("Transformed headers:", Object.keys(parsed[0] || {}));
+    
+    // Check a sample row with timestamp to verify data access
+    const rowWithTimestamp = parsed.find(row => row["Timestamp"] && row["Timestamp"].trim() !== "");
+    if (rowWithTimestamp) {
+      console.log("Sample row with timestamp - Game:", rowWithTimestamp["Game (Optional)"]);
+      console.log("Sample row with timestamp - Tags:", rowWithTimestamp["Tags (Optional, comma-separated)"]);
+      console.log("Sample row with timestamp - Session ID:", rowWithTimestamp["Session ID (Optional)"]);
+    }
 
     const tagCounts = {};
     const gameCounts = {};
