@@ -19,64 +19,46 @@ async function processSheet() {
     }
 
     const csvText = await response.text();
-
+    
+    // Parse the CSV with minimal processing to see what we're getting
     const parsed = Papa.parse(csvText, {
       header: true,
-      skipEmptyLines: true,
-      transformHeader: (header) => {
-        const trimmedHeader = header.trim();
-        
-        // Simply accept Timestamp as a valid header
-        if (trimmedHeader === "Timestamp" || trimmedHeader.includes("Timestamp")) {
-          return "Timestamp";
-        }
-        
-        // Handle the other important columns as before
-        if (
-          trimmedHeader === "Game (Optional)" ||
-          trimmedHeader === "Game (Optional) "
-        ) {
-          return "Game (Optional)";
-        }
-        if (
-          trimmedHeader === "Tags (Optional, comma-separated)" ||
-          trimmedHeader === "Tags (Optional, comma-separated) "
-        ) {
-          return "Tags (Optional, comma-separated)";
-        }
-        if (
-          trimmedHeader === "Session ID (Optional)" ||
-          trimmedHeader === "Session ID (Optional) "
-        ) {
-          return "Session ID (Optional)";
-        }
-        return trimmedHeader; // Return the trimmed header
-      },
+      skipEmptyLines: true
     }).data;
 
     console.log("Parsed headers:", Object.keys(parsed[0] || {}));
+    console.log("Total rows in parsed data:", parsed.length);
+    
+    // Sample a few rows to see what's happening
+    console.log("Sample row with timestamp:", 
+      parsed.find(row => row["Timestamp"] && row["Timestamp"].trim() !== ""));
+    console.log("Sample row without timestamp:", 
+      parsed.find(row => !row["Timestamp"] || row["Timestamp"].trim() === ""));
 
     const tagCounts = {};
     const gameCounts = {};
     let totalUsesCount = 0;
 
     parsed.forEach((row) => {
-      // Check if row is defined and not null
+      // Process every row regardless of timestamp
       if (row) {
-        const sessionId = row["Session ID (Optional)"];
-        if (sessionId) {
-          totalUsesCount++;
-        }
-
+        // Count this as a use
+        totalUsesCount++;
+        
+        // Process game data
         const game = row["Game (Optional)"];
+        if (game && game.trim() !== "") {
+          gameCounts[game] = (gameCounts[game] || 0) + 1;
+        }
+        
+        // Process tags data
         const tagsStr = row["Tags (Optional, comma-separated)"];
-        const tags = tagsStr
-          ?.split(",")
-          .map((t) => t.trim())
-          .filter(Boolean);
-
-        if (game) gameCounts[game] = (gameCounts[game] || 0) + 1;
-        if (tags && tags.length > 0) {
+        if (tagsStr && tagsStr.trim() !== "") {
+          const tags = tagsStr
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean);
+            
           tags.forEach((tag) => {
             if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
           });
