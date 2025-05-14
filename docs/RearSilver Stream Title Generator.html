@@ -530,6 +530,25 @@
             <button id="copyGoLiveBtn">Copy Go Live Message</button>
         </div>
 
+                <div id="previewCardSection" class="container" style="margin-top: 20px;">
+            <h2>Preview Card Generator</h2>
+            <p class="note">Create a shareable image with your stream title</p>
+            
+            <div id="previewCardContainer" style="margin-top: 15px; text-align: center;">
+                <canvas id="previewCard" width="600" height="315" style="max-width: 100%; border: 1px solid var(--preview-border); border-radius: 5px;"></canvas>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <label for="cardTemplate">Card Style:</label>
+                <select id="cardTemplate">
+                    <option value="twitch">Twitch Style</option>
+                    <option value="minimal">Minimal</option>
+                    <option value="gaming">Gaming</option>
+                </select>
+                
+                <button id="generateCardBtn" style="margin-top: 15px;">Generate Preview Card</button>
+                <button id="downloadCardBtn" style="margin-top: 10px;">Download Card</button>
+            </div>
 
         <div id="shareSection">
             <h2>Share Your Stream:</h2>
@@ -558,27 +577,7 @@
             
         </div>
 
-        
 
-        <div id="previewCardSection" class="container" style="margin-top: 20px;">
-            <h2>Preview Card Generator</h2>
-            <p class="note">Create a shareable image with your stream title</p>
-            
-            <div id="previewCardContainer" style="margin-top: 15px; text-align: center;">
-                <canvas id="previewCard" width="600" height="315" style="max-width: 100%; border: 1px solid var(--preview-border); border-radius: 5px;"></canvas>
-            </div>
-            
-            <div style="margin-top: 15px;">
-                <label for="cardTemplate">Card Style:</label>
-                <select id="cardTemplate">
-                    <option value="twitch">Twitch Style</option>
-                    <option value="minimal">Minimal</option>
-                    <option value="gaming">Gaming</option>
-                </select>
-                
-                <button id="generateCardBtn" style="margin-top: 15px;">Generate Preview Card</button>
-                <button id="downloadCardBtn" style="margin-top: 10px;">Download Card</button>
-            </div>
         </div>
     </div>
     <footer class="bg-light text-center text-lg-start mt-4 rounded-top">
