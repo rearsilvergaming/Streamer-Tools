@@ -19,46 +19,54 @@ async function processSheet() {
     }
 
     const csvText = await response.text();
-    
-    // Parse the CSV with minimal processing to see what we're getting
+
     const parsed = Papa.parse(csvText, {
       header: true,
-      skipEmptyLines: true
+      skipEmptyLines: true,
+      transformHeader: (header) => {
+        const trimmedHeader = header.trim();
+        
+        // Handle the headers with consistent naming regardless of spaces
+        if (trimmedHeader === "Game (Optional)" || trimmedHeader === "Game (Optional)") {
+          return "Game (Optional)";
+        }
+        if (trimmedHeader === "Tags (Optional, comma-separated)" || 
+            trimmedHeader === "Tags (Optional, comma-separated)") {
+          return "Tags (Optional, comma-separated)";
+        }
+        if (trimmedHeader === "Session ID (Optional)" || trimmedHeader === "Session ID (Optional)") {
+          return "Session ID (Optional)";
+        }
+        if (trimmedHeader === "Timestamp") {
+          return "Timestamp";
+        }
+        return trimmedHeader;
+      },
     }).data;
 
     console.log("Parsed headers:", Object.keys(parsed[0] || {}));
-    console.log("Total rows in parsed data:", parsed.length);
-    
-    // Sample a few rows to see what's happening
-    console.log("Sample row with timestamp:", 
-      parsed.find(row => row["Timestamp"] && row["Timestamp"].trim() !== ""));
-    console.log("Sample row without timestamp:", 
-      parsed.find(row => !row["Timestamp"] || row["Timestamp"].trim() === ""));
 
     const tagCounts = {};
     const gameCounts = {};
     let totalUsesCount = 0;
 
     parsed.forEach((row) => {
-      // Process every row regardless of timestamp
+      // Check if row is defined and not null
       if (row) {
-        // Count this as a use
-        totalUsesCount++;
-        
-        // Process game data
-        const game = row["Game (Optional)"];
-        if (game && game.trim() !== "") {
-          gameCounts[game] = (gameCounts[game] || 0) + 1;
+        const sessionId = row["Session ID (Optional)"];
+        if (sessionId) {
+          totalUsesCount++;
         }
-        
-        // Process tags data
+
+        const game = row["Game (Optional)"];
         const tagsStr = row["Tags (Optional, comma-separated)"];
-        if (tagsStr && tagsStr.trim() !== "") {
-          const tags = tagsStr
-            .split(",")
-            .map((t) => t.trim())
-            .filter(Boolean);
-            
+        const tags = tagsStr
+          ?.split(",")
+          .map((t) => t.trim())
+          .filter(Boolean);
+
+        if (game) gameCounts[game] = (gameCounts[game] || 0) + 1;
+        if (tags && tags.length > 0) {
           tags.forEach((tag) => {
             if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
           });
