@@ -26,12 +26,12 @@ async function processSheet() {
       transformHeader: (header) => {
         const trimmedHeader = header.trim();
         
-        // Ignore Timestamp column by returning a special marker
+        // Simply accept Timestamp as a valid header
         if (trimmedHeader === "Timestamp" || trimmedHeader.includes("Timestamp")) {
-          return "_TIMESTAMP_COLUMN_";
+          return "Timestamp";
         }
         
-        // Handle the other important columns
+        // Handle the other important columns as before
         if (
           trimmedHeader === "Game (Optional)" ||
           trimmedHeader === "Game (Optional) "
