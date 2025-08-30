@@ -1,187 +1,179 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Streamer.bot Shout out player</title>
-    <style>
-            body {
-              background-color: transparent;
-              color: white;
-              font-family: Arial, sans-serif;
-              margin: 0;
-              padding: 0;
-              overflow: hidden;
-              position: relative;
-            }
+  <head>
+    <title>Streamer.bot Shout out player</title>
+    <style>
+      body {
+        background-color: transparent;
+        color: white;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        position: relative;
+      }
 
-            #videocontainer {
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-              z-index: 10;
-              text-align: center;
-            }
-            #videoplayer {
-              width: 100%;
-              visibility: hidden;
-            }
+      #videocontainer {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        z-index: 10;
+        text-align: center;
+      }
 
-            #imagebox2 {
-              position: absolute;
-              height: 66%;
-              width: 37.5%;
-              text-align: center;
-              z-index: 1;
-              left: 50%;
-              top: 50%;
-              transform: translate(-50%, -50%);
-            }
+      #videoplayer {
+        width: 100%;
+        visibility: hidden;
+      }
 
-            #info-overlay {
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              display: flex;
-              flex-direction: column;
-              justify-content: flex-end;
-              align-items: flex-start;
-              padding: 2rem;
-              box-sizing: border-box;
-              pointer-events: none;
-              background: rgba(0, 0, 0, 0.5);
-              opacity: 1;
-              transition: opacity 0.5s ease-in-out;
-            }
+      #imagebox2 {
+        position: absolute;
+        height: 66%;
+        width: 37.5%;
+        text-align: center;
+        z-index: 1;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
 
-            #info-overlay.hidden {
-              opacity: 0;
-              pointer-events: none;
-            }
+      #info-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-start;
+        padding: 2rem;
+        box-sizing: border-box;
+        pointer-events: none;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+        z-index: 20;
+      }
 
-            #username,
-            #clip-title,
-            #game-title,
-            #clip-info {
-              background-color: rgba(0, 0, 0, 0.6);
-              padding: 0.5rem 1rem;
-              margin: 0.25rem 0;
-              border-radius: 8px;
-              font-size: 1.5rem;
-              font-weight: bold;
-              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-              pointer-events: auto;
-            }
-    </style>
-  </head>
-  <body onload="shoutout();">
-    <div id="videocontainer">
-      <video
-        id="videoplayer"
-        autoplay
-        onended="setTimeout('cleanup()',500);"
-      ></video>
-    </div>
-    <div id="info-overlay">
-      <h1 id="username"></h1>
-      <div id="clip-title"></div>
-      <div id="game-title"></div>
-      <div id="clip-info"></div>
-    </div>
-    <div id="imagebox2"></div>
+      #info-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
 
-    <script>
-      function showVideo() {
-        const videoElement = document.getElementById("videoplayer");
-        videoElement.style.visibility = "visible";
-        videoElement.play();
-      }
+      #username,
+      #clip-title,
+      #game-title,
+      #clip-info {
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 0.5rem 1rem;
+        margin: 0.25rem 0;
+        border-radius: 8px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        pointer-events: auto;
+      }
+    </style>
+  </head>
+  <body onload="shoutout();">
+    <div id="info-overlay">
+      <h1 id="username"></h1>
+      <div id="clip-title"></div>
+      <div id="game-title"></div>
+      <div id="clip-info"></div>
+    </div>
 
-      async function shoutout() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const user = urlParams.get("user");
-        const clipUser = urlParams.get("clip_user");
-        const image = urlParams.get("image");
-        const video = urlParams.get("video");
-        const clipTitle = urlParams.get("title");
-        const game = urlParams.get("game");
-        const views = urlParams.get("views");
-        const thumbnailUrl = urlParams.get("thumbnail_url");
+    <div id="videocontainer">
+      <video id="videoplayer" autoplay onended="setTimeout('cleanup()',500);"></video>
+    </div>
+    <div id="imagebox2"></div>
 
-        document.getElementById(
-          "username"
-        ).textContent = `Shout out to ${user}!`;
-        document.getElementById("clip-title").textContent = clipTitle;
-        document.getElementById("game-title").textContent = `Playing: ${game}`;
-        document.getElementById(
-          "clip-info"
-        ).textContent = `Clipped by ${clipUser} | ${views} views`;
+    <script>
+      function showVideo() {
+        const videoElement = document.getElementById("videoplayer");
+        videoElement.style.visibility = "visible";
+        videoElement.play();
+      }
 
-        document.getElementById(
-          "imagebox2"
-        ).innerHTML = `<img src="${thumbnailUrl}" width="100%"/>`;
+      async function shoutout() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const user = urlParams.get("user");
+        const clipUser = urlParams.get("clip_user");
+        const image = urlParams.get("image");
+        const video = urlParams.get("video");
+        const clipTitle = urlParams.get("title");
+        const game = urlParams.get("game");
+        const views = urlParams.get("views");
+        const thumbnailUrl = urlParams.get("thumbnail_url");
 
-        const videoElement = document.getElementById("videoplayer");
-        const overlay = document.getElementById("info-overlay");
+        document.getElementById("username").textContent = `Shout out to ${user}!`;
+        document.getElementById("clip-title").textContent = clipTitle;
+        document.getElementById("game-title").textContent = `Playing: ${game}`;
+        document.getElementById("clip-info").textContent = `Clipped by ${clipUser} | ${views} views`;
 
-        const match = video.match(/clip=([^"]+)/);
-        const fullClipId = match ? match[1] : null;
-        const match2 = fullClipId.match(/([^/]+)$/);
-        const clipId = match2 ? match2[1] : null;
+        document.getElementById("imagebox2").innerHTML = `<img src="${thumbnailUrl}" width="100%"/>`;
 
-        const url = "https://gql.twitch.tv/gql";
-        const query = {
-          operationName: "VideoAccessToken_Clip",
-          variables: {
-            platform: "web",
-            slug: clipId,
-          },
-          extensions: {
-            persistedQuery: {
-              version: 1,
-              sha256Hash:
-                "6fd3af2b22989506269b9ac02dd87eb4a6688392d67d94e41a6886f1e9f5c00f",
-            },
-          },
-        };
+        const videoElement = document.getElementById("videoplayer");
+        const overlay = document.getElementById("info-overlay");
 
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", url, false);
-        xhr.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
-        xhr.setRequestHeader("Client-ID", "kimne78kx3ncx6brgo4mv6wki5h1ko");
-        xhr.send(JSON.stringify(query));
+        const match = video.match(/clip=([^"]+)/);
+        const fullClipId = match ? match[1] : null;
+        const match2 = fullClipId.match(/([^/]+)$/);
+        const clipId = match2 ? match2[1] : null;
 
-        if (xhr.status === 200) {
-          const clipInfo = JSON.parse(xhr.responseText);
-          const clipData = clipInfo.data;
-          const clipSource = clipData.clip.videoQualities[0].sourceURL;
-          const clipSig = clipData.clip.playbackAccessToken.signature;
-          const clipToken = clipData.clip.playbackAccessToken.value;
-          const videoSrc =
-            clipSource + "?sig=" + clipSig + "&token=" + encodeURI(clipToken);
-          videoElement.src = videoSrc;
-          videoElement.load();
-          await videoElement.play();
-        } else {
-          console.error("Request failed with status: " + xhr.status);
-        }
+        const url = "https://gql.twitch.tv/gql";
+        const query = {
+          operationName: "VideoAccessToken_Clip",
+          variables: {
+            platform: "web",
+            slug: clipId,
+          },
+          extensions: {
+            persistedQuery: {
+              version: 1,
+              sha256Hash:
+                "6fd3af2b22989506269b9ac02dd87eb4a6688392d67d94e41a6886f1e9f5c00f",
+            },
+          },
+        };
 
-        videoElement.style.visibility = "hidden";
-        setTimeout("showVideo();", 1000);
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", url, false);
+        xhr.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+        xhr.setRequestHeader("Client-ID", "kimne78kx3ncx6brgo4mv6wki5h1ko");
+        xhr.send(JSON.stringify(query));
 
-        // Hide the overlay after a delay, let's keep it visible until the video starts.
-        setTimeout(() => {
-          overlay.classList.add("hidden");
-        }, 3000);
-      }
+        if (xhr.status === 200) {
+          const clipInfo = JSON.parse(xhr.responseText);
+          const clipData = clipInfo.data;
+          const clipSource = clipData.clip.videoQualities[0].sourceURL;
+          const clipSig = clipData.clip.playbackAccessToken.signature;
+          const clipToken = clipData.clip.playbackAccessToken.value;
+          const videoSrc =
+            clipSource + "?sig=" + clipSig + "&token=" + encodeURI(clipToken);
+          videoElement.src = videoSrc;
+          videoElement.load();
+          await videoElement.play();
+        } else {
+          console.error("Request failed with status: " + xhr.status);
+        }
 
-      function cleanup() {
-        document.getElementById("videocontainer").innerHTML = "";
-        document.getElementById("imagebox2").innerHTML = "";
-        const overlay = document.getElementById("info-overlay");
-        overlay.classList.remove("hidden");
-      }
-    </script>
-  </body>
+        videoElement.style.visibility = "hidden";
+        setTimeout("showVideo();", 1000);
+
+        setTimeout(() => {
+          overlay.classList.add("hidden");
+        }, 3000);
+      }
+
+      function cleanup() {
+        document.getElementById("videocontainer").innerHTML = "";
+        document.getElementById("imagebox2").innerHTML = "";
+        const overlay = document.getElementById("info-overlay");
+        overlay.classList.remove("hidden");
+      }
+    </script>
+  </body>
 </html>
