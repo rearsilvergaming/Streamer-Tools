@@ -134,18 +134,15 @@
 
         async function resolveClipUrl() {
           try {
-            const clipMatch =
-              videoParam.match(
-                /(?:clip=|clips?\/(?:embed\?|)?|clip:)?([A-Za-z0-9_-]+)$/i
-              ) || videoParam.match(/clip=([^&\"]+)/);
+            // Updated regex to correctly capture the clip slug
+            const clipMatch = videoParam.match(
+              /twitch.tv\/(?:embed\?clip=|clip\/)([A-Za-z0-9_-]+)$/i
+            );
             let clipSlug = null;
             if (clipMatch) {
               clipSlug = clipMatch[1];
             }
-            if (!clipSlug) {
-              const m2 = videoParam.match(/clips\.twitch\.tv\/([^\/?&]+)/i);
-              if (m2) clipSlug = m2[1];
-            }
+
             if (clipSlug) {
               const url = "https://gql.twitch.tv/gql";
               const query = {
