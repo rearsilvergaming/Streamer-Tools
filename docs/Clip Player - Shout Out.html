@@ -1,21 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Twitch Clip Player</title>
+    <title>Streamer.bot Shout out player</title>
     <style>
         body {
+            background-color: transparent;
+            color: white;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background-color: transparent;
-            font-family: sans-serif;
-            color: white;
             position: relative;
         }
-
-        #overlay {
+        #clip-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        #clip-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        #info-overlay {
             position: absolute;
             top: 0;
             left: 0;
@@ -25,90 +38,78 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: rgba(0, 0, 0, 0.7);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        #overlay.show {
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 20;
             opacity: 1;
+            transition: opacity 0.5s ease-in-out;
         }
-
-        #clipPlayer {
-            width: 100%;
-            height: 100%;
-            border: none; /* Remove iframe border */
+        #info-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .info-text {
+            text-shadow: 2px 2px 4px #000000;
         }
     </style>
 </head>
-<body>
-    <iframe
-        id="clipPlayer"
-        src="about:blank"
-        allowfullscreen="true"
-        allow="autoplay; encrypted-media; fullscreen; picture-in-picture;"
-    ></iframe>
+<body onload="init()">
 
-    <div id="overlay">
-        <h1 id="username"></h1>
-        <p id="cliptitle"></p>
-        <p id="game"></p>
+    <div id="info-overlay">
+        <h1 class="info-text" id="username"></h1>
+        <p class="info-text" id="cliptitle"></p>
+        <p class="info-text" id="game"></p>
+    </div>
+
+    <div id="clip-container">
+        <iframe
+            id="clip-iframe"
+            src="about:blank"
+            allowfullscreen="true"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+        ></iframe>
     </div>
 
     <script>
-        (function () {
-            const qs = new URLSearchParams(window.location.search);
-            const user = qs.get("user") || "";
-            const videoParam = qs.get("video") || "";
-            const time = qs.get("time") ? parseInt(qs.get("time"), 10) : null;
-            const clipTitle = qs.get("title") || "";
-            const game = qs.get("game") || "";
+        function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const user = urlParams.get('user');
+            const video = urlParams.get('video');
+            const time = urlParams.get('time');
+            const clipTitle = urlParams.get('title');
+            const game = urlParams.get('game');
+            
+            const iframe = document.getElementById('clip-iframe');
+            const overlay = document.getElementById('info-overlay');
+            const usernameEl = document.getElementById('username');
+            const titleEl = document.getElementById('cliptitle');
+            const gameEl = document.getElementById('game');
+            
+            usernameEl.textContent = user;
+            titleEl.textContent = clipTitle;
+            gameEl.textContent = game ? `Playing ${game}` : '';
 
-            const iframeEl = document.getElementById("clipPlayer");
-            const overlay = document.getElementById("overlay");
-            const usernameEl = document.getElementById("username");
-            const titleEl = document.getElementById("cliptitle");
-            const gameEl = document.getElementById("game");
-
-            usernameEl.textContent = user || "Shoutout!";
-            titleEl.textContent = clipTitle || "";
-            gameEl.textContent = game ? `Playing ${game}` : "";
-
-            function showOverlay() {
-                overlay.classList.add("show");
-            }
-            function hideOverlay() {
-                overlay.classList.remove("show");
-            }
-
-            function run() {
-                if (!videoParam) {
-                    console.error("No clip url");
-                    hideOverlay();
-                    return;
-                }
-                
-                // Construct the embed URL and add the autoplay parameter
-                const embedUrl = videoParam + "&parent=rearsilvergaming.github.io&autoplay=true";
-
-                iframeEl.src = embedUrl;
-
-                showOverlay();
-
-                if (time && !isNaN(time)) {
-                    setTimeout(cleanup, time);
-                }
+            // Construct the full embed URL with parameters for autoplay and parent
+            if (video) {
+                const finalVideoUrl = video + "&autoplay=true&muted=false&parent=rearsilvergaming.github.io";
+                iframe.src = finalVideoUrl;
+            } else {
+                console.error("No video URL provided.");
             }
 
-            function cleanup() {
-                try {
-                    iframeEl.src = "about:blank"; // Clear the iframe source
-                } catch (e) {}
-                hideOverlay();
-            }
+            // Hide the overlay after a short delay
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 3000); // 3-second delay to show info text
 
-            run();
-        })();
+            // Cleanup after the clip finishes
+            if (time) {
+                setTimeout(() => {
+                    iframe.src = "about:blank";
+                    overlay.classList.remove('hidden');
+                }, parseInt(time, 10));
+            }
+        }
     </script>
+
 </body>
 </html>
