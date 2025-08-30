@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Twitch Shoutout Clip Player</title>
+    <style>
+      :root {
+        --accent: #9147ff;
+        --white: #ffffff;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: transparent;
+        font-family: Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial;
+      }
+      .container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      video#clipPlayer {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        background: transparent;
+        display: block;
+      }
+      .overlay {
+        position: absolute;
+        left: 50%;
+        top: 10%;
+        transform: translateX(-50%);
+        width: 480px;
+        max-width: 85%;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.6),
+          rgba(0, 0, 0, 0.4)
+        );
+        backdrop-filter: blur(6px);
+        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.5);
+        color: var(--white);
+        z-index: 20;
+        opacity: 0;
+        transition: opacity 0.4s ease,
+          transform 0.45s cubic-bezier(0.2, 0.9, 0.2, 1);
+      }
+      .overlay.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      .user {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--accent);
+      }
+      .title {
+        font-size: 1rem;
+        line-height: 1.3;
+      }
+      .game {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+      @media (max-width: 520px) {
+        .overlay {
+          top: 6%;
+          width: 92%;
+          padding: 10px;
+        }
+        .user {
+          font-size: 1rem;
+        }
+        .title {
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <video
+        id="clipPlayer"
+        playsinline
+        webkit-playsinline
+        crossorigin="anonymous"
+        preload="auto"
+      ></video>
+      <div class="overlay" id="overlay">
+        <div class="user" id="username">Streamer</div>
+        <div class="title" id="cliptitle">Awesome clip highlight</div>
+        <div class="game" id="game">Game name</div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const qs = new URLSearchParams(window.location.search);
+        const user = qs.get("user") || "";
+        const videoParam = qs.get("video") || "";
+        const thumbnail = qs.get("thumbnail_url") || "";
+        const time = qs.get("time") ? parseInt(qs.get("time"), 10) : null;
+        const clipTitle = qs.get("title") || "";
+        const game = qs.get("game") || "";
+
+        const videoEl = document.getElementById("clipPlayer");
+        const overlay = document.getElementById("overlay");
+        const usernameEl = document.getElementById("username");
+        const titleEl = document.getElementById("cliptitle");
+        const gameEl = document.getElementById("game");
+
+        usernameEl.textContent = user || "Shoutout!";
+        titleEl.textContent = clipTitle || "";
+        gameEl.textContent = game ? `Playing ${game}` : "";
+
+        function showOverlay() {
+          overlay.classList.add("show");
+        }
+        function hideOverlay() {
+          overlay.classList.remove("show");
+        }
+
+        async function resolveClipUrl() {
+          try {
+            const clipMatch =
+              videoParam.match(
+                /(?:clip=|clips?\/(?:embed\?|)?|clip:)?([A-Za-z0-9_-]+)$/i
+              ) || videoParam.match(/clip=([^&\"]+)/);
+            let clipSlug = null;
+            if (clipMatch) {
+              clipSlug = clipMatch[1];
+            }
+            if (!clipSlug) {
+              const m2 = videoParam.match(/clips\.twitch\.tv\/([^\/?&]+)/i);
+              if (m2) clipSlug = m2[1];
+            }
+            if (clipSlug) {
+              const url = "https://gql.twitch.tv/gql";
+              const query = {
+                operationName: "VideoAccessToken_Clip",
+                variables: { platform: "web", slug: clipSlug },
+                extensions: {
+                  persistedQuery: {
+                    version: 1,
+                    sha256Hash:
+                      "6fd3af2b22989506269b9ac02dd87eb4a6688392d67d94e41a6886f1e9f5c00f",
+                  },
+                },
+              };
+              const res = await fetch(url, {
+                method: "POST",
+                headers: {
+                  "Client-ID": "kimne78kx3ncx6brgo4mv6wki5h1ko",
+                  "Content-Type": "text/plain;charset=UTF-8",
+                },
+                body: JSON.stringify(query),
+              });
+              if (!res.ok) throw new Error("GQL fetch failed: " + res.status);
+              const json = await res.json();
+              const vq = json?.data?.clip?.videoQualities;
+              const access = json?.data?.clip?.playbackAccessToken;
+              if (vq && vq.length) {
+                const source = vq[0].sourceURL;
+                const sig = access.signature;
+                const token = access.value;
+                return (
+                  source + "?sig=" + sig + "&token=" + encodeURIComponent(token)
+                );
+              }
+            }
+          } catch (err) {
+            console.warn("GQL failed", err);
+          }
+          if (thumbnail) {
+            const mp4 = thumbnail.replace(/-preview-.*\.jpg$/, ".mp4");
+            if (mp4 !== thumbnail) return mp4;
+          }
+          if (videoParam && videoParam.toLowerCase().endsWith(".mp4"))
+            return videoParam;
+          return null;
+        }
+
+        async function run() {
+          const url = await resolveClipUrl();
+          if (!url) {
+            console.error("No clip url");
+            showOverlay();
+            return;
+          }
+          videoEl.src = url;
+          videoEl.crossOrigin = "anonymous";
+          try {
+            await videoEl.play();
+          } catch (err) {
+            console.error("Autoplay blocked", err);
+          }
+          showOverlay();
+          if (time && !isNaN(time)) setTimeout(cleanup, time);
+          videoEl.onended = () => setTimeout(cleanup, 600);
+          videoEl.onerror = () => setTimeout(cleanup, 800);
+        }
+
+        function cleanup() {
+          try {
+            videoEl.pause();
+            videoEl.removeAttribute("src");
+            videoEl.load();
+          } catch (e) {}
+          hideOverlay();
+        }
+
+        run();
+      })();
+    </script>
+  </body>
+</html>
