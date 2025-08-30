@@ -105,7 +105,6 @@
           <h1 id="username"></h1>
           <div id="clip-title"></div>
           <div id="clip-user"></div>
-          <div id="game-title"></div>
           <div id="views"></div>
           </div>
       </div>
@@ -128,14 +127,12 @@
         const image = urlParams.get("image");
         const video = urlParams.get("video");
         const clipTitle = urlParams.get("title");
-        const game = urlParams.get("game");
         const views = urlParams.get("views");
 
 
         document.getElementById(
           "username"
         ).textContent = `Shout out to ${user}!`;
-        document.getElementById("game-title").textContent = `Playing: ${game}`;
         document.getElementById(
           "clip-title"
         ).textContent = `Clip Title: ${clipTitle}`;
