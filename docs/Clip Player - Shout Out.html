@@ -106,7 +106,8 @@
           <div id="clip-title"></div>
           <div id="clip-user"></div>
           <div id="game-title"></div>
-        </div>
+          <div id="views"></div>
+          </div>
       </div>
     </div>
 
@@ -128,6 +129,8 @@
         const video = urlParams.get("video");
         const clipTitle = urlParams.get("title");
         const game = urlParams.get("game");
+        const views = urlParams.get("views");
+
 
         document.getElementById(
           "username"
@@ -139,6 +142,7 @@
         document.getElementById(
           "clip-user"
         ).textContent = `Clipped by ${clipUser}`;
+        document.getElementById("views").textContent = `Views: ${views}`;
         document.getElementById(
           "imagebox2"
         ).innerHTML = `<img src="${image}" width="100%"/>`;
