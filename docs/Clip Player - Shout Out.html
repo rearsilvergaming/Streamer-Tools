@@ -88,7 +88,6 @@
             titleEl.textContent = clipTitle;
             gameEl.textContent = game ? `Playing ${game}` : '';
 
-            // Construct the full embed URL with parameters for autoplay and parent
             if (video) {
                 const finalVideoUrl = video + "&autoplay=true&muted=false&parent=rearsilvergaming.github.io";
                 iframe.src = finalVideoUrl;
@@ -96,12 +95,10 @@
                 console.error("No video URL provided.");
             }
 
-            // Hide the overlay after a short delay
             setTimeout(() => {
                 overlay.classList.add('hidden');
-            }, 3000); // 3-second delay to show info text
+            }, 3000);
 
-            // Cleanup after the clip finishes
             if (time) {
                 setTimeout(() => {
                     iframe.src = "about:blank";
