@@ -3,88 +3,91 @@
   <head>
     <title>Streamer.bot Shout out player</title>
     <style>
-      body {
-        background-color: transparent;
-        color: white;
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        position: relative;
-      }
+            body {
+              background-color: transparent;
+              color: white;
+              font-family: Arial, sans-serif;
+              margin: 0;
+              padding: 0;
+              overflow: hidden;
+              position: relative;
+            }
 
-      #videocontainer {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        z-index: 10;
-        text-align: center;
-      }
-      #videoplayer {
-        width: 100%;
-        visibility: hidden;
-      }
+            #videocontainer {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              z-index: 10;
+              text-align: center;
+            }
+            #videoplayer {
+              width: 100%;
+              visibility: hidden;
+            }
 
-      #imagebox2 {
-        position: absolute;
-        height: 66%;
-        width: 37.5%;
-        text-align: center;
-        z-index: 1;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-      }
+            #imagebox2 {
+              position: absolute;
+              height: 66%;
+              width: 37.5%;
+              text-align: center;
+              z-index: 1;
+              left: 50%;
+              top: 50%;
+              transform: translate(-50%, -50%);
+            }
 
-      #info-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        align-items: flex-start;
-        padding: 2rem;
-        box-sizing: border-box;
-        pointer-events: none;
-        background: rgba(0, 0, 0, 0.5);
-        opacity: 1;
-        transition: opacity 0.5s ease-in-out;
-      }
+            #info-overlay {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-end;
+              align-items: flex-start;
+              padding: 2rem;
+              box-sizing: border-box;
+              pointer-events: none;
+              background: rgba(0, 0, 0, 0.5);
+              opacity: 1;
+              transition: opacity 0.5s ease-in-out;
+            }
 
-      #info-overlay.hidden {
-        opacity: 0;
-        pointer-events: none;
-      }
+            #info-overlay.hidden {
+              opacity: 0;
+              pointer-events: none;
+            }
 
-      #clip-title,
-      #game-title {
-        background-color: rgba(0, 0, 0, 0.6);
-        padding: 0.5rem 1rem;
-        margin: 0.25rem 0;
-        border-radius: 8px;
-        font-size: 1.5rem;
-        font-weight: bold;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        pointer-events: auto;
-      }
+            #username,
+            #clip-title,
+            #game-title,
+            #clip-info {
+              background-color: rgba(0, 0, 0, 0.6);
+              padding: 0.5rem 1rem;
+              margin: 0.25rem 0;
+              border-radius: 8px;
+              font-size: 1.5rem;
+              font-weight: bold;
+              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+              pointer-events: auto;
+            }
     </style>
   </head>
   <body onload="shoutout();">
-    <div id="info-overlay">
-      <div id="clip-title"></div>
-      <div id="game-title"></div>
-    </div>
     <div id="videocontainer">
       <video
         id="videoplayer"
-        style="width: 100%"
         autoplay
         onended="setTimeout('cleanup()',500);"
       ></video>
+    </div>
+    <div id="info-overlay">
+      <h1 id="username"></h1>
+      <div id="clip-title"></div>
+      <div id="game-title"></div>
+      <div id="clip-info"></div>
     </div>
     <div id="imagebox2"></div>
 
@@ -98,21 +101,29 @@
       async function shoutout() {
         const urlParams = new URLSearchParams(window.location.search);
         const user = urlParams.get("user");
+        const clipUser = urlParams.get("clip_user");
         const image = urlParams.get("image");
         const video = urlParams.get("video");
-        const time = urlParams.get("time");
         const clipTitle = urlParams.get("title");
         const game = urlParams.get("game");
+        const views = urlParams.get("views");
+        const thumbnailUrl = urlParams.get("thumbnail_url");
 
-        document.getElementById("imagebox2").innerHTML =
-          "<img src='" + image + "' width='100%'/>";
+        document.getElementById(
+          "username"
+        ).textContent = `Shout out to ${user}!`;
+        document.getElementById("clip-title").textContent = clipTitle;
+        document.getElementById("game-title").textContent = `Playing: ${game}`;
+        document.getElementById(
+          "clip-info"
+        ).textContent = `Clipped by ${clipUser} | ${views} views`;
+
+        document.getElementById(
+          "imagebox2"
+        ).innerHTML = `<img src="${thumbnailUrl}" width="100%"/>`;
+
         const videoElement = document.getElementById("videoplayer");
         const overlay = document.getElementById("info-overlay");
-        const clipTitleEl = document.getElementById("clip-title");
-        const gameTitleEl = document.getElementById("game-title");
-
-        clipTitleEl.textContent = clipTitle;
-        gameTitleEl.textContent = `Playing: ${game}`;
 
         const match = video.match(/clip=([^"]+)/);
         const fullClipId = match ? match[1] : null;
