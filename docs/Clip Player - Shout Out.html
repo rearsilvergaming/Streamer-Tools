@@ -1,157 +1,177 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Streamer.bot Shout out player</title>
-    <style>
-      body {
-        background-color: transparent;
-        color: white;
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        position: relative;
-      }
-      #clip-container {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 10;
-      }
-      #clip-iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-      }
-      #info-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 20;
-        opacity: 1;
-        transition: opacity 0.5s ease-in-out;
-      }
-      #info-overlay.hidden {
-        opacity: 0;
-        pointer-events: none;
-      }
-      .info-text {
-        text-shadow: 2px 2px 4px #000000;
-      }
-    </style>
-  </head>
+<head>
+  <title>Streamer.bot Shout out player</title>
+  <style>
+    body {
+      background-color: transparent;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    #videocontainer {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    #videoplayer {
+      width: 100%;
+      height: 100%;
+      visibility: hidden;
+    }
+
+    #imagebox2 {
+      position: absolute;
+      height: 66%;
+      width: 37.5%;
+      text-align: center;
+      z-index: 1;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #info-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 20;
+      opacity: 1;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    #info-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .info-text {
+      text-shadow: 2px 2px 4px #000000;
+    }
+  </style>
+</head>
 <body onload="shoutout();">
-    <div id="info-overlay">
-      <h1 class="info-text" id="username"></h1>
-      <p class="info-text" id="cliptitle"></p>
-      <p class="info-text" id="game"></p>
-    </div>
+  <div id="info-overlay">
+    <h1 class="info-text" id="username"></h1>
+    <p class="info-text" id="cliptitle"></p>
+    <p class="info-text" id="game"></p>
+  </div>
+  <div id="videocontainer">
+    <video id='videoplayer' onended="cleanup()"></video>
+  </div>
+  <div id="imagebox2"></div>
 
-<div id="videocontainer" style="position:absolute; left: 0px; top: 0px; width: 100%;z-index:10"; text-align: center >
-<video id='videoplayer' style="width:100%" autoplay onended="setTimeout('cleanup()',500);"></video>
-</div>
-<div id="imagebox2" style="position:absolute; height: 66%; width: 37.5%;  text-align: center; z-index: 1; left:50%; top:50%; transform: translate(-50%, -50%);">
-</div>
-    </div>
+  <script>
+    async function shoutout() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const user = urlParams.get('user');
+      const image = urlParams.get('image');
+      const video = urlParams.get('video');
+      const time = urlParams.get('time');
 
-<script>
+      document.getElementById('imagebox2').innerHTML = `<img src="${image}" style="width:100%; height:100%;"/>`;
+      const videoElement = document.getElementById('videoplayer');
+      const overlay = document.getElementById('info-overlay');
+      const usernameEl = document.getElementById('username');
+      const titleEl = document.getElementById('cliptitle');
+      const gameEl = document.getElementById('game');
 
-function showVideo () {
- videoElement = document.getElementById('videoplayer')
- videoElement.style.visibility="visible";
-    videoElement.play();
-    
-}
-function shoutout()
-{
-    let firstrun = true;
+      usernameEl.textContent = user || "Shoutout!";
+      titleEl.textContent = urlParams.get('title') || "";
+      gameEl.textContent = urlParams.get('game') ? `Playing ${urlParams.get('game')}` : "";
 
-// parse url params
- const urlParams = new URLSearchParams(window.location.search);
- const user = urlParams.get('user');
- const image = urlParams.get('image');
- const video = urlParams.get('video');
- const time = urlParams.get('time');
- document.getElementById('imagebox2').innerHTML="<img src='"+image+"' width='100%'/>";
- const thumbnailUrl = urlParams.get('thumbnail_url');
- videoSrc = thumbnailUrl.replace(/(.*)-preview-.*/, '$1.mp4');
- // generate mp4 url
- //Check to see if the URL is a new or old format
- 
-    if (true)
-      {
-  // Update 23rd Feb 2025 - need to get the URL always via gql now.     
-  // Update Sept 2024 - Need to get url via gql - how I wish Twitch just let us to get access to this via URL. Ideally I'd do this via streamer bot but want to keep the implementation as simple as possible.      
-   // build gql request
-   // generate clip Id from embed url passed in
-const match = video.match(/clip=([^"]+)/); 
-const fullClipId = match ? match[1] : null;
-const match2=fullClipId.match(/([^/]+)$/);
-const clipId = match2 ? match2[1] : null;
-      // const clipId = video.match(/clip=([^"]+)/);
-       
-   const url = "https://gql.twitch.tv/gql";
-       const query = {
-        operationName: "VideoAccessToken_Clip",
-        variables: {
-            platform: "web",            
+      try {
+        const match = video.match(/clip=([^"]+)/);
+        const fullClipId = match ? match[1] : null;
+        const clipId = fullClipId.match(/([^/]+)$/)[1];
+
+        const url = "https://gql.twitch.tv/gql";
+        const query = {
+          operationName: "VideoAccessToken_Clip",
+          variables: {
+            platform: "web",
             slug: clipId
-        },
-        extensions: {
+          },
+          extensions: {
             persistedQuery: {
-                version: 1,
-                sha256Hash: "6fd3af2b22989506269b9ac02dd87eb4a6688392d67d94e41a6886f1e9f5c00f"
+              version: 1,
+              sha256Hash: "6fd3af2b22989506269b9ac02dd87eb4a6688392d67d94e41a6886f1e9f5c00f"
             }
+          }
+        };
+
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Client-ID': 'kimne78kx3ncx6brgo4mv6wki5h1ko',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(query)
+        });
+
+        if (!response.ok) {
+          throw new Error('GQL request failed with status: ' + response.status);
         }
-    };
-var xhr = new XMLHttpRequest();
-    xhr.open("POST", url, false); // I know this is horrible to make the request synchronous, but here we should be ok
-    xhr.setRequestHeader("Content-Type", "text/plain;charset=UTF-8"); // not what you'd expect, but it's what is used.
-    xhr.setRequestHeader("Client-ID", "kimne78kx3ncx6brgo4mv6wki5h1ko");
-    xhr.send(JSON.stringify(query));
-    if (xhr.status === 200) {
-        console.log(JSON.parse(xhr.responseText));
-    } else {
-        console.error("Request failed with status: " + xhr.status);
-        return null;
-    }   
-       const clipInfo = JSON.parse(xhr.responseText);
-       const clipData = clipInfo.data;
-       const clipSource= clipData.clip.videoQualities[0].sourceURL;
-       const clipSig = clipData.clip.playbackAccessToken.signature;
-       const clipToken = clipData.clip.playbackAccessToken.value;
-      
-       videoSrc=clipSource+"?sig="+clipSig+"&token="+encodeURI(clipToken);
-       console.log(videoSrc);
-  }
- //new format generation
-// apply mp4 to video element so it's ready to play
- const videoElement = document.getElementById('videoplayer');
- videoElement.style.visibility="hidden";
- videoElement.src = videoSrc;
- videoElement.load();
- videoElement.play();
- videoElement.pause();
-//Give the clip a second to preload before showing it.
-setTimeout('showVideo();',1000);    
-}
-function cleanup()
-{
-document.getElementById('videocontainer').innerHTML="";
-document.getElementById('imagebox2').innerHTML="";
-}
-</script>
-  </body>
+
+        const data = await response.json();
+        const clipInfo = data.data.clip;
+        const clipSource = clipInfo.videoQualities[0].sourceURL;
+        const clipSig = clipInfo.playbackAccessToken.signature;
+        const clipToken = clipInfo.playbackAccessToken.value;
+        const videoSrc = `${clipSource}?sig=${clipSig}&token=${encodeURIComponent(clipToken)}`;
+        console.log("Video Source URL:", videoSrc);
+
+        videoElement.src = videoSrc;
+        videoElement.style.visibility = "visible";
+        await videoElement.play();
+
+        // Hide overlay after a short delay
+        setTimeout(() => {
+          overlay.classList.add('hidden');
+        }, 1000);
+
+        // Hide video after the specified time
+        if (time) {
+          setTimeout(cleanup, parseInt(time, 10));
+        }
+
+      } catch (e) {
+        console.error("An error occurred:", e);
+        // Fallback or display error message to user
+        overlay.classList.remove('hidden');
+      }
+    }
+
+    function cleanup() {
+      const videoElement = document.getElementById('videoplayer');
+      const overlay = document.getElementById('info-overlay');
+      if (videoElement) {
+        videoElement.pause();
+        videoElement.src = "";
+        videoElement.load();
+        videoElement.style.visibility = "hidden";
+      }
+      if (overlay) {
+        overlay.classList.remove('hidden');
+      }
+    }
+  </script>
+</body>
 </html>
