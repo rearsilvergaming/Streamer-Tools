@@ -20,7 +20,7 @@
 
       /* safe area to avoid top crop in OBS */
       #safe-wrapper {
-        padding: 4vh 0; /* adds top/bottom margin */
+        padding: 4vh 0 6vh 0; /* add a bit more at bottom */
         box-sizing: border-box;
         display: flex;
         justify-content: center;
@@ -36,6 +36,7 @@
         justify-content: center;
         width: 90%;
         max-width: 900px;
+        max-height: 95vh; /* never exceed viewport height */
         box-sizing: border-box;
       }
 
@@ -163,11 +164,9 @@
         overlay.classList.remove("hidden");
 
         const user = urlParams.get("user");
-        const clipUser = urlParams.get("clip_user");
         const image = urlParams.get("image");
         const video = urlParams.get("video");
         const clipTitle = urlParams.get("title");
-        const views = urlParams.get("views");
 
         document.getElementById(
           "username"
@@ -175,10 +174,6 @@
         document.getElementById(
           "clip-title"
         ).textContent = `Clip Title: ${clipTitle}`;
-        document.getElementById(
-          "clip-user"
-        ).textContent = `Clipped by ${clipUser}`;
-        document.getElementById("views").textContent = `Views: ${views}`;
         document.getElementById(
           "imagebox2"
         ).innerHTML = `<img src="${image}" alt="Profile"/>`;
