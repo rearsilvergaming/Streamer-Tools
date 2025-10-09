@@ -3,7 +3,7 @@
   <head>
     <title>Streamer.bot Shoutout Player</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap");
 
       html,
       body {
@@ -14,8 +14,9 @@
         background: transparent;
         overflow: hidden;
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
+        font-family: "Lato", sans-serif;
       }
 
       #main-container {
@@ -23,23 +24,23 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        width: 90%;
         max-width: 900px;
-        width: 90vw;
-        padding: 10px;
         box-sizing: border-box;
+        padding: 10px;
       }
 
       #videocontainer {
         width: 100%;
-        aspect-ratio: 16/9;
+        aspect-ratio: 16 / 9;
         border: 5px solid #d48d3f;
         border-radius: 10px;
         overflow: hidden;
-        background-color: black;
+        background: black;
+        margin-bottom: 10px;
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-bottom: 1rem;
       }
 
       #videoplayer {
@@ -55,23 +56,18 @@
         flex-direction: row;
         align-items: flex-start;
         justify-content: flex-start;
-        flex-wrap: wrap;
         gap: 1rem;
-        opacity: 1;
-        transition: opacity 0.5s ease-in-out;
-        z-index: 20;
-        background: rgba(0, 0, 0, 0);
-        padding-bottom: 10px; /* safe zone for OBS crop */
-      }
-
-      #info-overlay.hidden {
-        opacity: 0;
-        pointer-events: none;
+        flex-wrap: wrap;
+        background: transparent;
+        padding: 0.5rem;
+        box-sizing: border-box;
+        overflow: visible;
+        max-height: 40vh; /* ensures we never exceed OBS height */
       }
 
       #imagebox2 {
-        width: 100px;
-        height: 100px;
+        width: 90px;
+        height: 90px;
         flex-shrink: 0;
       }
 
@@ -85,64 +81,71 @@
       #text-container {
         display: flex;
         flex-direction: column;
+        justify-content: center;
         flex: 1;
         min-width: 0;
-        justify-content: center;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
       }
 
       #text-container h1,
       #text-container div {
         background-color: #d48d3f;
         color: black;
-        padding: 0.6rem 1rem;
+        padding: 0.5rem 1rem;
         margin: 0.25rem 0;
         border-radius: 8px;
-        font-size: 1.3rem;
         font-weight: bold;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        max-width: 100%;
         line-height: 1.2;
       }
 
       #text-container h1 {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
       }
 
-      /* Smooth entry animation */
-      @keyframes slideIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      #text-container div {
+        font-size: 1.1rem;
       }
 
-      #info-overlay:not(.hidden) {
-        animation: slideIn 0.8s ease forwards;
+      /* Safety margin for OBS cropping */
+      #safe-area {
+        padding-bottom: 20px;
+      }
+
+      /* Responsive scaling in case OBS window is small */
+      @media (max-height: 600px) {
+        #text-container h1 {
+          font-size: 1.2rem;
+        }
+        #text-container div {
+          font-size: 0.95rem;
+        }
+        #imagebox2 {
+          width: 70px;
+          height: 70px;
+        }
       }
     </style>
   </head>
   <body onload="shoutout();">
-    <div id="main-container">
-      <div id="videocontainer">
-        <video
-          id="videoplayer"
-          autoplay
-          onended="setTimeout('cleanup()',500);"
-        ></video>
-      </div>
-      <div id="info-overlay" class="hidden">
-        <div id="imagebox2"></div>
-        <div id="text-container">
-          <h1 id="username"></h1>
-          <div id="clip-title"></div>
-          <div id="clip-user"></div>
-          <div id="views"></div>
+    <div id="safe-area">
+      <div id="main-container">
+        <div id="videocontainer">
+          <video
+            id="videoplayer"
+            autoplay
+            onended="setTimeout('cleanup()',500);"
+          ></video>
+        </div>
+        <div id="info-overlay" class="hidden">
+          <div id="imagebox2"></div>
+          <div id="text-container">
+            <h1 id="username"></h1>
+            <div id="clip-title"></div>
+            <div id="clip-user"></div>
+            <div id="views"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -178,7 +181,7 @@
         document.getElementById("views").textContent = `Views: ${views}`;
         document.getElementById(
           "imagebox2"
-        ).innerHTML = `<img src="${image}" alt="Profile Picture"/>`;
+        ).innerHTML = `<img src="${image}" alt="Profile"/>`;
 
         const videoElement = document.getElementById("videoplayer");
 
