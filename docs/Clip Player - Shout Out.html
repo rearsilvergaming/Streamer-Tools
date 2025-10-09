@@ -5,39 +5,40 @@
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap");
 
+      html,
       body {
-        background: transparent;
-        font-family: "Lato", sans-serif;
+        width: 100%;
+        height: 100%;
         margin: 0;
         padding: 0;
+        background: transparent;
+        overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        overflow: hidden;
       }
 
-      /* Main container holds everything, centered */
       #main-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: flex-start;
-        width: 800px;
-        max-width: 90vw;
+        justify-content: center;
+        max-width: 900px;
+        width: 90vw;
+        padding: 10px;
+        box-sizing: border-box;
       }
 
-      /* Video box */
       #videocontainer {
         width: 100%;
         aspect-ratio: 16/9;
         border: 5px solid #d48d3f;
         border-radius: 10px;
         overflow: hidden;
+        background-color: black;
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: black;
         margin-bottom: 1rem;
       }
 
@@ -48,18 +49,19 @@
         visibility: hidden;
       }
 
-      /* Info overlay section */
       #info-overlay {
         width: 100%;
         display: flex;
         flex-direction: row;
         align-items: flex-start;
         justify-content: flex-start;
+        flex-wrap: wrap;
         gap: 1rem;
         opacity: 1;
         transition: opacity 0.5s ease-in-out;
         z-index: 20;
-        flex-wrap: wrap;
+        background: rgba(0, 0, 0, 0);
+        padding-bottom: 10px; /* safe zone for OBS crop */
       }
 
       #info-overlay.hidden {
@@ -67,7 +69,6 @@
         pointer-events: none;
       }
 
-      /* Profile picture */
       #imagebox2 {
         width: 100px;
         height: 100px;
@@ -81,20 +82,19 @@
         object-fit: cover;
       }
 
-      /* Text container */
       #text-container {
         display: flex;
         flex-direction: column;
-        justify-content: center;
         flex: 1;
-        min-width: 0; /* allows wrapping */
+        min-width: 0;
+        justify-content: center;
       }
 
       #text-container h1,
       #text-container div {
         background-color: #d48d3f;
         color: black;
-        padding: 0.5rem 1rem;
+        padding: 0.6rem 1rem;
         margin: 0.25rem 0;
         border-radius: 8px;
         font-size: 1.3rem;
@@ -103,10 +103,27 @@
         word-wrap: break-word;
         overflow-wrap: break-word;
         max-width: 100%;
+        line-height: 1.2;
       }
 
       #text-container h1 {
         font-size: 1.6rem;
+      }
+
+      /* Smooth entry animation */
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      #info-overlay:not(.hidden) {
+        animation: slideIn 0.8s ease forwards;
       }
     </style>
   </head>
