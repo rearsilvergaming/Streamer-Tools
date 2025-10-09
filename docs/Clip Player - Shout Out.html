@@ -1,58 +1,77 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Streamer.bot Shout out player</title>
+    <title>Streamer.bot Shoutout Player</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Amarante&family=Bangers&family=Kenia&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Metal+Mania&family=Pirata+One&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Quicksand:wght@300..700&family=Rye&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap");
 
       body {
-        background-color: transparent;
+        background: transparent;
         font-family: "Lato", sans-serif;
         margin: 0;
         padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
         overflow: hidden;
-        position: relative;
       }
 
-      /* New container to stack video and info */
+      /* Main container holds everything, centered */
       #main-container {
         display: flex;
         flex-direction: column;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 800px;
-        height: 800px;
-            }
-
-      #videocontainer {
-        position: relative; /* Changed from absolute */
-        width: 800px;
-        height: auto;
-        margin: auto;
-        margin-bottom: 0%;
-        overflow: hidden
-        display: flex;
         align-items: center;
-        justify-content: center
-        transform: translate(-50%, -50%);
-        z-index: 10;
-        text-align: center;
+        justify-content: flex-start;
+        width: 800px;
+        max-width: 90vw;
+      }
+
+      /* Video box */
+      #videocontainer {
+        width: 100%;
+        aspect-ratio: 16/9;
         border: 5px solid #d48d3f;
         border-radius: 10px;
         overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: black;
+        margin-bottom: 1rem;
       }
 
       #videoplayer {
         width: 100%;
+        height: 100%;
+        object-fit: cover;
         visibility: hidden;
       }
 
+      /* Info overlay section */
+      #info-overlay {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 1rem;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+        z-index: 20;
+        flex-wrap: wrap;
+      }
+
+      #info-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* Profile picture */
       #imagebox2 {
         width: 100px;
         height: 100px;
-        flex-shrink: 0; /* prevent image from shrinking */
+        flex-shrink: 0;
       }
 
       #imagebox2 img {
@@ -62,44 +81,32 @@
         object-fit: cover;
       }
 
-      #info-overlay {
-        position: relative; /* Changed from absolute */
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding: 1rem;
-        box-sizing: border-box;
-        pointer-events: none;
-        opacity: 1;
-        transition: opacity 0.5s ease-in-out;
-        z-index: 20;
-        margin-top: 0.5rem;
-        gap: 1rem; /* This adds a 1-inch gap between the profile pic and the text */
-      }
-
-      #info-overlay.hidden {
-        opacity: 0;
-        pointer-events: none;
-      }
-
+      /* Text container */
       #text-container {
         display: flex;
         flex-direction: column;
-        margin-left: 2rem;
+        justify-content: center;
+        flex: 1;
+        min-width: 0; /* allows wrapping */
       }
 
-      #text-container div,
-      #text-container h1 {
+      #text-container h1,
+      #text-container div {
         background-color: #d48d3f;
-        color: black; /* Changed color to be visible on black background */
+        color: black;
         padding: 0.5rem 1rem;
         margin: 0.25rem 0;
         border-radius: 8px;
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         font-weight: bold;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        pointer-events: auto;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
+      }
+
+      #text-container h1 {
+        font-size: 1.6rem;
       }
     </style>
   </head>
@@ -154,22 +161,23 @@
         document.getElementById("views").textContent = `Views: ${views}`;
         document.getElementById(
           "imagebox2"
-        ).innerHTML = `<img src="${image}" width="100%"/>`;
+        ).innerHTML = `<img src="${image}" alt="Profile Picture"/>`;
 
         const videoElement = document.getElementById("videoplayer");
 
         const match = video.match(/clip=([^"]+)/);
         const fullClipId = match ? match[1] : null;
-        const match2 = fullClipId.match(/([^/]+)$/);
+        const match2 = fullClipId ? fullClipId.match(/([^/]+)$/) : null;
         const clipId = match2 ? match2[1] : null;
 
-        const url = "https://gql.twitch.tv/gql";
+        if (!clipId) {
+          console.error("Could not extract clip ID from video URL");
+          return;
+        }
+
         const query = {
           operationName: "VideoAccessToken_Clip",
-          variables: {
-            platform: "web",
-            slug: clipId,
-          },
+          variables: { platform: "web", slug: clipId },
           extensions: {
             persistedQuery: {
               version: 1,
@@ -179,33 +187,39 @@
           },
         };
 
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", url, false);
-        xhr.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
-        xhr.setRequestHeader("Client-ID", "kimne78kx3ncx6brgo4mv6wki5h1ko");
-        xhr.send(JSON.stringify(query));
+        const response = await fetch("https://gql.twitch.tv/gql", {
+          method: "POST",
+          headers: {
+            "Client-ID": "kimne78kx3ncx6brgo4mv6wki5h1ko",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(query),
+        });
 
-        if (xhr.status === 200) {
-          const clipInfo = JSON.parse(xhr.responseText);
-          const clipData = clipInfo.data;
-          const clipSource = clipData.clip.videoQualities[0].sourceURL;
-          const clipSig = clipData.clip.playbackAccessToken.signature;
-          const clipToken = clipData.clip.playbackAccessToken.value;
-          const videoSrc =
-            clipSource + "?sig=" + clipSig + "&token=" + encodeURI(clipToken);
-          videoElement.src = videoSrc;
-          videoElement.load();
-          await videoElement.play();
-        } else {
-          console.error("Request failed with status: " + xhr.status);
+        if (!response.ok) {
+          console.error("Twitch API request failed:", response.status);
+          return;
         }
 
-        videoElement.style.visibility = "hidden";
-        setTimeout("showVideo();", 1000);
+        const clipInfo = await response.json();
+        const clipData = clipInfo.data.clip;
+        const clipSource = clipData.videoQualities[0].sourceURL;
+        const clipSig = clipData.playbackAccessToken.signature;
+        const clipToken = clipData.playbackAccessToken.value;
+        const videoSrc =
+          clipSource +
+          "?sig=" +
+          clipSig +
+          "&token=" +
+          encodeURIComponent(clipToken);
+
+        videoElement.src = videoSrc;
+        videoElement.load();
+        setTimeout(showVideo, 1000);
       }
 
       function cleanup() {
-        document.getElementById("videocontainer").innerHTML = "";
+        document.getElementById("videoplayer").src = "";
         const overlay = document.getElementById("info-overlay");
         overlay.classList.add("hidden");
       }
