@@ -1,11 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Timeout Eject Animation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
+
+      body {
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
+
+      #parent-container {
+        text-align: center;
+        transition: opacity 0.5s ease;
+        max-width: 1800px; /* Keep it slightly under 1920 for padding */
+        width: 100%;
+        word-break: break-word;
+      }
 
       .eject-line {
         font-family: "VT323", monospace;
@@ -37,11 +56,8 @@
     </style>
   </head>
 
-  <body class="bg-transparent flex items-center justify-center min-h-screen">
-    <div
-      id="parent-container"
-      class="text-center transition-opacity duration-500"
-    >
+  <body>
+    <div id="parent-container">
       <div id="line-one" class="eject-line"></div>
       <div id="line-two" class="eject-line"></div>
     </div>
@@ -86,7 +102,7 @@
       const HOLD_TIME_MS = 5000;
       const FADE_TIME_MS = 500;
 
-      // --- Create keyframes dynamically ---
+      // --- Utility: Create typing keyframes ---
       function createTypingKeyframes() {
         const styleSheet = document.styleSheets[0];
         const rule = `
@@ -102,9 +118,19 @@
         }
       }
 
+      // --- Utility: Auto font scaling based on text length ---
+      function adjustFontSize(el, text) {
+        const baseSize = 5; // rem
+        const maxChars = 36; // ideal width for 1920px at base size
+        const scale = Math.max(0.6, Math.min(1, maxChars / text.length));
+        el.style.fontSize = `${baseSize * scale}rem`;
+      }
+
       // --- Animation: Line 1 ---
       function typeLineOne() {
         elOne.textContent = lineOneText;
+        adjustFontSize(elOne, lineOneText);
+
         const numSteps1 = lineOneText.length;
         const typingDuration1 = numSteps1 * CHAR_DELAY_S;
 
@@ -123,6 +149,8 @@
       // --- Animation: Line 2 ---
       function typeLineTwo() {
         elTwo.textContent = lineTwoText;
+        adjustFontSize(elTwo, lineTwoText);
+
         const numSteps2 = lineTwoText.length;
         const typingDuration2 = numSteps2 * CHAR_DELAY_S;
 
@@ -133,7 +161,9 @@
           elTwo.classList.remove("cursor");
           elTwo.style.borderRight = "none";
           elTwo.style.animation = "none";
-          elTwo.style.width = "fit-content";
+          elTwo.style.whiteSpace = "normal"; // allow wrapping if still too long
+          elTwo.style.display = "inline-block";
+          elTwo.style.width = "auto";
           startCleanup();
         }, typingDuration2 * 1000 + CURSOR_STOP_DELAY_MS);
       }
