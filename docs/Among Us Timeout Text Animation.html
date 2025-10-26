@@ -1,186 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Timeout Eject Animation</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timeout Animation</title>
+<style>
+  @font-face {
+    font-family: 'AmongUs';
+    src: url('https://cdn.jsdelivr.net/gh/rearsilvergaming/Streamer-Tools/assets/AmongUs-Regular.woff2') format('woff2');
+  }
 
-      body {
-        background: transparent;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        margin: 0;
-        padding: 0;
-      }
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 1080px;
+    width: 1920px;
+  }
 
-      #parent-container {
-        text-align: center;
-        transition: opacity 0.5s ease;
-        max-width: 1800px; /* Keep it slightly under 1920 for padding */
-        width: 100%;
-        word-break: break-word;
-      }
+  .container {
+    text-align: center;
+    font-family: 'AmongUs', sans-serif;
+    font-size: 64px;
+    color: white;
+    text-shadow: 4px 4px 0 #000;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
 
-      .eject-line {
-        font-family: "VT323", monospace;
-        font-size: 5rem;
-        color: #fff;
-        white-space: nowrap;
-        overflow: hidden;
-        width: 0;
-        letter-spacing: 0.15em;
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-        margin: 0;
-        padding: 0;
-        line-height: 1.2;
-      }
+  .visible {
+    opacity: 1;
+  }
 
-      .cursor {
-        border-right: 0.15em solid white;
-      }
+  .hidden {
+    opacity: 0;
+  }
 
-      @keyframes blink-caret {
-        from,
-        to {
-          border-color: transparent;
-        }
-        50% {
-          border-color: white;
-        }
-      }
-    </style>
-  </head>
+  .line {
+    margin: 10px 0;
+  }
 
-  <body>
-    <div id="parent-container">
-      <div id="line-one" class="eject-line"></div>
-      <div id="line-two" class="eject-line"></div>
-    </div>
+  .username {
+    color: #ff5050;
+  }
 
-    <script>
-      // --- Read parameters from URL ---
-      const params = new URLSearchParams(window.location.search);
-      const targetUser = decodeURIComponent(params.get("user") || "A viewer");
-      const modUser = decodeURIComponent(params.get("mod") || "RearSilver");
-      const reasonRaw = params.get("reason");
-      const durationRaw = params.get("duration");
+  .mod {
+    color: #50b3ff;
+  }
 
-      // --- Prepare readable values ---
-      let duration = "";
-      if (durationRaw) {
-        const seconds = parseInt(durationRaw, 10);
-        if (!isNaN(seconds)) {
-          duration =
-            seconds >= 60
-              ? `${Math.floor(seconds / 60)} minute${seconds >= 120 ? "s" : ""}`
-              : `${seconds} second${seconds !== 1 ? "s" : ""}`;
-        }
-      }
+  .duration {
+    color: #ffff50;
+  }
 
-      const reason = reasonRaw ? decodeURIComponent(reasonRaw) : "";
+  .reason {
+    color: #a0ff90;
+  }
+</style>
+</head>
+<body>
+  <div class="container" id="textContainer">
+    <div class="line"><span class="username" id="username"></span> was timed out</div>
+    <div class="line">By <span class="mod" id="mod"></span> for <span class="duration" id="duration"></span></div>
+    <div class="line reason" id="reason"></div>
+  </div>
 
-      // --- Build message text dynamically ---
-      const lineOneText = `${targetUser} was`;
-      let lineTwoText = `timed out by ${modUser}`;
-      if (duration) lineTwoText += ` for ${duration}`;
-      if (reason) lineTwoText += ` (${reason})`;
-      lineTwoText += `.`; // add full stop at the end
+  <script>
+    // Parse URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const user = urlParams.get('user') || 'Someone';
+    const mod = urlParams.get('mod') || 'a Moderator';
+    const duration = urlParams.get('duration') || '300s';
+    const reason = urlParams.get('reason') || 'No reason given.';
 
-      // --- DOM references ---
-      const elOne = document.getElementById("line-one");
-      const elTwo = document.getElementById("line-two");
-      const parentContainer = document.getElementById("parent-container");
+    // Populate text
+    document.getElementById('username').textContent = user;
+    document.getElementById('mod').textContent = mod;
+    document.getElementById('duration').textContent = duration;
+    document.getElementById('reason').textContent = reason;
 
-      // Animation constants
-      const CHAR_DELAY_S = 0.09;
-      const CURSOR_STOP_DELAY_MS = 500;
-      const HOLD_TIME_MS = 5000;
-      const FADE_TIME_MS = 500;
-
-      // --- Utility: Create typing keyframes ---
-      function createTypingKeyframes() {
-        const styleSheet = document.styleSheets[0];
-        const rule = `
-          @keyframes typing-dynamic {
-            from { width: 0 }
-            to { width: 100% }
-          }
-        `;
-        if (
-          ![...styleSheet.cssRules].some((r) => r.name === "typing-dynamic")
-        ) {
-          styleSheet.insertRule(rule, styleSheet.cssRules.length);
-        }
-      }
-
-      // --- Utility: Auto font scaling based on text length ---
-      function adjustFontSize(el, text) {
-        const baseSize = 5; // rem
-        const maxChars = 36; // ideal width for 1920px at base size
-        const scale = Math.max(0.6, Math.min(1, maxChars / text.length));
-        el.style.fontSize = `${baseSize * scale}rem`;
-      }
-
-      // --- Animation: Line 1 ---
-      function typeLineOne() {
-        elOne.textContent = lineOneText;
-        adjustFontSize(elOne, lineOneText);
-
-        const numSteps1 = lineOneText.length;
-        const typingDuration1 = numSteps1 * CHAR_DELAY_S;
-
-        elOne.classList.add("cursor");
-        elOne.style.animation = `typing-dynamic ${typingDuration1}s steps(${numSteps1}) forwards, blink-caret 0.75s step-end infinite`;
-
-        setTimeout(() => {
-          elOne.classList.remove("cursor");
-          elOne.style.borderRight = "none";
-          elOne.style.animation = "none";
-          elOne.style.width = "fit-content";
-          typeLineTwo();
-        }, typingDuration1 * 1000 + CURSOR_STOP_DELAY_MS);
-      }
-
-      // --- Animation: Line 2 ---
-      function typeLineTwo() {
-        elTwo.textContent = lineTwoText;
-        adjustFontSize(elTwo, lineTwoText);
-
-        const numSteps2 = lineTwoText.length;
-        const typingDuration2 = numSteps2 * CHAR_DELAY_S;
-
-        elTwo.classList.add("cursor");
-        elTwo.style.animation = `typing-dynamic ${typingDuration2}s steps(${numSteps2}) forwards, blink-caret 0.75s step-end infinite`;
-
-        setTimeout(() => {
-          elTwo.classList.remove("cursor");
-          elTwo.style.borderRight = "none";
-          elTwo.style.animation = "none";
-          elTwo.style.whiteSpace = "normal"; // allow wrapping if still too long
-          elTwo.style.display = "inline-block";
-          elTwo.style.width = "auto";
-          startCleanup();
-        }, typingDuration2 * 1000 + CURSOR_STOP_DELAY_MS);
-      }
-
-      // --- Fade out ---
-      function startCleanup() {
-        setTimeout(() => {
-          parentContainer.style.opacity = "0";
-          setTimeout(() => {
-            parentContainer.style.display = "none";
-          }, FADE_TIME_MS);
-        }, HOLD_TIME_MS);
-      }
-
-      // --- Initialise ---
-      createTypingKeyframes();
-      typeLineOne();
-    </script>
-  </body>
+    // Animation sequence
+    const container = document.getElementById('textContainer');
+    setTimeout(() => container.classList.add('visible'), 500); // fade in
+    setTimeout(() => container.classList.remove('visible'), 7000); // fade out after 7s
+  </script>
+</body>
 </html>
