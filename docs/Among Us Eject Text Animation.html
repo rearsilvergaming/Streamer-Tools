@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Two-Line Eject Animation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
+
+      /* Styles common to both animated lines */
+      .eject-line {
+        font-family: "VT323", monospace;
+        font-size: 5rem; /* Large text */
+        color: #fff;
+        white-space: nowrap; /* Forces content onto one line for the animation */
+        overflow: hidden; /* Hides untyped text */
+        width: 0; /* Starts with zero width for animation */
+        letter-spacing: 0.15em;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        margin: 0; /* Remove default margins */
+        padding: 0; /* Remove default padding */
+        line-height: 1.2; /* Tighter line spacing */
+      }
+
+      /* The cursor style (only applied dynamically to the active line) */
+      .cursor {
+        border-right: 0.15em solid white;
+      }
+
+      /* Keyframes for the blinking cursor */
+      @keyframes blink-caret {
+        from,
+        to {
+          border-color: transparent;
+        }
+        50% {
+          border-color: white;
+        }
+      }
+
+      /* Keyframes for the typing width (defined dynamically in JS) */
+    </style>
+  </head>
+  <body class="bg-transparent flex items-center justify-center min-h-screen">
+    <!-- Parent container to hold both lines and manage the final fade-out -->
+    <div
+      id="parent-container"
+      class="text-center transition-opacity duration-500"
+    >
+      <!-- Line 1: Dynamic Username -->
+      <div id="line-one" class="eject-line"></div>
+      <!-- Line 2: Fixed Ejected Phrase -->
+      <div id="line-two" class="eject-line"></div>
+    </div>
+
+    <script>
+      // --- Utility Functions ---
+
+      function decodeBase64(str) {
+        try {
+          return decodeURIComponent(
+            atob(str)
+              .split("")
+              .map(function (c) {
+                return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+              })
+              .join("")
+          );
+        } catch (e) {
+          console.error("Failed to decode base64 parameter:", e);
+          return "A user"; // Fallback
+        }
+      }
+
+      function createTypingKeyframes(numSteps) {
+        const styleSheet = document.styleSheets[0];
+        const rule = `@keyframes typing-dynamic {
+                from { width: 0 }
+                to { width: 100% }
+            }`;
+        // Use 'typing-dynamic' to ensure we only have one set of keyframes
+        // We check if the rule exists before inserting to prevent console warnings on refresh
+        if (
+          !styleSheet.cssRules.length ||
+          !Array.from(styleSheet.cssRules).some(
+            (r) => r.name === "typing-dynamic"
+          )
+        ) {
+          styleSheet.insertRule(rule, styleSheet.cssRules.length);
+        }
+      }
+
+      // --- Main Logic ---
+
+      // Get the username from the URL query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      let username = urlParams.get("user");
+
+      if (username) {
+        username = decodeBase64(username);
+      } else {
+        // Default text for testing a long username
+        username = "ThisIsAVeryLongUsername123";
+      }
+
+      // Define content for the two lines
+      const lineOneText = `${username} was`;
+      const lineTwoText = `ejected from the stream.`;
+
+      const elOne = document.getElementById("line-one");
+      const elTwo = document.getElementById("line-two");
+      const parentContainer = document.getElementById("parent-container");
+
+      // Animation constants
+      const CHAR_DELAY_S = 0.09;
+      const CURSOR_STOP_DELAY_MS = 500;
+      const HOLD_TIME_MS = 5000;
+      const FADE_TIME_MS = 500;
+
+      // --- ANIMATION 1: Line 1 (Username) ---
+      function typeLineOne() {
+        elOne.textContent = lineOneText;
+        const numSteps1 = lineOneText.length;
+        const typingDuration1 = numSteps1 * CHAR_DELAY_S;
+
+        // Apply cursor and animation
+        elOne.classList.add("cursor");
+        elOne.style.animation =
+          `typing-dynamic ${typingDuration1}s steps(${numSteps1}) forwards, ` +
+          `blink-caret 0.75s step-end infinite`;
+
+        // Wait for Line 1 to finish typing
+        const lineOneEndTimeMS = typingDuration1 * 1000;
+        setTimeout(() => {
+          // Remove cursor from Line 1 and lock its width
+          elOne.classList.remove("cursor");
+          elOne.style.borderRight = "none";
+          elOne.style.animation = "none";
+          elOne.style.width = "fit-content";
+
+          // Start the second line
+          typeLineTwo(lineOneEndTimeMS);
+        }, lineOneEndTimeMS + CURSOR_STOP_DELAY_MS);
+      }
+
+      // --- ANIMATION 2: Line 2 (Fixed Phrase) ---
+      function typeLineTwo(delayOffset) {
+        elTwo.textContent = lineTwoText;
+        const numSteps2 = lineTwoText.length;
+        const typingDuration2 = numSteps2 * CHAR_DELAY_S;
+
+        // Apply cursor and animation to the second line
+        elTwo.classList.add("cursor");
+        elTwo.style.animation =
+          `typing-dynamic ${typingDuration2}s steps(${numSteps2}) forwards, ` +
+          `blink-caret 0.75s step-end infinite`;
+
+        // Wait for Line 2 to finish typing (This marks the end of all animation)
+        const lineTwoEndTimeMS = delayOffset + typingDuration2 * 1000;
+
+        setTimeout(() => {
+          // Remove cursor from Line 2 and lock its width
+          elTwo.classList.remove("cursor");
+          elTwo.style.borderRight = "none";
+          elTwo.style.animation = "none";
+          elTwo.style.width = "fit-content";
+
+          // Start the 5-second HOLD and then the FADE-OUT
+          startCleanup(lineTwoEndTimeMS);
+        }, typingDuration2 * 1000 + CURSOR_STOP_DELAY_MS); // Duration 2 is all we need here
+      }
+
+      // --- FINAL CLEANUP ---
+      function startCleanup(totalAnimationTimeMS) {
+        // Hold for 5 seconds
+        setTimeout(() => {
+          // 1. Start the fade-out
+          parentContainer.style.opacity = "0";
+
+          // 2. Complete cleanup after the fade transition
+          setTimeout(() => {
+            parentContainer.style.display = "none";
+          }, FADE_TIME_MS);
+        }, HOLD_TIME_MS);
+      }
+
+      // --- INITIALIZATION ---
+      // 1. Create Keyframes once
+      createTypingKeyframes();
+
+      // 2. Start the animation sequence
+      typeLineOne();
+    </script>
+  </body>
+</html>
