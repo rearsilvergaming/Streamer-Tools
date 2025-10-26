@@ -93,16 +93,17 @@
       // --- Main Logic ---
 
       // Get the username from the URL query parameters
-      const urlParams = new URLSearchParams(window.location.search);
-      let rawUsernameB64 = urlParams.get("user");
+      const params = new URLSearchParams(window.location.search);
+      document.getElementById("name").textContent =
+        params.get("user") || "RearSilver";
 
-      let username;
+      /*let username;
       if (rawUsernameB64) {
         username = decodeBase64(rawUsernameB64);
       } else {
         // Default text if no username is provided
         username = "A user";
-      }
+      }*/
 
       // Define content for the two lines
       const lineOneText = `${username} was`;
