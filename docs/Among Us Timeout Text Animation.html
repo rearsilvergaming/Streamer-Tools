@@ -17,30 +17,33 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 1080px;
     width: 1920px;
+    height: 1080px;
   }
 
   .container {
     text-align: center;
     font-family: 'AmongUs', sans-serif;
-    font-size: 64px;
-    color: white;
-    text-shadow: 4px 4px 0 #000;
+    font-size: 72px;
+    color: #fff;
+    text-shadow: 6px 6px 0 #000;
     opacity: 0;
-    transition: opacity 1s ease-in-out;
+    transform: translateY(40px);
+    transition: opacity 1s ease, transform 1s ease;
   }
 
   .visible {
     opacity: 1;
+    transform: translateY(0);
   }
 
   .hidden {
     opacity: 0;
+    transform: translateY(-40px);
   }
 
   .line {
-    margin: 10px 0;
+    margin: 15px 0;
   }
 
   .username {
@@ -68,23 +71,37 @@
   </div>
 
   <script>
-    // Parse URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const user = urlParams.get('user') || 'Someone';
-    const mod = urlParams.get('mod') || 'a Moderator';
-    const duration = urlParams.get('duration') || '300s';
-    const reason = urlParams.get('reason') || 'No reason given.';
+    // Grab URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const user = decodeURIComponent(params.get("user") || "Someone");
+    const mod = decodeURIComponent(params.get("mod") || "a Moderator");
+    const duration = decodeURIComponent(params.get("duration") || "300s");
+    const reason = decodeURIComponent(params.get("reason") || "No reason given.");
 
     // Populate text
-    document.getElementById('username').textContent = user;
-    document.getElementById('mod').textContent = mod;
-    document.getElementById('duration').textContent = duration;
-    document.getElementById('reason').textContent = reason;
+    document.getElementById("username").textContent = user;
+    document.getElementById("mod").textContent = mod;
+    document.getElementById("duration").textContent = duration;
+    document.getElementById("reason").textContent = reason;
 
-    // Animation sequence
-    const container = document.getElementById('textContainer');
-    setTimeout(() => container.classList.add('visible'), 500); // fade in
-    setTimeout(() => container.classList.remove('visible'), 7000); // fade out after 7s
+    // Animation logic
+    const container = document.getElementById("textContainer");
+
+    // Fade in
+    setTimeout(() => {
+      container.classList.add("visible");
+    }, 500);
+
+    // Hold for 7 seconds
+    setTimeout(() => {
+      container.classList.remove("visible");
+      container.classList.add("hidden");
+    }, 7500);
+
+    // Optional: fade out cleanly at 9s (for OBS reset)
+    setTimeout(() => {
+      container.style.display = "none";
+    }, 9000);
   </script>
 </body>
 </html>
