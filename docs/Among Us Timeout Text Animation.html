@@ -62,7 +62,6 @@
     <div
       id="parent-container"
       class="text-center transition-opacity duration-500"
-      /* Removed mt-10 and will rely on margin/padding/body flex for centering */
     >
       <div id="line-one" class="eject-line"></div>
       <div id="line-two" class="eject-line"></div>
@@ -85,8 +84,6 @@
         }
       }
       
-      // Removed createTypingKeyframes as it's no longer needed
-
       // --- Get Parameters and Define Content ---
       const params = new URLSearchParams(window.location.search);
       
@@ -133,14 +130,33 @@
         // 1. Insert content just before typing starts
         el.innerHTML = content;
         
-        // 2. Temporarily set width to content to measure it
+        // 2. We use the length of the *text content* to determine the steps.
+        const numSteps = el.textContent.length; 
+        
+        // --- CRITICAL FIX: Skip animation if the line is empty (numSteps === 0) ---
+        if (numSteps === 0) {
+            el.classList.add("cursor");
+            el.style.width = "fit-content";
+            el.style.animation = `blink-caret 0.75s step-end infinite`;
+
+            // Proceed to the next step after a very short pause for visual effect
+            setTimeout(() => {
+                el.classList.remove("cursor");
+                el.style.borderRight = "none";
+                el.style.animation = "none";
+                nextFunction(); 
+            }, CURSOR_STOP_DELAY_MS);
+            return; // Exit the function to prevent the crash
+        }
+        // --------------------------------------------------------------------------
+
+        // Continue with animation for non-empty lines
+        const typingDuration = numSteps * CHAR_DELAY_S;
+        
+        // Temporarily set width to content to measure it
         el.style.width = 'fit-content';
         const finalWidth = el.offsetWidth;
         el.style.width = '0'; // Reset width for animation start
-        
-        // 3. We use the length of the *text content* to determine the steps.
-        const numSteps = el.textContent.length; 
-        const typingDuration = numSteps * CHAR_DELAY_S;
         
         el.classList.add("cursor");
 
@@ -189,7 +205,7 @@
 
       // --- Fade Out ---
       function startCleanup() {
-        // Ensure the last cursor (on line 4) has a moment to blink before fade out
+        // Line 4 is the final empty line, ensure the cursor blinks for the HOLD_TIME_MS
         elFour.classList.add("cursor");
         elFour.style.animation = `blink-caret 0.75s step-end infinite`;
         
