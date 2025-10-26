@@ -42,8 +42,6 @@
         }
       }
       
-      /* Dynamic typing keyframe will be created in JS, based on Ban code */
-
       /* Colouring styles from the original Timeout code */
       .username {
         color: #ff5050;
@@ -86,7 +84,6 @@
       }
       
       // Function to dynamically create the typing keyframes (from Ban code)
-      // This is now simplified back to the original dynamic 'typing-dynamic'
       function createTypingKeyframes() {
         const styleSheet = document.styleSheets[0];
         const rule = `
@@ -102,12 +99,20 @@
         }
       }
 
-      // --- Get Parameters and Define Content ---
+      // --- Get Parameters and Define Content (FIXED) ---
       const params = new URLSearchParams(window.location.search);
+      
+      // The user who was timed out (%user% or %user.displayName%)
       let rawUser = params.get("user") || "A user";
       let username = decodeBase64(rawUser); 
 
-      const mod = decodeURIComponent(params.get("mod") || "a Moderator");
+      // The moderator who timed out the user (%createdByDisplayName%)
+      // This is the variable that was incorrectly mapped previously.
+      const mod = decodeURIComponent(
+        params.get("createdByDisplayName") || "a Moderator"
+      );
+      
+      // Other variables
       const duration = decodeURIComponent(params.get("duration") || "300s");
       const reason = decodeURIComponent(
         params.get("reason") || "No reason given."
@@ -124,7 +129,7 @@
       const lineOneHTML = `<span class="username">${username}</span> was timed out`;
       const lineTwoHTML = `By <span class="mod">${mod}</span> for <span class="duration">${duration}</span>`;
       const lineThreeText = reason;
-      const lineFourText = ""; // Blank line for the final cursor effect
+      const lineFourText = ""; 
 
       // --- Animation Constants ---
       const CHAR_DELAY_S = 0.09;
@@ -145,12 +150,8 @@
         el.innerHTML = content;
         
         // 2. We use the length of the *text content* to determine the steps.
-        // This is safer than HTML length for the step count.
         const numSteps = el.textContent.length; 
         const typingDuration = numSteps * CHAR_DELAY_S;
-        
-        // We ensure the animation width targets 100% of the *content's* width.
-        // This is reliable when the CSS has white-space: nowrap and overflow: hidden.
         
         el.classList.add("cursor");
         el.style.animation =
@@ -172,34 +173,27 @@
       
       // Define the sequence of line typing
       
-      // 1. Type Line 1: [User] was timed out
       function typeLineOne() {
         typeLine(elOne, lineOneHTML, typeLineTwo);
       }
 
-      // 2. Type Line 2: By [Mod] for [Duration]
       function typeLineTwo() {
         typeLine(elTwo, lineTwoHTML, typeLineThree);
       }
 
-      // 3. Type Line 3: [Reason]
       function typeLineThree() {
-        // Line 3 only contains text, so we can pass it directly
         typeLine(elThree, lineThreeText, typeLineFour);
       }
       
-      // 4. Type Line 4 (Final line, blank, for final cursor effect)
       function typeLineFour() {
         typeLine(elFour, lineFourText, startCleanup);
       }
 
       // --- Fade Out ---
       function startCleanup() {
-        // Hold the final state for the specified time
         setTimeout(() => {
-          parentContainer.style.opacity = "0"; // Trigger fade out
+          parentContainer.style.opacity = "0"; 
 
-          // After fade out is complete, hide the element completely
           setTimeout(() => {
             parentContainer.style.display = "none";
           }, FADE_TIME_MS);
