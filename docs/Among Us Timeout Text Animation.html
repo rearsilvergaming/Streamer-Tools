@@ -15,12 +15,17 @@
         font-family: "VT323", monospace;
         font-size: 5rem;
         color: #fff;
-        white-space: nowrap;
+        /* CRITICAL: Keep these for the typing effect to work */
+        white-space: nowrap; 
         overflow: hidden;
+        /* Setting initial width here is now redundant as it's set to 0 in JS */
+        
         letter-spacing: 0.15em;
         text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 4px 4px 0 #000;
         margin: 0 0 0.5em 0;
         line-height: 1.2;
+        /* Ensure it's block so it occupies its own line and the animation works */
+        display: block; 
       }
 
       .cursor {
@@ -79,8 +84,8 @@
       const CURSOR_STOP_DELAY_MS = 500;
       const HOLD_TIME_MS = 5000;
       const FADE_TIME_MS = 500;
-      const OBS_WIDTH = 1920;
-      const OBS_PADDING = 60; // leave a little margin
+      const OBS_WIDTH = 1920; // Assuming a 1080p stream width for max content width
+      const OBS_PADDING = 60; 
 
       // --- Typing Animation ---
       function typeLine(el, content, nextFunction) {
@@ -96,11 +101,16 @@
           return;
         }
 
-        // Measure real width
-        el.style.width = "auto";
+        // --- CRITICAL FIX: Ensure display is inline-block ONLY for measurement ---
+        const originalDisplay = el.style.display;
         el.style.display = "inline-block";
+        
         let finalWidth = el.offsetWidth;
-        finalWidth = Math.min(finalWidth, OBS_WIDTH - OBS_PADDING);
+        // Limit width to OBS width minus padding
+        finalWidth = Math.min(finalWidth, OBS_WIDTH - OBS_PADDING); 
+        
+        // Reset display and prepare for animation
+        el.style.display = originalDisplay || 'block'; // Reset to original or 'block'
         el.style.width = "0px";
         el.classList.add("cursor");
 
