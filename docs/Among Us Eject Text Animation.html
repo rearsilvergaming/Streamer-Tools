@@ -7,27 +7,24 @@
     <style>
       @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
 
-      /* Styles common to both animated lines */
       .eject-line {
         font-family: "VT323", monospace;
-        font-size: 5rem; /* Large text */
+        font-size: 5rem;
         color: #fff;
-        white-space: nowrap; /* Forces content onto one line for the animation */
-        overflow: hidden; /* Hides untyped text */
-        width: 0; /* Starts with zero width for animation */
+        white-space: nowrap;
+        overflow: hidden;
+        width: 0;
         letter-spacing: 0.15em;
         text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-        margin: 0; /* Remove default margins */
-        padding: 0; /* Remove default padding */
-        line-height: 1.2; /* Tighter line spacing */
+        margin: 0;
+        padding: 0;
+        line-height: 1.2;
       }
 
-      /* The cursor style (only applied dynamically to the active line) */
       .cursor {
         border-right: 0.15em solid white;
       }
 
-      /* Keyframes for the blinking cursor */
       @keyframes blink-caret {
         from,
         to {
@@ -37,75 +34,24 @@
           border-color: white;
         }
       }
-
-      /* Keyframes for the typing width (defined dynamically in JS) */
     </style>
   </head>
+
   <body class="bg-transparent flex items-center justify-center min-h-screen">
-    <!-- Parent container to hold both lines and manage the final fade-out -->
-    <div
-      id="parent-container"
-      class="text-center transition-opacity duration-500"
-    >
-      <!-- Line 1: Dynamic Username -->
+    <div id="parent-container" class="text-center transition-opacity duration-500">
       <div id="line-one" class="eject-line"></div>
-      <!-- Line 2: Fixed Ejected Phrase -->
       <div id="line-two" class="eject-line"></div>
     </div>
 
     <script>
-      // --- Utility Functions ---
-
-      function decodeBase64(str) {
-        try {
-          // Base64 decode, then URL decode
-          return decodeURIComponent(
-            atob(str)
-              .split("")
-              .map(function (c) {
-                return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-              })
-              .join("")
-          );
-        } catch (e) {
-          // If decoding fails (e.g., if the base64 string is invalid or empty)
-          return "A user";
-        }
-      }
-
-      function createTypingKeyframes() {
-        const styleSheet = document.styleSheets[0];
-        const rule = `@keyframes typing-dynamic {
-                from { width: 0 }
-                to { width: 100% }
-            }`;
-        // Use 'typing-dynamic' to ensure we only have one set of keyframes
-        if (
-          !styleSheet.cssRules.length ||
-          !Array.from(styleSheet.cssRules).some(
-            (r) => r.name === "typing-dynamic"
-          )
-        ) {
-          styleSheet.insertRule(rule, styleSheet.cssRules.length);
-        }
-      }
-
-      // --- Main Logic ---
-
-      // Get the username from the URL query parameters
+      // --- Get username from URL (?user=xxx) ---
       const params = new URLSearchParams(window.location.search);
-      document.getElementById("name").textContent =
-        params.get("user") || "RearSilver";
+      let username = params.get("user") || "A user";
 
-      /*let username;
-      if (rawUsernameB64) {
-        username = decodeBase64(rawUsernameB64);
-      } else {
-        // Default text if no username is provided
-        username = "A user";
-      }*/
+      // Optional: clean up the username (remove URL encoding etc.)
+      username = decodeURIComponent(username);
 
-      // Define content for the two lines
+      // --- Define text ---
       const lineOneText = `${username} was`;
       const lineTwoText = `ejected from the stream.`;
 
@@ -119,78 +65,70 @@
       const HOLD_TIME_MS = 5000;
       const FADE_TIME_MS = 500;
 
-      // --- ANIMATION 1: Line 1 (Username) ---
+      // --- Create keyframes dynamically (once) ---
+      function createTypingKeyframes() {
+        const styleSheet = document.styleSheets[0];
+        const rule = `
+          @keyframes typing-dynamic {
+            from { width: 0 }
+            to { width: 100% }
+          }
+        `;
+        if (![...styleSheet.cssRules].some(r => r.name === "typing-dynamic")) {
+          styleSheet.insertRule(rule, styleSheet.cssRules.length);
+        }
+      }
+
+      // --- Animation: Line 1 ---
       function typeLineOne() {
         elOne.textContent = lineOneText;
         const numSteps1 = lineOneText.length;
         const typingDuration1 = numSteps1 * CHAR_DELAY_S;
 
-        // Apply cursor and animation
         elOne.classList.add("cursor");
         elOne.style.animation =
-          `typing-dynamic ${typingDuration1}s steps(${numSteps1}) forwards, ` +
-          `blink-caret 0.75s step-end infinite`;
+          `typing-dynamic ${typingDuration1}s steps(${numSteps1}) forwards, blink-caret 0.75s step-end infinite`;
 
-        // Wait for Line 1 to finish typing
-        const lineOneEndTimeMS = typingDuration1 * 1000;
         setTimeout(() => {
-          // Remove cursor from Line 1 and lock its width
           elOne.classList.remove("cursor");
           elOne.style.borderRight = "none";
           elOne.style.animation = "none";
           elOne.style.width = "fit-content";
-
-          // Start the second line
-          typeLineTwo(lineOneEndTimeMS);
-        }, lineOneEndTimeMS + CURSOR_STOP_DELAY_MS);
+          typeLineTwo();
+        }, typingDuration1 * 1000 + CURSOR_STOP_DELAY_MS);
       }
 
-      // --- ANIMATION 2: Line 2 (Fixed Phrase) ---
-      function typeLineTwo(delayOffset) {
+      // --- Animation: Line 2 ---
+      function typeLineTwo() {
         elTwo.textContent = lineTwoText;
         const numSteps2 = lineTwoText.length;
         const typingDuration2 = numSteps2 * CHAR_DELAY_S;
 
-        // Apply cursor and animation to the second line
         elTwo.classList.add("cursor");
         elTwo.style.animation =
-          `typing-dynamic ${typingDuration2}s steps(${numSteps2}) forwards, ` +
-          `blink-caret 0.75s step-end infinite`;
-
-        // Wait for Line 2 to finish typing (This marks the end of all animation)
-        const lineTwoEndTimeMS = delayOffset + typingDuration2 * 1000;
+          `typing-dynamic ${typingDuration2}s steps(${numSteps2}) forwards, blink-caret 0.75s step-end infinite`;
 
         setTimeout(() => {
-          // Remove cursor from Line 2 and lock its width
           elTwo.classList.remove("cursor");
           elTwo.style.borderRight = "none";
           elTwo.style.animation = "none";
           elTwo.style.width = "fit-content";
-
-          // Start the 5-second HOLD and then the FADE-OUT
-          startCleanup(lineTwoEndTimeMS);
-        }, typingDuration2 * 1000 + CURSOR_STOP_DELAY_MS); // Duration 2 is all we need here
+          startCleanup();
+        }, typingDuration2 * 1000 + CURSOR_STOP_DELAY_MS);
       }
 
-      // --- FINAL CLEANUP ---
-      function startCleanup(totalAnimationTimeMS) {
-        // Hold for 5 seconds
+      // --- Fade out after hold ---
+      function startCleanup() {
         setTimeout(() => {
-          // 1. Start the fade-out
           parentContainer.style.opacity = "0";
-
-          // 2. Complete cleanup after the fade transition
           setTimeout(() => {
             parentContainer.style.display = "none";
           }, FADE_TIME_MS);
         }, HOLD_TIME_MS);
       }
 
-      // --- INITIALIZATION ---
-      // 1. Create Keyframes once
+      // --- Initialise ---
       createTypingKeyframes();
-
-      // 2. Start the animation sequence
       typeLineOne();
     </script>
   </body>
