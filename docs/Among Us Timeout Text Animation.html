@@ -17,6 +17,7 @@
         white-space: nowrap; 
         overflow: hidden; 
         width: 0; /* Starts with zero width for animation */
+        display: block; /* Ensure it is block by default for centering */
         
         letter-spacing: 0.15em;
         text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 4px 4px 0 #000;
@@ -133,30 +134,35 @@
         // 2. We use the length of the *text content* to determine the steps.
         const numSteps = el.textContent.length; 
         
-        // --- CRITICAL FIX: Skip animation if the line is empty (numSteps === 0) ---
+        // --- Handle Empty Line (Line 4) ---
         if (numSteps === 0) {
             el.classList.add("cursor");
             el.style.width = "fit-content";
             el.style.animation = `blink-caret 0.75s step-end infinite`;
 
-            // Proceed to the next step after a very short pause for visual effect
             setTimeout(() => {
                 el.classList.remove("cursor");
                 el.style.borderRight = "none";
                 el.style.animation = "none";
                 nextFunction(); 
             }, CURSOR_STOP_DELAY_MS);
-            return; // Exit the function to prevent the crash
+            return;
         }
         // --------------------------------------------------------------------------
 
         // Continue with animation for non-empty lines
         const typingDuration = numSteps * CHAR_DELAY_S;
         
-        // Temporarily set width to content to measure it
-        el.style.width = 'fit-content';
+        // --- CRITICAL FIX: Force synchronous width calculation ---
+        // Temporarily change display to reliably get the full content width.
+        el.style.display = 'inline-block';
+        el.style.whiteSpace = 'nowrap';
         const finalWidth = el.offsetWidth;
-        el.style.width = '0'; // Reset width for animation start
+        
+        // Reset styles for the animation start:
+        el.style.display = 'block'; // Reset to block or whatever makes sense for your layout
+        el.style.width = '0';      // Reset width for animation start
+        // --------------------------------------------------------
         
         el.classList.add("cursor");
 
