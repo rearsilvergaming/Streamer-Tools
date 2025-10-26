@@ -14,13 +14,15 @@
         font-size: 5rem; /* Large text, matching Ban code's size */
         color: #fff;
         /* These three rules are crucial for the typing effect: */
-        white-space: nowrap; /* Forces content onto one line */
-        overflow: hidden; /* Hides untyped text */
+        white-space: nowrap; 
+        overflow: hidden; 
         width: 0; /* Starts with zero width for animation */
         
         letter-spacing: 0.15em;
         text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 4px 4px 0 #000;
-        margin: 0; 
+        
+        /* FIX: Increased bottom margin to give line space and prevent cut-off */
+        margin: 0 0 0.5em 0; 
         padding: 0; 
         line-height: 1.2; 
       }
@@ -102,12 +104,11 @@
       // --- Get Parameters and Define Content (FIXED) ---
       const params = new URLSearchParams(window.location.search);
       
-      // The user who was timed out (%user% or %user.displayName%)
+      // Mapped to %user% or %user.displayName% in your stream tool
       let rawUser = params.get("user") || "A user";
       let username = decodeBase64(rawUser); 
 
-      // The moderator who timed out the user (%createdByDisplayName%)
-      // This is the variable that was incorrectly mapped previously.
+      // Mapped to %createdByDisplayName% in your stream tool (FIXED)
       const mod = decodeURIComponent(
         params.get("createdByDisplayName") || "a Moderator"
       );
@@ -166,9 +167,10 @@
           // Ensure the width is set to its content size after animation stops
           el.style.width = "fit-content";
           
-          // Move to the next line after a short delay
-          setTimeout(nextFunction, CURSOR_STOP_DELAY_MS);
-        }, typingDuration * 1000);
+          // CRITICAL FIX: The next function is called directly here, 
+          // removing the extra, unnecessary setTimeout delay.
+          nextFunction(); 
+        }, typingDuration * 1000 + CURSOR_STOP_DELAY_MS); /* Delay added here */
       }
       
       // Define the sequence of line typing
