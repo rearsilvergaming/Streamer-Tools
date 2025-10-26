@@ -11,7 +11,7 @@
       /* Styles common to all animated lines, adapted from eject-line */
       .eject-line {
         font-family: "VT323", monospace;
-        font-size: 5rem; /* Large text, matching Ban code's size */
+        font-size: 5rem;
         color: #fff;
         /* These three rules are crucial for the typing effect: */
         white-space: nowrap; 
@@ -21,7 +21,7 @@
         letter-spacing: 0.15em;
         text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 4px 4px 0 #000;
         
-        /* FIX: Increased bottom margin to give line space and prevent cut-off */
+        /* Margin adjustment for spacing and to prevent cut-off */
         margin: 0 0 0.5em 0; 
         padding: 0; 
         line-height: 1.2; 
@@ -30,7 +30,6 @@
       /* The cursor style (only applied dynamically to the active line) */
       .cursor {
         border-right: 0.15em solid white;
-        animation: blink-caret 0.75s step-end infinite;
       }
 
       /* Keyframes for the blinking cursor */
@@ -62,8 +61,8 @@
   <body class="bg-transparent flex items-center justify-center min-h-screen">
     <div
       id="parent-container"
-      class="text-center transition-opacity duration-500 **mt-10**" 
-      /* FIX: mt-10 added here to shift the centered container down slightly */
+      class="text-center transition-opacity duration-500"
+      /* Removed mt-10 and will rely on margin/padding/body flex for centering */
     >
       <div id="line-one" class="eject-line"></div>
       <div id="line-two" class="eject-line"></div>
@@ -86,35 +85,18 @@
         }
       }
       
-      // Function to dynamically create the typing keyframes (from Ban code)
-      function createTypingKeyframes() {
-        const styleSheet = document.styleSheets[0];
-        const rule = `
-        @keyframes typing-dynamic {
-          from { width: 0 }
-          to { width: 100% }
-        }
-      `;
-        if (
-          ![...styleSheet.cssRules].some((r) => r.name === "typing-dynamic")
-        ) {
-          styleSheet.insertRule(rule, styleSheet.cssRules.length);
-        }
-      }
+      // Removed createTypingKeyframes as it's no longer needed
 
       // --- Get Parameters and Define Content ---
       const params = new URLSearchParams(window.location.search);
       
-      // Mapped to %user% or %user.displayName% in your stream tool
       let rawUser = params.get("user") || "A user";
       let username = decodeBase64(rawUser); 
 
-      // Mapped to %createdByDisplayName% in your stream tool (FIXED)
       const mod = decodeURIComponent(
         params.get("createdByDisplayName") || "a Moderator"
       );
       
-      // Other variables
       const duration = decodeURIComponent(params.get("duration") || "300s");
       const reason = decodeURIComponent(
         params.get("reason") || "No reason given."
@@ -142,7 +124,7 @@
       // --- Animation Core Logic ---
 
       /**
-       * Generic function to type out a single line.
+       * Generic function to type out a single line using WAAPI for width animation.
        * @param {HTMLElement} el - The line element to type.
        * @param {string} content - The HTML/Text content to insert and type out.
        * @param {function} nextFunction - The function to call after this line is typed.
@@ -151,26 +133,40 @@
         // 1. Insert content just before typing starts
         el.innerHTML = content;
         
-        // 2. We use the length of the *text content* to determine the steps.
+        // 2. Temporarily set width to content to measure it
+        el.style.width = 'fit-content';
+        const finalWidth = el.offsetWidth;
+        el.style.width = '0'; // Reset width for animation start
+        
+        // 3. We use the length of the *text content* to determine the steps.
         const numSteps = el.textContent.length; 
         const typingDuration = numSteps * CHAR_DELAY_S;
         
         el.classList.add("cursor");
-        el.style.animation =
-          `typing-dynamic ${typingDuration}s steps(${numSteps}) forwards`;
 
-        setTimeout(() => {
+        // Use the Web Animation API (WAAPI) for a robust typing animation
+        const typingAnim = el.animate(
+          [
+            { width: '0' },
+            { width: `${finalWidth}px` }
+          ],
+          {
+            duration: typingDuration * 1000,
+            easing: `steps(${numSteps}, end)`,
+            fill: 'forwards'
+          }
+        );
+
+        typingAnim.onfinish = () => {
           // Stop cursor blink and remove cursor style
           el.classList.remove("cursor");
           el.style.borderRight = "none";
           el.style.animation = "none";
+          el.style.width = `${finalWidth}px`; // Ensure it holds the final width
           
-          // Ensure the width is set to its content size after animation stops
-          el.style.width = "fit-content";
-          
-          // Move to the next line after a short delay
-          nextFunction(); 
-        }, typingDuration * 1000 + CURSOR_STOP_DELAY_MS); 
+          // Add a short delay after typing stops before moving to the next line
+          setTimeout(nextFunction, CURSOR_STOP_DELAY_MS); 
+        };
       }
       
       // Define the sequence of line typing
@@ -193,7 +189,12 @@
 
       // --- Fade Out ---
       function startCleanup() {
+        // Ensure the last cursor (on line 4) has a moment to blink before fade out
+        elFour.classList.add("cursor");
+        elFour.style.animation = `blink-caret 0.75s step-end infinite`;
+        
         setTimeout(() => {
+          elFour.classList.remove("cursor"); // Remove cursor before starting fade
           parentContainer.style.opacity = "0"; 
 
           setTimeout(() => {
@@ -203,7 +204,6 @@
       }
 
       // --- Start Sequence ---
-      createTypingKeyframes();
       typeLineOne();
     </script>
   </body>
