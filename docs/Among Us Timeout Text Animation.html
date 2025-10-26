@@ -62,7 +62,8 @@
   <body class="bg-transparent flex items-center justify-center min-h-screen">
     <div
       id="parent-container"
-      class="text-center transition-opacity duration-500"
+      class="text-center transition-opacity duration-500 **mt-10**" 
+      /* FIX: mt-10 added here to shift the centered container down slightly */
     >
       <div id="line-one" class="eject-line"></div>
       <div id="line-two" class="eject-line"></div>
@@ -101,7 +102,7 @@
         }
       }
 
-      // --- Get Parameters and Define Content (FIXED) ---
+      // --- Get Parameters and Define Content ---
       const params = new URLSearchParams(window.location.search);
       
       // Mapped to %user% or %user.displayName% in your stream tool
@@ -167,10 +168,9 @@
           // Ensure the width is set to its content size after animation stops
           el.style.width = "fit-content";
           
-          // CRITICAL FIX: The next function is called directly here, 
-          // removing the extra, unnecessary setTimeout delay.
+          // Move to the next line after a short delay
           nextFunction(); 
-        }, typingDuration * 1000 + CURSOR_STOP_DELAY_MS); /* Delay added here */
+        }, typingDuration * 1000 + CURSOR_STOP_DELAY_MS); 
       }
       
       // Define the sequence of line typing
