@@ -1,104 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Timeout Animation</title>
-<style>
-   @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Timeout Eject Animation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Integrated VT323 font from Ban Code */
+      @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
 
-  body {
-    margin: 0;
-    overflow: hidden;
-    background: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 1920px;
-    height: 1080px;
-  }
+      /* Styles common to all animated lines, adapted from eject-line */
+      .eject-line {
+        /* CORRECTED: Using only VT323 font */
+        font-family: "VT323", monospace;
+        font-size: 5rem; /* Large text, matching Ban code's size */
+        color: #fff;
+        white-space: nowrap; /* Forces content onto one line for the animation */
+        overflow: hidden; /* Hides untyped text */
+        width: 0; /* Starts with zero width for animation */
+        letter-spacing: 0.15em;
+        /* Using text-shadow for a punchy look suitable for overlay graphics */
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 4px 4px 0 #000;
+        margin: 0; /* Remove default margins */
+        padding: 0; /* Remove default padding */
+        line-height: 1.2; /* Tighter line spacing */
+      }
 
-  .container {
-    text-align: center;
-    font-family: "VT323", monospace;
-    font-size: 72px;
-    color: #fff;
-    text-shadow: 6px 6px 0 #000;
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 1s ease, transform 1s ease;
-  }
+      /* The cursor style (only applied dynamically to the active line) */
+      .cursor {
+        border-right: 0.15em solid white;
+      }
 
-  .visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+      /* Keyframes for the blinking cursor */
+      @keyframes blink-caret {
+        from,
+        to {
+          border-color: transparent;
+        }
+        50% {
+          border-color: white;
+        }
+      }
 
-  .hidden {
-    opacity: 0;
-    transform: translateY(-40px);
-  }
+      /* Keyframes for the typing width (defined dynamically in JS) */
 
-  .line {
-    margin: 15px 0;
-  }
+      /* Colouring styles from the original Timeout code */
+      .username {
+        color: #ff5050;
+      }
+      .mod {
+        color: #50b3ff;
+      }
+      .duration {
+        color: #ffff50;
+      }
+      .reason {
+        color: #a0ff90;
+      }
+    </style>
+  </head>
+  <body class="bg-transparent flex items-center justify-center min-h-screen">
+    <div
+      id="parent-container"
+      class="text-center transition-opacity duration-500"
+    >
+      <div id="line-one" class="eject-line">
+        <span class="username" id="username"></span> was timed out
+      </div>
+      <div id="line-two" class="eject-line">
+        By <span class="mod" id="mod"></span> for
+        <span class="duration" id="duration"></span>
+      </div>
+      <div id="line-three" class="eject-line reason"></div>
+      <div id="line-four" class="eject-line"></div>
+    </div>
 
-  .username {
-    color: #ff5050;
-  }
+    <script>
+      // --- Utility Functions ---
+      // Base64 decoding from Ban code (needed for consistency if stream tools use it)
+      function decodeBase64(str) {
+        try {
+          return decodeURIComponent(
+            atob(str)
+              .split("")
+              .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+              .join("")
+          );
+        } catch {
+          return str; // fallback if not valid base64
+        }
+      }
 
-  .mod {
-    color: #50b3ff;
-  }
+      // Function to dynamically create the typing keyframes (from Ban code)
+      function createTypingKeyframes() {
+        const styleSheet = document.styleSheets[0];
+        const rule = `
+        @keyframes typing-dynamic {
+          from { width: 0 }
+          to { width: 100% }
+        }
+      `;
+        // Only insert the rule if it doesn't exist
+        if (
+          ![...styleSheet.cssRules].some((r) => r.name === "typing-dynamic")
+        ) {
+          styleSheet.insertRule(rule, styleSheet.cssRules.length);
+        }
+      }
 
-  .duration {
-    color: #ffff50;
-  }
+      // --- Get Parameters and Define Content ---
+      const params = new URLSearchParams(window.location.search);
+      let rawUser = params.get("user") || "A user";
+      let username = decodeBase64(rawUser); // Use decodeBase64 for consistency
 
-  .reason {
-    color: #a0ff90;
-  }
-</style>
-</head>
-<body>
-  <div class="container" id="textContainer">
-    <div class="line"><span class="username" id="username"></span> was timed out</div>
-    <div class="line">By <span class="mod" id="mod"></span> for <span class="duration" id="duration"></span></div>
-    <div class="line reason" id="reason"></div>
-  </div>
+      const mod = decodeURIComponent(params.get("mod") || "a Moderator");
+      const duration = decodeURIComponent(params.get("duration") || "300s");
+      const reason = decodeURIComponent(
+        params.get("reason") || "No reason given."
+      );
 
-  <script>
-    // Grab URL parameters
-    const params = new URLSearchParams(window.location.search);
-    const user = decodeURIComponent(params.get("user") || "Someone");
-    const mod = decodeURIComponent(params.get("mod") || "a Moderator");
-    const duration = decodeURIComponent(params.get("duration") || "300s");
-    const reason = decodeURIComponent(params.get("reason") || "No reason given.");
+      // --- Define element references ---
+      const elOne = document.getElementById("line-one");
+      const elTwo = document.getElementById("line-two");
+      const elThree = document.getElementById("line-three");
+      const elFour = document.getElementById("line-four");
+      const parentContainer = document.getElementById("parent-container");
 
-    // Populate text
-    document.getElementById("username").textContent = user;
-    document.getElementById("mod").textContent = mod;
-    document.getElementById("duration").textContent = duration;
-    document.getElementById("reason").textContent = reason;
+      // Populate text content for dynamic spans and the reason line
+      document.getElementById("username").textContent = username;
+      document.getElementById("mod").textContent = mod;
+      document.getElementById("duration").textContent = duration;
+      elThree.textContent = reason;
+      elFour.textContent = ""; // Blank line for the final cursor effect
 
-    // Animation logic
-    const container = document.getElementById("textContainer");
+      // --- Animation Constants (from Ban code) ---
+      const CHAR_DELAY_S = 0.09;
+      const CURSOR_STOP_DELAY_MS = 500;
+      const HOLD_TIME_MS = 5000;
+      const FADE_TIME_MS = 500;
 
-    // Fade in
-    setTimeout(() => {
-      container.classList.add("visible");
-    }, 500);
+      // --- Animation Core Logic ---
 
-    // Hold for 7 seconds
-    setTimeout(() => {
-      container.classList.remove("visible");
-      container.classList.add("hidden");
-    }, 7500);
+      /**
+       * Generic function to type out a single line.
+       * @param {HTMLElement} el - The line element to type.
+       * @param {function} nextFunction - The function to call after this line is typed.
+       */
+      function typeLine(el, nextFunction) {
+        // We get the *rendered* length of the text inside the div.
+        // This is crucial because it accounts for the inner <span> elements.
+        const lineText = el.textContent;
+        const numSteps = lineText.length;
+        const typingDuration = numSteps * CHAR_DELAY_S;
 
-    // Optional: fade out cleanly at 9s (for OBS reset)
-    setTimeout(() => {
-      container.style.display = "none";
-    }, 9000);
-  </script>
-</body>
+        el.classList.add("cursor");
+        el.style.animation =
+          `typing-dynamic ${typingDuration}s steps(${numSteps}) forwards, ` +
+          `blink-caret 0.75s step-end infinite`;
+
+        // The width must be set to the content's final width for the animation to work.
+        // The animation *is* the width change.
+        el.style.width = "fit-content";
+
+        setTimeout(() => {
+          // Stop cursor blink and remove cursor style
+          el.classList.remove("cursor");
+          el.style.borderRight = "none";
+          el.style.animation = "none";
+
+          // Move to the next line after a short delay
+          setTimeout(nextFunction, CURSOR_STOP_DELAY_MS);
+        }, typingDuration * 1000);
+      }
+
+      // Define the sequence of line typing
+
+      // 1. Type Line 1: [User] was timed out
+      function typeLineOne() {
+        typeLine(elOne, typeLineTwo);
+      }
+
+      // 2. Type Line 2: By [Mod] for [Duration]
+      function typeLineTwo() {
+        typeLine(elTwo, typeLineThree);
+      }
+
+      // 3. Type Line 3: [Reason]
+      function typeLineThree() {
+        typeLine(elThree, typeLineFour);
+      }
+
+      // 4. Type Line 4 (Final line, blank)
+      function typeLineFour() {
+        typeLine(elFour, startCleanup);
+      }
+
+      // --- Fade Out (from Ban code) ---
+      function startCleanup() {
+        // Hold the final state for the specified time
+        setTimeout(() => {
+          parentContainer.style.opacity = "0"; // Trigger fade out
+
+          // After fade out is complete, hide the element completely
+          setTimeout(() => {
+            parentContainer.style.display = "none";
+          }, FADE_TIME_MS);
+        }, HOLD_TIME_MS);
+      }
+
+      // --- Start Sequence ---
+      createTypingKeyframes();
+      typeLineOne();
+    </script>
+  </body>
 </html>
