@@ -58,6 +58,7 @@
 
       function decodeBase64(str) {
         try {
+          // Base64 decode, then URL decode
           return decodeURIComponent(
             atob(str)
               .split("")
@@ -67,19 +68,18 @@
               .join("")
           );
         } catch (e) {
-          console.error("Failed to decode base64 parameter:", e);
-          return "A user"; // Fallback
+          // If decoding fails (e.g., if the base64 string is invalid or empty)
+          return "A user";
         }
       }
 
-      function createTypingKeyframes(numSteps) {
+      function createTypingKeyframes() {
         const styleSheet = document.styleSheets[0];
         const rule = `@keyframes typing-dynamic {
                 from { width: 0 }
                 to { width: 100% }
             }`;
         // Use 'typing-dynamic' to ensure we only have one set of keyframes
-        // We check if the rule exists before inserting to prevent console warnings on refresh
         if (
           !styleSheet.cssRules.length ||
           !Array.from(styleSheet.cssRules).some(
@@ -94,13 +94,14 @@
 
       // Get the username from the URL query parameters
       const urlParams = new URLSearchParams(window.location.search);
-      let username = urlParams.get("user");
+      let rawUsernameB64 = urlParams.get("user");
 
-      if (username) {
-        username = decodeBase64(username);
+      let username;
+      if (rawUsernameB64) {
+        username = decodeBase64(rawUsernameB64);
       } else {
-        // Default text for testing a long username
-        username = "ThisIsAVeryLongUsername123";
+        // Default text if no username is provided
+        username = "A user";
       }
 
       // Define content for the two lines
