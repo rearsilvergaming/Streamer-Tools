@@ -14,8 +14,9 @@
         font-family: "VT323", monospace;
         font-size: 5rem; /* Large text, matching Ban code's size */
         color: #fff;
-        white-space: nowrap; /* Forces content onto one line for the animation */
-        overflow: hidden; /* Hides untyped text */
+        /* Temporarily removed for initial width calculation in JS, but needed for animation */
+        /* white-space: nowrap; */ 
+        /* overflow: hidden; */ 
         width: 0; /* Starts with zero width for animation */
         letter-spacing: 0.15em;
         /* Using text-shadow for a punchy look suitable for overlay graphics */
@@ -23,6 +24,13 @@
         margin: 0; /* Remove default margins */
         padding: 0; /* Remove default padding */
         line-height: 1.2; /* Tighter line spacing */
+      }
+      
+      /* The final state class to correctly display the line after animation */
+      .eject-line-final {
+          white-space: nowrap;
+          overflow: hidden; /* Keep the overflow hidden during the final hold */
+          width: fit-content;
       }
 
       /* The cursor style (only applied dynamically to the active line) */
@@ -41,7 +49,7 @@
         }
       }
 
-      /* Keyframes for the typing width (defined dynamically in JS) */
+      /* Keyframes for the typing width are now generated per line in JS */
 
       /* Colouring styles from the original Timeout code */
       .username {
@@ -76,7 +84,6 @@
 
     <script>
       // --- Utility Functions ---
-      // Base64 decoding from Ban code (needed for consistency if stream tools use it)
       function decodeBase64(str) {
         try {
           return decodeURIComponent(
@@ -90,27 +97,10 @@
         }
       }
 
-      // Function to dynamically create the typing keyframes (from Ban code)
-      function createTypingKeyframes() {
-        const styleSheet = document.styleSheets[0];
-        const rule = `
-        @keyframes typing-dynamic {
-          from { width: 0 }
-          to { width: 100% }
-        }
-      `;
-        // Only insert the rule if it doesn't exist
-        if (
-          ![...styleSheet.cssRules].some((r) => r.name === "typing-dynamic")
-        ) {
-          styleSheet.insertRule(rule, styleSheet.cssRules.length);
-        }
-      }
-
       // --- Get Parameters and Define Content ---
       const params = new URLSearchParams(window.location.search);
       let rawUser = params.get("user") || "A user";
-      let username = decodeBase64(rawUser); // Use decodeBase64 for consistency
+      let username = decodeBase64(rawUser); 
 
       const mod = decodeURIComponent(params.get("mod") || "a Moderator");
       const duration = decodeURIComponent(params.get("duration") || "300s");
@@ -130,9 +120,9 @@
       document.getElementById("mod").textContent = mod;
       document.getElementById("duration").textContent = duration;
       elThree.textContent = reason;
-      elFour.textContent = ""; // Blank line for the final cursor effect
+      elFour.textContent = ""; 
 
-      // --- Animation Constants (from Ban code) ---
+      // --- Animation Constants ---
       const CHAR_DELAY_S = 0.09;
       const CURSOR_STOP_DELAY_MS = 500;
       const HOLD_TIME_MS = 5000;
@@ -140,61 +130,85 @@
 
       // --- Animation Core Logic ---
 
+      // Dynamically create a keyframe rule for the specific width
+      function createTypingKeyframes(width) {
+        // Use a unique name for each line's animation
+        const animationName = `typing-specific-${width.toFixed(2).replace('.', '-')}`;
+        const styleSheet = document.styleSheets[0];
+        const rule = `
+          @keyframes ${animationName} {
+            from { width: 0 }
+            to { width: ${width}px }
+          }
+        `;
+        // Insert the rule if it doesn't already exist
+        if (![...styleSheet.cssRules].some((r) => r.name === animationName)) {
+          styleSheet.insertRule(rule, styleSheet.cssRules.length);
+        }
+        return animationName;
+      }
+      
       /**
        * Generic function to type out a single line.
        * @param {HTMLElement} el - The line element to type.
        * @param {function} nextFunction - The function to call after this line is typed.
        */
       function typeLine(el, nextFunction) {
-        // We get the *rendered* length of the text inside the div.
-        // This is crucial because it accounts for the inner <span> elements.
-        const lineText = el.textContent;
+        // CRITICAL FIX: Calculate the *final* width of the element.
+        // We temporarily allow the content to flow, measure it, then apply the animation CSS.
+        el.style.width = 'fit-content';
+        el.style.whiteSpace = 'nowrap';
+        el.style.overflow = 'hidden';
+        
+        // Use offsetWidth to get the exact pixel width of the content
+        const finalWidth = el.offsetWidth;
+        el.style.width = '0'; // Reset width for animation start
+        
+        // Number of steps for the animation (based on characters)
+        const lineText = el.textContent; 
         const numSteps = lineText.length;
         const typingDuration = numSteps * CHAR_DELAY_S;
+        
+        // Create the animation keyframe rule based on the calculated width
+        const typingAnimationName = createTypingKeyframes(finalWidth);
 
         el.classList.add("cursor");
         el.style.animation =
-          `typing-dynamic ${typingDuration}s steps(${numSteps}) forwards, ` +
+          `${typingAnimationName} ${typingDuration}s steps(${numSteps}) forwards, ` +
           `blink-caret 0.75s step-end infinite`;
-
-        // The width must be set to the content's final width for the animation to work.
-        // The animation *is* the width change.
-        el.style.width = "fit-content";
 
         setTimeout(() => {
           // Stop cursor blink and remove cursor style
           el.classList.remove("cursor");
           el.style.borderRight = "none";
           el.style.animation = "none";
-
+          
+          // Ensure the line stays at its final, correct width
+          el.style.width = `${finalWidth}px`; 
+          
           // Move to the next line after a short delay
           setTimeout(nextFunction, CURSOR_STOP_DELAY_MS);
         }, typingDuration * 1000);
       }
 
       // Define the sequence of line typing
-
-      // 1. Type Line 1: [User] was timed out
       function typeLineOne() {
         typeLine(elOne, typeLineTwo);
       }
 
-      // 2. Type Line 2: By [Mod] for [Duration]
       function typeLineTwo() {
         typeLine(elTwo, typeLineThree);
       }
 
-      // 3. Type Line 3: [Reason]
       function typeLineThree() {
         typeLine(elThree, typeLineFour);
       }
 
-      // 4. Type Line 4 (Final line, blank)
       function typeLineFour() {
         typeLine(elFour, startCleanup);
       }
 
-      // --- Fade Out (from Ban code) ---
+      // --- Fade Out ---
       function startCleanup() {
         // Hold the final state for the specified time
         setTimeout(() => {
@@ -208,7 +222,6 @@
       }
 
       // --- Start Sequence ---
-      createTypingKeyframes();
       typeLineOne();
     </script>
   </body>
