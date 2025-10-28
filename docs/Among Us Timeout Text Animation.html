@@ -15,141 +15,173 @@
         font-family: "VT323", monospace;
         font-size: 5rem;
         color: #fff;
-        
-        /* CRITICAL: Keep these for the typing effect to work */
-        white-space: nowrap; 
-        overflow: hidden; 
-        
-        display: block; 
-        
         letter-spacing: 0.15em;
         text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 4px 4px 0 #000;
         margin: 0 0 0.5em 0;
         line-height: 1.2;
+        display: block;
+        text-align: center;
+        width: 100%;
       }
 
-      .cursor {
-        border-right: 0.15em solid white;
+      .eject-inner {
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        vertical-align: bottom;
+      }
+
+      .cursor::after {
+        content: "";
+        display: inline-block;
+        width: 0.15em;
+        height: 1em;
+        background: white;
+        margin-left: 0.05em;
         animation: blink-caret 0.75s step-end infinite;
       }
 
       @keyframes blink-caret {
-        from, to { border-color: transparent; }
-        50% { border-color: white; }
+        from,
+        to {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
       }
 
-      .username { color: #ff5050; }
-      .mod { color: #50b3ff; }
-      .duration { color: #ffff50; }
-      .reason { color: #a0ff90; }
+      .username {
+        color: #ff5050;
+      }
+      .mod {
+        color: #50b3ff;
+      }
+      .duration {
+        color: #ffff50;
+      }
+      .reason {
+        color: #a0ff90;
+      }
     </style>
   </head>
+
   <body class="flex items-center justify-center min-h-screen">
-    <div id="parent-container" class="text-center transition-opacity duration-500">
-      <div id="line-one" class="eject-line"></div>
-      <div id="line-two" class="eject-line"></div>
-      <div id="line-three" class="eject-line reason"></div>
-      <div id="line-four" class="eject-line"></div>
+    <div
+      id="parent-container"
+      class="text-center transition-opacity duration-500"
+    >
+      <div id="line-one" class="eject-line">
+        <span class="eject-inner"></span>
+      </div>
+      <div id="line-two" class="eject-line">
+        <span class="eject-inner"></span>
+      </div>
+      <div id="line-three" class="eject-line reason">
+        <span class="eject-inner"></span>
+      </div>
+      <div id="line-four" class="eject-line">
+        <span class="eject-inner"></span>
+      </div>
     </div>
 
     <script>
-      // --- Utility ---
       function decodeBase64(str) {
         try {
           return decodeURIComponent(
-            atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+            atob(str)
+              .split("")
+              .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+              .join("")
           );
-        } catch { return str; }
+        } catch {
+          return str;
+        }
       }
 
-      // --- Parameters ---
       const params = new URLSearchParams(window.location.search);
       const username = decodeBase64(params.get("user") || "A user");
-      const mod = decodeURIComponent(params.get("createdByDisplayName") || "a Moderator");
+      const mod = decodeURIComponent(
+        params.get("createdByDisplayName") || "a Moderator"
+      );
       const duration = decodeURIComponent(params.get("duration") || "300s");
-      const reason = decodeURIComponent(params.get("reason") || "No reason given.");
+      const reason = decodeURIComponent(
+        params.get("reason") || "No reason given."
+      );
 
-      const elOne = document.getElementById("line-one");
-      const elTwo = document.getElementById("line-two");
-      const elThree = document.getElementById("line-three");
-      const elFour = document.getElementById("line-four");
-      const parentContainer = document.getElementById("parent-container");
-
-      const lineOneHTML = `<span class="username">${username}</span> was timed out`;
-      const lineTwoHTML = `By <span class="mod">${mod}</span> for <span class="duration">${duration}</span>`;
-      const lineThreeText = reason;
-      const lineFourText = "";
+      const lines = [
+        {
+          el: document.querySelector("#line-one .eject-inner"),
+          html: `<span class="username">${username}</span> was timed out`,
+        },
+        {
+          el: document.querySelector("#line-two .eject-inner"),
+          html: `By <span class="mod">${mod}</span> for <span class="duration">${duration}</span>`,
+        },
+        {
+          el: document.querySelector("#line-three .eject-inner"),
+          html: reason,
+        },
+        { el: document.querySelector("#line-four .eject-inner"), html: "" },
+      ];
 
       const CHAR_DELAY_S = 0.09;
       const CURSOR_STOP_DELAY_MS = 500;
       const HOLD_TIME_MS = 5000;
       const FADE_TIME_MS = 500;
-      const OBS_WIDTH = 1920; 
-      const OBS_PADDING = 60; 
+      const OBS_WIDTH = 1920;
+      const OBS_PADDING = 60;
 
-      // --- Typing Animation ---
-      function typeLine(el, content, nextFunction) {
+      function typeLine(index) {
+        if (index >= lines.length) return startCleanup();
+
+        const el = lines[index].el;
+        const content = lines[index].html;
         el.innerHTML = content;
+
         const numSteps = el.textContent.length;
 
+        // Skip animation if there's no text
         if (numSteps === 0) {
-          el.classList.add("cursor");
-          setTimeout(() => {
-            el.classList.remove("cursor");
-            nextFunction();
-          }, CURSOR_STOP_DELAY_MS);
+          el.classList.remove("cursor");
+          setTimeout(() => typeLine(index + 1), CURSOR_STOP_DELAY_MS);
           return;
         }
 
-        const typingDuration = numSteps * CHAR_DELAY_S;
-
-        // --- CRITICAL FIX: Force synchronous width calculation ---
-        // 1. Set display to inline-block AND make content visible for measurement.
-        el.style.display = "inline-block";
-        el.style.overflow = "visible"; // Allow content to show for measurement
-        
-        let finalWidth = el.offsetWidth;
-        // Limit width
-        finalWidth = Math.min(finalWidth, OBS_WIDTH - OBS_PADDING); 
-        
-        // 2. Reset styles for animation start:
-        el.style.display = "block"; // Reset to block so it takes up its own line
-        el.style.overflow = "hidden"; // Hide content for animation
-        el.style.width = "0px";
-        // --------------------------------------------------------
-
         el.classList.add("cursor");
 
+        // Measure width safely
+        const fullWidth = Math.min(el.offsetWidth, OBS_WIDTH - OBS_PADDING);
+        el.style.width = "0px";
+
         const typingAnim = el.animate(
-          [{ width: "0px" }, { width: `${finalWidth}px` }],
-          { duration: typingDuration * 1000, easing: `steps(${numSteps}, end)`, fill: "forwards" }
+          [{ width: "0px" }, { width: `${fullWidth}px` }],
+          {
+            duration: numSteps * CHAR_DELAY_S * 1000,
+            easing: `steps(${Math.max(1, numSteps)}, end)`,
+            fill: "forwards",
+          }
         );
 
         typingAnim.onfinish = () => {
           el.classList.remove("cursor");
-          el.style.width = `${finalWidth}px`;
-          // Ensure overflow is visible after animation finishes to display content fully
-          el.style.overflow = "visible"; 
-          setTimeout(nextFunction, CURSOR_STOP_DELAY_MS);
+          el.style.width = `${fullWidth}px`;
+          setTimeout(() => typeLine(index + 1), CURSOR_STOP_DELAY_MS);
         };
       }
 
-      function typeLineOne() { typeLine(elOne, lineOneHTML, typeLineTwo); }
-      function typeLineTwo() { typeLine(elTwo, lineTwoHTML, typeLineThree); }
-      function typeLineThree() { typeLine(elThree, lineThreeText, typeLineFour); }
-      function typeLineFour() { typeLine(elFour, lineFourText, startCleanup); }
-
       function startCleanup() {
-        elFour.classList.add("cursor");
+        const parentContainer = document.getElementById("parent-container");
         setTimeout(() => {
-          elFour.classList.remove("cursor");
           parentContainer.style.opacity = "0";
-          setTimeout(() => { parentContainer.style.display = "none"; }, FADE_TIME_MS);
+          setTimeout(
+            () => (parentContainer.style.display = "none"),
+            FADE_TIME_MS
+          );
         }, HOLD_TIME_MS);
       }
 
-      // --- Start Sequence ---
-      typeLineOne();
+      typeLine(0);
     </script>
   </body>
 </html>
