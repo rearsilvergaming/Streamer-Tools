@@ -15,15 +15,20 @@
       padding: 0;
       overflow: hidden;
       background: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     #parent-container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      width: 100%;
+      max-width: 1920px;
       text-align: center;
       transition: opacity 0.5s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
     .eject-line {
@@ -34,9 +39,10 @@
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 4px 4px 0 #000;
       margin: 0.15em 0;
       line-height: 1.1;
-      display: block;
+      display: inline-block;
       white-space: nowrap;
       overflow: hidden;
+      will-change: width;
     }
 
     .cursor::after {
@@ -68,7 +74,7 @@
   </div>
 
   <script>
-    // Decode URL parameters
+    // --- Decode parameters (keep identical for Streamer.bot)
     function decodeBase64(str) {
       try {
         return decodeURIComponent(
@@ -104,8 +110,10 @@
       const numSteps = Math.max(1, el.textContent.length);
       el.classList.add("cursor");
 
-      el.style.width = "0px";
+      // Temporarily reset width for measurement
+      el.style.width = "auto";
       const fullWidth = el.scrollWidth;
+      el.style.width = "0px";
 
       const typingAnim = el.animate(
         [{ width: "0px" }, { width: `${fullWidth}px` }],
@@ -131,6 +139,7 @@
       }, HOLD_TIME_MS);
     }
 
+    // Run typing animation
     typeLine(0);
   </script>
 </body>
