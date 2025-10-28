@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Timeout Eject Animation</title>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -31,7 +32,7 @@
       color: #fff;
       letter-spacing: 0.15em;
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 4px 4px 0 #000;
-      margin: 0.1em 0;
+      margin: 0.15em 0;
       line-height: 1.1;
       display: block;
       white-space: nowrap;
@@ -64,10 +65,10 @@
     <div id="line-one" class="eject-line"></div>
     <div id="line-two" class="eject-line"></div>
     <div id="line-three" class="eject-line reason"></div>
-    <div id="line-four" class="eject-line"></div>
   </div>
 
   <script>
+    // Decode URL parameters
     function decodeBase64(str) {
       try {
         return decodeURIComponent(
@@ -85,16 +86,13 @@
     const lines = [
       { el: document.getElementById("line-one"), html: `<span class="username">${username}</span> was timed out` },
       { el: document.getElementById("line-two"), html: `By <span class="mod">${mod}</span> for <span class="duration">${duration}</span>` },
-      { el: document.getElementById("line-three"), html: reason },
-      { el: document.getElementById("line-four"), html: "" },
+      { el: document.getElementById("line-three"), html: reason }
     ];
 
     const CHAR_DELAY_S = 0.09;
     const CURSOR_STOP_DELAY_MS = 500;
     const HOLD_TIME_MS = 5000;
     const FADE_TIME_MS = 500;
-    const OBS_WIDTH = 1920;
-    const OBS_PADDING = 60;
 
     function typeLine(index) {
       if (index >= lines.length) return startCleanup();
@@ -103,22 +101,17 @@
       const content = lines[index].html;
       el.innerHTML = content;
 
-      const numSteps = el.textContent.length;
-      if (numSteps === 0) {
-        setTimeout(() => typeLine(index + 1), CURSOR_STOP_DELAY_MS);
-        return;
-      }
-
+      const numSteps = Math.max(1, el.textContent.length);
       el.classList.add("cursor");
 
-      const fullWidth = Math.min(el.scrollWidth, OBS_WIDTH - OBS_PADDING);
       el.style.width = "0px";
+      const fullWidth = el.scrollWidth;
 
       const typingAnim = el.animate(
         [{ width: "0px" }, { width: `${fullWidth}px` }],
         {
           duration: numSteps * CHAR_DELAY_S * 1000,
-          easing: `steps(${Math.max(1, numSteps)}, end)`,
+          easing: `steps(${numSteps}, end)`,
           fill: "forwards"
         }
       );
