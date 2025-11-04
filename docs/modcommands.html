@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RearSilver Mod Handbook</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom properties for easy management */
+      :root {
+        --sidebar-width: 18rem; /* w-72 */
+      }
+
+      /* 1. THEME DEFINITIONS (Orange and Blue) */
+      .bg-page {
+        background-color: #f0750f; /* Light Amber/Orange 50 */
+        color: #374151; /* Gray 700 */
+      }
+      .bg-sidebar {
+        background-color: #00345f; /* Deep Blue 900 */
+        color: white;
+      }
+      .text-brand {
+        color: #fbbf24; /* Amber 400 */
+      }
+      .text-accent {
+        color: #00345f; /* Blue 700 */
+      }
+      .border-brand {
+        border-color: #f0750f; /* Amber 600 */
+      }
+      .bg-section {
+        background-color: white;
+      }
+      .search-highlight {
+        background-color: #bfdbfe; /* Blue 200 for soft highlight */
+      }
+
+      /* 2. LAYOUT AND RESPONSIVENESS */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Sticky table header styling */
+      .command-table thead {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .command-table th {
+        background-color: #e5e7eb; /* Light Gray */
+        border-bottom: 2px solid #d1d5db;
+      }
+      .command-table tbody tr {
+        display: table-row;
+      } /* Default state for search filtering */
+
+      /* 3. UNIVERSAL MENU SLIDE-IN LOGIC (The Content Push) */
+
+      /* Sidebar: Starts off-screen (hidden) universally, fixed for smooth sliding */
+      #sidebar-nav {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: var(--sidebar-width);
+        height: 100%;
+        padding: 1.5rem;
+        z-index: 50;
+        overflow-y: auto;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+        /* Start off-screen regardless of device size */
+        transform: translateX(calc(-1 * var(--sidebar-width)));
+        transition: transform 0.3s ease-in-out;
+      }
+
+      /* Main Content: Starts full width universally */
+      .main-content {
+        margin-left: 0; /* No initial margin shift */
+        min-height: 100vh;
+        transition: margin-left 0.3s ease-in-out;
+      }
+
+      /* Toggled state: When body has 'sidebar-open' class (UNIVERSALLY APPLIED) */
+      .sidebar-open #sidebar-nav {
+        transform: translateX(0); /* Slide sidebar in */
+      }
+
+      /* PUSH the main content to the right to accommodate the sidebar on all screen sizes */
+      .sidebar-open .main-content {
+        margin-left: var(--sidebar-width);
+      }
+
+      /* Sidebar link hover effect */
+      .sidebar-link {
+        transition: background-color 0.2s;
+      }
+      .sidebar-link:hover {
+        background-color: #1e40af; /* Blue 800 */
+      }
+      .sidebar-link.active {
+        background-color: #1d4ed8; /* Blue 700 */
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body class="bg-page font-sans">
+    <!-- Menu Button (Universal Toggle - Visible on ALL screen sizes) -->
+    <button
+      id="menu-toggle"
+      class="fixed top-4 left-4 bg-accent text-white p-3 rounded-full shadow-lg z-[60] transition transform hover:scale-105"
+    >
+      <!-- Menu Icon -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 menu-icon"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="#000000"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="3"
+          d="M4 6h16M4 12h16M4 18h16"
+        />
+      </svg>
+      <!-- Close Icon -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 close-icon hidden"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="#eb8a14"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar-nav" class="bg-sidebar shadow-xl">
+      <h1
+        class="text-2xl font-extrabold text-brand mb-6 border-b border-amber-700 pb-2"
+      ></h1>
+
+      <!-- Command Search Bar -->
+      <h2
+        class="text-lg font-semibold mb-2 mt-4 uppercase tracking-wider text-amber-300"
+      >
+        Command Search
+      </h2>
+      <div class="mb-6">
+        <input
+          type="text"
+          id="command-search"
+          placeholder="Search for command names..."
+          class="w-full p-2 border-2 border-blue-500 rounded-lg text-gray-900 focus:border-brand focus:ring focus:ring-amber-300 transition"
+        />
+      </div>
+
+      <nav>
+        <h2
+          class="text-lg font-semibold mb-2 mt-4 uppercase tracking-wider text-amber-300"
+        >
+          Guide
+        </h2>
+        <a
+          href="#expectations"
+          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >General Expectations</a
+        >
+        <a
+          href="#philosophy"
+          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Moderator Philosophy</a
+        >
+        <a
+          href="#emergency"
+          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Emergency Protocol</a
+        >
+        <a
+          href="#scenarios"
+          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Action Scenarios</a
+        >
+
+        <h2
+          class="text-lg font-semibold mb-2 mt-6 uppercase tracking-wider text-amber-300"
+        >
+          Command Systems
+        </h2>
+        <a
+          href="#translate"
+          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Auto Translate System</a
+        >
+        <a
+          href="#birthday"
+          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Birthday System</a
+        >
+        <a href="#chat" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Chat Commands</a
+        >
+        <a href="#fun" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Fun in Chat</a
+        >
+        <a href="#death" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Death Counter</a
+        >
+        <a
+          href="#control"
+          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Stream Control</a
+        >
+        <a href="#links" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Link Protection System</a
+        >
+        <a
+          href="#measurements"
+          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Measurements</a
+        >
+        <a
+          href="#modcommands"
+          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Mod Commands</a
+        >
+        <a href="#hunt" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Hunt Game System</a
+        >
+        <a href="#queue" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Viewers Queue System</a
+        >
+        <a
+          href="#pronouns"
+          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Pronouns</a
+        >
+        <a href="#quote" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Quote System</a
+        >
+        <a
+          href="#raffle"
+          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Raffle System</a
+        >
+        <a
+          href="#support"
+          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >Support System</a
+        >
+        <a href="#xp" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
+          >XP System</a
+        >
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content p-4 sm:p-8">
+      <header class="mb-10 p-6 bg-header rounded-xl">
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-#00345f-900 mb-2">
+          RearSilver's Official Stream Handbook
+        </h1>
+        <p class="text-xl text-#00345f-700">
+          Moderator Guide & Command Glossary
+        </p>
+      </header>
+
+      <!-- PART 1: Moderator Guide (Content retained from previous iteration) -->
+      <section id="guide" class="bg-section p-6 rounded-xl shadow-lg mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4 border-b pb-2">
+          Part 1: Moderator Guide
+        </h2>
+
+        <h3
+          id="expectations"
+          class="text-2xl font-semibold text-accent mt-6 mb-3 pt-2"
+        >
+          General Expectations (The Core Rules)
+        </h3>
+        <ol class="list-decimal list-inside space-y-3 pl-4 text-lg">
+          <li class="p-2 rounded-lg bg-blue-50/70">
+            <strong class="font-bold">You Represent the Channel:</strong> You
+            are an extension of RearSilver. Ban with kindness (if possible), but
+            bully with humour. Your tone sets the standard.
+          </li>
+          <li class="p-2 rounded-lg">
+            <strong class="font-bold">Use Common Sense:</strong> If it’s
+            hateful, harassing, spam, or disrupts chat flow (even if not
+            technically rule-breaking), act fast. Don't let a bad vibe linger.
+          </li>
+          <li class="p-2 rounded-lg bg-blue-50/70">
+            <strong class="font-bold">Trust is Key:</strong> Mods are trusted to
+            use judgement — no need to ask for permission before moderating.
+            Act, then inform.
+          </li>
+          <li class="p-2 rounded-lg">
+            <strong class="font-bold">Communicate with Each Other:</strong> If
+            you action something serious, drop a quick note in the mod
+            chat/Discord. This prevents duplicate actions.
+          </li>
+          <li class="p-2 rounded-lg bg-blue-50/70">
+            <strong class="font-bold">Confidentiality:</strong> Don’t leak
+            mod-only info (our internal tools, systems, or stream private chat).
+          </li>
+          <li class="p-2 rounded-lg">
+            <strong class="font-bold">The Humour Filter:</strong> Keep the
+            humour dark but not cruel. Our content is adult and explicit, but
+            our community is inclusive.
+          </li>
+          <li class="p-2 rounded-lg bg-blue-50/70">
+            <strong class="font-bold"
+              >If in doubt: Timeout first, ask later.</strong
+            >
+            Better to cool someone down with a 600 second time-out than risk
+            escalation and a ban that derails the stream.
+          </li>
+        </ol>
+
+        <h3
+          id="philosophy"
+          class="text-2xl font-semibold text-accent mt-10 mb-3 pt-2"
+        >
+          Moderator Philosophy (Chaos, not Cruelty)
+        </h3>
+        <blockquote
+          class="border-l-4 border-blue-500 pl-4 py-2 italic text-gray-600 text-lg my-4 bg-blue-50 rounded-r-lg"
+        >
+          “If you wouldn’t want it shouted across a pub, don’t let it live in
+          chat.”
+        </blockquote>
+        <ul class="list-disc list-inside space-y-2 pl-4 text-lg">
+          <li>
+            <strong class="font-bold">Prioritise Safety:</strong> We lean toward
+            chaos, not cruelty. Let fun breathe but stop things before they
+            sour.
+          </li>
+          <li>
+            <strong class="font-bold">Inclusivity is Non-Negotiable:</strong> We
+            are an LGBTQ+ safe space first, entertainment second. Zero tolerance
+            for bigotry of any kind.
+          </li>
+          <li>
+            <strong class="font-bold">Handle Appeals Privately:</strong> Do not
+            argue with bans or timeouts in public chat. Direct users to the
+            appropriate Discord channel.
+          </li>
+          <li>
+            <strong class="font-bold">FrontSilver Trusts You:</strong> Don’t
+            make him regret it.
+          </li>
+        </ul>
+
+        <h3
+          id="emergency"
+          class="text-2xl font-semibold text-accent mt-10 mb-3 pt-2"
+        >
+          Emergency & Raid Protocol
+        </h3>
+        <p class="mb-4">
+          Use this protocol for overwhelming spam or hate raids:
+        </p>
+        <ol class="list-decimal list-inside space-y-2 pl-4 text-lg">
+          <li>
+            <strong class="font-bold">Assess:</strong> Is the situation
+            manageable, or is the spam/hate overwhelming?
+          </li>
+          <li>
+            <strong class="font-bold">Initiate Lockdown:</strong> If
+            overwhelming, use
+            <code class="bg-red-100 text-red-700 p-1 rounded font-mono"
+              >*!emergency</code
+            >. This activates slow mode, followers-only, and clears chat.
+          </li>
+          <li>
+            <strong class="font-bold">Monitor & Report:</strong> While in
+            lockdown, continue banning offenders. Inform other mods in Discord.
+          </li>
+          <li>
+            <strong class="font-bold">Stand Down:</strong> Once the wave has
+            passed, use
+            <code class="bg-green-100 text-green-700 p-1 rounded font-mono"
+              >*!emergencyover</code
+            >
+            to return chat to normal.
+          </li>
+        </ol>
+
+        <h3
+          id="scenarios"
+          class="text-2xl font-semibold text-accent mt-10 mb-3 pt-2"
+        >
+          Common Mod Action Scenarios
+        </h3>
+        <div class="overflow-x-auto">
+          <table
+            class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg"
+          >
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Offence
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Suggested Action
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Contextual Notes
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200 text-base">
+              <tr class="searchable-item">
+                <td class="px-6 py-4 whitespace-nowrap">Spam / Flooding</td>
+                <td class="px-6 py-4 whitespace-nowrap">30's –300's Timeout</td>
+                <td class="px-6 py-4">
+                  Usually a bot or new user. Use
+                  <code class="font-mono">*!clear</code> if it floods the
+                  screen.
+                </td>
+              </tr>
+              <tr class="searchable-item bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">Aggressive / Rude</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  600's – 1200's Timeout
+                </td>
+                <td class="px-6 py-4">
+                  For personal attacks, back-seat gaming, or excessive
+                  negativity.
+                </td>
+              </tr>
+              <tr class="searchable-item">
+                <td class="px-6 py-4 whitespace-nowrap">Unsolicited Links</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  Remove Link + Warn / 300's TO
+                </td>
+                <td class="px-6 py-4">
+                  Bot handles most. Use
+                  <code class="font-mono">*!lpallow</code> to approve a link
+                  manually.
+                </td>
+              </tr>
+              <tr class="searchable-item bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-red-600 font-bold">
+                  Bigotry / Hate Speech
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-red-600 font-bold">
+                  PERMANENT BAN
+                </td>
+                <td class="px-6 py-4">
+                  Zero-tolerance. Use <code class="font-mono">*!ban</code>.
+                  Inform mod chat immediately.
+                </td>
+              </tr>
+              <tr class="searchable-item">
+                <td class="px-6 py-4 whitespace-nowrap">Repeat Offenders</td>
+                <td class="px-6 py-4 whitespace-nowrap">Escalate to BAN</td>
+                <td class="px-6 py-4">
+                  If a user is timed out multiple times, escalate to a ban.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PART 2: Command Glossary (FIXED COMMANDS START HERE) -->
+      <section id="commands" class="bg-section p-6 rounded-xl shadow-lg mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4 border-b pb-2">
+          Part 2: Command Glossary
+        </h2>
+
+        <div id="search-results-info" class="mb-4 text-base text-gray-600">
+          <p>
+            Use the search bar on the left to quickly filter commands.
+            <span id="visible-count-msg" class="font-medium hidden"
+              >Showing <span id="visible-count">0</span> matching
+              commands.</span
+            >
+          </p>
+        </div>
+
+        <div id="command-tables-container" class="space-y-8">
+          <!-- Auto Translate System -->
+          <div id="translate-system-container">
+            <h4
+              id="translate"
+              class="text-xl font-medium text-gray-800 mb-3 pt-2"
+            >
+              Auto Translate System
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              Commands starting with <code class="font-mono">*!</code> are
+              <strong class="font-bold">Moderator-Only</strong>.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">
+                      *!Setlang &lt;user&gt; &lt;language&gt;
+                    </td>
+                    <td>Set a user's native language.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!excludelist</td>
+                    <td>Shows the excluded word list in chat.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!excludeadd &lt;word&gt;</td>
+                    <td>Add word to exclude list.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!excluderemove &lt;word&gt;</td>
+                    <td>Remove word to exclude list.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!flaggedapprove</td>
+                    <td>Approve users flagged word suggestion.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!flaggeddeny</td>
+                    <td>Deny users flagged word suggestion.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!flaglist</td>
+                    <td>Shows words on the flag list.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!slurlist</td>
+                    <td>Shows words on the slur list.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!sluradd &lt;word&gt;</td>
+                    <td>Add word to slur list.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!slurremove &lt;word&gt;</td>
+                    <td>Remove word to exclude list.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!flagword &lt;word&gt;</td>
+                    <td>Users submission to add word to the slur list.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Birthday System -->
+          <div id="birthday-system-container">
+            <h4
+              id="birthday"
+              class="text-xl font-medium text-gray-800 mb-3 pt-2"
+            >
+              Birthday System
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              Commands starting with <code class="font-mono">*!</code> are
+              <strong class="font-bold">Moderator-Only</strong>.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!birthday &lt;user&gt;</td>
+                    <td>Give manual birthday celebratory message to a user.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">
+                      *!setyear &lt;user&gt; &lt;year&gt;
+                    </td>
+                    <td>Set a user's year of birth for age logic.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">
+                      *!birthdayset &lt;user&gt; &lt;birthday&gt;
+                    </td>
+                    <td>Set a user's birthday.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!mybday &lt;birthday&gt;</td>
+                    <td>User to set their own birthday.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Chat Commands -->
+          <div id="chat-system-container">
+            <h4 id="chat" class="text-xl font-medium text-gray-800 mb-3 pt-2">
+              Chat Commands (General Info)
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              Commands starting with <code class="font-mono">*!</code> are
+              <strong class="font-bold">Moderator-Only</strong>.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">!discord</td>
+                    <td>Puts link to server in chat.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!socials</td>
+                    <td>Puts RearSilver's socials in chat.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!clip</td>
+                    <td>Makes a 30 second clip and posts it to the server.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!destiny / !bungie / !id</td>
+                    <td>To put Destiny deets in chat.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!spray &lt;user&gt;</td>
+                    <td>Sprays the user.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!steam</td>
+                    <td>For Steam deets.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Fun in Chat -->
+          <div id="fun-system-container">
+            <h4 id="fun" class="text-xl font-medium text-gray-800 mb-3 pt-2">
+              Fun in Chat (Interactive & Random)
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              No Moderator-only commands listed in this section.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">!bap &lt;user&gt;</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!boop &lt;user&gt;</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!cuddle &lt;user&gt;</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!cumrag</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!dance &lt;user&gt;</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!fistbump &lt;user&gt;</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!followed</td>
+                    <td>Shows stream follow status.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!fuck &lt;user&gt;</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!headpat &lt;user&gt;</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!highfive &lt;user&gt;</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!hole &lt;user&gt;</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!hug &lt;user&gt;</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!love &lt;user&gt;</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!piss</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!smack &lt;user&gt;</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!stats</td>
+                    <td>Shows stream/user status details.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!tickle &lt;user&gt;</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!time</td>
+                    <td>Shows stream time.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!uptime</td>
+                    <td>Shows stream uptime.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!followage</td>
+                    <td>Shows user followage.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!lurk</td>
+                    <td>Lurk mode announcement.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!slap</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!steal</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!spooked</td>
+                    <td>Interactive fun command.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!unlurk</td>
+                    <td>Unlurk mode announcement.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!8ball &lt;question&gt;</td>
+                    <td>8-Ball fortune telling.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!dadjoke</td>
+                    <td>Tells a Dad Joke.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!wyr</td>
+                    <td>Random Would You Rather question.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Death Counter -->
+          <div id="death-system-container">
+            <h4 id="death" class="text-xl font-medium text-gray-800 mb-3 pt-2">
+              Death Counter
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              Commands starting with <code class="font-mono">*!</code> are
+              <strong class="font-bold">Moderator-Only</strong>.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">!ded</td>
+                    <td>When I die, adds +1 death.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!unded</td>
+                    <td>
+                      If added in error or someone in chat thinks they're funny.
+                      Removes -1 death.
+                    </td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!dedreset</td>
+                    <td>Resets the session deaths for the current game.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!dedresettotal</td>
+                    <td>Resets total death for the current game.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!dedset</td>
+                    <td>
+                      To set amount of deaths if a bunch have been missed or
+                      added in error.
+                    </td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!deaths</td>
+                    <td>Show in chat deaths for game session and total.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Stream Control -->
+          <div id="control-system-container">
+            <h4
+              id="control"
+              class="text-xl font-medium text-gray-800 mb-3 pt-2"
+            >
+              Stream Control
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              Commands starting with <code class="font-mono">*!</code> are
+              <strong class="font-bold">Moderator-Only</strong>.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!brb</td>
+                    <td>Change to brb scene.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!back</td>
+                    <td>Change back to game scene.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!end</td>
+                    <td>Move to ending scene/credits.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!raid &lt;user&gt;</td>
+                    <td>Initiate a raid (*only works if bot is working).</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Link Protection System -->
+          <div id="links-system-container">
+            <h4 id="links" class="text-xl font-medium text-gray-800 mb-3 pt-2">
+              Link Protection System
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              Commands starting with <code class="font-mono">*!</code> are
+              <strong class="font-bold">Moderator-Only</strong>.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!lpallow &lt;user&gt;</td>
+                    <td>Give a user 60 seconds amnesty to post a link.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!lpreset &lt;user&gt;</td>
+                    <td>Reset a user's strikes.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!lpadd &lt;link&gt;</td>
+                    <td>Add a domain root to the whitelist.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!lprm &lt;link&gt;</td>
+                    <td>Remove a domain root from the whitelist.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Measurements (Explicit) -->
+          <div id="measurements-system-container">
+            <h4
+              id="measurements"
+              class="text-xl font-medium text-gray-800 mb-3 pt-2"
+            >
+              Measurements (Explicit)
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              No Moderator-only commands listed in this section.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">!measurements</td>
+                    <td>Lists the commands in chat.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!alpha</td>
+                    <td>Gives a random explicit measurement result.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!breedable</td>
+                    <td>Gives a random explicit measurement result.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!daddy</td>
+                    <td>Gives a random explicit measurement result.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!horny</td>
+                    <td>Gives a random explicit measurement result.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!musk</td>
+                    <td>Gives a random explicit measurement result.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!peen / !pp / !penis</td>
+                    <td>Gives a random explicit measurement result.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!position</td>
+                    <td>Gives a random explicit measurement result.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!simp</td>
+                    <td>Gives a random explicit measurement result.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!slut</td>
+                    <td>Gives a random explicit measurement result.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!uwu</td>
+                    <td>Gives a random explicit measurement result.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Mod Commands (Moderation Tools) -->
+          <div id="modcommands-system-container">
+            <h4
+              id="modcommands"
+              class="text-xl font-medium text-gray-800 mb-3 pt-2"
+            >
+              Mod Commands (Moderation Tools)
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              All commands in this section are
+              <strong class="font-bold">Moderator-Only</strong>.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!emergency</td>
+                    <td>
+                      Puts stream in lockdown mode for hate raids (slow mode,
+                      followers only, clears chat).
+                    </td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!emergencyover</td>
+                    <td>Removes lockdown mode.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!setgame &lt;game&gt;</td>
+                    <td>Sets the current game category.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!settitle &lt;title&gt;</td>
+                    <td>Sets the stream title.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!ban &lt;user&gt; &lt;reason&gt;</td>
+                    <td>Permanently ban a user.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!clear</td>
+                    <td>Clears chat.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!registermod &lt;Discord ID&gt;</td>
+                    <td>
+                      Registers mods to bot for upcoming bot
+                      actions/communication.
+                    </td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">
+                      *!snitch &lt;user&gt; &lt;reason&gt;
+                    </td>
+                    <td>Adds user to a snitch list (Unofficial warning).</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!snitchlist</td>
+                    <td>See users on the snitch list.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!unsnitch &lt;user&gt;</td>
+                    <td>Removes user from the snitch list.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">
+                      *!to &lt;user&gt; &lt;duration&gt; &lt;reason&gt;
+                    </td>
+                    <td>Time out user for duration (seconds).</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!torandom</td>
+                    <td>Time out a random user... just because.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!tw &lt;trigger warning&gt;</td>
+                    <td>Add a trigger warning to chat for mod to pin.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!textset &lt;message&gt;</td>
+                    <td>
+                      Sets on stream message (if I need to nip away quickly or
+                      on a break or something).
+                    </td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!textclear</td>
+                    <td>Removes text overlay.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!raidmessage &lt;message&gt;</td>
+                    <td>Sets the raid message.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!raidsong</td>
+                    <td>Plays the raid song when we get raided.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!so &lt;user&gt;</td>
+                    <td>Basic shoutout for user.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!cso &lt;user&gt;</td>
+                    <td>Clip shoutout for user.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!modtts &lt;message&gt;</td>
+                    <td>
+                      Mod specific text to speech to get my attention for
+                      anything.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Hunt Game System -->
+          <div id="hunt-system-container">
+            <h4 id="hunt" class="text-xl font-medium text-gray-800 mb-3 pt-2">
+              Hunt Game System
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              Commands starting with <code class="font-mono">*!</code> are
+              <strong class="font-bold">Moderator-Only</strong>.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!huntstart</td>
+                    <td>
+                      Chooses a random viewer to be the target that chat has to
+                      hunt/catch.
+                    </td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!hunt</td>
+                    <td>Catch attempt.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!stopmock</td>
+                    <td>Stops the auto mocking of the hunt target.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Playing with Viewers Queue System -->
+          <div id="queue-system-container">
+            <h4 id="queue" class="text-xl font-medium text-gray-800 mb-3 pt-2">
+              Playing with Viewers Queue System
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              Commands starting with <code class="font-mono">*!</code> are
+              <strong class="font-bold">Moderator-Only</strong>.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!open</td>
+                    <td>Opens the queue.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!join</td>
+                    <td>To join the queue.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!leave</td>
+                    <td>To leave the queue.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!clear</td>
+                    <td>To clear the queue.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!close</td>
+                    <td>To close the queue.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!queue</td>
+                    <td>To see the list of who is in the queue.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!pick</td>
+                    <td>Picks random person from the queue.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!pick &lt;number&gt;</td>
+                    <td>Picks number of random people from the queue.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Pronouns -->
+          <div id="pronouns-system-container">
+            <h4
+              id="pronouns"
+              class="text-xl font-medium text-gray-800 mb-3 pt-2"
+            >
+              Pronouns
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              Commands starting with <code class="font-mono">*!</code> are
+              <strong class="font-bold">Moderator-Only</strong>.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">!pronouns</td>
+                    <td>Puts link in chat for user to set their pronoun.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!pronounsoverride</td>
+                    <td>For user to change their pronoun.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">
+                      *!modpronounsoverride &lt;user&gt; &lt;pronouns&gt;
+                    </td>
+                    <td>Mod override users pronoun.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Quote System -->
+          <div id="quote-system-container">
+            <h4 id="quote" class="text-xl font-medium text-gray-800 mb-3 pt-2">
+              Quote System
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              Commands starting with <code class="font-mono">*!</code> are
+              <strong class="font-bold">Moderator-Only</strong>.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">!addquote &lt;quote&gt;</td>
+                    <td>Adds quote.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">
+                      *!delquote &lt;quote number eg \#5&gt;
+                    </td>
+                    <td>Delete quote by number.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!quote</td>
+                    <td>Gets random quote.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!quotesearch &lt;search term&gt;</td>
+                    <td>
+                      Can search via quote number, keyword and user. If none
+                      found, a random quote will be returned.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Raffle System -->
+          <div id="raffle-system-container">
+            <h4 id="raffle" class="text-xl font-medium text-gray-800 mb-3 pt-2">
+              Raffle System
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              Commands starting with <code class="font-mono">*!</code> are
+              <strong class="font-bold">Moderator-Only</strong>.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!raffleopen</td>
+                    <td>Opens the raffle.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!enter</td>
+                    <td>To enter the raffle.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!raffleend</td>
+                    <td>To end the raffle.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!draw</td>
+                    <td>To draw a winner.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">*!draw &lt;number&gt;</td>
+                    <td>To draw number of winners.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">*!clearraffle</td>
+                    <td>To clear the raffle entrants.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Support System -->
+          <div id="support-system-container">
+            <h4
+              id="support"
+              class="text-xl font-medium text-gray-800 mb-3 pt-2"
+            >
+              Support System
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              No Moderator-only commands listed in this section.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">!mod / !mods / !modlist</td>
+                    <td>
+                      Lists all channel mods in stream chat, whispers the user a
+                      link to the support channel on the server, pings all mods
+                      in the Twitch Mod Channel on the server to see if anyone
+                      is available to assist.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- XP System -->
+          <div id="xp-system-container">
+            <h4 id="xp" class="text-xl font-medium text-gray-800 mb-3 pt-2">
+              XP System
+            </h4>
+            <p class="text-lg mb-4 text-amber-700">
+              Commands starting with <code class="font-mono">*!</code> are
+              <strong class="font-bold">Moderator-Only</strong>.
+            </p>
+            <div class="overflow-x-auto">
+              <table class="min-w-full command-table">
+                <thead>
+                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
+                    <th>Command</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-base">
+                  <tr class="searchable-item">
+                    <td class="font-mono">
+                      *!xpadd &lt;user&gt; &lt;amount&gt;
+                    </td>
+                    <td>Give a user XP.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">
+                      *!xpset &lt;user&gt; &lt;amount&gt;
+                    </td>
+                    <td>Set a user's XP to a specific amount.</td>
+                  </tr>
+                  <tr class="searchable-item">
+                    <td class="font-mono">!rank</td>
+                    <td>See your current XP and place on the leaderboard.</td>
+                  </tr>
+                  <tr class="searchable-item bg-gray-50">
+                    <td class="font-mono">!xpleaderboard</td>
+                    <td>
+                      See the leaderboard (*mods have a separate one to
+                      viewers).
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Back to Top Button -->
+      <button
+        id="back-to-top"
+        class="fixed bottom-6 right-6 bg-accent text-black p-3 rounded-full shadow-lg z-50 hidden-top hover:scale-110"
+        title="Go to top"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="3"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M5 15l7-7 7 7"
+          />
+        </svg>
+      </button>
+    </main>
+  </body>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "sans-serif"],
+          },
+        },
+      },
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggleButton = document.getElementById("menu-toggle");
+      const body = document.body;
+
+      // Function to toggle the sidebar state
+      const toggleSidebar = () => {
+        body.classList.toggle("sidebar-open");
+        const isOpen = body.classList.contains("sidebar-open");
+
+        // Update button icon
+        const menuIcon = toggleButton.querySelector(".menu-icon");
+        const closeIcon = toggleButton.querySelector(".close-icon");
+
+        if (isOpen) {
+          menuIcon.classList.add("hidden");
+          closeIcon.classList.remove("hidden");
+        } else {
+          menuIcon.classList.remove("hidden");
+          closeIcon.classList.add("hidden");
+        }
+      };
+
+      // Initial setup for the button click
+      if (toggleButton) {
+        // IMPORTANT FIX A: Menu now ONLY closes when this button is clicked.
+        toggleButton.addEventListener("click", toggleSidebar);
+      }
+
+      // Close sidebar when a link is clicked
+      document.querySelectorAll(".sidebar-link").forEach((link) => {
+        link.addEventListener("click", () =>
+          document.body.classList.remove("sidebar-open")
+        );
+      });
+
+      // BACK TO TOP BUTTON LOGIC
+      const backToTopButton = document.getElementById("back-to-top");
+
+      if (backToTopButton) {
+        // Show/hide the button based on scroll position
+        window.addEventListener("scroll", () => {
+          if (window.scrollY > 300) {
+            // Show button if scrolled more than 300px
+            backToTopButton.classList.remove("hidden-top");
+          } else {
+            backToTopButton.classList.add("hidden-top");
+          }
+        });
+
+        // Scroll to top on click
+        backToTopButton.addEventListener("click", () => {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        });
+      }
+
+      // COMMAND SEARCH LOGIC (Restored and enhanced)
+      const searchInput = document.getElementById("command-search");
+      const commandTablesContainer = document.getElementById(
+        "command-tables-container"
+      );
+      const visibleCountMsg = document.getElementById("visible-count-msg");
+      const visibleCountSpan = document.getElementById("visible-count");
+
+      if (searchInput && commandTablesContainer) {
+        searchInput.addEventListener("keyup", (e) => {
+          const query = e.target.value.toLowerCase().trim();
+          let visibleCount = 0;
+          let firstMatch = null; // To store the first matching row
+
+          // Iterate through all table rows within all command system containers
+          commandTablesContainer
+            .querySelectorAll(".command-table tbody tr")
+            .forEach((row) => {
+              const commandText = row.textContent.toLowerCase();
+              // The original row content is preserved for subsequent searches
+              const isMatch = commandText.includes(query);
+
+              if (isMatch) {
+                row.style.display = "table-row";
+                row.classList.remove("hidden-by-search");
+                visibleCount++;
+                if (!firstMatch) {
+                  firstMatch = row; // Store the first visible row
+                }
+              } else {
+                row.style.display = "none";
+                row.classList.add("hidden-by-search");
+              }
+
+              // Apply highlighting only if a query exists
+              Array.from(row.querySelectorAll("td")).forEach((cell) => {
+                cell.innerHTML = cell.textContent; // Clear previous highlights
+                if (query) {
+                  // Escape special characters in the query for safe use in regex, except for spaces
+                  const escapedQuery = query.replace(
+                    /[-\/\\^$*+?.()|[\]{}]/g,
+                    "\\$&"
+                  );
+                  const regex = new RegExp(`(${escapedQuery})`, "gi");
+                  cell.innerHTML = cell.innerHTML.replace(
+                    regex,
+                    '<span class="search-highlight font-bold">$1</span>'
+                  );
+                }
+              });
+            });
+
+          // Hide/Show section containers and headers based on visible children
+          commandTablesContainer
+            .querySelectorAll('[id$="-system-container"]')
+            .forEach((container) => {
+              const visibleRows = container.querySelectorAll(
+                ".command-table tbody tr:not(.hidden-by-search)"
+              ).length;
+              container.style.display =
+                visibleRows > 0 || query === "" ? "block" : "none";
+            });
+
+          // Update search message
+          if (query.length > 0) {
+            visibleCountMsg.classList.remove("hidden");
+            visibleCountSpan.textContent = visibleCount;
+          } else {
+            visibleCountMsg.classList.add("hidden");
+          }
+
+          // Scroll to the first match if a query exists and a match was found
+          if (query.length > 0 && firstMatch) {
+            firstMatch.scrollIntoView({
+              behavior: "smooth",
+              block: "center", // Vertically center the element in the viewport
+              inline: "nearest",
+            });
+          }
+        });
+      }
+    });
+  </script>
+</html>
