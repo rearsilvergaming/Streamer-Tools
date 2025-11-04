@@ -1,156 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Timeout Eject Animation</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timeout Eject Animation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
 
-      .eject-line {
-        font-family: "VT323", monospace;
-        font-size: 5rem;
-        color: #fff;
-        white-space: nowrap;
-        overflow: hidden;
-        width: 0;
-        letter-spacing: 0.15em;
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-        margin: 0;
-        padding: 0;
-        line-height: 1.2;
-      }
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-      .cursor {
-        border-right: 0.15em solid white;
-      }
+    #parent-container {
+      width: 100%;
+      max-width: 1920px;
+      text-align: center;
+      transition: opacity 0.5s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
 
-      @keyframes blink-caret {
-        from,
-        to {
-          border-color: transparent;
+    .eject-line {
+      font-family: "VT323", monospace;
+      font-size: 5rem;
+      color: #fff;
+      letter-spacing: 0.15em;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 4px 4px 0 #000;
+      line-height: 1;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      will-change: width;
+    }
+
+    .cursor::after {
+      content: "";
+      display: inline-block;
+      width: 0.15em;
+      height: 1em;
+      background: white;
+      margin-left: 0.05em;
+      animation: blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes blink-caret {
+      from, to { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    .username { color: #ff5050; }
+    .mod { color: #50b3ff; }
+    .duration { color: #ffff50; }
+    .reason { color: #a0ff90; }
+  </style>
+</head>
+<body>
+  <div id="parent-container">
+    <div id="line-one" class="eject-line"></div>
+    <div id="line-two" class="eject-line"></div>
+    <div id="line-three" class="eject-line reason"></div>
+  </div>
+
+  <script>
+    // --- Decode parameters (keep identical for Streamer.bot)
+    function decodeBase64(str) {
+      try {
+        return decodeURIComponent(
+          atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+        );
+      } catch { return str; }
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const username = decodeBase64(params.get("user") || "A user");
+    const mod = decodeURIComponent(params.get("createdByDisplayName") || "a Moderator");
+    const duration = decodeURIComponent(params.get("duration") || "300s");
+    const reason = decodeURIComponent(params.get("reason") || "No reason given.");
+
+    const lines = [
+      { el: document.getElementById("line-one"), html: `<span class="username">${username}</span> was timed out` },
+      { el: document.getElementById("line-two"), html: `By <span class="mod">${mod}</span> for <span class="duration">${duration}</span>` },
+      { el: document.getElementById("line-three"), html: reason }
+    ];
+
+    const CHAR_DELAY_S = 0.09;
+    const CURSOR_STOP_DELAY_MS = 500;
+    const HOLD_TIME_MS = 5000;
+    const FADE_TIME_MS = 500;
+
+    function typeLine(index) {
+      if (index >= lines.length) return startCleanup();
+
+      const el = lines[index].el;
+      const content = lines[index].html;
+      el.innerHTML = content;
+
+      const numSteps = Math.max(1, el.textContent.length);
+      el.classList.add("cursor");
+
+      // Temporarily reset width for measurement
+      el.style.width = "auto";
+      const fullWidth = el.scrollWidth;
+      el.style.width = "0px";
+
+      const typingAnim = el.animate(
+        [{ width: "0px" }, { width: `${fullWidth}px` }],
+        {
+          duration: numSteps * CHAR_DELAY_S * 1000,
+          easing: `steps(${numSteps}, end)`,
+          fill: "forwards"
         }
-        50% {
-          border-color: white;
-        }
-      }
-    </style>
-  </head>
+      );
 
-  <body class="bg-transparent flex items-center justify-center min-h-screen">
-    <div
-      id="parent-container"
-      class="text-center transition-opacity duration-500"
-    >
-      <div id="line-one" class="eject-line"></div>
-      <div id="line-two" class="eject-line"></div>
-    </div>
+      typingAnim.onfinish = () => {
+        el.classList.remove("cursor");
+        el.style.width = `${fullWidth}px`;
+        setTimeout(() => typeLine(index + 1), CURSOR_STOP_DELAY_MS);
+      };
+    }
 
-    <script>
-      // --- Read parameters from URL ---
-      const params = new URLSearchParams(window.location.search);
-      const targetUser = decodeURIComponent(params.get("user") || "A viewer");
-      const modUser = decodeURIComponent(params.get("mod") || "RearSilver");
-      const reasonRaw = params.get("reason");
-      const durationRaw = params.get("duration");
-
-      // --- Prepare readable values ---
-      let duration = "";
-      if (durationRaw) {
-        const seconds = parseInt(durationRaw, 10);
-        if (!isNaN(seconds)) {
-          duration =
-            seconds >= 60
-              ? `${Math.floor(seconds / 60)} minute${seconds >= 120 ? "s" : ""}`
-              : `${seconds} second${seconds !== 1 ? "s" : ""}`;
-        }
-      }
-
-      const reason = reasonRaw ? decodeURIComponent(reasonRaw) : "";
-
-      // --- Build message text dynamically ---
-      const lineOneText = `${targetUser} was`;
-      let lineTwoText = `timed out by ${modUser}`;
-      if (duration) lineTwoText += ` for ${duration}`;
-      if (reason) lineTwoText += ` (${reason})`;
-      lineTwoText += `.`; // add full stop at the end
-
-      // --- DOM references ---
-      const elOne = document.getElementById("line-one");
-      const elTwo = document.getElementById("line-two");
+    function startCleanup() {
       const parentContainer = document.getElementById("parent-container");
+      setTimeout(() => {
+        parentContainer.style.opacity = "0";
+        setTimeout(() => (parentContainer.style.display = "none"), FADE_TIME_MS);
+      }, HOLD_TIME_MS);
+    }
 
-      // Animation constants
-      const CHAR_DELAY_S = 0.09;
-      const CURSOR_STOP_DELAY_MS = 500;
-      const HOLD_TIME_MS = 5000;
-      const FADE_TIME_MS = 500;
-
-      // --- Create keyframes dynamically ---
-      function createTypingKeyframes() {
-        const styleSheet = document.styleSheets[0];
-        const rule = `
-          @keyframes typing-dynamic {
-            from { width: 0 }
-            to { width: 100% }
-          }
-        `;
-        if (
-          ![...styleSheet.cssRules].some((r) => r.name === "typing-dynamic")
-        ) {
-          styleSheet.insertRule(rule, styleSheet.cssRules.length);
-        }
-      }
-
-      // --- Animation: Line 1 ---
-      function typeLineOne() {
-        elOne.textContent = lineOneText;
-        const numSteps1 = lineOneText.length;
-        const typingDuration1 = numSteps1 * CHAR_DELAY_S;
-
-        elOne.classList.add("cursor");
-        elOne.style.animation = `typing-dynamic ${typingDuration1}s steps(${numSteps1}) forwards, blink-caret 0.75s step-end infinite`;
-
-        setTimeout(() => {
-          elOne.classList.remove("cursor");
-          elOne.style.borderRight = "none";
-          elOne.style.animation = "none";
-          elOne.style.width = "fit-content";
-          typeLineTwo();
-        }, typingDuration1 * 1000 + CURSOR_STOP_DELAY_MS);
-      }
-
-      // --- Animation: Line 2 ---
-      function typeLineTwo() {
-        elTwo.textContent = lineTwoText;
-        const numSteps2 = lineTwoText.length;
-        const typingDuration2 = numSteps2 * CHAR_DELAY_S;
-
-        elTwo.classList.add("cursor");
-        elTwo.style.animation = `typing-dynamic ${typingDuration2}s steps(${numSteps2}) forwards, blink-caret 0.75s step-end infinite`;
-
-        setTimeout(() => {
-          elTwo.classList.remove("cursor");
-          elTwo.style.borderRight = "none";
-          elTwo.style.animation = "none";
-          elTwo.style.width = "fit-content";
-          startCleanup();
-        }, typingDuration2 * 1000 + CURSOR_STOP_DELAY_MS);
-      }
-
-      // --- Fade out ---
-      function startCleanup() {
-        setTimeout(() => {
-          parentContainer.style.opacity = "0";
-          setTimeout(() => {
-            parentContainer.style.display = "none";
-          }, FADE_TIME_MS);
-        }, HOLD_TIME_MS);
-      }
-
-      // --- Initialise ---
-      createTypingKeyframes();
-      typeLineOne();
-    </script>
-  </body>
+    // Run typing animation
+    typeLine(0);
+  </script>
+</body>
 </html>
