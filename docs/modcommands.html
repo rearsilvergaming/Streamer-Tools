@@ -1221,7 +1221,8 @@
     if (!document.getElementById('search-helper')) {
       const helper = document.createElement('p');
       helper.id = 'search-helper';
-      helper.style.fontSize = '0.85rem';
+      helper.style.fontSize = '1rem';
+      helper.style.fontStyle = 'bold';
       helper.style.color = 'var(--muted)';
       helper.style.marginTop = '0.25rem';
       helper.textContent = 'Tip: type “text:” before a word to search all descriptions.';
