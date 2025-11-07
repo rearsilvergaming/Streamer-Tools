@@ -1,1696 +1,1283 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RearSilver Mod Handbook</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      /* Custom properties for easy management */
-      :root {
-        --sidebar-width: 18rem; /* w-72 */
-      }
+<html lang="en" data-theme="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RearSilver Mod Handbook</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <meta name="color-scheme" content="light dark" />
+  <style>
+    
+    /* =========================
+       THEME & COLOUR SYSTEM
+       ========================= */
+    :root {
+      /* layout */
+      --sidebar-width: 18rem; /* w-72 */
+      --radius: 14px;
 
-      /* 1. THEME DEFINITIONS (Orange and Blue) */
-      .bg-page {
-        background-color: #f0750f; /* Light Amber/Orange 50 */
-        color: #374151; /* Gray 700 */
-      }
-      .bg-sidebar {
-        background-color: #00345f; /* Deep Blue 900 */
-        color: white;
-      }
-      .text-brand {
-        color: #fbbf24; /* Amber 400 */
-      }
-      .text-accent {
-        color: #00345f; /* Blue 700 */
-      }
-      .border-brand {
-        border-color: #f0750f; /* Amber 600 */
-      }
-      .bg-section {
-        background-color: white;
-      }
-      .search-highlight {
-        background-color: #bfdbfe; /* Blue 200 for soft highlight */
-      }
+      /* light palette */
+      --bg: #f8fafc;          /* slate-50 */
+      --bg-elev: #ffffff;     /* white */
+      --text: #0f172a;        /* slate-900 */
+      --muted: #475569;       /* slate-600 */
+      --line: #e5e7eb;        /* gray-200 */
+      --brand: #eab308;       /* amber-500 */
+      --brand-600: #ca8a04;   /* amber-600 */
+      --brand-700: #a16207;   /* amber-700 */
+      --accent: #0f3b68;      /* deep navy */
+      --accent-600: #0a2d50;
+      --accent-700: #061e38;
+      --success: #10b981;
+      --danger: #ef4444;
+      --danger-700: #b91c1c;
 
-      /* 2. LAYOUT AND RESPONSIVENESS */
-      html {
-        scroll-behavior: smooth;
-      }
+      /* state colors */
+      --active-link-bg: #eab308; /* amber-500 */
+      --active-link-text: #0f172a; /* slate-900 */
+      --active-link-text-dark: #f8fafc; /* slate-50 */
+      --hover-link-bg: #f5f5f5; /* gray-100 */
+    }
 
-      /* Sticky table header styling */
-      .command-table thead {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-      }
-      .command-table th {
-        background-color: #e5e7eb; /* Light Gray */
-        border-bottom: 2px solid #d1d5db;
-      }
-      .command-table tbody tr {
-        display: table-row;
-      } /* Default state for search filtering */
+    /* Dark Mode Overrides */
+    [data-theme="dark"] {
+      --bg: #0f172a;          /* slate-900 */
+      --bg-elev: #1e293b;     /* slate-800 */
+      --text: #f8fafc;        /* slate-50 */
+      --muted: #94a3b8;       /* slate-400 */
+      --line: #334155;        /* slate-700 */
+      --brand: #fcd34d;       /* amber-300 */
+      --brand-600: #d97706;   /* amber-700 */
+      --brand-700: #b45309;   /* amber-800 */
+      --accent: #3b82f6;      /* blue-500 */
+      --accent-600: #2563eb;
+      --accent-700: #1d4ed8;
+      --success: #34d399;
+      --danger: #f87171;
+      --danger-700: #dc2626;
 
-      /* 3. UNIVERSAL MENU SLIDE-IN LOGIC (The Content Push) */
+      --active-link-bg: #475569; /* amber-300 */
+      --active-link-text: #0f172a; /* slate-900 */
+      --hover-link-bg: #334155; /* slate-700 */
+    }
 
-      /* Sidebar: Starts off-screen (hidden) universally, fixed for smooth sliding */
-      #sidebar-nav {
+    /* Utility Styles */
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background-color 0.3s, color 0.3s;
+      scroll-behavior: smooth;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Layout specific styles */
+    .sidebar-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+      min-height: 100vh;
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar-layout {
+        grid-template-columns: 1fr; /* Stack on mobile/tablet */
+      }
+      .sidebar {
+        display: none; /* Hide sidebar by default on smaller screens */
+      }
+      .content {
+        padding: 1rem;
+      }
+    }
+
+    /* Sidebar styles */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid var(--line);
+      background-color: var(--bg-elev);
+      padding: 1.5rem;
+      flex-shrink: 0;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 0.25rem;
+      border-radius: var(--radius);
+      color: var(--muted);
+      font-weight: 500;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .sidebar a:hover {
+      background-color: var(--hover-link-bg);
+      color: var(--text);
+    }
+
+    .sidebar a.active {
+      background-color: var(--active-link-bg);
+      color: var(--active-link-text);
+      font-weight: 600;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    }
+
+    [data-theme="dark"] .sidebar a.active {
+      color: var(--active-link-text-dark);
+    }
+
+    /* Content styles */
+    .content {
+      padding: 2rem 3rem;
+      max-width: 100%;
+    }
+
+    /* Command Tables */
+    .command-group {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      margin-bottom: 2rem;
+      background-color: var(--bg-elev);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    .command-group > summary {
+      cursor: pointer;
+      padding: 1rem 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--brand-700);
+      background-color: var(--bg-elev);
+      border-radius: var(--radius);
+      outline: none;
+      transition: background-color 0.2s;
+    }
+
+    .command-group[open] > summary {
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* Table styles */
+    .command-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    .command-table th, .command-table td {
+      padding: 1rem 1.5rem;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .command-table th {
+      background-color: var(--bg);
+      color: var(--text);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-top: 1px solid var(--line);
+    }
+
+    .command-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .command-table tr:hover td {
+      background-color: var(--hover-link-bg);
+    }
+
+    /* Command Tag */
+    .command-tag {
+      font-family: monospace;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      background-color: var(--accent);
+      color: var(--bg);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .command-tag:hover {
+      background-color: var(--accent-600);
+      transform: translateY(-1px);
+    }
+
+    .command-tag:active {
+      background-color: var(--accent-700);
+      transform: translateY(0);
+    }
+
+    .command-tag button {
+      background: none;
+      border: none;
+      color: var(--bg);
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 0;
+      margin-left: 0.25rem;
+    }
+
+    /* Headings */
+    .content h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--brand-700);
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--line);
+    }
+
+    .content h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Alert Boxes */
+    .alert {
+      padding: 1rem;
+      border-radius: var(--radius);
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .alert.info {
+      background-color: rgba(63, 131, 248, 0.1);
+      border: 1px solid var(--accent);
+      color: var(--accent-700);
+    }
+
+    .alert.danger {
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--danger);
+      color: var(--danger-700);
+    }
+
+    [data-theme="dark"] .alert.info {
+      background-color: rgba(59, 130, 246, 0.2);
+      color: var(--accent);
+    }
+    [data-theme="dark"] .alert.danger {
+      background-color: rgba(248, 113, 113, 0.2);
+      color: var(--danger);
+    }
+
+    .alert-icon {
+      flex-shrink: 0;
+      font-size: 1.5rem;
+    }
+
+    /* General text styles */
+    .content p, .content ul, .content ol {
+      margin-bottom: 1rem;
+      line-height: 1.7;
+    }
+
+    .content li {
+      margin-bottom: 0.5rem;
+    }
+
+    .content strong {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Custom buttons */
+    .action-button {
+      background-color: var(--brand);
+      color: var(--text);
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      transition: background-color 0.2s, transform 0.1s;
+      margin-right: 0.5rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .action-button:hover {
+      background-color: var(--brand-600);
+    }
+
+    /* Header for mobile (hidden on desktop) */
+    .mobile-header {
+      display: none;
+      background-color: var(--bg-elev);
+      border-bottom: 1px solid var(--line);
+      padding: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    @media (max-width: 1024px) {
+      .mobile-header {
+        display: block;
+      }
+      .sidebar {
         position: fixed;
-        left: 0;
         top: 0;
-        width: var(--sidebar-width);
-        height: 100%;
-        padding: 1.5rem;
-        z-index: 50;
-        overflow-y: auto;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-          0 4px 6px -2px rgba(0, 0, 0, 0.05);
-
-        /* Start off-screen regardless of device size */
-        transform: translateX(calc(-1 * var(--sidebar-width)));
-        transition: transform 0.3s ease-in-out;
+        left: 0;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-out;
+        z-index: 100;
+        width: min(90vw, var(--sidebar-width));
       }
-
-      /* Main Content: Starts full width universally */
-      .main-content {
-        margin-left: 0; /* No initial margin shift */
-        min-height: 100vh;
-        transition: margin-left 0.3s ease-in-out;
+      .sidebar.open {
+        transform: translateX(0);
       }
-
-      /* Toggled state: When body has 'sidebar-open' class (UNIVERSALLY APPLIED) */
-      .sidebar-open #sidebar-nav {
-        transform: translateX(0); /* Slide sidebar in */
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 90;
+        display: none;
       }
-
-      /* PUSH the main content to the right to accommodate the sidebar on all screen sizes */
-      .sidebar-open .main-content {
-        margin-left: var(--sidebar-width);
+      .overlay.open {
+        display: block;
       }
-
-      /* Sidebar link hover effect */
-      .sidebar-link {
-        transition: background-color 0.2s;
+      .content {
+        padding: 1.5rem 1rem;
       }
-      .sidebar-link:hover {
-        background-color: #1e40af; /* Blue 800 */
-      }
-      .sidebar-link.active {
-        background-color: #1d4ed8; /* Blue 700 */
-        font-weight: 700;
-      }
-    </style>
-  </head>
-  <body class="bg-page font-sans">
-    <!-- Menu Button (Universal Toggle - Visible on ALL screen sizes) -->
-    <button
-      id="menu-toggle"
-      class="fixed top-4 left-4 bg-accent text-white p-3 rounded-full shadow-lg z-[60] transition transform hover:scale-105"
-    >
-      <!-- Menu Icon -->
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 menu-icon"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="#000000"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="3"
-          d="M4 6h16M4 12h16M4 18h16"
-        />
-      </svg>
-      <!-- Close Icon -->
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 close-icon hidden"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="#eb8a14"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M6 18L18 6M6 6l12 12"
-        />
-      </svg>
-    </button>
+    }
 
-    <!-- Sidebar Navigation -->
-    <aside id="sidebar-nav" class="bg-sidebar shadow-xl">
-      <h1
-        class="text-2xl font-extrabold text-brand mb-6 border-b border-amber-700 pb-2"
-      ></h1>
+    /* Buttons & utilities */
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .55rem .9rem; border-radius: 9999px;
+      background: var(--accent); color: white; font-weight: 600;
+      transition: transform .1s ease, background-color .2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); background: var(--accent-600); }
+    .btn-secondary { background: var(--brand-700); color: var(--text); border: 1px solid var(--line); padding: .55rem .9rem; border-radius: 2500px; }
+    .btn-secondary:hover { background: var(--hover); }
 
-      <!-- Command Search Bar -->
-      <h2
-        class="text-lg font-semibold mb-2 mt-4 uppercase tracking-wider text-amber-300"
-      >
-        Command Search
-      </h2>
-      <div class="mb-6">
-        <input
-          type="text"
-          id="command-search"
-          placeholder="Search for command names..."
-          class="w-full p-2 border-2 border-blue-500 rounded-lg text-gray-900 focus:border-brand focus:ring focus:ring-amber-300 transition"
-        />
+    .icon-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; border-radius: 9999px;
+      background: transparent; border: 1px solid var(--line); color: var(--text);
+    }
+    .icon-btn:hover { background: var(--hover); }
+
+    .kbd {
+      background: var(--kbd); color: var(--kbd-text);
+      padding: .15rem .4rem; border-radius: 6px; font-weight: 700; font-size: .8rem;
+      border: 1px solid rgba(0,0,0,.12);
+    }
+.header {
+      position: sticky;
+      background: var(--bg);
+      top: 0;
+      padding: 50px;
+      padding: 1rem 1.5rem;
+      padding: 0.75rem 1.5rem; /* Adjusted padding */
+      font-size: small;
+      justify-content: center;
+      align-items: center;
+      z-index: 40; /* Ensures header stays on top of content */
+      z-index: 40;
+      /* Add a blur effect for content scrolling behind */
+      backdrop-filter: saturate(1.2) blur(6px);
+      background: color-mix(in srgb, var(--bg) 85%, transparent);
+    }
+
+    .button-container {
+      display: flex;
+      justify-items: center;
+      align-items: center;
+      gap: 2rem;
+      margin-left: 6rem;
+    }    
+
+      /* Footer */
+    footer { color: var(--muted); }
+
+    /* Back to top */
+    #back-to-top { position: fixed; bottom: 16px; right: 16px; }
+  </style>
+</head>
+<body class="font-sans">
+
+  <!-- Mobile Header -->
+  <header class="mobile-header lg:hidden">
+    <div class="flex justify-between items-center">
+      <h1 class="text-xl font-extrabold text-[var(--brand-700)]">RearSilver's • Mod Handbook</h1>
+      <span class="chip text-[var(--brand-700)] font-extrabold text-lg px-2 py-0.5 rounded-full">v1.1</span>
+      <button id="menu-toggle" class="text-[var(--text)] text-2xl">☰</button>
+    </div>
+  </header>
+
+  <!-- Mobile Overlay -->
+  <div id="overlay" class="overlay"></div>
+
+
+  <div class="sidebar-layout">
+    <!-- Sidebar / Navigation -->
+    <aside id="sidebar" class="sidebar">
+      <h1 class="text-3xl font-extrabold mb-6 text-[var(--brand-700)] hidden lg:block">RearSilver's • Mod Handbook</h1>
+      <h1 class="text-3xl font-extrabold mb-6 text-[var(--brand-700)] hidden lg:block">v1.1</h1>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-bold text-[var(--text)]">Navigation</h2>
+        <button id="theme-toggle" class="text-sm font-semibold text-[var(--muted)] hover:text-[var(--text)] transition-colors">
+            <span id="theme-text">Dark Mode</span>
+        </button>
       </div>
+      
 
-      <nav>
-        <h2
-          class="text-lg font-semibold mb-2 mt-4 uppercase tracking-wider text-amber-300"
-        >
-          Guide
-        </h2>
-        <a
-          href="#expectations"
-          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >General Expectations</a
-        >
-        <a
-          href="#philosophy"
-          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Moderator Philosophy</a
-        >
-        <a
-          href="#server"
-          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Discord Server</a
-        >
-        <a
-          href="#emergency"
-          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Emergency Protocol</a
-        >
-        <a
-          href="#scenarios"
-          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Action Scenarios</a
-        >
-
-        <h2
-          class="text-lg font-semibold mb-2 mt-6 uppercase tracking-wider text-amber-300"
-        >
-          Command Systems
-        </h2>
-        <a
-          href="#translate"
-          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Auto Translate System</a
-        >
-        <a
-          href="#birthday"
-          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Birthday System</a
-        >
-        <a href="#chat" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Chat Commands</a
-        >
-        <a href="#fun" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Fun in Chat</a
-        >
-        <a href="#death" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Death Counter</a
-        >
-        <a
-          href="#control"
-          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Stream Control</a
-        >
-        <a href="#links" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Link Protection System</a
-        >
-        <a
-          href="#measurements"
-          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Measurements</a
-        >
-        <a
-          href="#modcommands"
-          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Mod Commands</a
-        >
-        <a href="#hunt" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Hunt Game System</a
-        >
-        <a href="#queue" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Viewers Queue System</a
-        >
-        <a
-          href="#pronouns"
-          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Pronouns</a
-        >
-        <a href="#quote" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Quote System</a
-        >
-        <a
-          href="#raffle"
-          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Raffle System</a
-        >
-        <a
-          href="#support"
-          class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Support System</a
-        >
-        <a href="#xp" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >XP System</a
-        >
-        <h2
-          class="text-lg font-semibold mb-2 mt-6 uppercase tracking-wider text-amber-300"
-        >
-          Thank You!
-        </h2>
-                <a href="#thanks" class="sidebar-link block py-2 px-3 rounded-lg text-sm"
-          >Thank You</a
-        >
+      <nav id="nav-links">
+        <h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Mod Guide</h3>
+         <a href="#expectations" class="sidebar-link block text-sm">General Expectations</a>
+        <a href="#philosophy" class="sidebar-link block text-sm">Moderator Philosophy</a>
+        <a href="#server" class="sidebar-link block text-sm">Discord Server</a>
+        <a href="#emergency" class="sidebar-link block text-sm">Emergency Protocol</a>
+        <a href="#scenarios" class="sidebar-link block text-sm">Action Scenarios</a>
+        <h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Stream Commands</h3>
+      <a href="#translate" class="sidebar-link block text-sm">Auto Translate System</a>
+      <a href="#birthday" class="sidebar-link block text-sm">Birthday System</a>
+      <a href="#chat" class="sidebar-link block text-sm">Chat Commands</a>
+      <a href="#fun" class="sidebar-link block text-sm">Fun in Chat</a>
+      <a href="#death" class="sidebar-link block text-sm">Death Counter</a>
+      <a href="#control" class="sidebar-link block text-sm">Stream Control</a>
+      <a href="#links" class="sidebar-link block text-sm">Link Protection System</a>
+      <a href="#measurements" class="sidebar-link block text-sm">Measurements (Explicit)</a>
+      <a href="#modcommands" class="sidebar-link block text-sm">Mod Commands (Moderation Tools)</a>
+      <a href="#hunt" class="sidebar-link block text-sm">Hunt Game System</a>
+      <a href="#queue" class="sidebar-link block text-sm">Viewers Queue System</a>
+      <a href="#pronouns" class="sidebar-link block text-sm">Pronouns</a>
+      <a href="#quote" class="sidebar-link block text-sm">Quote System</a>
+      <a href="#raffle" class="sidebar-link block text-sm">Raffle System</a>
+      <a href="#support" class="sidebar-link block text-sm">Support System</a>
+      <a href="#xp" class="sidebar-link block text-sm">XP System</a>
+        <h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Thank You</h3>
+      <a href="#thanks" class="sidebar-link block text-sm">Thank You</a>
       </nav>
+
+
     </aside>
 
-    <!-- Main Content Area -->
-    <main class="main-content p-4 sm:p-8">
-      <header class="mb-10 p-6 bg-header rounded-xl">
-        <h1 class="text-center text-4xl sm:text-5xl font-extrabold text-[#00345f] mb-2">
-          RearSilver's Official Stream Handbook
-        </h1>
-        <p class="text-xl text-[#00345f] text-center">
-          Moderator Guide & Command Glossary
-        </p>
-      </header>
+    <!-- Main Content -->
+    <main class="content">
+        <!-- Sticky Utility Bar -->
+  <div class="header">
+    <div class="flex items-center gap-2">
 
-      <!-- PART 1: Moderator Guide (Content retained from previous iteration) -->
-      <section id="guide" class="bg-section p-6 rounded-xl shadow-lg mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4 border-b pb-2">
-          Part 1: Moderator Guide
-        </h2>
+        <div class="button-container">
+        <button id="expand-all" class="btn-secondary">Expand All</button>
+        <button id="collapse-all" class="btn-secondary">Collapse All</button>
 
-        <h3
-          id="expectations"
-          class="text-2xl font-semibold text-accent mt-6 mb-3 pt-2"
-        >
-          General Expectations (The Core Rules)
-        </h3>
-        <ol class="list-decimal list-inside space-y-3 pl-4 text-lg">
-          <li class="p-2 rounded-lg bg-blue-50/70">
-            <strong class="font-bold">You Represent the Channel:</strong> You
-            are an extension of RearSilver. Ban with kindness (if possible), but
-            bully with humour. Your tone sets the standard.
-          </li>
-          <li class="p-2 rounded-lg">
-            <strong class="font-bold">Use Common Sense:</strong> If it’s
-            hateful, harassing, spam, or disrupts chat flow (even if not
-            technically rule-breaking), act fast. Don't let a bad vibe linger.
-          </li>
-          <li class="p-2 rounded-lg bg-blue-50/70">
-            <strong class="font-bold">Trust is Key:</strong> Mods are trusted to
-            use judgement — no need to ask for permission before moderating.
-            Act, then inform.
-          </li>
-          <li class="p-2 rounded-lg">
-            <strong class="font-bold">Communicate with Each Other:</strong> If
-            you action something serious, drop a quick note in the mod
-            chat/Discord. This prevents duplicate actions.
-          </li>
-          <li class="p-2 rounded-lg bg-blue-50/70">
-            <strong class="font-bold">Confidentiality:</strong> Don’t leak
-            mod-only info (our internal tools, systems, or stream private chat).
-          </li>
-          <li class="p-2 rounded-lg">
-            <strong class="font-bold">The Humour Filter:</strong> Keep the
-            humour dark but not cruel. Our content is adult and explicit, but
-            our community is inclusive.
-          </li>
-          <li class="p-2 rounded-lg bg-blue-50/70">
-            <strong class="font-bold"
-              >If in doubt: Timeout first, ask later.</strong
-            >
-            Better to cool someone down with a 600 second time-out than risk
-            escalation and a ban that derails the stream.
-          </li>
-                    <li class="p-2 rounded-lg bg-blue-50/70">
-            <strong class="font-bold"
-              >Set the trend of commands.</strong
-            >
-            <u><strong>PLEASE</strong></u> set the trend of clips and quotes etc. If people don't know to do it, they won't. Encourage them to use the commands.
-          </li>
+    </aside>
+        <!-- Quick links to Discord channels -->
+        <a class="btn-secondary" href="https://discord.com/channels/1151605659201183784/1198634412531798046" target="_blank" rel="noreferrer">
+          #twitch-moderator Channel
+        </a>
+        <a class="btn-secondary" href="https://discord.com/channels/1151605659201183784/1412851485011742842" target="_blank" rel="noreferrer">
+          #stream-log Channel
+        </a>
+                <!-- Command Search -->
+      <input
+        type="text" id="command-search" placeholder="Search for a command"
+        class="btn-secondary"
+      />
+      </div>
+    </div>
+  </div>
+
+      <div class="max-w-4xl mx-auto">
+        <header class="mb-8">
+          <h2>Official Handbook for RearSilver's Moderation Team.</h2>
+          <div class="alert info mt-6">
+            <span class="alert-icon">💡</span>
+            <p>This handbook is a living document. Your input is always welcome. Please report any errors or suggest additions!</p>
+          </div>
+
+        </header>
+
+        <!-- General Sections -->
+        <section id="expectations">
+          <h2>Expectations & Conduct</h2>
+          <p>As a moderator for RearSilver, you are an extension of the community's leadership and the primary enforcers of the rules. Your role is vital to maintaining a fun, safe, and adult-themed environment.</p>
+
+          <h3>Core Responsibilities</h3>
+          <ul class="list-disc ml-6 text-[var(--text)]">
+            <li><strong>Be Present:</strong> Try to be active during streams you're moderating.</li>
+            <li><strong>Be Impartial:</strong> Apply rules fairly and consistently to everyone, including friends.</li>
+            <li><strong>Be Approachable:</strong> Help new members understand the stream culture and commands.</li>
+            <li><strong>De-escalate:</strong> Try to defuse situations before resorting to bans or timeouts.</li>
+            <li><strong>Report Abuse:</strong> If you see other mods abusing their power, report it privately to Ben.</li>
+            <li><strong>You Represent the Channel:</strong> You are an extension of RearSilver. Ban with kindness (if possible), but bully with humour. Your tone sets the standard.</li>
+          <li><strong>Use Common Sense:</strong> If it’s hateful, harassing, spam, or disrupts chat flow (even if not technically rule-breaking), act fast. Don't let a bad vibe linger.</li>
+          <li><strong>Trust is Key:</strong> Mods are trusted to use judgement — no need to ask for permission before moderating. Act, then inform.</li>
+          <li><strong>Communicate with Each Other:</strong> If you action something serious, drop a quick note in the mod chat/Discord. This prevents duplicate actions.</li>
+          <li><strong>Confidentiality:</strong> Don’t leak mod-only info (our internal tools, systems, or stream private chat).</li>
+          <li><strong>The Humour Filter:</strong> Keep the humour dark but not cruel. Our content is adult and explicit, but our community is inclusive.</li>
+          <li><strong>If in doubt: Timeout first, ask later.</strong> Better to cool someone down with a 600 second time-out than risk escalation and a ban that derails the stream.</li>
+          <li><strong>Set the trend of commands.</strong> <u><strong>PLEASE</strong></u> set the trend of clips and quotes etc. If people don't know to do it, they won't. Encourage them to use the commands.</li>
         </ol>
+          </ul>
 
-        <h3
-          id="philosophy"
-          class="text-2xl font-semibold text-accent mt-10 mb-3 pt-2"
-        >
-          Moderator Philosophy (Chaos, not Cruelty)
-        </h3>
-        <blockquote
-          class="border-l-4 border-blue-500 pl-4 py-2 italic text-gray-600 text-lg my-4 bg-blue-50 rounded-r-lg"
-        >
-          “If you wouldn’t want it shouted across a pub, don’t let it live in
-          chat.”
+          <div class="alert danger mt-4">
+            <span class="alert-icon">🛑</span>
+            <p><strong>Never</strong> use your moderator status to settle personal grudges or disagreements. Abuse of power will result in removal of moderator status.</p>
+          </div>
+
+          <h3>Whisper vs. Public Action</h3>
+          <p>When dealing with mild rule breaks (like backseat gaming or repeated command spam):</p>
+          <ol class="list-decimal ml-6 text-[var(--text)]">
+            <li>**First Offence:** A polite **whisper** to the user explaining the issue.</li>
+            <li>**Second Offence:** A public, gentle **timeout** (e.g., 60 seconds) with a clear reason in chat (e.g., "Just a quick time-out, please check the rules on that. Thanks!").</li>
+            <li>**Third Offence:** A longer timeout or ban, depending on the severity.</li>
+          </ol>
+        </section>
+
+        <section id="philosophy">
+          <h2>Moderator Philosophy (Chaos, not Cruelty)</h2>
+          <blockquote class="border-l-4 pl-4 py-2 italic text-base my-4 rounded-r-lg" style="border-color:var(--accent); background:var(--hover);">
+          “If you wouldn’t want it shouted across a pub, don’t let it live in chat.”
         </blockquote>
-        <ul class="list-disc list-inside space-y-2 pl-4 text-lg">
-          <li>
-            <strong class="font-bold">Prioritise Safety:</strong> We lean toward
-            chaos, not cruelty. Let fun breathe but stop things before they
-            sour.
-          </li>
-          <li>
-            <strong class="font-bold">Inclusivity is Non-Negotiable:</strong> We
-            are an LGBTQ+ safe space first, entertainment second. Zero tolerance
-            for bigotry of any kind.
-          </li>
-          <li>
-            <strong class="font-bold">Handle Appeals Privately:</strong> Do not
-            argue with bans or timeouts in public chat. Direct users to the
-            appropriate Discord channel.
-          </li>
-          <li>
-            <strong class="font-bold">FrontSilver Trusts You:</strong> Don’t
-            make him regret it.
-          </li>
-        </ul>
+          <p>RearSilver's stream is **adult-themed** and features mature language, dark humour, and explicit themes. We believe in providing a space for adults to be themselves, but boundaries still exist to protect the stream and the platform.</p>
 
-        <h3
-          id="server"
-          class="text-2xl font-semibold text-accent mt-10 mb-3 pt-2"
-        >
-          Discord Server (Mod Communication Hub)
-        </h3>
-        <p class="mb-4">
-          Use the server channel to discuss all mod actions and situations. Also, make friends with the other mods, they are your <strong>allies</strong>.
-        </p>
-         <ul class="list-disc list-inside space-y-2 pl-4 text-lg">
-          <li>
-            <strong class="font-bold">Channel Link:</strong> <a
-              href="https://discord.com/channels/1151605659201183784/1198634412531798046" target="_blank"><code class="bg-green-100 text-green-700 p-1 rounded font-mono">#twitch-moderator</code></a>
-          </li>
-          <li>
-            <strong class="font-bold">Stream Log:</strong> Use this to see all Mod actions taken in chat. <a
-              href="https://discord.com/channels/1151605659201183784/1412851485011742842" target="_blank"><code class="bg-green-100 text-green-700 p-1 rounded font-mono">#stream-log</code></a>
-          </li>
-          <li>
-            <strong class="font-bold">Privacy:</strong> This is a safe channel to discuss people and conduct. These discussions could get personal, so please keep it private.
-          </li>
-          <li>
-            <strong class="font-bold">Threads:</strong> General conversation is promoted here but for specific situations, please create a thread to keep things organised.
-          </li>
-        </ul>
+          <h3>Key Boundaries</h3>
+          <ul class="list-disc ml-6 text-[var(--text)]">
+            <li><strong>Harassment & Hate Speech:</strong> ZERO TOLERANCE. Immediate, permanent ban.</li>
+            <li><strong>Illegal Content:</strong> Anything related to illegal activities. Immediate, permanent ban.</li>
+            <li><strong>Non-consensual Content:</strong> Do not link or promote anything related to non-consensual acts. Immediate, permanent ban.</li>
+            <li><strong>Streamer's Tolerance:</strong> If RearSilver asks for a topic to be dropped, the topic is dropped. Your job is to enforce that request immediately.</li>
+            <li><strong>Prioritise Safety:</strong> We lean toward chaos, not cruelty. Let fun breathe but stop things before they sour.</li>
+          <li><strong>Inclusivity is Non-Negotiable:</strong> We are an LGBTQ+ safe space first, entertainment second. Zero tolerance for bigotry of any kind.</li>
+          <li><strong>Handle Appeals Privately:</strong> Do not argue with bans or timeouts in public chat. Direct users to the appropriate Discord channel.</li>
+          <li><strong>FrontSilver Trusts You:</strong> Don’t make him regret it.</li>
+          </ul>
+        </section>
 
-        <h3
-          id="emergency"
-          class="text-2xl font-semibold text-accent mt-10 mb-3 pt-2"
-        >
-          Emergency & Raid Protocol
-        </h3>
-        <p class="mb-4">
-          Use this protocol for overwhelming spam or hate raids:
-        </p>
-        <ol class="list-decimal list-inside space-y-2 pl-4 text-lg">
-          <li>
-            <strong class="font-bold">Assess:</strong> Is the situation
-            manageable, or is the spam/hate overwhelming?
-          </li>
-          <li>
-            <strong class="font-bold">Initiate Lockdown:</strong> If
-            overwhelming, use
-            <code class="bg-red-100 text-red-700 p-1 rounded font-mono"
-              >*!emergency</code
-            >. This activates slow mode, followers-only, and clears chat.
-          </li>
-          <li>
-            <strong class="font-bold">Monitor & Report:</strong> While in
-            lockdown, continue banning offenders. Inform other mods in Discord.
-          </li>
-          <li>
-            <strong class="font-bold">Stand Down:</strong> Once the wave has
-            passed, use
-            <code class="bg-green-100 text-green-700 p-1 rounded font-mono"
-              >*!emergencyover</code
-            >
-            to return chat to normal.
-          </li>
-        </ol>
+        <section id="server">
+          <h2>Discord Server (Mod Communication Hub)</h2>
+          <p>Use the server channel to discuss all mod actions and situations. Also, make friends with the other mods, they are your <strong>allies</strong>.</p>
+          <ul class="list-disc ml-6 text-[var(--text)]">
+            <li><strong>Channel Link:</strong> <a href="https://discord.com/channels/1151605659201183784/1198634412531798046" target="_blank" class="underline text-brand"><code class="px-1 py-0.5 rounded">#twitch-moderator</code></a></li>
+          <li><strong>Stream Log:</strong> Use this to see all Mod actions taken in chat. <a href="https://discord.com/channels/1151605659201183784/1412851485011742842" target="_blank" class="underline text-brand"><code class="px-1 py-0.5 rounded">#stream-log</code></a></li>
+          <li><strong>Privacy:</strong> This is a safe channel to discuss people and conduct. These discussions could get personal, so please keep anything said private.</li>
+          <li><strong>Threads:</strong> General conversation is promoted here but for specific situations, please create a thread to keep things organised.</li>
+          <li><strong>Help:</strong> RearSilver might be unavailable to answer your mod query but chances are one of the other mods has been in a similar situation. <strong>NEVER</strong> be afraid to ask to advice or assistance!</li>
+          </ul>
+        </section>
 
-        
+        <section id="emergency">
+          <h2>Emergency Protocols (Hate Raids/Bot Attack)</h2>
+          <p class="mb-4">Use this protocol for overwhelming spam or hate raids:</p>
+                  <li><strong>Assess:</strong> Is the situation manageable, or is the spam/hate overwhelming?</li>
+          <li><strong>Initiate Lockdown:</strong> If overwhelming, use <code class="px-1 rounded chip">*!emergency</code>. This activates slow mode, followers-only, and clears chat.</li>
+          <li><strong>Monitor & Report:</strong> While in lockdown, continue banning offenders. Inform other mods in Discord.</li>
+          <li><strong>Stand Down:</strong> Once the wave has passed, use <code class="px-1 rounded chip">*!emergencyover</code> to return chat to normal.</li>
 
-        <h3
-          id="scenarios"
-          class="text-2xl font-semibold text-accent mt-10 mb-3 pt-2"
-        >
-          Common Mod Action Scenarios
-        </h3>
-        <div class="overflow-x-auto">
-          <table
-            class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg"
-          >
-            <thead class="bg-gray-50">
+          <h3>Hostile Raids or Hate Speech Attacks</h3>
+          <ol class="list-decimal ml-6 text-[var(--text)]">
+            <li>**Immediate Action:** Turn on **Follower-Only Mode (10 minutes)** or **Sub-Only Mode**.</li>
+            <li>**Sweep:** Timeout/ban any accounts participating in the hate speech or excessive toxicity.</li>
+            <li>**Inform:** Whisper RearSilver to inform them of the mode change and the nature of the attack.</li>
+          </ol>
+
+          <h3>DDoS/Bot Attacks</h3>
+          <ol class="list-decimal ml-6 text-[var(--text)]">
+            <li>**Immediate Action:** Turn on **Sub-Only Mode** and **Emote-Only Mode**.</li>
+            <li>**Contact:** Immediately contact Ben via Discord or a private channel.</li>
+            <li>**Relax:** The streamer will likely handle the technical side. Your job is to keep the remaining community calm and informed.</li>
+          </ol>
+          
+        </section>
+
+        <section id="scenarios">
+          <h2>Common Mod Action Scenarios</h2>
+          <p>Here are some examples of situations you may encounter and the recommended response:</p>
+          <ul class="list-disc ml-6 text-[var(--text)]">
+            <li><strong>Scenario A (Backseat Gaming):</strong> A chatter, "GamerDog69," keeps telling RearSilver exactly what to do in the game.
+              <p class="mt-2 pl-4 text-[var(--muted)] italic">**Action:** Whisper GamerDog69: "Hey! Just a reminder, please don't backseat game. RearSilver enjoys figuring it out as he goes. Thanks for watching!" If they persist, apply a 60s timeout.</p>
+            </li>
+            <li><strong>Scenario B (Transphobia):</strong> A chatter posts an explicit slur or hate speech directed at a trans person.
+              <p class="mt-2 pl-4 text-[var(--muted)] italic">**Action:** Immediate, permanent ban. No warning. Report the user and the message to Twitch.</p>
+            </li>
+            <li><strong>Scenario C (Personal Attack):</strong> A chatter says, "RearSilver you look terrible today, why are you even streaming?"
+              <p class="mt-2 pl-4 text-[var(--muted)] italic">**Action:** Apply a 600s (10 min) timeout. Reason: "Personal attack/toxicity." If they return and repeat, ban.</p>
+            </li>
+          </ul>
+          <table class="min-w-full command-table text-sm">
+            <thead>
               <tr>
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Offence
-                </th>
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Suggested Action
-                </th>
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Contextual Notes
-                </th>
+                <th class="px-4 py-3 text-left">Offence</th>
+                <th class="px-4 py-3 text-left">Suggested Action</th>
+                <th class="px-4 py-3 text-left">Contextual Notes</th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200 text-base">
+            <tbody>
               <tr class="searchable-item">
-                <td class="px-6 py-4 whitespace-nowrap">Spam / Flooding</td>
-                <td class="px-6 py-4 whitespace-nowrap">30's –300's Timeout</td>
-                <td class="px-6 py-4">
-                  Usually a bot or new user. Use
-                  <code class="font-mono">*!clear</code> if it floods the
-                  screen.
-                </td>
-              </tr>
-              <tr class="searchable-item bg-gray-50">
-                <td class="px-6 py-4 whitespace-nowrap">Aggressive / Rude</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  600's – 1200's Timeout
-                </td>
-                <td class="px-6 py-4">
-                  For personal attacks, back-seat gaming, or excessive
-                  negativity.
-                </td>
+                <td class="px-4 py-3 whitespace-nowrap">Spam / Flooding</td>
+                <td class="px-4 py-3 whitespace-nowrap">30's –300's Timeout</td>
+                <td class="px-4 py-3">Usually a bot or new user. Use <code class="font-mono">*!clear</code> if it floods the screen.</td>
               </tr>
               <tr class="searchable-item">
-                <td class="px-6 py-4 whitespace-nowrap">Unsolicited Links</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  Remove Link + Warn / 300's TO
-                </td>
-                <td class="px-6 py-4">
-                  Bot handles most. Use
-                  <code class="font-mono">*!lpallow</code> to approve a link
-                  manually.
-                </td>
-              </tr>
-              <tr class="searchable-item bg-gray-50">
-                <td class="px-6 py-4 whitespace-nowrap text-red-600 font-bold">
-                  Bigotry / Hate Speech
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-red-600 font-bold">
-                  PERMANENT BAN
-                </td>
-                <td class="px-6 py-4">
-                  Zero-tolerance. Use <code class="font-mono">*!ban</code>.
-                  Inform mod chat immediately.
-                </td>
+                <td class="px-4 py-3 whitespace-nowrap">Aggressive / Rude</td>
+                <td class="px-4 py-3 whitespace-nowrap">600's – 1200's Timeout</td>
+                <td class="px-4 py-3">For personal attacks, back-seat gaming, or excessive negativity.</td>
               </tr>
               <tr class="searchable-item">
-                <td class="px-6 py-4 whitespace-nowrap">Repeat Offenders</td>
-                <td class="px-6 py-4 whitespace-nowrap">Escalate to BAN</td>
-                <td class="px-6 py-4">
-                  If a user is timed out multiple times, escalate to a ban.
-                </td>
+                <td class="px-4 py-3 whitespace-nowrap">Unsolicited Links</td>
+                <td class="px-4 py-3 whitespace-nowrap">Remove Link + Warn / 300's TO</td>
+                <td class="px-4 py-3">Bot handles most. Use <code class="font-mono">*!lpallow</code> to approve a link manually.</td>
+              </tr>
+              <tr class="searchable-item">
+                <td class="px-4 py-3 whitespace-nowrap text-red-500 font-bold">Bigotry / Hate Speech</td>
+                <td class="px-4 py-3 whitespace-nowrap text-red-500 font-bold">PERMANENT BAN</td>
+                <td class="px-4 py-3">Zero-tolerance. Use <code class="font-mono">*!ban</code>. Inform mod chat immediately.</td>
+              </tr>
+              <tr class="searchable-item">
+                <td class="px-4 py-3 whitespace-nowrap">Repeat Offenders</td>
+                <td class="px-4 py-3 whitespace-nowrap">Escalate to BAN</td>
+                <td class="px-4 py-3">If a user is timed out multiple times, escalate to a ban.</td>
               </tr>
             </tbody>
           </table>
+        </section>
+
+        <!-- Command Tables -->
+        <h2 class="mt-8">Command Glossary</h2>
+        <p>This is a complete list of all active stream commands. Remember that commands are case-insensitive but must be preceded by a **`!`**.</p>
+
+        <div id="command-tables-container">
+
+          <details id="translate" class="command-group">
+            <summary>Auto Translate System</summary>
+                        <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!Setlang &lt;user&gt; &lt;language&gt;</td><td class="px-3 py-2">Set a user's native language.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!excludelist</td><td class="px-3 py-2">Shows the excluded word list in chat.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!excludeadd &lt;word&gt;</td><td class="px-3 py-2">Add word to exclude list.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!excluderemove &lt;word&gt;</td><td class="px-3 py-2">Remove word to exclude list.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!flaggedapprove</td><td class="px-3 py-2">Approve users flagged word suggestion.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!flaggeddeny</td><td class="px-3 py-2">Deny users flagged word suggestion.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!flaglist</td><td class="px-3 py-2">Shows words on the flag list.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!slurlist</td><td class="px-3 py-2">Shows words on the slur list.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!sluradd &lt;word&gt;</td><td class="px-3 py-2">Add word to slur list.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!slurremove &lt;word&gt;</td><td class="px-3 py-2">Remove word to exclude list.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!flagword &lt;word&gt;</td><td class="px-3 py-2">Users submission to add word to the slur list.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="birthday" class="command-group">
+            <summary>Birthday System</summary>
+                        <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!birthday &lt;user&gt;</td><td class="px-3 py-2">Give manual birthday celebratory message to a user.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!setyear &lt;user&gt; &lt;year&gt;</td><td class="px-3 py-2">Set a user's year of birth for age logic.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!birthdayset &lt;user&gt; &lt;birthday&gt;</td><td class="px-3 py-2">Set a user's birthday.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!mybday &lt;birthday&gt;</td><td class="px-3 py-2">User to set their own birthday.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="chat" class="command-group">
+            <summary>Chat Commands (General Info)</summary>
+                                    <p>No mod only commands here.</p>
+
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!discord</td><td class="px-3 py-2">Puts link to server in chat.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!socials</td><td class="px-3 py-2">Puts RearSilver's socials in chat.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!clip</td><td class="px-3 py-2">Makes a 30 second clip and posts it to the server.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!destiny / !bungie / !id</td><td class="px-3 py-2">To put Destiny details in chat.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!steam</td><td class="px-3 py-2">For Steam details.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="fun" class="command-group">
+            <summary>Fun in Chat (Interactive & Random)</summary>
+            <p>No mod only commands here.</p>
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!bap &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!boop &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!cuddle &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!cumrag</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!dance &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!fistbump &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!followed</td><td class="px-3 py-2">Shows stream follow status.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!fuck &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!headpat &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!highfive &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!hug &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!love &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!piss</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!smack &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!stats</td><td class="px-3 py-2">Shows stream/user status details.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!tickle &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!time</td><td class="px-3 py-2">Shows stream time.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!uptime</td><td class="px-3 py-2">Shows stream uptime.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!followage</td><td class="px-3 py-2">Shows user followage.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!lurk</td><td class="px-3 py-2">Lurk mode announcement.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!slap</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!steal</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!spooked</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!unlurk</td><td class="px-3 py-2">Unlurk mode announcement.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!8ball &lt;question&gt;</td><td class="px-3 py-2">8-Ball fortune telling.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!dadjoke</td><td class="px-3 py-2">Tells a Dad Joke.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!wyr</td><td class="px-3 py-2">Random Would You Rather question.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!spray &lt;user&gt;</td><td class="px-3 py-2">Sprays the user.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="death" class="command-group">
+            <summary>Death Counter</summary>
+            <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+             <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!ded</td><td class="px-3 py-2">When I die, adds +1 death.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!unded</td><td class="px-3 py-2">If added in error or someone in chat thinks they're funny. Removes -1 death.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!dedreset</td><td class="px-3 py-2">Resets the session deaths for the current game.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!dedresettotal</td><td class="px-3 py-2">Resets total death for the current game.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!dedset</td><td class="px-3 py-2">To set amount of deaths if a bunch have been missed or added in error.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!deaths</td><td class="px-3 py-2">Show in chat deaths for game session and total.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="control" class="command-group">
+            <summary>Stream Control</summary>
+                        <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+             <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!brb</td><td class="px-3 py-2">Change to brb scene.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!back</td><td class="px-3 py-2">Change back to game scene.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!end</td><td class="px-3 py-2">Move to ending scene/credits.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raid &lt;user&gt;</td><td class="px-3 py-2">Initiate a raid (*only works if bot is working).</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="links" class="command-group">
+            <summary>Link Protection System</summary>
+                                    <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!lpallow &lt;user&gt;</td><td class="px-3 py-2">Give a user 60 seconds amnesty to post a link.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!lpreset &lt;user&gt;</td><td class="px-3 py-2">Reset a user's strikes.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!lpadd &lt;link&gt;</td><td class="px-3 py-2">Add a domain root to the whitelist.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!lprm &lt;link&gt;</td><td class="px-3 py-2">Remove a domain root from the whitelist.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="measurements" class="command-group">
+            <summary>Measurements (Explicit)</summary>
+                        <p>No mod only commands here.</p>
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!measurements</td><td class="px-3 py-2">Lists the commands in chat.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!alpha</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!breedable</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!compatibility &lt;user&gt; / &lt;user&gt; &lt;user&gt;</td><td class="px-3 py-2">&lt;user&gt; Will do a compatibility check with &lt;redeemer&gt; &amp; &lt;target&gt;. &lt;user&gt; &lt;user&gt; Will do a compatibility check with &lt;target&gt; &amp; &lt;target&gt;.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!daddy</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!depth</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!hole &lt;user&gt;</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!horny</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!musk</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!peen / !pp / !penis</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!position</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!simp</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!stretch</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!slut</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!tight</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!uwu</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="modcommands" class="command-group">
+            <summary>Mod Commands (Moderation Tools)</summary>
+            <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+           <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!emergency</td><td class="px-3 py-2">Puts stream in lockdown mode for hate raids (slow mode, followers only, clears chat).</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!emergencyover</td><td class="px-3 py-2">Removes lockdown mode.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!setgame &lt;game&gt;</td><td class="px-3 py-2">Sets the current game category.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!settitle &lt;title&gt;</td><td class="px-3 py-2">Sets the stream title.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!ban &lt;user&gt; &lt;reason&gt;</td><td class="px-3 py-2">Permanently ban a user.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!clear</td><td class="px-3 py-2">Clears chat.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!registermod &lt;Discord ID&gt;</td><td class="px-3 py-2">Registers mods to bot for upcoming bot actions/communication.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!snitch &lt;user&gt; &lt;reason&gt;</td><td class="px-3 py-2">Adds user to a snitch list (Unofficial warning).</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!snitchlist</td><td class="px-3 py-2">See users on the snitch list.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!unsnitch &lt;user&gt;</td><td class="px-3 py-2">Removes user from the snitch list.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!to &lt;user&gt; &lt;duration&gt; &lt;reason&gt;</td><td class="px-3 py-2">Time out user for duration (seconds).</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!torandom</td><td class="px-3 py-2">Time out a random user... just because.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!tw &lt;trigger warning&gt;</td><td class="px-3 py-2">Add a trigger warning to chat for mod to pin.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!textset &lt;message&gt;</td><td class="px-3 py-2">Sets on stream message (if I need to nip away quickly or on a break or something).</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!textclear</td><td class="px-3 py-2">Removes text overlay.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raidmessage &lt;message&gt;</td><td class="px-3 py-2">Sets the raid message.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raidsong</td><td class="px-3 py-2">Plays the raid song when we get raided.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!so &lt;user&gt;</td><td class="px-3 py-2">Basic shoutout for user.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!soadd &lt;user&gt;</td><td class="px-3 py-2">Add user to the basic auto-shoutout group.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!cso &lt;user&gt;</td><td class="px-3 py-2">Clip shoutout for user.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!csoadd &lt;user&gt;</td><td class="px-3 py-2">Add user to the clip auto-shoutout group.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!modtts &lt;message&gt;</td><td class="px-3 py-2">Mod specific text to speech to get my attention for anything.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!remind &lt;thing to remind me about&gt;</td><td class="px-3 py-2">Send a reminder to the server.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="hunt" class="command-group">
+            <summary>Hunt Game System (WIP)</summary>
+                        <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!huntstart</td><td class="px-3 py-2">Chooses a random viewer to be the target that chat has to hunt/catch.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!hunt</td><td class="px-3 py-2">Catch attempt.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!stopmock</td><td class="px-3 py-2">Stops the auto mocking of the hunt target.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="queue" class="command-group">
+            <summary>Playing with Viewers/Play with RearSilver Queue System</summary>
+                                    <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!open</td><td class="px-3 py-2">Opens the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!join</td><td class="px-3 py-2">To join the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!leave</td><td class="px-3 py-2">To leave the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!clear</td><td class="px-3 py-2">To clear the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!close</td><td class="px-3 py-2">To close the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!queue</td><td class="px-3 py-2">To see the list of who is in the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!pick</td><td class="px-3 py-2">Picks random person from the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!pick &lt;number&gt;</td><td class="px-3 py-2">Picks number of random people from the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="pronouns" class="command-group">
+            <summary>Pronouns Commands</summary>
+                                                <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!pronouns</td><td class="px-3 py-2">Puts link in chat for user to set their pronoun.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!pronounsoverride</td><td class="px-3 py-2">For user to change their pronoun.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!modpronounsoverride &lt;user&gt; &lt;pronouns&gt;</td><td class="px-3 py-2">Mod override users pronoun.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="quote" class="command-group">
+            <summary>Quote System</summary>
+            <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!addquote &lt;quote&gt;</td><td class="px-3 py-2">Adds quote.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!delquote &lt;quote number eg \#5&gt;</td><td class="px-3 py-2">Delete quote by number.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!quote</td><td class="px-3 py-2">Gets random quote.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!quotesearch &lt;search term&gt;</td><td class="px-3 py-2">Can search via quote number, keyword and user. If none found, a random quote will be returned.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="raffle" class="command-group">
+            <summary>Raffle System</summary>
+            <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raffleopen</td><td class="px-3 py-2">Opens the raffle.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!enter</td><td class="px-3 py-2">To enter the raffle.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raffleend</td><td class="px-3 py-2">To end the raffle.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!draw</td><td class="px-3 py-2">To draw a winner.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!draw &lt;number&gt;</td><td class="px-3 py-2">To draw number of winners.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!clearraffle</td><td class="px-3 py-2">To clear the raffle entrants.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="support" class="command-group">
+            <summary>Support System</summary>
+            <p>Never forget, other mods and myself are always there to help and explain things to you. There's <strong>NO</strong> stupid questions when it comes to safety!</p>
+            <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!mod / !mods / !modlist</td><td class="px-3 py-2">Lists all channel mods in stream chat, whispers the user a link to the support channel on the server, pings all mods in the Twitch Mod Channel on the server to see if anyone is available to assist.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="xp" class="command-group">
+            <summary>XP/levelling up System</summary>
+            <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!xpadd &lt;user&gt; &lt;amount&gt;</td><td class="px-3 py-2">Give a user XP.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!xpset &lt;user&gt; &lt;amount&gt;</td><td class="px-3 py-2">Set a user's XP to a specific amount.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!rank</td><td class="px-3 py-2">See your current XP and place on the leaderboard.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!xpleaderboard</td> </td><td class="px-3 py-2">See the leaderboard (*mods have a separate one to viewers).</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
+          <details id="thanks" class="command-group">
+            <summary> Thank You</summary>
+            <h2 class="text-2xl font-bold mb-2">Thank You!</h2>
+        <p class="text-base mb-2 text-brand">
+          <strong>YOU</strong> are the heart and soul of this community.
+          Your support, kindness, and enthusiasm make this space truly special.
+          <strong>I can't thank you enough for everything you do for my streams!</strong>
+        </p>
+          </details>
         </div>
-      </section>
+      </div>
+         <!-- Back to Top Button -->
+    <button id="back-to-top" class="icon-btn hidden-top" title="Back to top (t)">⬆</button>
 
-      <!-- PART 2: Command Glossary (FIXED COMMANDS START HERE) -->
-      <section id="commands" class="bg-section p-6 rounded-xl shadow-lg mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4 border-b pb-2">
-          Part 2: Command Glossary
-        </h2>
-
-        <div id="search-results-info" class="mb-4 text-base text-gray-600">
-          <p>
-            Use the search bar on the left to quickly filter commands.
-            <span id="visible-count-msg" class="font-medium hidden"
-              >Showing <span id="visible-count">0</span> matching
-              commands.</span
-            >
-          </p>
+    <!-- Footer -->
+    <footer class="mt-10 pt-6 border-t" style="border-color:var(--line)">
+      <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
+        <div>Last updated: <strong>7 Nov 2025</strong></div>
+        <div>&copy; RearSilver 2025</div>
+      </div>
+      <details class="collapsible mt-4">
+        <summary><span class="twist">▶</span> <span class="text-accent font-semibold">Changelog</span></summary>
+        <div class="content text-sm">
+          <ul class="list-disc pl-6 space-y-1">
+            <li>v1.1 — Initial polished rebuild: auto theme, sidebar, search filtering, mod-only toggle, copy buttons, collapsibles, quick Discord links, version footer.</li>
+          </ul>
         </div>
+      </details>
+    </footer>
+  </main>
+  </div>
 
-        <div id="command-tables-container" class="space-y-8">
-          <!-- Auto Translate System -->
-          <div id="translate-system-container">
-            <h4
-              id="translate"
-              class="text-xl font-medium text-gray-800 mb-3 pt-2"
-            >
-              Auto Translate System
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              Commands starting with <code class="font-mono">*!</code> are
-              <strong class="font-bold">Moderator-Only</strong>.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">
-                      *!Setlang &lt;user&gt; &lt;language&gt;
-                    </td>
-                    <td>Set a user's native language.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!excludelist</td>
-                    <td>Shows the excluded word list in chat.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!excludeadd &lt;word&gt;</td>
-                    <td>Add word to exclude list.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!excluderemove &lt;word&gt;</td>
-                    <td>Remove word to exclude list.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!flaggedapprove</td>
-                    <td>Approve users flagged word suggestion.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!flaggeddeny</td>
-                    <td>Deny users flagged word suggestion.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!flaglist</td>
-                    <td>Shows words on the flag list.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!slurlist</td>
-                    <td>Shows words on the slur list.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!sluradd &lt;word&gt;</td>
-                    <td>Add word to slur list.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!slurremove &lt;word&gt;</td>
-                    <td>Remove word to exclude list.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!flagword &lt;word&gt;</td>
-                    <td>Users submission to add word to the slur list.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
 
-          <!-- Birthday System -->
-          <div id="birthday-system-container">
-            <h4
-              id="birthday"
-              class="text-xl font-medium text-gray-800 mb-3 pt-2"
-            >
-              Birthday System
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              Commands starting with <code class="font-mono">*!</code> are
-              <strong class="font-bold">Moderator-Only</strong>.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!birthday &lt;user&gt;</td>
-                    <td>Give manual birthday celebratory message to a user.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">
-                      *!setyear &lt;user&gt; &lt;year&gt;
-                    </td>
-                    <td>Set a user's year of birth for age logic.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">
-                      *!birthdayset &lt;user&gt; &lt;birthday&gt;
-                    </td>
-                    <td>Set a user's birthday.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!mybday &lt;birthday&gt;</td>
-                    <td>User to set their own birthday.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
 
-          <!-- Chat Commands -->
-          <div id="chat-system-container">
-            <h4 id="chat" class="text-xl font-medium text-gray-800 mb-3 pt-2">
-              Chat Commands (General Info)
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              Commands starting with <code class="font-mono">*!</code> are
-              <strong class="font-bold">Moderator-Only</strong>.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">!discord</td>
-                    <td>Puts link to server in chat.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!socials</td>
-                    <td>Puts RearSilver's socials in chat.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!clip</td>
-                    <td>Makes a 30 second clip and posts it to the server.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!destiny / !bungie / !id</td>
-                    <td>To put Destiny deets in chat.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!steam</td>
-                    <td>For Steam deets.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+ <script>
+  // ===============================
+  // Element lookups
+  // ===============================
+  const STORAGE_KEY = 'rs-mod-handbook-theme';
 
-          <!-- Fun in Chat -->
-          <div id="fun-system-container">
-            <h4 id="fun" class="text-xl font-medium text-gray-800 mb-3 pt-2">
-              Fun in Chat (Interactive & Random)
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              No Moderator-only commands listed in this section.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">!bap &lt;user&gt;</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!boop &lt;user&gt;</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!cuddle &lt;user&gt;</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!cumrag</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!dance &lt;user&gt;</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!fistbump &lt;user&gt;</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!followed</td>
-                    <td>Shows stream follow status.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!fuck &lt;user&gt;</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!headpat &lt;user&gt;</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!highfive &lt;user&gt;</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-            
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!hug &lt;user&gt;</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!love &lt;user&gt;</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!piss</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!smack &lt;user&gt;</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!stats</td>
-                    <td>Shows stream/user status details.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!tickle &lt;user&gt;</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!time</td>
-                    <td>Shows stream time.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!uptime</td>
-                    <td>Shows stream uptime.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!followage</td>
-                    <td>Shows user followage.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!lurk</td>
-                    <td>Lurk mode announcement.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!slap</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!steal</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!spooked</td>
-                    <td>Interactive fun command.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!unlurk</td>
-                    <td>Unlurk mode announcement.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!8ball &lt;question&gt;</td>
-                    <td>8-Ball fortune telling.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!dadjoke</td>
-                    <td>Tells a Dad Joke.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!wyr</td>
-                    <td>Random Would You Rather question.</td>
-                  </tr>
-                                    <tr class="searchable-item">
-                    <td class="font-mono">!spray &lt;user&gt;</td>
-                    <td>Sprays the user.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  const themeText      = document.getElementById('theme-text');
 
-          <!-- Death Counter -->
-          <div id="death-system-container">
-            <h4 id="death" class="text-xl font-medium text-gray-800 mb-3 pt-2">
-              Death Counter
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              Commands starting with <code class="font-mono">*!</code> are
-              <strong class="font-bold">Moderator-Only</strong>.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">!ded</td>
-                    <td>When I die, adds +1 death.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!unded</td>
-                    <td>
-                      If added in error or someone in chat thinks they're funny.
-                      Removes -1 death.
-                    </td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!dedreset</td>
-                    <td>Resets the session deaths for the current game.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!dedresettotal</td>
-                    <td>Resets total death for the current game.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!dedset</td>
-                    <td>
-                      To set amount of deaths if a bunch have been missed or
-                      added in error.
-                    </td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!deaths</td>
-                    <td>Show in chat deaths for game session and total.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+  const sidebar   = document.getElementById('sidebar');
+  const menuToggle = document.getElementById('menu-toggle');
+  const overlay    = document.getElementById('overlay');
+  const navLinks   = document.getElementById('nav-links');
 
-          <!-- Stream Control -->
-          <div id="control-system-container">
-            <h4
-              id="control"
-              class="text-xl font-medium text-gray-800 mb-3 pt-2"
-            >
-              Stream Control
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              Commands starting with <code class="font-mono">*!</code> are
-              <strong class="font-bold">Moderator-Only</strong>.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!brb</td>
-                    <td>Change to brb scene.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!back</td>
-                    <td>Change back to game scene.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!end</td>
-                    <td>Move to ending scene/credits.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!raid &lt;user&gt;</td>
-                    <td>Initiate a raid (*only works if bot is working).</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+  const expandAllBtn   = document.getElementById('expand-all');
+  const collapseAllBtn = document.getElementById('collapse-all');
 
-          <!-- Link Protection System -->
-          <div id="links-system-container">
-            <h4 id="links" class="text-xl font-medium text-gray-800 mb-3 pt-2">
-              Link Protection System
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              Commands starting with <code class="font-mono">*!</code> are
-              <strong class="font-bold">Moderator-Only</strong>.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!lpallow &lt;user&gt;</td>
-                    <td>Give a user 60 seconds amnesty to post a link.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!lpreset &lt;user&gt;</td>
-                    <td>Reset a user's strikes.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!lpadd &lt;link&gt;</td>
-                    <td>Add a domain root to the whitelist.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!lprm &lt;link&gt;</td>
-                    <td>Remove a domain root from the whitelist.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+  const backToTop   = document.getElementById('back-to-top');
+  const searchInput = document.getElementById('command-search');
 
-          <!-- Measurements (Explicit) -->
-          <div id="measurements-system-container">
-            <h4
-              id="measurements"
-              class="text-xl font-medium text-gray-800 mb-3 pt-2"
-            >
-              Measurements (Explicit)
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              No Moderator-only commands listed in this section.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">!measurements</td>
-                    <td>Lists the commands in chat.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!alpha</td>
-                    <td>Gives a random explicit measurement result.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!breedable</td>
-                    <td>Gives a random explicit measurement result.</td>
-                  </tr>
-                   <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!compatibility &lt;user&gt; / &lt;user&gt; &lt;user&gt;</td>
-                    <td>&lt;user&gt; Will do a compatibility check with &lt;redeemer&gt; & &lt;target&gt;. &lt;user&gt; &lt;user&gt; Will do a compatibility check with &lt;target&gt; & &lt;target&gt;.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!daddy</td>
-                    <td>Gives a random explicit measurement result.</td>
-                  </tr>
-                   <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!depth</td>
-                    <td>Gives a random explicit measurement result.</td>
-                  </tr>
-                      <tr class="searchable-item">
-                    <td class="font-mono">!hole &lt;user&gt;</td>
-                    <td>Gives a random explicit measurement result.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!horny</td>
-                    <td>Gives a random explicit measurement result.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!musk</td>
-                    <td>Gives a random explicit measurement result.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!peen / !pp / !penis</td>
-                    <td>Gives a random explicit measurement result.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!position</td>
-                    <td>Gives a random explicit measurement result.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!simp</td>
-                    <td>Gives a random explicit measurement result.</td>
-                  </tr>
-                   <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!stretch</td>
-                    <td>Gives a random explicit measurement result.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!slut</td>
-                    <td>Gives a random explicit measurement result.</td>
-                  </tr>
-                   <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!tight</td>
-                    <td>Gives a random explicit measurement result.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!uwu</td>
-                    <td>Gives a random explicit measurement result.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+  const tablesContainer = document.getElementById('command-tables-container');
 
-          <!-- Mod Commands (Moderation Tools) -->
-          <div id="modcommands-system-container">
-            <h4
-              id="modcommands"
-              class="text-xl font-medium text-gray-800 mb-3 pt-2"
-            >
-              Mod Commands (Moderation Tools)
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              All commands in this section are
-              <strong class="font-bold">Moderator-Only</strong>.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!emergency</td>
-                    <td>
-                      Puts stream in lockdown mode for hate raids (slow mode,
-                      followers only, clears chat).
-                    </td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!emergencyover</td>
-                    <td>Removes lockdown mode.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!setgame &lt;game&gt;</td>
-                    <td>Sets the current game category.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!settitle &lt;title&gt;</td>
-                    <td>Sets the stream title.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!ban &lt;user&gt; &lt;reason&gt;</td>
-                    <td>Permanently ban a user.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!clear</td>
-                    <td>Clears chat.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!registermod &lt;Discord ID&gt;</td>
-                    <td>
-                      Registers mods to bot for upcoming bot
-                      actions/communication.
-                    </td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">
-                      *!snitch &lt;user&gt; &lt;reason&gt;
-                    </td>
-                    <td>Adds user to a snitch list (Unofficial warning).</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!snitchlist</td>
-                    <td>See users on the snitch list.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!unsnitch &lt;user&gt;</td>
-                    <td>Removes user from the snitch list.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">
-                      *!to &lt;user&gt; &lt;duration&gt; &lt;reason&gt;
-                    </td>
-                    <td>Time out user for duration (seconds).</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!torandom</td>
-                    <td>Time out a random user... just because.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!tw &lt;trigger warning&gt;</td>
-                    <td>Add a trigger warning to chat for mod to pin.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!textset &lt;message&gt;</td>
-                    <td>
-                      Sets on stream message (if I need to nip away quickly or
-                      on a break or something).
-                    </td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!textclear</td>
-                    <td>Removes text overlay.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!raidmessage &lt;message&gt;</td>
-                    <td>Sets the raid message.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!raidsong</td>
-                    <td>Plays the raid song when we get raided.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!so &lt;user&gt;</td>
-                    <td>Basic shoutout for user.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!soadd &lt;user&gt;</td>
-                    <td>Add user to the basic auto-shoutout group.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!cso &lt;user&gt;</td>
-                    <td>Clip shoutout for user.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!csoadd &lt;user&gt;</td>
-                    <td>Add user to the clip auto-shoutout group.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!modtts &lt;message&gt;</td>
-                    <td>
-                      Mod specific text to speech to get my attention for
-                      anything.
-                    </td>
-                    <tr class="searchable-item">
-                    <td class="font-mono">
-                      *!remind &lt;thing to remind me about&gt;
-                    </td>
-                    <td>Send a reminder to the server.</td>
-                  </tr>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+  // ===============================
+  // Theme init + toggle
+  // ===============================
+  (function setInitialTheme() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    if (themeText) themeText.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+  })();
 
-          <!-- Hunt Game System -->
-          <div id="hunt-system-container">
-            <h4 id="hunt" class="text-xl font-medium text-gray-800 mb-3 pt-2">
-              Hunt Game System
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              Commands starting with <code class="font-mono">*!</code> are
-              <strong class="font-bold">Moderator-Only</strong>.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!huntstart</td>
-                    <td>
-                      Chooses a random viewer to be the target that chat has to
-                      hunt/catch.
-                    </td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!hunt</td>
-                    <td>Catch attempt.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!stopmock</td>
-                    <td>Stops the auto mocking of the hunt target.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem(STORAGE_KEY, next);
+      if (themeText) themeText.textContent = next === 'dark' ? 'Light Mode' : 'Dark Mode';
+    });
+  }
 
-          <!-- Playing with Viewers Queue System -->
-          <div id="queue-system-container">
-            <h4 id="queue" class="text-xl font-medium text-gray-800 mb-3 pt-2">
-              Playing with Viewers Queue System
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              Commands starting with <code class="font-mono">*!</code> are
-              <strong class="font-bold">Moderator-Only</strong>.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!open</td>
-                    <td>Opens the queue.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!join</td>
-                    <td>To join the queue.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!leave</td>
-                    <td>To leave the queue.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!clear</td>
-                    <td>To clear the queue.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!close</td>
-                    <td>To close the queue.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!queue</td>
-                    <td>To see the list of who is in the queue.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!pick</td>
-                    <td>Picks random person from the queue.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!pick &lt;number&gt;</td>
-                    <td>Picks number of random people from the queue.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+  // ===============================
+  // Mobile menu
+  // ===============================
+  if (menuToggle && sidebar && overlay) {
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    });
+    if (navLinks) {
+      navLinks.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          if (window.innerWidth < 1024) {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+          }
+        });
+      });
+    }
+  }
 
-          <!-- Pronouns -->
-          <div id="pronouns-system-container">
-            <h4
-              id="pronouns"
-              class="text-xl font-medium text-gray-800 mb-3 pt-2"
-            >
-              Pronouns
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              Commands starting with <code class="font-mono">*!</code> are
-              <strong class="font-bold">Moderator-Only</strong>.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">!pronouns</td>
-                    <td>Puts link in chat for user to set their pronoun.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!pronounsoverride</td>
-                    <td>For user to change their pronoun.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">
-                      *!modpronounsoverride &lt;user&gt; &lt;pronouns&gt;
-                    </td>
-                    <td>Mod override users pronoun.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Quote System -->
-          <div id="quote-system-container">
-            <h4 id="quote" class="text-xl font-medium text-gray-800 mb-3 pt-2">
-              Quote System
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              Commands starting with <code class="font-mono">*!</code> are
-              <strong class="font-bold">Moderator-Only</strong>.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">!addquote &lt;quote&gt;</td>
-                    <td>Adds quote.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">
-                      *!delquote &lt;quote number eg \#5&gt;
-                    </td>
-                    <td>Delete quote by number.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!quote</td>
-                    <td>Gets random quote.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!quotesearch &lt;search term&gt;</td>
-                    <td>
-                      Can search via quote number, keyword and user. If none
-                      found, a random quote will be returned.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Raffle System -->
-          <div id="raffle-system-container">
-            <h4 id="raffle" class="text-xl font-medium text-gray-800 mb-3 pt-2">
-              Raffle System
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              Commands starting with <code class="font-mono">*!</code> are
-              <strong class="font-bold">Moderator-Only</strong>.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!raffleopen</td>
-                    <td>Opens the raffle.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!enter</td>
-                    <td>To enter the raffle.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!raffleend</td>
-                    <td>To end the raffle.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!draw</td>
-                    <td>To draw a winner.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">*!draw &lt;number&gt;</td>
-                    <td>To draw number of winners.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">*!clearraffle</td>
-                    <td>To clear the raffle entrants.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Support System -->
-          <div id="support-system-container">
-            <h4
-              id="support"
-              class="text-xl font-medium text-gray-800 mb-3 pt-2"
-            >
-              Support System
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              No Moderator-only commands listed in this section.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">!mod / !mods / !modlist</td>
-                    <td>
-                      Lists all channel mods in stream chat, whispers the user a
-                      link to the support channel on the server, pings all mods
-                      in the Twitch Mod Channel on the server to see if anyone
-                      is available to assist.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- XP System -->
-          <div id="xp-system-container">
-            <h4 id="xp" class="text-xl font-medium text-gray-800 mb-3 pt-2">
-              XP System
-            </h4>
-            <p class="text-lg mb-4 text-amber-700">
-              Commands starting with <code class="font-mono">*!</code> are
-              <strong class="font-bold">Moderator-Only</strong>.
-            </p>
-            <div class="overflow-x-auto">
-              <table class="min-w-full command-table">
-                <thead>
-                  <tr class="bg-gray-50 text-left text-sm text-gray-600">
-                    <th>Command</th>
-                    <th>Purpose</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 text-base">
-                  <tr class="searchable-item">
-                    <td class="font-mono">
-                      *!xpadd &lt;user&gt; &lt;amount&gt;
-                    </td>
-                    <td>Give a user XP.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">
-                      *!xpset &lt;user&gt; &lt;amount&gt;
-                    </td>
-                    <td>Set a user's XP to a specific amount.</td>
-                  </tr>
-                  <tr class="searchable-item">
-                    <td class="font-mono">!rank</td>
-                    <td>See your current XP and place on the leaderboard.</td>
-                  </tr>
-                  <tr class="searchable-item bg-gray-50">
-                    <td class="font-mono">!xpleaderboard</td>
-                    <td>
-                      See the leaderboard (*mods have a separate one to
-                      viewers).
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <!-- Thanks -->
-          <div id="thanks">
-            <section id="thanks" class="bg-section p-6 rounded-xl shadow-lg mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4 border-b pb-2">
-          Thank You!
-        </h2>
-            <p class="text-lg mb-4 text-amber-700">
-              <strong class="font-bold">YOU</strong> are the heart and soul of this community.
-              Your support, kindness, and enthusiasm make this space truly special.
-              <strong class="font-bold">I can't thank you enough for everything you do for my streams!</strong>
-            </p>
-            
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Back to Top Button -->
-      <button
-        id="back-to-top"
-        class="fixed bottom-6 right-6 bg-accent text-black p-3 rounded-full shadow-lg z-50 hidden-top hover:scale-110"
-        title="Go to top"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="3"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M5 15l7-7 7 7"
-          />
-        </svg>
-      </button>
-    </main>
-  </body>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ["Inter", "sans-serif"],
-          },
-        },
-      },
+  // ===============================
+  // Back to top
+  // ===============================
+  if (backToTop) {
+    const toggleBackToTop = () => {
+      if (window.scrollY > 300) backToTop.classList.remove('hidden-top');
+      else backToTop.classList.add('hidden-top');
     };
+    window.addEventListener('scroll', toggleBackToTop);
+    toggleBackToTop();
+    backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const toggleButton = document.getElementById("menu-toggle");
-      const body = document.body;
+  // ===============================
+  // Copy buttons (copy only base command)
+  //   - removes any leading '*'
+  //   - keeps first '!' command only
+  //   - strips arguments like <user>
+  //   - if there are alternatives separated by ' / ', copies the first one
+  // ===============================
+  function extractBaseCommand(text) {
+    // Normalise spaces
+    let t = (text || '').replace(/\s+/g, ' ').trim();
 
-      // Function to toggle the sidebar state
-      const toggleSidebar = () => {
-        body.classList.toggle("sidebar-open");
-        const isOpen = body.classList.contains("sidebar-open");
+    // Drop everything after the first ' / ' group (alternatives)
+    if (t.includes(' / ')) {
+      t = t.split(' / ')[0].trim();
+    }
 
-        // Update button icon
-        const menuIcon = toggleButton.querySelector(".menu-icon");
-        const closeIcon = toggleButton.querySelector(".close-icon");
+    // Strip arguments like "<user> <reason>" etc.
+    t = t.replace(/\s*<[^>]*>.*/i, '');
 
-        if (isOpen) {
-          menuIcon.classList.add("hidden");
-          closeIcon.classList.remove("hidden");
+    // Keep from first '!' onwards (and discard any leading '*')
+    const bangIdx = t.indexOf('!');
+    if (bangIdx >= 0) {
+      t = t.slice(bangIdx);
+    }
+
+    // Ensure we removed any stray '*' that might remain before '!'
+    t = t.replace(/^\*+/, '').trim();
+
+    // Final tidy: just the first token (in case of leftovers)
+    t = t.split(/\s+/)[0];
+
+    return t;
+  }
+
+  function wireCopyButtons() {
+    if (!tablesContainer) return;
+    tablesContainer.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const row = btn.closest('tr');
+        if (!row) return;
+        const cmdCell = row.querySelector('.cmd-cell') || row.querySelector('td');
+        if (!cmdCell) return;
+
+        const raw = cmdCell.textContent || '';
+        const base = extractBaseCommand(raw);
+
+        if (!base) return;
+
+        navigator.clipboard.writeText(base).then(() => {
+          btn.classList.add('copied');
+          const original = btn.textContent;
+          btn.textContent = 'Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.textContent = original || 'Copy';
+          }, 1200);
+        });
+      });
+    });
+  }
+
+  // ===============================
+  // Expand / Collapse all
+  // ===============================
+  function wireExpandCollapseAll() {
+    if (!tablesContainer) return;
+    const allDetails = Array.from(tablesContainer.querySelectorAll(':scope > details'));
+    if (expandAllBtn) {
+      expandAllBtn.addEventListener('click', () => {
+        allDetails.forEach(d => d.open = true);
+      });
+    }
+    if (collapseAllBtn) {
+      collapseAllBtn.addEventListener('click', () => {
+        allDetails.forEach(d => d.open = false);
+      });
+    }
+  }
+
+    // ===============================
+  // Search filter
+  //   - Default: searches only command cells (those with ! or *!)
+  //   - Prefix "text:" for full-text search across both columns
+  //   - Auto-opens groups with matches, closes others
+  //   - Auto-scrolls to first match
+  // ===============================
+  function filterCommands(rawQuery) {
+    if (!tablesContainer) return;
+    const q = (rawQuery || '').trim().toLowerCase();
+    const fullText = q.startsWith('text:');
+    const query = fullText ? q.replace(/^text:\s*/, '') : q;
+    const anyQuery = query.length > 0;
+
+    const groups = Array.from(tablesContainer.querySelectorAll(':scope > details'));
+    let firstMatchRow = null;
+
+    groups.forEach(group => {
+      const rows = Array.from(group.querySelectorAll('tbody .searchable-item'));
+      let groupMatches = 0;
+
+      rows.forEach(row => {
+        const cmdCell = row.querySelector('.cmd-cell') || row.querySelector('td');
+        const purposeCell = row.querySelector('td:nth-child(2)');
+        const cmdText = (cmdCell?.innerText || '').toLowerCase();
+        const purposeText = (purposeCell?.innerText || '').toLowerCase();
+
+        let match = false;
+        if (!anyQuery) match = true;
+        else if (fullText) {
+          match = (cmdText + ' ' + purposeText).includes(query);
         } else {
-          menuIcon.classList.remove("hidden");
-          closeIcon.classList.add("hidden");
+          // Default: command-only search — require '!' present
+          match = cmdText.includes('!') && cmdText.includes(query);
         }
-      };
 
-      // Initial setup for the button click
-      if (toggleButton) {
-        // IMPORTANT FIX A: Menu now ONLY closes when this button is clicked.
-        toggleButton.addEventListener("click", toggleSidebar);
-      }
-
-      // Close sidebar when a link is clicked
-      document.querySelectorAll(".sidebar-link").forEach((link) => {
-        link.addEventListener("click", () =>
-          document.body.classList.remove("sidebar-open")
-        );
+        row.style.display = match ? '' : 'none';
+        if (match) {
+          groupMatches++;
+          if (!firstMatchRow) firstMatchRow = row;
+        }
       });
 
-      // BACK TO TOP BUTTON LOGIC
-      const backToTopButton = document.getElementById("back-to-top");
-
-      if (backToTopButton) {
-        // Show/hide the button based on scroll position
-        window.addEventListener("scroll", () => {
-          if (window.scrollY > 300) {
-            // Show button if scrolled more than 300px
-            backToTopButton.classList.remove("hidden-top");
-          } else {
-            backToTopButton.classList.add("hidden-top");
-          }
-        });
-
-        // Scroll to top on click
-        backToTopButton.addEventListener("click", () => {
-          window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-          });
-        });
-      }
-
-      // COMMAND SEARCH LOGIC (Restored and enhanced)
-      const searchInput = document.getElementById("command-search");
-      const commandTablesContainer = document.getElementById(
-        "command-tables-container"
-      );
-      const visibleCountMsg = document.getElementById("visible-count-msg");
-      const visibleCountSpan = document.getElementById("visible-count");
-
-      if (searchInput && commandTablesContainer) {
-        searchInput.addEventListener("keyup", (e) => {
-          const query = e.target.value.toLowerCase().trim();
-          let visibleCount = 0;
-          let firstMatch = null; // To store the first matching row
-
-          // Iterate through all table rows within all command system containers
-          commandTablesContainer
-            .querySelectorAll(".command-table tbody tr")
-            .forEach((row) => {
-              const commandText = row.textContent.toLowerCase();
-              // The original row content is preserved for subsequent searches
-              const isMatch = commandText.includes(query);
-
-              if (isMatch) {
-                row.style.display = "table-row";
-                row.classList.remove("hidden-by-search");
-                visibleCount++;
-                if (!firstMatch) {
-                  firstMatch = row; // Store the first visible row
-                }
-              } else {
-                row.style.display = "none";
-                row.classList.add("hidden-by-search");
-              }
-
-              // Apply highlighting only if a query exists
-              Array.from(row.querySelectorAll("td")).forEach((cell) => {
-                cell.innerHTML = cell.textContent; // Clear previous highlights
-                if (query) {
-                  // Escape special characters in the query for safe use in regex, except for spaces
-                  const escapedQuery = query.replace(
-                    /[-\/\\^$*+?.()|[\]{}]/g,
-                    "\\$&"
-                  );
-                  const regex = new RegExp(`(${escapedQuery})`, "gi");
-                  cell.innerHTML = cell.innerHTML.replace(
-                    regex,
-                    '<span class="search-highlight font-bold">$1</span>'
-                  );
-                }
-              });
-            });
-
-          // Hide/Show section containers and headers based on visible children
-          commandTablesContainer
-            .querySelectorAll('[id$="-system-container"]')
-            .forEach((container) => {
-              const visibleRows = container.querySelectorAll(
-                ".command-table tbody tr:not(.hidden-by-search)"
-              ).length;
-              container.style.display =
-                visibleRows > 0 || query === "" ? "block" : "none";
-            });
-
-          // Update search message
-          if (query.length > 0) {
-            visibleCountMsg.classList.remove("hidden");
-            visibleCountSpan.textContent = visibleCount;
-          } else {
-            visibleCountMsg.classList.add("hidden");
-          }
-
-          // Scroll to the first match if a query exists and a match was found
-          if (query.length > 0 && firstMatch) {
-            firstMatch.scrollIntoView({
-              behavior: "smooth",
-              block: "center", // Vertically center the element in the viewport
-              inline: "nearest",
-            });
-          }
-        });
+      // Show/hide groups based on matches
+      if (anyQuery) {
+        group.open = groupMatches > 0;
+        group.style.display = groupMatches > 0 ? '' : 'none';
+      } else {
+        group.open = false;
+        group.style.display = '';
       }
     });
-  </script>
+
+    // Scroll to first visible match
+    if (firstMatchRow) {
+      firstMatchRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  if (searchInput) {
+    // Add helper text just below input if not already there
+    if (!document.getElementById('search-helper')) {
+      const helper = document.createElement('p');
+      helper.id = 'search-helper';
+      helper.style.fontSize = '0.85rem';
+      helper.style.color = 'var(--muted)';
+      helper.style.marginTop = '0.25rem';
+      helper.textContent = 'Tip: type “text:” before a word to search all descriptions.';
+      searchInput.parentNode.appendChild(helper);
+    }
+
+    searchInput.addEventListener('input', (e) => {
+      filterCommands(e.target.value);
+    });
+  }
+
+
+  // ===============================
+  // Scroll Spy (sidebar highlight)
+  // ===============================
+  const sectionIds = [
+    'expectations','philosophy','server','emergency','scenarios',
+    'translate','birthday','chat','fun','death','control','links',
+    'measurements','modcommands','hunt','queue','pronouns','quote',
+    'raffle','support','xp','thanks'
+  ].filter(id => document.getElementById(id));
+
+  const sections = sectionIds.map(id => ({
+    id,
+    el: document.getElementById(id)
+  }));
+
+  const sidebarLinks = navLinks ? Array.from(navLinks.querySelectorAll('a[href^="#"]')) : [];
+  const linkById = {};
+  sidebarLinks.forEach(a => {
+    const id = a.getAttribute('href').slice(1);
+    linkById[id] = a;
+  });
+
+  function updateScrollSpy() {
+    const y = window.scrollY + 120; // offset for sticky header
+    let current = null;
+    for (const s of sections) {
+      if (s.el.offsetTop <= y) current = s.id;
+    }
+    sidebarLinks.forEach(a => a.classList.remove('active'));
+    if (current && linkById[current]) linkById[current].classList.add('active');
+  }
+
+  window.addEventListener('scroll', updateScrollSpy);
+  window.addEventListener('resize', updateScrollSpy);
+  document.addEventListener('DOMContentLoaded', updateScrollSpy);
+
+  // ===============================
+  // Boot
+  // ===============================
+  document.addEventListener('DOMContentLoaded', () => {
+    wireCopyButtons();
+    wireExpandCollapseAll();
+  });
+</script>
+
+</body>
 </html>
