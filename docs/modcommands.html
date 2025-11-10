@@ -2,6 +2,7 @@
 <html lang="en" data-theme="">
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" href="Favicon.png" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>RearSilver Mod Handbook</title>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -234,6 +235,12 @@
       margin-left: 0.25rem;
     }
 
+    .p {
+      color: var(--text);
+      margin-bottom: 1rem;
+      margin-left: 1rem;
+      padding: 1rem;
+    }
     /* Headings */
     .content h2 {
       font-size: 2rem;
@@ -428,7 +435,7 @@
   <header class="mobile-header lg:hidden">
     <div class="flex justify-between items-center">
       <h1 class="text-xl font-extrabold text-[var(--brand-700)]">RearSilver's • Mod Handbook</h1>
-      <span class="chip text-[var(--brand-700)] font-extrabold text-lg px-2 py-0.5 rounded-full">v1.1</span>
+      <span class="chip text-[var(--brand-700)] font-extrabold text-lg px-2 py-0.5 rounded-full">v1.2</span>
       <button id="menu-toggle" class="text-[var(--text)] text-2xl">☰</button>
     </div>
   </header>
@@ -441,7 +448,7 @@
     <!-- Sidebar / Navigation -->
     <aside id="sidebar" class="sidebar">
       <h1 class="text-3xl font-extrabold mb-6 text-[var(--brand-700)] hidden lg:block">RearSilver's • Mod Handbook</h1>
-      <h1 class="text-3xl font-extrabold mb-6 text-[var(--brand-700)] hidden lg:block">v1.1</h1>
+      <h1 class="text-3xl font-extrabold mb-6 text-[var(--brand-700)] hidden lg:block">v1.2</h1>
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-bold text-[var(--text)]">Navigation</h2>
         <button id="theme-toggle" class="text-sm font-semibold text-[var(--muted)] hover:text-[var(--text)] transition-colors">
@@ -473,6 +480,7 @@
       <a href="#quote" class="sidebar-link block text-sm">Quote System</a>
       <a href="#raffle" class="sidebar-link block text-sm">Raffle System</a>
       <a href="#support" class="sidebar-link block text-sm">Support System</a>
+      <a href="#walk" class="sidebar-link block text-sm">Walkies System</a>
       <a href="#xp" class="sidebar-link block text-sm">XP System</a>
         <h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Thank You</h3>
       <a href="#thanks" class="sidebar-link block text-sm">Thank You</a>
@@ -953,6 +961,39 @@
               </table>
           </details>
 
+          <details id="walk" class="command-group">
+            <summary>Walkies System</summary>
+            <p class="p">
+          This system is designed to manage my Walkies System. On certain streams, viewers can force me to go walkies on my treadmill.
+          <br>
+          It's a fun way to stay active while streaming and engage with the community!
+          <br>
+          The time will queued up and I will go walkies when the accumilated time is at least 30 minutes.
+        </p>
+        <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Trigger</th><th class="px-3 py-2 text-left">Duration</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">1 Subscription</td><td class="px-3 py-2">5 minutes.</td><td></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">5000 Bits</td><td class="px-3 py-2">5 minutes.</td><td></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">Raid</td><td class="px-3 py-2">10 minutes.</td><td></tr>
+                </tbody>
+              </table>
+              <br>
+            <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!walkies</td><td class="px-3 py-2">To activate the Walkies scene</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!setspeed &lt;speed&gt;</td><td class="px-3 py-2">To set the HUD to the speed i'm walking on the treadmill. Example !setspeed 5</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!startwalk</td><td class="px-3 py-2">Start's the HUD/Walk.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!pausewalk</td><td class="px-3 py-2">To Pause the HUD/Walk if i need to stop for any reason.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!resumewalk</td> </td><td class="px-3 py-2">To Resume the HUD/Walk.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!finishwalk</td> </td><td class="px-3 py-2">To end the Walk.</td><td><button class="copy-btn">Copy</button></tr>
+
+                </tbody>
+              </table>
+          </details>
+
           <details id="xp" class="command-group">
             <summary>XP/levelling up System</summary>
             <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
@@ -984,13 +1025,14 @@
     <!-- Footer -->
     <footer class="mt-10 pt-6 border-t" style="border-color:var(--line)">
       <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
-        <div>Last updated: <strong>7 Nov 2025</strong></div>
+        <div>Last updated: <strong>10 Nov 2025</strong></div>
         <div>&copy; RearSilver 2025</div>
       </div>
       <details class="collapsible mt-4">
         <summary><span class="twist">▶</span> <span class="text-accent font-semibold">Changelog</span></summary>
         <div class="content text-sm">
           <ul class="list-disc pl-6 space-y-1">
+            <li>v1.2 — Added the Walkies system.</li>
             <li>v1.1 — Initial polished rebuild: auto theme, sidebar, search filtering, mod-only toggle, copy buttons, collapsibles, quick Discord links, version footer.</li>
           </ul>
         </div>
