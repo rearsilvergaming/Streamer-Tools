@@ -242,6 +242,16 @@
       padding: 1rem;
     }
     /* Headings */
+
+        .content h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--brand-700);
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+    }
+
     .content h2 {
       font-size: 2rem;
       font-weight: 800;
@@ -435,7 +445,7 @@
   <header class="mobile-header lg:hidden">
     <div class="flex justify-between items-center">
       <h1 class="text-xl font-extrabold text-[var(--brand-700)]">RearSilver's • Mod Handbook</h1>
-      <span class="chip text-[var(--brand-700)] font-extrabold text-lg px-2 py-0.5 rounded-full">v1.2</span>
+      <span class="chip text-[var(--brand-700)] font-extrabold text-lg px-2 py-0.5 rounded-full">v1.3</span>
       <button id="menu-toggle" class="text-[var(--text)] text-2xl">☰</button>
     </div>
   </header>
@@ -448,7 +458,7 @@
     <!-- Sidebar / Navigation -->
     <aside id="sidebar" class="sidebar">
       <h1 class="text-3xl font-extrabold mb-6 text-[var(--brand-700)] hidden lg:block">RearSilver's • Mod Handbook</h1>
-      <h1 class="text-3xl font-extrabold mb-6 text-[var(--brand-700)] hidden lg:block">v1.2</h1>
+      <h1 class="text-3xl font-extrabold mb-6 text-[var(--brand-700)] hidden lg:block">v1.3</h1>
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-bold text-[var(--text)]">Navigation</h2>
         <button id="theme-toggle" class="text-sm font-semibold text-[var(--muted)] hover:text-[var(--text)] transition-colors">
@@ -461,13 +471,13 @@
   <a href="#changelog" class="sidebar-link block text-sm">Change Log</a>
 </nav>
       <nav id="nav-links">
-        <h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Mod Guide</h3>
+        <a href="#modguide" class="sidebar-link block text-sm"><h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2"><h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Mod Guide</h3></a>
          <a href="#expectations" class="sidebar-link block text-sm">General Expectations</a>
         <a href="#philosophy" class="sidebar-link block text-sm">Moderator Philosophy</a>
         <a href="#server" class="sidebar-link block text-sm">Discord Server</a>
         <a href="#emergency" class="sidebar-link block text-sm">Emergency Protocol</a>
         <a href="#scenarios" class="sidebar-link block text-sm">Action Scenarios</a>
-        <h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Stream Commands</h3>
+        <a href="#streamcommands" class="sidebar-link block text-sm"><h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2"><h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Stream Commands</h3></a>
       <a href="#translate" class="sidebar-link block text-sm">Auto Translate System</a>
       <a href="#birthday" class="sidebar-link block text-sm">Birthday System</a>
       <a href="#chat" class="sidebar-link block text-sm">Chat Commands</a>
@@ -485,8 +495,8 @@
       <a href="#queue" class="sidebar-link block text-sm">Viewers Queue System</a>
       <a href="#walk" class="sidebar-link block text-sm">Walkies System</a>
       <a href="#xp" class="sidebar-link block text-sm">XP System</a>
-        <h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Thank You</h3>
-      <a href="#thanks" class="sidebar-link block text-sm">Thank You</a>
+      <a href="#thanks" class="sidebar-link block text-sm"><h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2"><h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Thank You</h3></a>
+
       </nav>
 
 
@@ -533,11 +543,14 @@
 
         </header>
 
+        <section id="modguide">
+          <h1>Mod Guide</h1>
+  
+        </section>
+
         <!-- General Sections -->
-        <section id="expectations">
           <h2>Expectations & Conduct</h2>
           <p>As a moderator for RearSilver, you are an extension of the community's leadership and the primary enforcers of the rules. Your role is vital to maintaining a fun, safe, and adult-themed environment.</p>
-
           <h3>Core Responsibilities</h3>
           <ul class="list-disc ml-6 text-[var(--text)]">
             <li><strong>Be Present:</strong> Try to be active during streams you're moderating.</li>
@@ -679,8 +692,10 @@
         </section>
 
         <!-- Command Tables -->
-        <h2 class="mt-8">Command Glossary</h2>
+         <section id="streamcommands">
+        <h1>Command Glossary</h1>
         <p>This is a complete list of all active stream commands. Remember that commands are case-insensitive but must be preceded by a **`!`**.</p>
+        </section>
 
         <div id="command-tables-container">
 
@@ -1019,16 +1034,26 @@
                 </tbody>
               </table>
           </details>
+          
+           <section id="thanks">
+          <h1>Thank You</h1>
+        </section>
 
-          <details id="thanks" class="command-group">
-            <summary> Thank You</summary>
-            <h2 class="text-2xl font-bold mb-2">Thank You!</h2>
-        <p class="p">
-          <strong>YOU</strong> are the heart and soul of this community.
-          Your support, kindness, and enthusiasm make this space truly special.
-          <strong>I can't thank you enough for everything you do for my streams!</strong>
-        </p>
-          </details>
+        <!-- General Sections -->
+          <h2>Acknowedgements</h2>
+          <p>Thank you, each and every one of you for everything you do to keep our streams safe, inclusive and fun.</p>
+          <h3>You are the heart and soul of our community</h3>
+          <ul class="list-disc ml-6 text-[var(--text)]">
+            <li><strong>Escaroda</strong></li>
+            <li><strong>FrontSilver</strong></li>
+            <li><strong>Lukkehuijaa</strong></li>
+            <li><strong>OhnoItsMarshall</strong></li>
+            <li><strong>VanirTheWolf</strong></li>
+            <li><strong>WhiteWuffy</strong></li>
+            <li><strong>XxSkylar2002xX</strong></li>
+            <li>And all the other mods past and present who have helped along the way!</li>
+        </ol>
+          </ul>
         </div>
       </div>
          <!-- Back to Top Button -->
@@ -1037,13 +1062,14 @@
     <!-- Footer -->
     <footer class="mt-10 pt-6 border-t" style="border-color:var(--line)">
       <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
-        <div>Last updated: <strong>10 Nov 2025</strong></div>
+        <div>Last updated: <strong>14 Nov 2025</strong></div>
         <div>&copy; RearSilver 2025</div>
       </div>
       <details class="collapsible mt-4" id="changelog">
         <summary><span class="twist">▶</span> <span class="text-accent font-semibold">Changelog</span></summary>
         <div class="content text-sm">
           <ul class="list-disc pl-6 space-y-1">
+            <li>v1.3 — Added !goodboy and !kiss commands. Alphabetised Fun in Chat list.</li>
             <li>v1.2 — Added the Walkies system.</li>
             <li>v1.1 — Initial polished rebuild: auto theme, sidebar, search filtering, mod-only toggle, copy buttons, collapsibles, quick Discord links, version footer.</li>
           </ul>
