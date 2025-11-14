@@ -988,38 +988,191 @@
           </details>
 
           <details id="walk" class="command-group">
-            <summary>Walkies System</summary>
-            <p class="p">
-          This system is designed to manage my Walkies System. On certain streams, viewers can force me to go walkies on my treadmill.
-          <br>
-          It's a fun way to stay active while streaming and engage with the community!
-          <br>
-          The time will queued up and I will go walkies when the accumilated time is at least 30 minutes.
-        </p>
-        <p class="p"><strong>I'll make it known either by pinned message or stream title whether this is a Walkies stream</strong></p>
-        <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Trigger</th><th class="px-3 py-2 text-left">Duration</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">1 Subscription</td><td class="px-3 py-2">5 minutes.</td><td></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">5000 Bits</td><td class="px-3 py-2">5 minutes.</td><td></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">Raid</td><td class="px-3 py-2">10 minutes.</td><td></tr>
-                </tbody>
-              </table>
-              <br>
-            <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!walkies</td><td class="px-3 py-2">To activate the Walkies scene</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!setspeed &lt;speed&gt;</td><td class="px-3 py-2">To set the HUD to the speed i'm walking on the treadmill. Example !setspeed 5</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!startwalk</td><td class="px-3 py-2">Start's the HUD/Walk.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!pausewalk</td><td class="px-3 py-2">To Pause the HUD/Walk if i need to stop for any reason.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!resumewalk</td> </td><td class="px-3 py-2">To Resume the HUD/Walk.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!finishwalk</td> </td><td class="px-3 py-2">To end the Walk.</td><td><button class="copy-btn">Copy</button></tr>
+  <summary>Walkies System</summary>
 
-                </tbody>
-              </table>
-          </details>
+  <p class="p">
+    The Walkies System is how chat can force me onto the treadmill like the obedient little gremlin I am.
+    <br><br>
+    Certain events during stream add time to a global “Walkies Queue.”  
+    Once the queued time reaches <strong>30 minutes</strong>, Walkies can begin — either automatically on a Walkies Stream, or manually if I choose to activate it.
+  </p>
+
+  <p class="p"><strong>I'll always make it clear if it's a Walkies Stream</strong> (pinned message, title, etc).</p>
+
+  <h3>Events That Add Time</h3>
+
+  <p class="p">Every event below adds both <strong>time</strong> and a calculated <strong>distance</strong>. Distance is used for the on-screen goal bar and post-walk stats.</p>
+
+  <table class="command-table">
+    <thead>
+      <tr>
+        <th class="px-3 py-2 text-left">Trigger</th>
+        <th class="px-3 py-2 text-left">Adds Time</th>
+        <th class="px-3 py-2 text-left">Adds Distance</th>
+        <th class="px-3 py-2 text-left">Details</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <!-- SUBSCRIPTIONS -->
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">Subscription (Tier 1)</td>
+        <td class="px-3 py-2">2 minutes</td>
+        <td class="px-3 py-2">0.10 miles</td>
+        <td class="px-3 py-2">Tier multipliers apply to Tier 2 & 3</td>
+      </tr>
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">Subscription (Tier 2)</td>
+        <td class="px-3 py-2">3 minutes</td>
+        <td class="px-3 py-2">0.15 miles</td>
+        <td class="px-3 py-2">1.5× base rate</td>
+      </tr>
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">Subscription (Tier 3)</td>
+        <td class="px-3 py-2">4 minutes</td>
+        <td class="px-3 py-2">0.20 miles</td>
+        <td class="px-3 py-2">2× base rate</td>
+      </tr>
+
+      <!-- RESUB -->
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">Resubscription</td>
+        <td class="px-3 py-2">2 minutes</td>
+        <td class="px-3 py-2">0.10 miles</td>
+        <td class="px-3 py-2">Tier bonuses apply</td>
+      </tr>
+
+      <!-- GIFT SUB -->
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">Gift Sub</td>
+        <td class="px-3 py-2">2 minutes per gifted sub</td>
+        <td class="px-3 py-2">0.10 miles each</td>
+        <td class="px-3 py-2">Bulk gifts scale automatically</td>
+      </tr>
+
+      <!-- BITS -->
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">Bits / Cheers</td>
+        <td class="px-3 py-2">1 second per bit (after 100 bits)</td>
+        <td class="px-3 py-2">0.001 miles per bit</td>
+        <td class="px-3 py-2">Minimum 100 bits to count</td>
+      </tr>
+
+      <!-- RAID -->
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">Raid</td>
+        <td class="px-3 py-2">20 seconds per raider</td>
+        <td class="px-3 py-2">0.01 miles per raider</td>
+        <td class="px-3 py-2">Minimum 3 raiders</td>
+      </tr>
+
+      <!-- DONATION -->
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">Donation / Tip</td>
+        <td class="px-3 py-2">1 minute per £1</td>
+        <td class="px-3 py-2">0.05 miles per £1</td>
+        <td class="px-3 py-2">Minimum £1</td>
+      </tr>
+
+      <!-- FOLLOW -->
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">Follow</td>
+        <td class="px-3 py-2">20 seconds</td>
+        <td class="px-3 py-2">0.02 miles</td>
+        <td class="px-3 py-2">Useful for charity Walkies streams</td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <br>
+
+  <h3>How the Walkies System Works</h3>
+
+  <p class="p">
+    Here’s the full breakdown so mods understand the system from start to finish:
+  </p>
+
+  <ul class="p">
+    <li><strong>Every eligible event</strong> adds time + distance to the global queue.</li>
+    <li>This time persists even if I’m offline or change scenes.</li>
+    <li>Once the queue reaches <strong>30 minutes</strong>:
+      <ul>
+        <li>Walkies can begin</li>
+        <li>HUD will show total time, time remaining, speed, distance and calories</li>
+      </ul>
+    </li>
+    <li>During active Walkies:
+      <ul>
+        <li>Events extend the timer live</li>
+        <li>HUD updates automatically</li>
+        <li>Distance bar continues filling</li>
+        <li>FrontSilver randomly shouts motivational abuse</li>
+      </ul>
+    </li>
+    <li>When the timer hits 0:
+      <ul>
+        <li>The walk auto-finishes</li>
+        <li>HUD shows final stats (distance walked, calories burned)</li>
+        <li>Queue resets to 0</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>Moderator Commands</h3>
+
+  <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+
+  <table class="command-table">
+    <thead>
+      <tr>
+        <th class="px-3 py-2 text-left">Command</th>
+        <th class="px-3 py-2 text-left">Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">*!walkies</td>
+        <td class="px-3 py-2">Switch to the Walkies scene to prepare</td>
+        <td><button class="copy-btn">Copy</button></td>
+      </tr>
+
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">*!setspeed &lt;speed&gt;</td>
+        <td class="px-3 py-2">Sets the treadmill speed in the HUD (example: <code>!setspeed 5</code>)</td>
+        <td><button class="copy-btn">Copy</button></td>
+      </tr>
+
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">*!startwalk</td>
+        <td class="px-3 py-2">Begins the walk and starts the HUD timer</td>
+        <td><button class="copy-btn">Copy</button></td>
+      </tr>
+
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">*!pausewalk</td>
+        <td class="px-3 py-2">Pauses the walk if I need to stop</td>
+        <td><button class="copy-btn">Copy</button></td>
+      </tr>
+
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">*!resumewalk</td>
+        <td class="px-3 py-2">Resumes the paused walk</td>
+        <td><button class="copy-btn">Copy</button></td>
+      </tr>
+
+      <tr class="searchable-item">
+        <td class="px-3 py-2 font-mono cmd-cell">*!finishwalk</td>
+        <td class="px-3 py-2">Ends the walk, shows stats and resets the queue</td>
+        <td><button class="copy-btn">Copy</button></td>
+      </tr>
+
+    </tbody>
+  </table>
+</details>
+
 
           <details id="xp" class="command-group">
             <summary>XP/levelling up System</summary>
