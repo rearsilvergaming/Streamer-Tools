@@ -445,7 +445,7 @@
   <header class="mobile-header lg:hidden">
     <div class="flex justify-between items-center">
       <h1 class="text-xl font-extrabold text-[var(--brand-700)]">RearSilver's • Mod Handbook</h1>
-      <span class="chip text-[var(--brand-700)] font-extrabold text-lg px-2 py-0.5 rounded-full">v1.3</span>
+      <span class="chip text-[var(--brand-700)] font-extrabold text-lg px-2 py-0.5 rounded-full">v1.4</span>
       <button id="menu-toggle" class="text-[var(--text)] text-2xl">☰</button>
     </div>
   </header>
@@ -458,7 +458,7 @@
     <!-- Sidebar / Navigation -->
     <aside id="sidebar" class="sidebar">
       <h1 class="text-3xl font-extrabold mb-6 text-[var(--brand-700)] hidden lg:block">RearSilver's • Mod Handbook</h1>
-      <h1 class="text-3xl font-extrabold mb-6 text-[var(--brand-700)] hidden lg:block">v1.3</h1>
+      <h1 class="text-3xl font-extrabold mb-6 text-[var(--brand-700)] hidden lg:block">v1.4</h1>
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-bold text-[var(--text)]">Navigation</h2>
         <button id="theme-toggle" class="text-sm font-semibold text-[var(--muted)] hover:text-[var(--text)] transition-colors">
@@ -483,6 +483,7 @@
       <a href="#chat" class="sidebar-link block text-sm">Chat Commands</a>
       <a href="#death" class="sidebar-link block text-sm">Death Counter</a>
       <a href="#fun" class="sidebar-link block text-sm">Fun in Chat</a>
+      <a href="#geordie" class="sidebar-link block text-sm">Geordie Translator</a>
       <a href="#hunt" class="sidebar-link block text-sm">Hunt Game System</a>
       <a href="#links" class="sidebar-link block text-sm">Link Protection System</a>
       <a href="#measurements" class="sidebar-link block text-sm">Measurements (Explicit)</a>
@@ -810,6 +811,22 @@
               </table>
           </details>
 
+          <details id="geordie" class="command-group">
+            <summary>Geordie Translator System</summary>
+            <p class="p">When Geordie Mode = On, FrontSilver will randomly take a message from chat and translate it into Geordie (RearSilver's home town dialect *Newcastle*).
+              <br>
+              This will be as a chat message as well as a text-to-speech message with varying degrees of sass at this task.
+            </p>
+                        <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+            <table class="command-table">
+                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                <tbody>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!geordieon</td><td class="px-3 py-2">Turns on Geordie Mode.</td><td><button class="copy-btn">Copy</button></tr>
+                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!geordieoff</td><td class="px-3 py-2">Turns off Geordie Mode.</td><td><button class="copy-btn">Copy</button></tr>
+                </tbody>
+              </table>
+          </details>
+
                     <details id="hunt" class="command-group">
             <summary>Hunt Game System (WIP)</summary>
                         <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
@@ -999,7 +1016,7 @@
 
   <p class="p"><strong>I'll always make it clear if it's a Walkies Stream</strong> (pinned message, title, etc).</p>
 
-  <h3>Events That Add Time</h3>
+  <h2>Events That Add Time</h2>
 
   <p class="p">Every event below adds both <strong>time</strong> and a calculated <strong>distance</strong>. Distance is used for the on-screen goal bar and post-walk stats.</p>
 
@@ -1088,7 +1105,7 @@
 
   <br>
 
-  <h3>How the Walkies System Works</h3>
+  <h2>How the Walkies System Works</h2>
 
   <p class="p">
     Here’s the full breakdown so mods understand the system from start to finish:
@@ -1120,7 +1137,7 @@
     </li>
   </ul>
 
-  <h3>Moderator Commands</h3>
+  <h2>Moderator Commands</h2>
 
   <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
 
@@ -1215,13 +1232,14 @@
     <!-- Footer -->
     <footer class="mt-10 pt-6 border-t" style="border-color:var(--line)">
       <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
-        <div>Last updated: <strong>14 Nov 2025</strong></div>
+        <div>Last updated: <strong>17 Nov 2025</strong></div>
         <div>&copy; RearSilver 2025</div>
       </div>
       <details class="collapsible mt-4" id="changelog">
         <summary><span class="twist">▶</span> <span class="text-accent font-semibold">Changelog</span></summary>
         <div class="content text-sm">
           <ul class="list-disc pl-6 space-y-1">
+            <li>v1.4 — Added Geordie Mode.</li>
             <li>v1.3 — Added !goodboy and !kiss commands. Alphabetised Fun in Chat list.</li>
             <li>v1.2 — Added the Walkies system.</li>
             <li>v1.1 — Initial polished rebuild: auto theme, sidebar, search filtering, mod-only toggle, copy buttons, collapsibles, quick Discord links, version footer.</li>
