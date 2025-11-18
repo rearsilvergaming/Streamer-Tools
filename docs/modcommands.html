@@ -368,51 +368,6 @@
       background-color: var(--brand-600);
     }
 
-    /* Header for mobile (hidden on desktop) */
-    .mobile-header {
-      display: none;
-      background-color: var(--bg-elev);
-      border-bottom: 1px solid var(--line);
-      padding: 1rem;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
-
-    @media (max-width: 1024px) {
-      .mobile-header {
-        display: block;
-      }
-      .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-out;
-        z-index: 100;
-        width: min(90vw, var(--sidebar-width));
-      }
-      .sidebar.open {
-        transform: translateX(0);
-      }
-      .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 90;
-        display: none;
-      }
-      .overlay.open {
-        display: block;
-      }
-      .content {
-        padding: 1.5rem 1rem;
-      }
-    }
-
     /* Buttons & utilities */
     .btn {
       display: inline-flex; align-items: center; gap: .5rem;
@@ -470,6 +425,7 @@
 </head>
 <body class="font-sans">
 
+  <div class="mobile-stack lg:static">
   <!-- Mobile Header -->
   <header class="mobile-header lg:hidden">
     <div class="flex justify-between items-center">
