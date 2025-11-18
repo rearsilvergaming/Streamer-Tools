@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokémon Spawner Overlay</title>
+    <style>
+      /* Full-screen transparent overlay */
+      body {
+        background-color: transparent;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        font-family: "Inter", sans-serif;
+      }
+
+      /* === LAYOUT GRID === */
+
+      /* Wrapper: centred on screen */
+      #pokemon-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        opacity: 0; /* faded in by JS */
+        transition: opacity 0.25s ease-out;
+      }
+
+      /* Fixed battle cell – all action happens inside this box */
+      .battle-cell {
+        position: relative;
+        width: 350px;
+        height: 350px;
+        pointer-events: none;
+      }
+
+      /* Layer stacks inside the cell */
+      .fx-layer,
+      .pokemon-layer {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      /* Wrapper that is centred in the cell –
+         the Pokémon image moves inside this */
+      #pokemon-wrapper {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      /* --- SPRITES --- */
+
+      /* Pokémon sprite (variable PNG size – we rescale in JS) */
+      #pokemon-image {
+        position: relative;
+        display: block;
+        margin: 0 auto;
+        user-select: none;
+        filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+        transform-origin: center center;
+        opacity: 0;
+      }
+
+      /* Pokéball sits in front of centre, slightly below */
+      #pokeball-image {
+        position: absolute;
+        top: 55%;
+        left: 55%;
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        user-select: none;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        display: none;
+        z-index: 10;
+        transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+      }
+
+      /* FX: speed lines (behind Pokémon) */
+      #speed-lines {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 260px;
+        height: auto;
+        opacity: 0;
+        user-select: none;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      /* FX: dust, to the LEFT of Pokémon but same row
+         We offset leftwards from the Pokémon centre */
+      #dust-small,
+      #dust-large {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        /* this puts the dust to the left of the mon */
+        transform: translate(-140%, -50%);
+        width: auto;
+        height: auto;
+        opacity: 0;
+        user-select: none;
+        pointer-events: none;
+        z-index: 3;
+      }
+
+      #dust-small {
+        max-width: 180px;
+      }
+
+      #dust-large {
+        max-width: 260px;
+      }
+
+      /* Name / info text – fixed under the battle cell */
+      #pokemon-info {
+        margin-top: 10px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 8px 15px;
+        border-radius: 10px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        border: 2px solid #ffcb05;
+        opacity: 0;
+        transition: opacity 0.35s ease-out;
+        z-index: 20;
+      }
+
+      /* === ANIMATIONS === */
+
+      /* 1. Pokémon run-in from right, classic slide + bounce */
+      .animate-run-in {
+        animation: runIn 2s cubic-bezier(0.17, 0.89, 0.32, 1.49) forwards;
+      }
+
+      @keyframes runIn {
+        0% {
+          opacity: 0;
+          transform: translateX(160px) scale(1);
+        }
+        30% {
+          opacity: 1;
+          transform: translateX(40px) scale(1.05);
+        }
+        70% {
+          opacity: 1;
+          transform: translateX(-10px) scale(0.97);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0px) scale(1);
+        }
+      }
+
+      /* 2. Speed lines flash behind the Pokémon */
+      .animate-speed-lines {
+        animation: speedLinesFlash 2s ease-out forwards;
+      }
+
+      @keyframes speedLinesFlash {
+        0% {
+          opacity: 0;
+          transform: translate(50%, -50%) translateX(40px);
+        }
+        20% {
+          opacity: 1;
+          transform: translate(50%, -50%) translateX(0px);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(50%, -50%) translateX(-40px);
+        }
+      }
+
+      /* 3. Dust bursts (small then large) */
+      .animate-dust-small {
+        animation: dustSmallBurst 2s ease-out forwards;
+      }
+
+      @keyframes dustSmallBurst {
+        0% {
+          opacity: 0;
+          transform: translate(140%, -50%) scale(0.5);
+        }
+        35% {
+          opacity: 1;
+          transform: translate(135%, -52%) scale(1.05);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(130%, -48%) scale(1.2);
+        }
+      }
+
+      .animate-dust-large {
+        animation: dustLargeBurst 2s ease-out forwards;
+      }
+
+      @keyframes dustLargeBurst {
+        0% {
+          opacity: 0;
+          transform: translate(180%, -50%) scale(0.6);
+        }
+        40% {
+          opacity: 1;
+          transform: translate(138%, -51%) scale(1.05);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(132%, -49%) scale(1.25);
+        }
+      }
+
+      /* Existing catch logic animations, adapted for new layout */
+
+      .animate-pokeball-throw {
+        animation: pokeballArcAndHit 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)
+          forwards;
+      }
+
+      /* New Pokéball throw with hit impact */
+      @keyframes pokeballArcAndHit {
+        0% {
+          opacity: 0;
+          transform: translate(-200px, 200px) rotate(0deg) scale(0);
+        }
+        50% {
+          opacity: 1;
+          transform: translate(-40px, -120px) rotate(360deg) scale(1.2);
+        }
+        70% {
+          /* Ball arrives at centre and bumps */
+          transform: translate(0px, -10px) rotate(540deg) scale(1);
+        }
+        85% {
+          /* Little bounce upward */
+          transform: translate(0px, -20px) rotate(560deg) scale(1);
+        }
+        100% {
+          /* Settles in front of Pokémon */
+          opacity: 1;
+          transform: translate(0px, 0px) rotate(720deg) scale(1);
+        }
+      }
+
+      /* Pokémon sucked into ball */
+      .animate-suck-in {
+        animation: suckIn 0.5s ease-in forwards;
+      }
+
+      @keyframes suckIn {
+        0% {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+          filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+        }
+        100% {
+          opacity: 0.2;
+          transform: scale(0) translate(20px, 20px);
+          filter: brightness(5) hue-rotate(90deg);
+        }
+      }
+
+      /* Pokéball wiggle */
+      .animate-wiggle {
+        animation: wiggle 0.2s ease-in-out infinite alternate;
+      }
+
+      @keyframes wiggle {
+        0% {
+          transform: translate(0px, 0px) rotate(0deg);
+        }
+        50% {
+          transform: translate(5px, 5px) rotate(5deg);
+        }
+        100% {
+          transform: translate(-5px, 5px) rotate(-5deg);
+        }
+      }
+
+      /* Pokémon escapes from ball */
+      .animate-catch-fail-escape {
+        animation: catchFailEscape 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+          forwards;
+      }
+
+      @keyframes catchFailEscape {
+        0% {
+          opacity: 0.5;
+          transform: scale(0) translate(20px, 20px);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.1) translateY(-20px);
+          filter: brightness(1) drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      /* Catch success – ball glow then shrink */
+      .animate-catch-success {
+        animation: catchSuccess 1.5s ease-out forwards;
+      }
+
+      @keyframes catchSuccess {
+        0% {
+          opacity: 1;
+          transform: scale(1);
+          filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.8));
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.2);
+          filter: drop-shadow(0 0 30px rgba(0, 255, 0, 1));
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0.1);
+        }
+      }
+
+      /* Flee to the right */
+      .animate-flee-run {
+        animation: fleeRun 1s ease-in forwards;
+      }
+
+      @keyframes fleeRun {
+        0% {
+          opacity: 1;
+          transform: translateX(0) scale(1);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(500px) scale(1);
+        }
+      }
+
+      .animate-fade-out {
+        opacity: 0 !important;
+        transition: opacity 1s ease-out;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="pokemon-container">
+      <div class="battle-cell">
+        <!-- FX layer -->
+        <div class="fx-layer">
+          <img
+            id="speed-lines"
+            src=""
+            alt="Speed Lines"
+            onerror="console.error('Speed lines failed to load from:', this.src)"
+          />
+          <img
+            id="dust-small"
+            src=""
+            alt="Small Dust Cloud"
+            onerror="console.error('Small dust cloud failed to load from:', this.src)"
+          />
+          <img
+            id="dust-large"
+            src=""
+            alt="Large Dust Cloud"
+            onerror="console.error('Large dust cloud failed to load from:', this.src)"
+          />
+        </div>
+
+        <!-- Pokémon + Pokéball layer -->
+        <div class="pokemon-layer">
+          <div id="pokemon-wrapper">
+            <img
+              id="pokemon-image"
+              src=""
+              alt="Wild Pokemon"
+              onerror="console.error('Pokemon image failed to load from:', this.src)"
+            />
+          </div>
+          <img
+            id="pokeball-image"
+            src=""
+            alt="Pokeball"
+            onerror="console.error('Pokeball image failed to load from:', this.src)"
+          />
+        </div>
+      </div>
+
+      <!-- Name / info text -->
+      <div id="pokemon-info"></div>
+    </div>
+
+    <script>
+      const container = document.getElementById("pokemon-container");
+      const pokemonImage = document.getElementById("pokemon-image");
+      const pokemonInfo = document.getElementById("pokemon-info");
+      const pokeballImage = document.getElementById("pokeball-image");
+      const speedLines = document.getElementById("speed-lines");
+      const dustSmall = document.getElementById("dust-small");
+      const dustLarge = document.getElementById("dust-large");
+
+      const BASE_IMAGE_URL =
+        "https://raw.githubusercontent.com/rearsilvergaming/Streamer-Tools/8c58395befbd73b4c6666ad908d364bb26c09d7f/Pokemon/";
+
+      const POKEBALL_URL = BASE_IMAGE_URL + "PokeBall%20-%20Realistic.png";
+      const SPEED_LINES_URL = BASE_IMAGE_URL + "Speed%20Lines.png";
+      const DUST_SMALL_URL = BASE_IMAGE_URL + "Small%20Dust%20Cloud.png";
+      const DUST_LARGE_URL = BASE_IMAGE_URL + "Large%20Dust%20Cloud.png";
+
+      const THROW_DURATION = 800;
+      const ESCAPE_DURATION = 600;
+      const SUCCESS_DURATION = 1500;
+      const FLEE_DURATION = 1000;
+
+      const BATTLE_CELL_SIZE = 350;
+      const POKEMON_MAX_SIZE = BATTLE_CELL_SIZE * 0.75; // 75% of cell
+
+      let currentPokemonName = "";
+
+      function resetState() {
+        container.style.opacity = "0";
+
+        [pokemonImage, pokeballImage, speedLines, dustSmall, dustLarge].forEach(
+          (el) => {
+            el.className = el.className.replace(/\banimate-[a-z-]+\b/g, ""); // strip animation classes
+          }
+        );
+
+        // Pokémon
+        pokemonImage.style.opacity = "0";
+        pokemonImage.style.transform = "translateX(0) scale(1)";
+        pokemonImage.style.width = "";
+        pokemonImage.style.height = "";
+
+        // Ball
+        pokeballImage.style.opacity = "0";
+        pokeballImage.style.display = "none";
+        pokeballImage.style.transform = "translate(0,0)";
+
+        // FX
+        [speedLines, dustSmall, dustLarge].forEach((el) => {
+          el.style.opacity = "0";
+        });
+
+        // Text
+        pokemonInfo.style.opacity = "0";
+        pokemonInfo.textContent = "";
+
+        currentPokemonName = "";
+      }
+
+      /**
+       * Auto-scale Pokémon based on natural image size (Option C).
+       */
+      function rescalePokemonSprite() {
+        const w = pokemonImage.naturalWidth;
+        const h = pokemonImage.naturalHeight;
+        if (!w || !h) return;
+
+        let scale;
+        if (w >= h) {
+          // wider than tall – fit width
+          scale = POKEMON_MAX_SIZE / w;
+        } else {
+          // taller than wide – fit height
+          scale = POKEMON_MAX_SIZE / h;
+        }
+
+        pokemonImage.style.width = w * scale + "px";
+        pokemonImage.style.height = h * scale + "px";
+      }
+
+      // Generate image URL with fallback to .webp
+      function setPokemonSprite(name) {
+        const png = `${BASE_IMAGE_URL}${name}.png`;
+        const webp = `${BASE_IMAGE_URL}${name}.webp`;
+
+        // Try PNG first
+        pokemonImage.src = png;
+
+        // If PNG fails, auto-swap to webp
+        pokemonImage.onerror = () => {
+          pokemonImage.onerror = null;
+          pokemonImage.src = webp;
+        };
+      }
+
+      /**
+       * SPAWN: Pokémon runs in, FX fire, text fades in.
+       */
+      function handleSpawn(data) {
+        resetState();
+
+        currentPokemonName = data.pokemonName;
+        const cacheBust = `?v=${Date.now()}`;
+
+        pokemonImage.onload = () => {
+          rescalePokemonSprite();
+
+          container.style.opacity = "1";
+
+          // Run-in + FX
+          requestAnimationFrame(() => {
+            pokemonImage.classList.add("animate-run-in");
+            pokemonImage.style.opacity = "1";
+
+            speedLines.classList.add("animate-speed-lines");
+
+            setTimeout(() => {
+              dustSmall.classList.add("animate-dust-small");
+            }, 380);
+
+            setTimeout(() => {
+              dustLarge.classList.add("animate-dust-large");
+            }, 430);
+          });
+
+          // Text reveal
+          setTimeout(() => {
+            pokemonInfo.style.opacity = "1";
+          }, 750);
+        };
+
+        // Set sources
+        setPokemonSprite(currentPokemonName);
+        pokemonInfo.textContent = data.infoText || "";
+        speedLines.src = SPEED_LINES_URL + cacheBust;
+        dustSmall.src = DUST_SMALL_URL + cacheBust;
+        dustLarge.src = DUST_LARGE_URL + cacheBust;
+      }
+
+      /**
+       * THROW: Pokéball arc + Pokémon suck-in.
+       */
+      function handleThrow() {
+        if (!currentPokemonName) return;
+
+        const cacheBust = `?v=${Date.now()}`;
+        pokeballImage.src = POKEBALL_URL + cacheBust;
+        pokeballImage.style.display = "block";
+        pokeballImage.style.opacity = "1";
+
+        pokeballImage.classList.add("animate-pokeball-throw");
+
+        /* Wait until AFTER the hit (≈700ms), then suck in */
+        setTimeout(() => {
+          pokemonImage.classList.add("animate-suck-in");
+        }, 700);
+
+        /* After full animation time, hide Pokémon */
+        setTimeout(() => {
+          pokemonImage.style.opacity = "0";
+        }, 1200);
+      }
+
+      function handleWiggle() {
+        if (pokeballImage.style.display !== "block") return;
+
+        pokeballImage.classList.remove("animate-wiggle");
+        requestAnimationFrame(() => {
+          pokeballImage.classList.add("animate-wiggle");
+        });
+      }
+
+      function handleCatchFail() {
+        if (!currentPokemonName || pokeballImage.style.display !== "block")
+          return;
+
+        pokeballImage.style.display = "none";
+        pokeballImage.classList.remove("animate-wiggle");
+
+        pokemonImage.style.opacity = "1";
+        pokemonImage.classList.add("animate-catch-fail-escape");
+
+        pokemonInfo.textContent = `${currentPokemonName} escaped!`;
+
+        setTimeout(() => {
+          pokemonImage.classList.remove("animate-catch-fail-escape");
+        }, ESCAPE_DURATION);
+      }
+
+      function handleCatchSuccess() {
+        if (!currentPokemonName || pokeballImage.style.display !== "block")
+          return;
+
+        pokeballImage.classList.remove("animate-wiggle");
+        pokeballImage.classList.add("animate-catch-success");
+
+        pokemonInfo.textContent = `${currentPokemonName} was caught!`;
+
+        setTimeout(() => {
+          pokeballImage.style.display = "none";
+          pokeballImage.classList.remove("animate-catch-success");
+
+          container.classList.add("animate-fade-out");
+          setTimeout(resetState, 1000);
+        }, SUCCESS_DURATION);
+      }
+
+      function handleDisappear() {
+        if (!currentPokemonName) return;
+
+        pokeballImage.style.display = "none";
+        pokemonInfo.textContent = `${currentPokemonName} fled!`;
+
+        triggerFleeFX();
+        pokemonImage.style.opacity = "1";
+        pokemonImage.classList.add("animate-flee-run");
+
+        setTimeout(() => resetState(), FLEE_DURATION);
+      }
+
+      function triggerFleeFX() {
+        speedLines.classList.remove("animate-speed-lines");
+        dustSmall.classList.remove("animate-dust-small");
+        dustLarge.classList.remove("animate-dust-large");
+
+        requestAnimationFrame(() => {
+          speedLines.classList.add("animate-speed-lines");
+
+          setTimeout(() => {
+            dustSmall.classList.add("animate-dust-small");
+          }, 120);
+
+          setTimeout(() => {
+            dustLarge.classList.add("animate-dust-large");
+          }, 200);
+        });
+      }
+
+      /* Streamer.bot Broadcast Listener */
+      window.addEventListener("message", function (event) {
+        const payload = event.data;
+
+        // Make sure the message contains a command
+        if (!payload || !payload.command) return;
+
+        switch (payload.command) {
+          case "spawn":
+            handleSpawn(payload);
+            break;
+          case "throw":
+            handleThrow();
+            break;
+          case "wiggle":
+            handleWiggle();
+            break;
+          case "catchSuccess":
+            handleCatchSuccess();
+            break;
+          case "catchFail":
+            handleCatchFail();
+            break;
+          case "flee":
+            handleDisappear();
+            break;
+        }
+      });
+
+      /* Local test when opened in a normal browser */
+      if (window.location.protocol !== "obs:") {
+        setTimeout(() => {
+          handleSpawn({
+            pokemonName: "Incineroar",
+            infoText: "A wild Incineroar (001) appeared!",
+          });
+
+          setTimeout(handleThrow, 1600);
+          setTimeout(handleWiggle, 2600);
+          setTimeout(handleCatchSuccess, 5200);
+        }, 500);
+      }
+    </script>
+  </body>
+</html>
