@@ -439,7 +439,7 @@
   <header class="mobile-header lg:hidden">
     <div class="flex justify-between items-center">
       <h1 class="text-xl font-extrabold text-[var(--brand-700)]">RearSilver's Mod Handbook</h1>
-      <span class="chip text-[var(--brand-700)] font-extrabold text-lg px-2 py-0.5 rounded-full">v1.4</span>
+      <span class="chip text-[var(--brand-700)] font-extrabold text-lg px-2 py-0.5 rounded-full">v1.5</span>
       <button id="menu-toggle" class="text-[var(--text)] text-3xl">☰</button>
     </div>
       <div class="flex flex-wrap items-center gap-2">
@@ -462,7 +462,7 @@
     <!-- Sidebar / Navigation -->
     <aside id="sidebar" class="sidebar">
   <h1 class="text-3xl font-extrabold mb-2 text-[var(--brand-700)] hidden lg:block">RearSilver's Mod Handbook</h1>
-  <p class="text-lg mb-6 text-[var(--muted)] hidden lg:block">v1.4</p>
+  <p class="text-lg mb-6 text-[var(--muted)] hidden lg:block">v1.5</p>
   <div class="flex justify-between items-center mb-4">
     <h2 class="text-lg font-bold text-[var(--text)]">Navigation</h2>
     <button id="theme-toggle" class="text-sm font-semibold text-[var(--muted)] hover:text-[var(--text)] transition-colors">
@@ -531,8 +531,24 @@
             <span class="alert-icon">💡</span>
             <p>This handbook is a living document. Your input is always welcome. Please report any errors or suggest additions!</p>
           </div>
-
+                  <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
+        <div>Last updated: <strong>18 Nov 2025</strong></div>
+      </div>
+      <details class="collapsible mt-4" id="changelog">
+        <summary><span class="twist">▶</span> <span class="text-accent font-semibold">Changelog</span></summary>
+        <div class="content text-sm">
+          <ul class="list-disc pl-6 space-y-1">
+            <li>v1.5 — Made Mod Handbook mobile accessible/friendly.</li>
+            <li>v1.4 — Added Geordie Mode.</li>
+            <li>v1.3 — Added !goodboy and !kiss commands. Alphabetised Fun in Chat list.</li>
+            <li>v1.2 — Added the Walkies system.</li>
+            <li>v1.1 — Initial polished rebuild: auto theme, sidebar, search filtering, mod-only toggle, copy buttons, collapsibles, quick Discord links, version footer.</li>
+          </ul>
+        </div>
+      </details>
         </header>
+
+
 
         <section id="modguide">
           <h1>Mod Guide</h1>
@@ -1226,20 +1242,8 @@
     <!-- Footer -->
     <footer class="mt-10 pt-6 border-t" style="border-color:var(--line)">
       <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
-        <div>Last updated: <strong>17 Nov 2025</strong></div>
         <div>&copy; RearSilver 2025</div>
       </div>
-      <details class="collapsible mt-4" id="changelog">
-        <summary><span class="twist">▶</span> <span class="text-accent font-semibold">Changelog</span></summary>
-        <div class="content text-sm">
-          <ul class="list-disc pl-6 space-y-1">
-            <li>v1.4 — Added Geordie Mode.</li>
-            <li>v1.3 — Added !goodboy and !kiss commands. Alphabetised Fun in Chat list.</li>
-            <li>v1.2 — Added the Walkies system.</li>
-            <li>v1.1 — Initial polished rebuild: auto theme, sidebar, search filtering, mod-only toggle, copy buttons, collapsibles, quick Discord links, version footer.</li>
-          </ul>
-        </div>
-      </details>
     </footer>
   </main>
   </div>
