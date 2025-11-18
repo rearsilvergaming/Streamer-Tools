@@ -87,17 +87,28 @@
       min-height: 100vh;
     }
 
-    @media (max-width: 1024px) {
-      .sidebar-layout {
-        grid-template-columns: 1fr; /* Stack on mobile/tablet */
-      }
-      .sidebar {
-        display: none; /* Hide sidebar by default on smaller screens */
-      }
-      .content {
-        padding: 1rem;
-      }
-    }
+@media (max-width: 1024px) {
+  .sidebar-layout { grid-template-columns: 1fr; }
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-out;
+    z-index: 100;
+    width: min(90vw, var(--sidebar-width));
+    display: block; /* keep it renderable for slide-in */
+  }
+  .sidebar.open { transform: translateX(0); }
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 90; display: none;
+  }
+  .overlay.open { display: block; }
+  .content { padding: 1.25rem 1rem; }
+  .command-group { overflow-x: auto; }
+  .command-table { min-width: 640px; }
+}
 
     /* Sidebar styles */
     .sidebar {
@@ -457,82 +468,68 @@
   <div class="sidebar-layout">
     <!-- Sidebar / Navigation -->
     <aside id="sidebar" class="sidebar">
-      <h1 class="text-3xl font-extrabold mb-6 text-[var(--brand-700)] hidden lg:block">RearSilver's • Mod Handbook</h1>
-      <h1 class="text-3xl font-extrabold mb-6 text-[var(--brand-700)] hidden lg:block">v1.4</h1>
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-bold text-[var(--text)]">Navigation</h2>
-        <button id="theme-toggle" class="text-sm font-semibold text-[var(--muted)] hover:text-[var(--text)] transition-colors">
-            <span id="theme-text">Dark Mode</span>
-        </button>
-      </div>
-      
-<h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Updates</h3>
-<nav id="nav-links">
-  <a href="#changelog" class="sidebar-link block text-sm">Change Log</a>
-</nav>
-      <nav id="nav-links">
-        <a href="#modguide" class="sidebar-link block text-sm"><h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2"><h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Mod Guide</h3></a>
-         <a href="#expectations" class="sidebar-link block text-sm">General Expectations</a>
-        <a href="#philosophy" class="sidebar-link block text-sm">Moderator Philosophy</a>
-        <a href="#server" class="sidebar-link block text-sm">Discord Server</a>
-        <a href="#emergency" class="sidebar-link block text-sm">Emergency Protocol</a>
-        <a href="#scenarios" class="sidebar-link block text-sm">Action Scenarios</a>
-        <a href="#streamcommands" class="sidebar-link block text-sm"><h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2"><h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Stream Commands</h3></a>
-      <a href="#translate" class="sidebar-link block text-sm">Auto Translate System</a>
-      <a href="#birthday" class="sidebar-link block text-sm">Birthday System</a>
-      <a href="#chat" class="sidebar-link block text-sm">Chat Commands</a>
-      <a href="#death" class="sidebar-link block text-sm">Death Counter</a>
-      <a href="#fun" class="sidebar-link block text-sm">Fun in Chat</a>
-      <a href="#geordie" class="sidebar-link block text-sm">Geordie Translator</a>
-      <a href="#hunt" class="sidebar-link block text-sm">Hunt Game System</a>
-      <a href="#links" class="sidebar-link block text-sm">Link Protection System</a>
-      <a href="#measurements" class="sidebar-link block text-sm">Measurements (Explicit)</a>
-      <a href="#modcommands" class="sidebar-link block text-sm">Mod Commands (Moderation Tools)</a>
-      <a href="#pronouns" class="sidebar-link block text-sm">Pronouns</a>
-      <a href="#quote" class="sidebar-link block text-sm">Quote System</a>
-      <a href="#raffle" class="sidebar-link block text-sm">Raffle System</a>
-      <a href="#control" class="sidebar-link block text-sm">Stream Control</a>
-      <a href="#support" class="sidebar-link block text-sm">Support System</a>
-      <a href="#queue" class="sidebar-link block text-sm">Viewers Queue System</a>
-      <a href="#walk" class="sidebar-link block text-sm">Walkies System</a>
-      <a href="#xp" class="sidebar-link block text-sm">XP System</a>
-      <a href="#thanks" class="sidebar-link block text-sm"><h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2"><h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Thank You</h3></a>
+  <h1 class="text-3xl font-extrabold mb-2 text-[var(--brand-700)] hidden lg:block">RearSilver's • Mod Handbook</h1>
+  <p class="text-sm mb-6 text-[var(--muted)] hidden lg:block">v1.4</p>
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-lg font-bold text-[var(--text)]">Navigation</h2>
+    <button id="theme-toggle" class="text-sm font-semibold text-[var(--muted)] hover:text-[var(--text)] transition-colors">
+      <span id="theme-text">Dark Mode</span>
+    </button>
+  </div>
 
-      </nav>
+  <h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Updates</h3>
+  <nav id="nav-links">
+    <a href="#changelog" class="sidebar-link block text-sm">Change Log</a>
 
+    <h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Mod Guide</h3>
+    <a href="#modguide" class="sidebar-link block text-sm">Mod Guide</a>
+    <a href="#expectations" class="sidebar-link block text-sm">General Expectations</a>
+    <a href="#philosophy" class="sidebar-link block text-sm">Moderator Philosophy</a>
+    <a href="#server" class="sidebar-link block text-sm">Discord Server</a>
+    <a href="#emergency" class="sidebar-link block text-sm">Emergency Protocol</a>
+    <a href="#scenarios" class="sidebar-link block text-sm">Action Scenarios</a>
 
-    </aside>
+    <h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Stream Commands</h3>
+    <a href="#streamcommands" class="sidebar-link block text-sm">Command Glossary</a>
+    <a href="#translate" class="sidebar-link block text-sm">Auto Translate System</a>
+    <a href="#birthday" class="sidebar-link block text-sm">Birthday System</a>
+    <a href="#chat" class="sidebar-link block text-sm">Chat Commands</a>
+    <a href="#death" class="sidebar-link block text-sm">Death Counter</a>
+    <a href="#fun" class="sidebar-link block text-sm">Fun in Chat</a>
+    <a href="#geordie" class="sidebar-link block text-sm">Geordie Translator</a>
+    <a href="#hunt" class="sidebar-link block text-sm">Hunt Game System</a>
+    <a href="#links" class="sidebar-link block text-sm">Link Protection System</a>
+    <a href="#measurements" class="sidebar-link block text-sm">Measurements (Explicit)</a>
+    <a href="#modcommands" class="sidebar-link block text-sm">Mod Commands</a>
+    <a href="#pronouns" class="sidebar-link block text-sm">Pronouns</a>
+    <a href="#quote" class="sidebar-link block text-sm">Quote System</a>
+    <a href="#raffle" class="sidebar-link block text-sm">Raffle System</a>
+    <a href="#control" class="sidebar-link block text-sm">Stream Control</a>
+    <a href="#support" class="sidebar-link block text-sm">Support System</a>
+    <a href="#queue" class="sidebar-link block text-sm">Viewers Queue System</a>
+    <a href="#walk" class="sidebar-link block text-sm">Walkies System</a>
+    <a href="#xp" class="sidebar-link block text-sm">XP System</a>
+
+    <h3 class="text-base font-bold text-[var(--text)] mt-6 mb-2">Thank You</h3>
+    <a href="#thanks" class="sidebar-link block text-sm">Acknowledgements</a>
+  </nav>
+</aside>
 
     <!-- Main Content -->
     <main class="content">
-        <!-- Sticky Utility Bar -->
-  <div class="header">
-    <div class="flex items-center gap-2">
-
-        <div class="button-container">
-        <button id="expand-all" class="btn-secondary">Expand All</button>
-        <button id="collapse-all" class="btn-secondary">Collapse All</button>
-
-    </aside>
-        <!-- Streamer Toolkit -->
-         <a class="btn-secondary" href="https://rearsilvergaming.github.io/Streamer-Tools" target="_blank" rel="noreferrer">
-          Streamer Toolkit
-        </a>
-        <!-- Quick links to Discord channels -->
-        <a class="btn-secondary" href="https://discord.com/channels/1151605659201183784/1198634412531798046" target="_blank" rel="noreferrer">
-          #twitch-moderator Channel
-        </a>
-        <a class="btn-secondary" href="https://discord.com/channels/1151605659201183784/1412851485011742842" target="_blank" rel="noreferrer">
-          #stream-log Channel
-        </a>
-                <!-- Command Search -->
-      <input
-        type="text" id="command-search" placeholder="Search for a command"
-        class="btn-secondary"
-      />
-      </div>
+<!-- Sticky Utility Bar -->
+<div class="header">
+  <div class="flex flex-wrap items-center gap-2">
+    <div class="button-container">
+      <button id="expand-all" class="btn-secondary">Expand All</button>
+      <button id="collapse-all" class="btn-secondary">Collapse All</button>
     </div>
+    <a class="btn-secondary" href="https://rearsilvergaming.github.io/Streamer-Tools" target="_blank" rel="noreferrer">Streamer Toolkit</a>
+    <a class="btn-secondary" href="https://discord.com/channels/1151605659201183784/1198634412531798046" target="_blank" rel="noreferrer">#twitch-moderator</a>
+    <a class="btn-secondary" href="https://discord.com/channels/1151605659201183784/1412851485011742842" target="_blank" rel="noreferrer">#stream-log</a>
+    <input type="text" id="command-search" placeholder="Search for a command" class="btn-secondary" />
   </div>
+</div>
 
       <div class="max-w-4xl mx-auto">
         <header class="mb-8">
