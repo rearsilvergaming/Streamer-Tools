@@ -406,61 +406,135 @@
     </div>
 
     <script>
-      /* === Streamer.bot WebSocket Connection === */
+      /* ============================================================
+   === Streamer.bot WebSocket Connection (Correct Version) ===
+   ============================================================ */
+
       let ws;
 
-      function connectWebsocket() {
-        ws = new WebSocket("ws://127.0.0.1:8080/broadcast");
+      function tryConnect(endpoints, i = 0) {
+        if (i >= endpoints.length) {
+          console.warn("[WebSocket] No endpoints available.");
+          return;
+        }
 
-        ws.onopen = () => {
-          console.log(
-            "%c[WebSocket] Connected to Streamer.bot",
-            "color: #4CAF50"
-          );
-        };
+        const url = endpoints[i];
 
-        ws.onmessage = (event) => {
-          try {
-            const payload = JSON.parse(event.data);
+        try {
+          ws = new WebSocket(url);
 
-            // Debug log
-            console.log("Received WebSocket payload:", payload);
+          ws.onopen = () => {
+            console.log("%c[WebSocket] Connected → " + url, "color: #4CAF50");
 
-            if (!payload.command) return;
+            // ==== REQUIRED: Subscribe so Streamer.bot will send broadcasts ====
+            const subscribeMessage = {
+              request: "Subscribe",
+              id: "pokemon-overlay",
+              events: {
+                general: ["Custom"], // WebsocketBroadcastJson() comes through here
+                raw: ["Action"], // Backup
+              },
+            };
 
-            switch (payload.command) {
-              case "spawn":
-                handleSpawn(payload);
-                break;
-              case "throw":
-                handleThrow(payload);
-                break;
-              case "wiggle":
-                handleWiggle(payload);
-                break;
-              case "catchSuccess":
-                handleCatchSuccess(payload);
-                break;
-              case "catchFail":
-                handleCatchFail(payload);
-                break;
-              case "flee":
-                handleDisappear(payload);
-                break;
+            ws.send(JSON.stringify(subscribeMessage));
+            console.log("[WebSocket] Subscribed to Custom events");
+          };
+
+          ws.onmessage = (event) => {
+            let msg;
+            try {
+              msg = JSON.parse(event.data);
+            } catch (e) {
+              console.error("WS JSON parse error:", e);
+              return;
             }
-          } catch (err) {
-            console.error("WebSocket JSON error:", err);
-          }
-        };
 
-        ws.onclose = () => {
-          console.warn("[WebSocket] Connection closed — retrying in 2s");
-          setTimeout(connectWebsocket, 2000);
-        };
+            console.log("WebSocket message:", msg);
+
+            /* =============================
+         Payload format from:
+         CPH.WebsocketBroadcastJson()
+         -----------------------------
+         {
+           event:{ source:"General", type:"Custom" },
+           data:{
+             command:"spawn",
+             pokemonName:"Pikachu",
+             ...
+           }
+         }
+         ============================= */
+
+            if (msg.data && msg.data.command) {
+              const payload = msg.data;
+              routePokemonCommand(payload);
+              return;
+            }
+
+            // Fallback: some older SB versions use msg.type+msg.data.data
+            if (
+              msg.type &&
+              msg.data &&
+              msg.data.data &&
+              msg.data.data.command
+            ) {
+              routePokemonCommand(msg.data.data);
+              return;
+            }
+          };
+
+          ws.onclose = () => {
+            console.warn("[WebSocket] Closed — retrying…");
+            setTimeout(() => tryConnect(endpoints, i + 1), 1000);
+          };
+
+          ws.onerror = () => {
+            try {
+              ws.close();
+            } catch {}
+          };
+        } catch (err) {
+          console.error("WS Connection failed:", err);
+          tryConnect(endpoints, i + 1);
+        }
       }
 
-      connectWebsocket();
-      /* === Pokémon Overlay Logic === */
+      function routePokemonCommand(payload) {
+        switch (payload.command) {
+          case "spawn":
+            handleSpawn(payload);
+            break;
+          case "throw":
+            handleThrow(payload);
+            break;
+          case "wiggle":
+            handleWiggle(payload);
+            break;
+          case "catchSuccess":
+            handleCatchSuccess(payload);
+            break;
+          case "catchFail":
+            handleCatchFail(payload);
+            break;
+          case "flee":
+            handleDisappear(payload);
+            break;
+        }
+      }
+
+      // Try all valid Streamer.bot endpoints
+      const endpoints = [
+        "ws://127.0.0.1:8080",
+        "ws://localhost:8080",
+        "ws://127.0.0.1:8081",
+      ];
+
+      tryConnect(endpoints);
+
+      /* =====================================================
+   === Pokémon Overlay Logic ===
+   (Everything below is unchanged except image URLs)
+   ===================================================== */
 
       const container = document.getElementById("pokemon-container");
       const pokemonImage = document.getElementById("pokemon-image");
@@ -484,7 +558,7 @@
       const FLEE_DURATION = 1000;
 
       const BATTLE_CELL_SIZE = 350;
-      const POKEMON_MAX_SIZE = BATTLE_CELL_SIZE * 0.75; // 75% of cell
+      const POKEMON_MAX_SIZE = BATTLE_CELL_SIZE * 0.75;
 
       let currentPokemonName = "";
 
@@ -493,72 +567,50 @@
 
         [pokemonImage, pokeballImage, speedLines, dustSmall, dustLarge].forEach(
           (el) => {
-            el.className = el.className.replace(/\banimate-[a-z-]+\b/g, ""); // strip animation classes
+            el.className = el.className.replace(/\banimate-[a-z-]+\b/g, "");
           }
         );
 
-        // Pokémon
         pokemonImage.style.opacity = "0";
         pokemonImage.style.transform = "translateX(0) scale(1)";
         pokemonImage.style.width = "";
         pokemonImage.style.height = "";
 
-        // Ball
         pokeballImage.style.opacity = "0";
         pokeballImage.style.display = "none";
-        pokeballImage.style.transform = "translate(0,0)";
 
-        // FX
         [speedLines, dustSmall, dustLarge].forEach((el) => {
           el.style.opacity = "0";
         });
 
-        // Text
         pokemonInfo.style.opacity = "0";
         pokemonInfo.textContent = "";
 
         currentPokemonName = "";
       }
 
-      /**
-       * Auto-scale Pokémon based on natural image size (Option C).
-       */
       function rescalePokemonSprite() {
         const w = pokemonImage.naturalWidth;
         const h = pokemonImage.naturalHeight;
         if (!w || !h) return;
 
-        let scale;
-        if (w >= h) {
-          // wider than tall – fit width
-          scale = POKEMON_MAX_SIZE / w;
-        } else {
-          // taller than wide – fit height
-          scale = POKEMON_MAX_SIZE / h;
-        }
+        const scale = w >= h ? POKEMON_MAX_SIZE / w : POKEMON_MAX_SIZE / h;
 
         pokemonImage.style.width = w * scale + "px";
         pokemonImage.style.height = h * scale + "px";
       }
 
-      // Generate image URL with fallback to .webp
       function setPokemonSprite(name) {
         const png = `${BASE_IMAGE_URL}${name}.png`;
         const webp = `${BASE_IMAGE_URL}${name}.webp`;
 
-        // Try PNG first
         pokemonImage.src = png;
-
-        // If PNG fails, auto-swap to webp
         pokemonImage.onerror = () => {
           pokemonImage.onerror = null;
           pokemonImage.src = webp;
         };
       }
 
-      /**
-       * SPAWN: Pokémon runs in, FX fire, text fades in.
-       */
       function handleSpawn(data) {
         resetState();
 
@@ -567,42 +619,37 @@
 
         pokemonImage.onload = () => {
           rescalePokemonSprite();
-
           container.style.opacity = "1";
 
-          // Run-in + FX
           requestAnimationFrame(() => {
             pokemonImage.classList.add("animate-run-in");
             pokemonImage.style.opacity = "1";
 
             speedLines.classList.add("animate-speed-lines");
 
-            setTimeout(() => {
-              dustSmall.classList.add("animate-dust-small");
-            }, 380);
-
-            setTimeout(() => {
-              dustLarge.classList.add("animate-dust-large");
-            }, 430);
+            setTimeout(
+              () => dustSmall.classList.add("animate-dust-small"),
+              380
+            );
+            setTimeout(
+              () => dustLarge.classList.add("animate-dust-large"),
+              430
+            );
           });
 
-          // Text reveal
           setTimeout(() => {
             pokemonInfo.style.opacity = "1";
           }, 750);
         };
 
-        // Set sources
         setPokemonSprite(currentPokemonName);
         pokemonInfo.textContent = data.infoText || "";
+
         speedLines.src = SPEED_LINES_URL + cacheBust;
         dustSmall.src = DUST_SMALL_URL + cacheBust;
         dustLarge.src = DUST_LARGE_URL + cacheBust;
       }
 
-      /**
-       * THROW: Pokéball arc + Pokémon suck-in.
-       */
       function handleThrow() {
         if (!currentPokemonName) return;
 
@@ -613,24 +660,17 @@
 
         pokeballImage.classList.add("animate-pokeball-throw");
 
-        /* Wait until AFTER the hit (≈700ms), then suck in */
-        setTimeout(() => {
-          pokemonImage.classList.add("animate-suck-in");
-        }, 700);
-
-        /* After full animation time, hide Pokémon */
-        setTimeout(() => {
-          pokemonImage.style.opacity = "0";
-        }, 1200);
+        setTimeout(() => pokemonImage.classList.add("animate-suck-in"), 700);
+        setTimeout(() => (pokemonImage.style.opacity = "0"), 1200);
       }
 
       function handleWiggle() {
         if (pokeballImage.style.display !== "block") return;
 
         pokeballImage.classList.remove("animate-wiggle");
-        requestAnimationFrame(() => {
-          pokeballImage.classList.add("animate-wiggle");
-        });
+        requestAnimationFrame(() =>
+          pokeballImage.classList.add("animate-wiggle")
+        );
       }
 
       function handleCatchFail() {
@@ -675,10 +715,11 @@
         pokemonInfo.textContent = `${currentPokemonName} fled!`;
 
         triggerFleeFX();
+
         pokemonImage.style.opacity = "1";
         pokemonImage.classList.add("animate-flee-run");
 
-        setTimeout(() => resetState(), FLEE_DURATION);
+        setTimeout(resetState, FLEE_DURATION);
       }
 
       function triggerFleeFX() {
@@ -688,59 +729,10 @@
 
         requestAnimationFrame(() => {
           speedLines.classList.add("animate-speed-lines");
-
-          setTimeout(() => {
-            dustSmall.classList.add("animate-dust-small");
-          }, 120);
-
-          setTimeout(() => {
-            dustLarge.classList.add("animate-dust-large");
-          }, 200);
+          setTimeout(() => dustSmall.classList.add("animate-dust-small"), 120);
+          setTimeout(() => dustLarge.classList.add("animate-dust-large"), 200);
         });
       }
-
-      /* Streamer.bot Broadcast Listener */
-      window.addEventListener("message", function (event) {
-        const payload = event.data;
-
-        // Make sure the message contains a command
-        if (!payload || !payload.command) return;
-
-        switch (payload.command) {
-          case "spawn":
-            handleSpawn(payload);
-            break;
-          case "throw":
-            handleThrow();
-            break;
-          case "wiggle":
-            handleWiggle();
-            break;
-          case "catchSuccess":
-            handleCatchSuccess();
-            break;
-          case "catchFail":
-            handleCatchFail();
-            break;
-          case "flee":
-            handleDisappear();
-            break;
-        }
-      });
-
-      /* Local test when opened in a normal browser */
-      /*if (window.location.protocol !== "obs:") {
-        setTimeout(() => {
-          handleSpawn({
-            pokemonName: "Incineroar",
-            infoText: "A wild Incineroar (001) appeared!",
-          });
-
-          setTimeout(handleThrow, 1600);
-          setTimeout(handleWiggle, 2600);
-          setTimeout(handleCatchSuccess, 5200);
-        }, 500);
-      }*/
     </script>
   </body>
 </html>
