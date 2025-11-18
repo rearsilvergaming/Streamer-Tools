@@ -87,6 +87,22 @@
       min-height: 100vh;
     }
 
+    .header {
+      position: sticky;
+      background: var(--bg);
+      top: 0;
+      padding: 50px;
+      padding: 1rem 1.5rem;
+      padding: 0.75rem 1.5rem; /* Adjusted padding */
+      font-size: small;
+      justify-content: center;
+      align-items: center;
+      z-index: 40; /* Ensures header stays on top of content */
+      /* Add a blur effect for content scrolling behind */
+      backdrop-filter: saturate(1.2) blur(6px);
+      background: color-mix(in srgb, var(--bg) 85%, transparent);
+    }
+
 @media (max-width: 1024px) {
 .mobile-header {
       position: fixed;
@@ -400,21 +416,6 @@
       background: var(--kbd); color: var(--kbd-text);
       padding: .15rem .4rem; border-radius: 6px; font-weight: 700; font-size: .8rem;
       border: 1px solid rgba(0,0,0,.12);
-    }
-.header {
-      position: sticky;
-      background: var(--bg);
-      top: 0;
-      padding: 50px;
-      padding: 1rem 1.5rem;
-      padding: 0.75rem 1.5rem; /* Adjusted padding */
-      font-size: small;
-      justify-content: center;
-      align-items: center;
-      z-index: 40; /* Ensures header stays on top of content */
-      /* Add a blur effect for content scrolling behind */
-      backdrop-filter: saturate(1.2) blur(6px);
-      background: color-mix(in srgb, var(--bg) 85%, transparent);
     }
 
     .button-container {
