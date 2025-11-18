@@ -406,6 +406,62 @@
     </div>
 
     <script>
+      /* === Streamer.bot WebSocket Connection === */
+      let ws;
+
+      function connectWebsocket() {
+        ws = new WebSocket("ws://127.0.0.1:8080/");
+
+        ws.onopen = () => {
+          console.log(
+            "%c[WebSocket] Connected to Streamer.bot",
+            "color: #4CAF50"
+          );
+        };
+
+        ws.onmessage = (event) => {
+          try {
+            const payload = JSON.parse(event.data);
+
+            // Debug log
+            console.log("Received WebSocket payload:", payload);
+
+            if (!payload.command) return;
+
+            switch (payload.command) {
+              case "spawn":
+                handleSpawn(payload);
+                break;
+              case "throw":
+                handleThrow(payload);
+                break;
+              case "wiggle":
+                handleWiggle(payload);
+                break;
+              case "catchSuccess":
+                handleCatchSuccess(payload);
+                break;
+              case "catchFail":
+                handleCatchFail(payload);
+                break;
+              case "flee":
+                handleDisappear(payload);
+                break;
+            }
+          } catch (err) {
+            console.error("WebSocket JSON error:", err);
+          }
+        };
+
+        ws.onclose = () => {
+          console.warn("[WebSocket] Connection closed — retrying in 2s");
+          setTimeout(connectWebsocket, 2000);
+        };
+      }
+
+      connectWebsocket();
+      /* === Pokémon Overlay Logic === */
+
       const container = document.getElementById("pokemon-container");
       const pokemonImage = document.getElementById("pokemon-image");
       const pokemonInfo = document.getElementById("pokemon-info");
