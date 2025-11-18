@@ -93,6 +93,9 @@
       background: var(--bg);
       top: 0;
       padding-top: 50px;
+      padding-right: 10px;
+      padding-left: 10px;
+      padding-bottom: 50px;
       font-size: small;
       justify-content: center;
       align-items: center;
@@ -103,20 +106,8 @@
   }
 
 .header {
-      position: sticky;
-      background: var(--bg);
+
       display: none; /* hide on mobile */
-      top: 0;
-      padding: 50px;
-      padding: 1rem 1.5rem;
-      padding: 0.75rem 1.5rem; /* Adjusted padding */
-      font-size: small;
-      justify-content: center;
-      align-items: center;
-      z-index: 40; /* Ensures header stays on top of content */
-      /* Add a blur effect for content scrolling behind */
-      backdrop-filter: saturate(1.2) blur(6px);
-      background: color-mix(in srgb, var(--bg) 85%, transparent);
   }
 
   /* Push content below both fixed bars */
@@ -140,7 +131,7 @@
     z-index: 90; display: none;
   }
   .overlay.open { display: block; }
-  .content {padding-top: 5px; padding-bottom: 5px; max-width: 90%;} /* reduce extra space */
+  .content {max-width: 90%;} /* reduce extra space */
   .command-group { overflow-x: auto; }
   .command-table { min-width: 640px; }
 }
