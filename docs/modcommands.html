@@ -89,12 +89,22 @@
 
 @media (max-width: 1024px) {
 .mobile-header {
-    z-index: 60; /* above content, above utility bar */
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 70; /* above utility bar */
   }
+
   .header {
-    top: 100px;        /* push below the mobile header height */
-    z-index: 40;      /* below the mobile header */
-    padding: 0.6rem 1rem;
+    position: fixed;
+    top: 64px;  /* match the mobile-header height (adjust if yours differs) */
+    left: 0; right: 0;
+    z-index: 60; /* under mobile header */
+    padding: 0.75rem 1rem;
+  }
+
+  /* Push content below both fixed bars */
+  main.content {
+    padding-top: 140px; /* mobile-header height + utility bar height */
   }
   .sidebar-layout { grid-template-columns: 1fr; }
   .sidebar {
