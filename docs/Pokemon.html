@@ -676,29 +676,43 @@
       function handleCatchFail() {
         if (!currentPokemonName) return;
 
-        // Hide the pokéball
+        // ==========================================
+        // 1. Remove ALL animation classes immediately
+        // ==========================================
+        pokemonImage.classList.remove(
+          "animate-run-in",
+          "animate-suck-in",
+          "animate-catch-fail-escape",
+          "animate-flee-run"
+        );
+
+        // 2. Hide Pokéball
         pokeballImage.style.display = "none";
         pokeballImage.classList.remove("animate-wiggle");
 
-        // IMPORTANT: Reset ANY leftover transform from suck-in
-        pokemonImage.style.transform = "translate(0, 0) scale(1)";
+        // ==========================================
+        // 3. Hard reset the Pokémon position & scale
+        // ==========================================
         pokemonImage.style.opacity = "1";
+        pokemonImage.style.transform = "translate(0,0) scale(1)";
 
-        // Force browser to apply the reset instantly before escape animation
-        pokemonImage.getBoundingClientRect(); // reflow hack
+        // Force reflow so the reset is applied BEFORE animation restarts
+        void pokemonImage.offsetWidth;
 
-        // Now run escape animation
+        // ==========================================
+        // 4. Apply the escape animation cleanly
+        // ==========================================
         pokemonImage.classList.add("animate-catch-fail-escape");
-
         pokemonInfo.textContent = `${currentPokemonName} escaped!`;
 
+        // ==========================================
+        // 5. After animation, restore idle form again
+        // ==========================================
         setTimeout(() => {
           pokemonImage.classList.remove("animate-catch-fail-escape");
-
-          // Restore idle form guaranteed
-          pokemonImage.style.transform = "translate(0, 0) scale(1)";
           pokemonImage.style.opacity = "1";
-        }, ESCAPE_DURATION + 50);
+          pokemonImage.style.transform = "translate(0,0) scale(1)";
+        }, ESCAPE_DURATION + 100);
       }
 
       function handleCatchSuccess() {
