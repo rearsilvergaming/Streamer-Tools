@@ -674,20 +674,29 @@
       }
 
       function handleCatchFail() {
-        if (!currentPokemonName || pokeballImage.style.display !== "block")
-          return;
+        if (!currentPokemonName) return;
 
+        // Hide the pokéball
         pokeballImage.style.display = "none";
         pokeballImage.classList.remove("animate-wiggle");
 
+        // Pokémon reappears for another attempt
         pokemonImage.style.opacity = "1";
-        pokemonImage.classList.add("animate-catch-fail-escape");
 
+        // Play escape animation
+        pokemonImage.classList.add("animate-catch-fail-escape");
         pokemonInfo.textContent = `${currentPokemonName} escaped!`;
 
+        // After animation finishes, restore idle position/state
         setTimeout(() => {
           pokemonImage.classList.remove("animate-catch-fail-escape");
-        }, ESCAPE_DURATION);
+
+          // Reset any suck-in transform/scale from before
+          pokemonImage.style.transform = "translateX(0) scale(1)";
+
+          // Ensure opacity is back to full
+          pokemonImage.style.opacity = "1";
+        }, ESCAPE_DURATION + 50);
       }
 
       function handleCatchSuccess() {
