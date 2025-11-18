@@ -95,14 +95,15 @@
     z-index: 70; /* above utility bar */
   }
 
-  /*.header {
+.header {
     position: fixed;
+    .header { display: none; }
     top: 25px;
     left: 0; right: 0;
     z-index: 60; 
     padding: 0.75rem 1rem;
   }
-*/
+
   /* Push content below both fixed bars */
   main.content {
     padding: 25px; /* mobile-header height + utility bar height */
@@ -124,7 +125,7 @@
     z-index: 90; display: none;
   }
   .overlay.open { display: block; }
-  .content {padding-top: 1rem; } /* reduce extra space */
+  .content {padding-top: 0.25rem; padding-bottom: 0.25rem} /* reduce extra space */
   .command-group { overflow-x: auto; }
   .command-table { min-width: 640px; }
 }
