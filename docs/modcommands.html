@@ -92,7 +92,7 @@
       position: fixed;
       background: var(--bg);
       top: 0;
-      padding: 0.25rem 0.25rem; /* Adjusted padding */
+      padding-top: 50px;
       font-size: small;
       justify-content: center;
       align-items: center;
@@ -140,7 +140,7 @@
     z-index: 90; display: none;
   }
   .overlay.open { display: block; }
-  .content {padding-top: 0.25rem; padding-bottom: 0.25rem; max-width: 90%;} /* reduce extra space */
+  .content {padding-top: 5px; padding-bottom: 5px; max-width: 90%;} /* reduce extra space */
   .command-group { overflow-x: auto; }
   .command-table { min-width: 640px; }
 }
@@ -153,7 +153,7 @@
       overflow-y: auto;
       border-right: 1px solid var(--line);
       background-color: var(--bg-elev);
-      padding: 1.5rem;
+      padding: 0.5rem;
       flex-shrink: 0;
       transition: background-color 0.3s, border-color 0.3s;
     }
@@ -186,7 +186,7 @@
 
     /* Content styles */
     .content {
-      padding: 2rem 3rem;
+      padding: 1rem 1rem;
       max-width: 100%;
     }
 
@@ -444,7 +444,7 @@
   <!-- Mobile Header -->
   <header class="mobile-header lg:hidden">
     <div class="flex justify-between items-center">
-      <h1 class="text-xl font-extrabold text-[var(--brand-700)]">RearSilver's • Mod Handbook</h1>
+      <h1 class="text-xl font-extrabold text-[var(--brand-700)]">RearSilver's Mod Handbook</h1>
       <span class="chip text-[var(--brand-700)] font-extrabold text-lg px-2 py-0.5 rounded-full">v1.4</span>
       <button id="menu-toggle" class="text-[var(--text)] text-2xl">☰</button>
     </div>
@@ -467,8 +467,8 @@
   <div class="sidebar-layout">
     <!-- Sidebar / Navigation -->
     <aside id="sidebar" class="sidebar">
-  <h1 class="text-3xl font-extrabold mb-2 text-[var(--brand-700)] hidden lg:block">RearSilver's • Mod Handbook</h1>
-  <p class="text-sm mb-6 text-[var(--muted)] hidden lg:block">v1.4</p>
+  <h1 class="text-3xl font-extrabold mb-2 text-[var(--brand-700)] hidden lg:block">RearSilver's Mod Handbook</h1>
+  <p class="text-lg mb-6 text-[var(--muted)] hidden lg:block">v1.4</p>
   <div class="flex justify-between items-center mb-4">
     <h2 class="text-lg font-bold text-[var(--text)]">Navigation</h2>
     <button id="theme-toggle" class="text-sm font-semibold text-[var(--muted)] hover:text-[var(--text)] transition-colors">
