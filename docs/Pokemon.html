@@ -680,21 +680,23 @@
         pokeballImage.style.display = "none";
         pokeballImage.classList.remove("animate-wiggle");
 
-        // Pokémon reappears for another attempt
+        // IMPORTANT: Reset ANY leftover transform from suck-in
+        pokemonImage.style.transform = "translate(0, 0) scale(1)";
         pokemonImage.style.opacity = "1";
 
-        // Play escape animation
+        // Force browser to apply the reset instantly before escape animation
+        pokemonImage.getBoundingClientRect(); // reflow hack
+
+        // Now run escape animation
         pokemonImage.classList.add("animate-catch-fail-escape");
+
         pokemonInfo.textContent = `${currentPokemonName} escaped!`;
 
-        // After animation finishes, restore idle position/state
         setTimeout(() => {
           pokemonImage.classList.remove("animate-catch-fail-escape");
 
-          // Reset any suck-in transform/scale from before
-          pokemonImage.style.transform = "translateX(0) scale(1)";
-
-          // Ensure opacity is back to full
+          // Restore idle form guaranteed
+          pokemonImage.style.transform = "translate(0, 0) scale(1)";
           pokemonImage.style.opacity = "1";
         }, ESCAPE_DURATION + 50);
       }
