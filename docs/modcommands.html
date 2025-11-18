@@ -1527,23 +1527,5 @@
     wireExpandCollapseAll();
   });
 </script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const header = document.querySelector(".mobile-header");
-  const content = document.querySelector(".content");
-
-  if (!header || !content) return;
-
-  function adjustPadding() {
-    const h = header.offsetHeight;
-    content.style.paddingTop = h + "px";
-  }
-
-  adjustPadding();
-  window.addEventListener("resize", adjustPadding);
-});
-</script>
-
-
 </body>
 </html>
