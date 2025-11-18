@@ -26,13 +26,16 @@
       --line: #e5e7eb;        /* gray-200 */
       --brand: #eab308;       /* amber-500 */
       --brand-600: #ca8a04;   /* amber-600 */
-      --brand-700: #a16207;   /* amber-700 */
+      --brand-700: #666666;   /* amber-700 */
       --accent: #0f3b68;      /* deep navy */
       --accent-600: #0a2d50;
       --accent-700: #061e38;
       --success: #10b981;
       --danger: #ef4444;
       --danger-700: #b91c1c;
+      --btn: #0a2d50;         /* deep navy */
+      --btn-text: #ffffff;
+      --btn-hover: #b45309;
 
       /* state colors */
       --active-link-bg: #eab308; /* amber-500 */
@@ -57,6 +60,9 @@
       --success: #34d399;
       --danger: #f87171;
       --danger-700: #dc2626;
+      --btn: #b45309;         /* deep navy */
+      --btn-text: #ffffff;
+      --btn-hover: #0a2d50;
 
       --active-link-bg: #475569; /* amber-300 */
       --active-link-text: #0f172a; /* slate-900 */
@@ -351,8 +357,8 @@
       transition: transform .1s ease, background-color .2s ease;
     }
     .btn:hover { transform: translateY(-1px); background: var(--accent-600); }
-    .btn-secondary { background: var(--brand-700); color: var(--text); border: 1px solid var(--line); padding: .55rem .9rem; border-radius: 2500px; }
-    .btn-secondary:hover { background: var(--hover); }
+    .btn-secondary { background: var(--btn); color: var(--btn-text); border: 1px solid var(--line); padding: .55rem .9rem; border-radius: 2500px; }
+    .btn-secondary:hover { background: var(--btn-hover); }
 
     .icon-btn {
       display: inline-flex; align-items: center; justify-content: center;
@@ -1489,40 +1495,73 @@
 
 
   // ===============================
-  // Scroll Spy (sidebar highlight)
-  // ===============================
-  const sectionIds = [
-    'expectations','philosophy','server','emergency','scenarios',
-    'translate','birthday','chat','fun','death','control','links',
-    'measurements','modcommands','hunt','queue','pronouns','quote',
-    'raffle','support','xp','thanks'
-  ].filter(id => document.getElementById(id));
+// Scroll Spy (sidebar highlight)
+// ===============================
+const sectionIds = [
+  'changelog',
+  'modguide',
+  'expectations',
+  'philosophy',
+  'server',
+  'emergency',
+  'scenarios',
 
-  const sections = sectionIds.map(id => ({
-    id,
-    el: document.getElementById(id)
-  }));
+  'streamcommands',
+  'translate',
+  'birthday',
+  'chat',
+  'death',
+  'fun',
+  'geordie',
+  'hunt',
+  'links',
+  'measurements',
+  'modcommands',
+  'pronouns',
+  'quote',
+  'raffle',
+  'control',
+  'support',
+  'queue',
+  'walk',
+  'xp',
 
-  const sidebarLinks = navLinks ? Array.from(navLinks.querySelectorAll('a[href^="#"]')) : [];
-  const linkById = {};
-  sidebarLinks.forEach(a => {
-    const id = a.getAttribute('href').slice(1);
-    linkById[id] = a;
-  });
+  'thanks'
+].filter(id => document.getElementById(id));
 
-  function updateScrollSpy() {
-    const y = window.scrollY + 120; // offset for sticky header
-    let current = null;
-    for (const s of sections) {
-      if (s.el.offsetTop <= y) current = s.id;
-    }
-    sidebarLinks.forEach(a => a.classList.remove('active'));
-    if (current && linkById[current]) linkById[current].classList.add('active');
+const sections = sectionIds.map(id => ({
+  id,
+  el: document.getElementById(id)
+}));
+
+const sidebarLinks = navLinks
+  ? Array.from(navLinks.querySelectorAll('a[href^="#"]'))
+  : [];
+
+const linkById = {};
+sidebarLinks.forEach(a => {
+  const id = a.getAttribute('href').slice(1);
+  linkById[id] = a;
+});
+
+function updateScrollSpy() {
+  const y = window.scrollY + 120;
+  let current = null;
+
+  for (const s of sections) {
+    if (s.el.offsetTop <= y) current = s.id;
   }
 
-  window.addEventListener('scroll', updateScrollSpy);
-  window.addEventListener('resize', updateScrollSpy);
-  document.addEventListener('DOMContentLoaded', updateScrollSpy);
+  sidebarLinks.forEach(a => a.classList.remove('active'));
+  if (current && linkById[current]) {
+    linkById[current].classList.add('active');
+  }
+}
+
+window.addEventListener('scroll', updateScrollSpy);
+window.addEventListener('resize', updateScrollSpy);
+document.addEventListener('DOMContentLoaded', updateScrollSpy);
+
 
   // ===============================
   // Boot
