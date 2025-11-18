@@ -90,8 +90,9 @@
 @media (max-width: 1024px) {
 .mobile-header {
     position: fixed;
+    background: var(--bg);
     top: 0; left: 0; right: 0;
-    padding-top: 1rem;
+    margin-top: 1rem;
     z-index: 70; /* above utility bar */
   }
 
@@ -106,7 +107,7 @@
 
   /* Push content below both fixed bars */
   main.content {
-    padding: 25px; /* mobile-header height + utility bar height */
+    padding: 5px; /* mobile-header height + utility bar height */
   }
   .sidebar-layout { grid-template-columns: 1fr; }
   .sidebar {
