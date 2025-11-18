@@ -88,6 +88,14 @@
     }
 
 @media (max-width: 1024px) {
+.mobile-header {
+    z-index: 60; /* above content, above utility bar */
+  }
+  .header {
+    top: 56px;        /* push below the mobile header height */
+    z-index: 40;      /* below the mobile header */
+    padding: 0.6rem 1rem;
+  }
   .sidebar-layout { grid-template-columns: 1fr; }
   .sidebar {
     position: fixed;
@@ -105,7 +113,7 @@
     z-index: 90; display: none;
   }
   .overlay.open { display: block; }
-  .content { padding: 1.25rem 1rem; }
+  .content {padding-top: 1rem; } /* reduce extra space */
   .command-group { overflow-x: auto; }
   .command-table { min-width: 640px; }
 }
