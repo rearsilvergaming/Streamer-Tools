@@ -110,8 +110,10 @@
   }
 
   /* Push content below both fixed bars */
-  .main.content {
-    padding: 0; /* mobile-header height + utility bar height */
+  content {
+    padding-top: 140px; /* height of your mobile header */
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
   .sidebar-layout { grid-template-columns: 1fr; }
   .sidebar {
@@ -131,7 +133,7 @@
     z-index: 90; display: none;
   }
   .overlay.open { display: block; }
-  .content {max-width: 90%;} /* reduce extra space */
+  .content {max-width: 90%; max-height: 90%;} /* reduce extra space */
   .command-group { overflow-x: auto; }
   .command-table { min-width: 640px; }
 }
@@ -437,7 +439,7 @@
     <div class="flex justify-between items-center">
       <h1 class="text-xl font-extrabold text-[var(--brand-700)]">RearSilver's Mod Handbook</h1>
       <span class="chip text-[var(--brand-700)] font-extrabold text-lg px-2 py-0.5 rounded-full">v1.4</span>
-      <button id="menu-toggle" class="text-[var(--text)] text-2xl">☰</button>
+      <button id="menu-toggle" class="text-[var(--text)] text-3xl">☰</button>
     </div>
       <div class="flex flex-wrap items-center gap-2">
     <div class="button-container">
