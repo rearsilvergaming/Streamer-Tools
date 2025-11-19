@@ -407,98 +407,136 @@
 
     <script>
       /* ============================================================
-   === Streamer.bot WebSocket Connection (Correct Version) ===
-   ============================================================ */
+=== Streamer.bot WebSocket Connection (Reliable Version) ===
+============================================================ */
 
       let ws;
+      let lastMessageTime = Date.now();
+      let reconnectAttempts = 0;
 
-      function tryConnect(endpoints, i = 0) {
-        if (i >= endpoints.length) {
-          console.warn("[WebSocket] No endpoints available.");
-          return;
-        }
+      // How long the overlay can be silent before warning SB (ms)
+      const MAX_SILENCE_MS = 40000;
 
-        const url = endpoints[i];
+      // Try all valid Streamer.bot endpoints
+      const endpoints = [
+        "ws://127.0.0.1:8080",
+        "ws://localhost:8080",
+        "ws://127.0.0.1:8081",
+      ];
 
-        try {
-          ws = new WebSocket(url);
-
-          ws.onopen = () => {
-            console.log("%c[WebSocket] Connected → " + url, "color: #4CAF50");
-
-            // ==== REQUIRED: Subscribe so Streamer.bot will send broadcasts ====
-            const subscribeMessage = {
-              request: "Subscribe",
-              id: "pokemon-overlay",
-              events: {
-                general: ["Custom"], // WebsocketBroadcastJson() comes through here
-                raw: ["Action"], // Backup
-              },
-            };
-
-            ws.send(JSON.stringify(subscribeMessage));
-            console.log("[WebSocket] Subscribed to Custom events");
-          };
-
-          ws.onmessage = (event) => {
-            let msg;
-            try {
-              msg = JSON.parse(event.data);
-            } catch (e) {
-              console.error("WS JSON parse error:", e);
-              return;
-            }
-
-            console.log("WebSocket message:", msg);
-
-            /* =============================
-         Payload format from:
-         CPH.WebsocketBroadcastJson()
-         -----------------------------
-         {
-           event:{ source:"General", type:"Custom" },
-           data:{
-             command:"spawn",
-             pokemonName:"Pikachu",
-             ...
-           }
-         }
-         ============================= */
-
-            if (msg.data && msg.data.command) {
-              const payload = msg.data;
-              routePokemonCommand(payload);
-              return;
-            }
-
-            // Fallback: some older SB versions use msg.type+msg.data.data
-            if (
-              msg.type &&
-              msg.data &&
-              msg.data.data &&
-              msg.data.data.command
-            ) {
-              routePokemonCommand(msg.data.data);
-              return;
-            }
-          };
-
-          ws.onclose = () => {
-            console.warn("[WebSocket] Closed — retrying…");
-            setTimeout(() => tryConnect(endpoints, i + 1), 1000);
-          };
-
-          ws.onerror = () => {
-            try {
-              ws.close();
-            } catch {}
-          };
-        } catch (err) {
-          console.error("WS Connection failed:", err);
-          tryConnect(endpoints, i + 1);
+      // ---- Optional: tiny heartbeat ping ----
+      function sendHeartbeat() {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(
+            JSON.stringify({ request: "Ping", id: "pokemon-overlay-heartbeat" })
+          );
         }
       }
 
+      // ---- Optional: tell Streamer.bot overlay died (HTTP action) ----
+      function warnStreamerBot() {
+        try {
+          fetch("http://127.0.0.1:7474/overlayDisconnected", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ overlay: "pokemon" }),
+          });
+        } catch {
+          // If HTTP server isn't enabled, just ignore
+        }
+      }
+
+      function startWebSocket(endpointIndex = 0) {
+        const url = endpoints[endpointIndex % endpoints.length];
+        console.log("[WebSocket] Connecting to:", url);
+
+        try {
+          ws = new WebSocket(url);
+        } catch (err) {
+          console.error("WS Connection failed immediately:", err);
+          scheduleReconnect(endpointIndex + 1);
+          return;
+        }
+
+        ws.onopen = () => {
+          console.log("%c[WebSocket] Connected → " + url, "color: #4CAF50");
+
+          reconnectAttempts = 0;
+          lastMessageTime = Date.now();
+
+          const subscribeMessage = {
+            request: "Subscribe",
+            id: "pokemon-overlay",
+            events: {
+              general: ["Custom"], // WebsocketBroadcastJson() comes through here
+              raw: ["Action"], // Backup
+            },
+          };
+
+          ws.send(JSON.stringify(subscribeMessage));
+          console.log("[WebSocket] Subscribed to Custom events");
+        };
+
+        ws.onmessage = (event) => {
+          lastMessageTime = Date.now();
+
+          let msg;
+          try {
+            msg = JSON.parse(event.data);
+          } catch (e) {
+            console.error("WS JSON parse error:", e);
+            return;
+          }
+
+          console.log("WebSocket message:", msg);
+
+          /* =============================
+       Payload format from:
+       CPH.WebsocketBroadcastJson()
+       -----------------------------
+       {
+         event:{ source:"General", type:"Custom" },
+         data:{
+           command:"spawn",
+           pokemonName:"Pikachu",
+           ...
+         }
+       }
+       ============================= */
+
+          if (msg.data && msg.data.command) {
+            const payload = msg.data;
+            routePokemonCommand(payload);
+            return;
+          }
+
+          // Fallback: some older SB versions use msg.type+msg.data.data
+          if (msg.type && msg.data && msg.data.data && msg.data.data.command) {
+            routePokemonCommand(msg.data.data);
+            return;
+          }
+        };
+
+        ws.onerror = () => {
+          console.warn("[WebSocket] Error — closing socket");
+          try {
+            ws.close();
+          } catch {}
+        };
+
+        ws.onclose = () => {
+          console.warn("[WebSocket] Closed — attempting reconnect…");
+          scheduleReconnect(endpointIndex + 1);
+        };
+      }
+
+      function scheduleReconnect(nextIndex) {
+        reconnectAttempts++;
+        const delay = Math.min(1000 * reconnectAttempts, 8000); // cap at 8s
+        setTimeout(() => startWebSocket(nextIndex), delay);
+      }
+
+      // ---- Route incoming commands to overlay logic (unchanged) ----
       function routePokemonCommand(payload) {
         switch (payload.command) {
           case "spawn":
@@ -522,14 +560,24 @@
         }
       }
 
-      // Try all valid Streamer.bot endpoints
-      const endpoints = [
-        "ws://127.0.0.1:8080",
-        "ws://localhost:8080",
-        "ws://127.0.0.1:8081",
-      ];
+      // ---- Heartbeat + silence watchdog ----
+      setInterval(() => {
+        // Ping SB so the connection stays warm
+        sendHeartbeat();
 
-      tryConnect(endpoints);
+        const silentFor = Date.now() - lastMessageTime;
+        if (silentFor > MAX_SILENCE_MS) {
+          console.warn(
+            "[WebSocket] Overlay has been silent too long, notifying SB."
+          );
+          warnStreamerBot();
+          // Reset timer so we don't spam
+          lastMessageTime = Date.now();
+        }
+      }, 5000);
+
+      // Kick everything off
+      startWebSocket();
 
       /* =====================================================
    === Pokémon Overlay Logic ===
