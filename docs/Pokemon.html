@@ -355,6 +355,80 @@
         opacity: 0 !important;
         transition: opacity 1s ease-out;
       }
+
+      /* === SHINY FX === */
+
+      .shiny-glow {
+        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 1))
+          drop-shadow(0 0 40px rgba(255, 215, 0, 0.8)) brightness(1.3);
+      }
+
+      .shiny-hue-pulse {
+        animation: shinyHue 2.2s ease-in-out infinite alternate;
+      }
+
+      @keyframes shinyHue {
+        0% {
+          filter: hue-rotate(0deg) brightness(1.25);
+        }
+        100% {
+          filter: hue-rotate(45deg) brightness(1.5);
+        }
+      }
+
+      /* Sparkle overlay */
+      .shiny-sparkles {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image: url("https://raw.githubusercontent.com/rearsilvergaming/Streamer-Tools/main/docs/Pokemon/ShinySparkles.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0;
+        animation: shinySparkleFade 2s ease-out forwards;
+      }
+
+      @keyframes shinySparkleFade {
+        0% {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        20% {
+          opacity: 1;
+          transform: scale(1.1);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1.3);
+        }
+      }
+
+      /* === SHINY CATCH SUCCESS ANIMATION === */
+
+      .animate-shiny-success {
+        animation: shinyCatchFinal 1.7s ease-out forwards;
+      }
+
+      @keyframes shinyCatchFinal {
+        0% {
+          opacity: 1;
+          transform: scale(1);
+          filter: drop-shadow(0 0 20px gold)
+            drop-shadow(0 0 40px rgba(255, 215, 0, 1));
+        }
+        40% {
+          opacity: 1;
+          transform: scale(1.3);
+          filter: drop-shadow(0 0 55px gold)
+            drop-shadow(0 0 85px rgba(255, 215, 0, 1));
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0.1);
+          filter: drop-shadow(0 0 15px gold);
+        }
+      }
     </style>
   </head>
   <body>
@@ -392,6 +466,7 @@
               onerror="console.error('Pokemon image failed to load from:', this.src)"
             />
           </div>
+          <div id="shiny-sparkle-layer" class="fx-layer"></div>
           <img
             id="pokeball-image"
             src=""
@@ -663,16 +738,33 @@
         resetState();
 
         currentPokemonName = data.pokemonName;
+        const isShiny = data.isShiny === true;
+
         const cacheBust = `?v=${Date.now()}`;
+
+        // Reset shiny sparkle layer
+        const shinyLayer = document.getElementById("shiny-sparkle-layer");
+        shinyLayer.innerHTML = "";
 
         pokemonImage.onload = () => {
           rescalePokemonSprite();
           container.style.opacity = "1";
 
           requestAnimationFrame(() => {
+            // Apply shiny FX if shiny
+            if (isShiny) {
+              pokemonImage.classList.add("shiny-glow", "shiny-hue-pulse");
+
+              const sparkle = document.createElement("div");
+              sparkle.className = "shiny-sparkles";
+              shinyLayer.appendChild(sparkle);
+
+              pokemonInfo.style.border = "2px solid gold";
+            }
+
+            // Original animation
             pokemonImage.classList.add("animate-run-in");
             pokemonImage.style.opacity = "1";
-
             speedLines.classList.add("animate-speed-lines");
 
             setTimeout(
@@ -705,6 +797,15 @@
         pokeballImage.src = POKEBALL_URL + cacheBust;
         pokeballImage.style.display = "block";
         pokeballImage.style.opacity = "1";
+
+        // ⭐ SHINY BONUS: make Pokéball glow gold when thrown
+        if (pokemonImage.classList.contains("shiny-glow")) {
+          pokeballImage.style.filter =
+            "drop-shadow(0 0 15px gold) drop-shadow(0 0 35px rgba(255,215,0,0.9)) brightness(1.3)";
+        } else {
+          // Reset filter for normal mons
+          pokeballImage.style.filter = "none";
+        }
 
         pokeballImage.classList.add("animate-pokeball-throw");
 
@@ -767,14 +868,34 @@
         if (!currentPokemonName || pokeballImage.style.display !== "block")
           return;
 
-        pokeballImage.classList.remove("animate-wiggle");
-        pokeballImage.classList.add("animate-catch-success");
+        const isShinyCatch = pokemonImage.classList.contains("shiny-glow");
 
-        pokemonInfo.textContent = `${currentPokemonName} was caught!`;
+        // Stop wiggle
+        pokeballImage.classList.remove("animate-wiggle");
+        pokeballImage.classList.remove("animate-catch-success");
+        pokeballImage.classList.remove("animate-shiny-success");
+
+        // ⭐ SHINY SUCCESS GLOW
+        if (isShinyCatch) {
+          pokeballImage.style.filter =
+            "drop-shadow(0 0 25px gold) drop-shadow(0 0 45px rgba(255,215,0,1)) brightness(1.4)";
+          pokeballImage.classList.add("animate-shiny-success");
+        } else {
+          pokeballImage.style.filter = "none";
+          pokeballImage.classList.add("animate-catch-success");
+        }
+
+        // ⭐ SHINY message
+        if (isShinyCatch) {
+          pokemonInfo.textContent = `${currentPokemonName} was caught! ✨ SHINY!`;
+        } else {
+          pokemonInfo.textContent = `${currentPokemonName} was caught!`;
+        }
 
         setTimeout(() => {
           pokeballImage.style.display = "none";
           pokeballImage.classList.remove("animate-catch-success");
+          pokeballImage.classList.remove("animate-shiny-success");
 
           container.classList.add("animate-fade-out");
           setTimeout(resetState, 1000);
