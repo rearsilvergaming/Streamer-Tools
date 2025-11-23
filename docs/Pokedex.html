@@ -2,28 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Pokédex Viewer</title>
+    <title>Pokédex Viewer (Debug Mode)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       body {
         background: #0a0a0a;
         color: white;
-        font-family: "Inter", sans-serif;
+        font-family: Inter, sans-serif;
         text-align: center;
         padding: 20px;
-      }
-      h1 {
-        font-size: 2.5rem;
-        margin-bottom: 5px;
-      }
-      #username-label {
-        color: #ffcb05;
-        margin-bottom: 25px;
-        font-size: 1.2rem;
-      }
-      #status {
-        margin-bottom: 20px;
-        opacity: 0.8;
       }
       #dex-grid {
         display: grid;
@@ -45,28 +32,30 @@
         border-color: gold;
         box-shadow: 0 0 10px gold;
       }
+      .uncaught img {
+        filter: grayscale(1) brightness(0.3);
+        opacity: 0.4;
+      }
       img {
         width: 90px;
         height: 90px;
         object-fit: contain;
       }
-      .uncaught img {
-        filter: grayscale(1) brightness(0.3);
-        opacity: 0.4;
-      }
     </style>
   </head>
 
   <body>
-    <h1>Pokédex</h1>
+    <h1>Pokédex (Debug)</h1>
     <div id="username-label"></div>
-    <div id="status">Connecting to Streamer.bot…</div>
+    <div id="status">Connecting…</div>
     <div id="dex-grid"></div>
 
     <script>
-      // -------- CONFIG ----------
+      console.log("🔥 POKEDEX PAGE LOADED");
+
       const SPRITE_BASE =
         "https://raw.githubusercontent.com/rearsilvergaming/Streamer-Tools/main/docs/Pokemon/";
+
       const ALL_POKEMON = [
         { num: 1, name: "Bulbasaur" },
         { num: 4, name: "Charmander" },
@@ -94,73 +83,114 @@
         { num: 778, name: "Mimikyu" },
       ];
 
-      function getParam(key) {
-        return new URL(window.location.href).searchParams.get(key);
+      function getParam(k) {
+        return new URL(window.location.href).searchParams.get(k);
       }
 
-      const user = getParam("user") || "Unknown";
-      const userId = getParam("userId") || "";
+      const user = getParam("user");
+      const userId = getParam("userId");
+
+      console.log("🔍 URL PARAMS:", { user, userId });
       document.getElementById("username-label").innerText =
         "Showing Pokédex for " + user;
 
-      // -------- WEBSOCKET ----------
+      //-------------------------------------------------------
+      // WEBSOCKET WITH FULL DEBUG LOGGING
+      //-------------------------------------------------------
       let ws;
 
       function connectWS() {
+        console.log("🔌 Opening WebSocket…");
+
         ws = new WebSocket("ws://127.0.0.1:8080");
 
         ws.onopen = () => {
+          console.log("🟢 WEBSOCKET CONNECTED");
           document.getElementById("status").innerText = "Connected ✔️";
 
-          ws.send(
-            JSON.stringify({
-              request: "TwitchGetUserGlobal",
-              id: "pokedexRequest",
-              userId: userId,
-              variable: "pokedexData",
-              persisted: true,
-            })
-          );
+          const req = {
+            request: "TwitchGetUserGlobal",
+            id: "pokedexRequest",
+            userId: userId,
+            variable: "pokedexData",
+            persisted: true,
+          };
+
+          console.log("📤 Sending request:", req);
+          ws.send(JSON.stringify(req));
         };
 
         ws.onmessage = (event) => {
-          let msg = JSON.parse(event.data);
+          console.log("📥 RAW WS MESSAGE:", event.data);
+
+          let msg;
+          try {
+            msg = JSON.parse(event.data);
+          } catch (e) {
+            console.error("❌ WS JSON PARSE FAILED:", e);
+            return;
+          }
+
+          console.log("🟣 Parsed WS Message:", msg);
 
           if (msg.id === "pokedexRequest") {
-            let json = msg.data?.value ?? "[]";
-            let dex = [];
+            const json = msg?.data?.value ?? "[]";
 
+            console.log("📦 pokedexData (raw):", json);
+
+            let dex = [];
             try {
               dex = JSON.parse(json);
-            } catch {}
+            } catch (e) {
+              console.error("❌ Failed to parse pokedex JSON:", e);
+            }
+
+            console.log("📘 Parsed userDex:", dex);
+            console.log("📊 Count:", dex.length);
 
             renderDex(dex);
           }
         };
 
         ws.onclose = () => {
+          console.warn("🔴 WS CLOSED — reconnecting in 1s");
           document.getElementById("status").innerText =
-            "Disconnected — reconnecting…";
+            "Disconnected – retrying…";
           setTimeout(connectWS, 1000);
         };
       }
 
       connectWS();
 
-      // -------- RENDER ----------
+      //-------------------------------------------------------
+      // RENDERING WITH DEBUGGING
+      //-------------------------------------------------------
       function renderDex(userDex) {
+        console.log("🎨 Rendering Dex…", userDex);
+
         const grid = document.getElementById("dex-grid");
         grid.innerHTML = "";
 
-        // FIXED: match by NAME, not number
+        // MAP BY POKEDEX NUMBER — YOUR STORED DATA HAS THIS
         const caughtMap = {};
-        userDex.forEach((mon) => (caughtMap[mon.Pokemon] = mon));
+        userDex.forEach((mon) => {
+          caughtMap[mon.PokedexNum] = mon;
+        });
+
+        console.log("📌 caughtMap:", caughtMap);
 
         ALL_POKEMON.forEach((entry) => {
-          const caught = caughtMap[entry.name];
+          const caught = caughtMap[entry.num];
+
+          console.log(
+            `➡ ${entry.num} ${entry.name}:`,
+            caught ? "CAUGHT" : "NOT CAUGHT",
+            caught
+          );
 
           const cell = document.createElement("div");
           cell.className = "dex-entry " + (caught ? "caught" : "uncaught");
+
           if (caught?.Shiny) cell.classList.add("shiny");
 
           cell.innerHTML = `
@@ -171,6 +201,8 @@
 
           grid.appendChild(cell);
         });
+
+        console.log("🎉 RENDER COMPLETE");
       }
     </script>
   </body>
