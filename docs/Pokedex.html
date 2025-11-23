@@ -121,7 +121,7 @@
           if (msg.id === "pokedexRequest") {
             console.log("🟣 Parsed Message:", msg);
 
-            // ❤️ THIS IS THE CORRECT FIELD ❤️
+            // Correct extraction
             const dexRaw = msg.variables?.[0]?.value ?? "[]";
 
             console.log("📦 Correct pokedexData raw:", dexRaw);
@@ -134,7 +134,6 @@
             }
 
             console.log("📘 Parsed userDex:", dex);
-
             renderDex(dex);
           }
         };
@@ -152,22 +151,27 @@
         grid.innerHTML = "";
 
         const caughtMap = {};
-        userDex.forEach((mon) => {
-          caughtMap[mon.PokedexNum] = mon;
-        });
+        userDex.forEach((mon) => (caughtMap[mon.PokedexNum] = mon));
 
         ALL_POKEMON.forEach((entry) => {
           const caught = caughtMap[entry.num];
 
           const cell = document.createElement("div");
           cell.className = "dex-entry " + (caught ? "caught" : "uncaught");
-
           if (caught?.Shiny) cell.classList.add("shiny");
 
+          const normalTag = caught?.Normal
+            ? `<span class="tag-normal">Normal ✓</span>`
+            : "";
+          const shinyTag = caught?.Shiny
+            ? `<span class="tag-shiny">Shiny ✨</span>`
+            : "";
+
           cell.innerHTML = `
-        <img src="${SPRITE_BASE}${entry.name}.png">
-        <div>#${entry.num}</div>
-        <div>${entry.name}</div>
+      <img src="${SPRITE_BASE}${entry.name}.png">
+      <div class="dex-number">#${entry.num}</div>
+      <div class="dex-name">${entry.name}</div>
+      <div class="variant-tags">${normalTag} ${shinyTag}</div>
     `;
 
           grid.appendChild(cell);
