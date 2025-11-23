@@ -90,13 +90,9 @@
       const user = getParam("user");
       const userId = getParam("userId");
 
-      console.log("🔍 URL PARAMS:", { user, userId });
       document.getElementById("username-label").innerText =
         "Showing Pokédex for " + user;
 
-      //-------------------------------------------------------
-      // WEBSOCKET WITH FULL DEBUG LOGGING
-      //-------------------------------------------------------
       let ws;
 
       function connectWS() {
@@ -106,87 +102,62 @@
 
         ws.onopen = () => {
           console.log("🟢 WEBSOCKET CONNECTED");
-          document.getElementById("status").innerText = "Connected ✔️";
 
-          const req = {
-            request: "TwitchGetUserGlobal",
-            id: "pokedexRequest",
-            userId: userId,
-            variable: "pokedexData",
-            persisted: true,
-          };
-
-          console.log("📤 Sending request:", req);
-          ws.send(JSON.stringify(req));
+          ws.send(
+            JSON.stringify({
+              request: "TwitchGetUserGlobal",
+              id: "pokedexRequest",
+              userId: userId,
+              variable: "pokedexData",
+              persisted: true,
+            })
+          );
         };
 
         ws.onmessage = (event) => {
-          console.log("📥 RAW WS MESSAGE:", event.data);
-
-          let msg;
-          try {
-            msg = JSON.parse(event.data);
-          } catch (e) {
-            console.error("❌ WS JSON PARSE FAILED:", e);
-            return;
-          }
-
-          console.log("🟣 Parsed WS Message:", msg);
+          console.log("📥 RAW MESSAGE:", event.data);
+          let msg = JSON.parse(event.data);
 
           if (msg.id === "pokedexRequest") {
-            const json = msg?.data?.value ?? "[]";
+            console.log("🟣 Parsed Message:", msg);
 
-            console.log("📦 pokedexData (raw):", json);
+            // ❤️ THIS IS THE CORRECT FIELD ❤️
+            const dexRaw = msg.variables?.[0]?.value ?? "[]";
+
+            console.log("📦 Correct pokedexData raw:", dexRaw);
 
             let dex = [];
             try {
-              dex = JSON.parse(json);
+              dex = JSON.parse(dexRaw);
             } catch (e) {
-              console.error("❌ Failed to parse pokedex JSON:", e);
+              console.error("❌ JSON parse failed:", e);
             }
 
             console.log("📘 Parsed userDex:", dex);
-            console.log("📊 Count:", dex.length);
 
             renderDex(dex);
           }
         };
 
         ws.onclose = () => {
-          console.warn("🔴 WS CLOSED — reconnecting in 1s");
-          document.getElementById("status").innerText =
-            "Disconnected – retrying…";
+          console.warn("🔴 WS Closed – reconnecting…");
           setTimeout(connectWS, 1000);
         };
       }
 
       connectWS();
 
-      //-------------------------------------------------------
-      // RENDERING WITH DEBUGGING
-      //-------------------------------------------------------
       function renderDex(userDex) {
-        console.log("🎨 Rendering Dex…", userDex);
-
         const grid = document.getElementById("dex-grid");
         grid.innerHTML = "";
 
-        // MAP BY POKEDEX NUMBER — YOUR STORED DATA HAS THIS
         const caughtMap = {};
         userDex.forEach((mon) => {
           caughtMap[mon.PokedexNum] = mon;
         });
 
-        console.log("📌 caughtMap:", caughtMap);
-
         ALL_POKEMON.forEach((entry) => {
           const caught = caughtMap[entry.num];
-
-          console.log(
-            `➡ ${entry.num} ${entry.name}:`,
-            caught ? "CAUGHT" : "NOT CAUGHT",
-            caught
-          );
 
           const cell = document.createElement("div");
           cell.className = "dex-entry " + (caught ? "caught" : "uncaught");
@@ -194,15 +165,13 @@
           if (caught?.Shiny) cell.classList.add("shiny");
 
           cell.innerHTML = `
-            <img src="${SPRITE_BASE}${entry.name}.png">
-            <div>#${entry.num}</div>
-            <div>${entry.name}</div>
-          `;
+        <img src="${SPRITE_BASE}${entry.name}.png">
+        <div>#${entry.num}</div>
+        <div>${entry.name}</div>
+    `;
 
           grid.appendChild(cell);
         });
-
-        console.log("🎉 RENDER COMPLETE");
       }
     </script>
   </body>
