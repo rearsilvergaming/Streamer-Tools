@@ -4,35 +4,27 @@
     <meta charset="UTF-8" />
     <title>Pokédex Viewer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <style>
       body {
         background: #0a0a0a;
         color: white;
         font-family: "Inter", sans-serif;
-        margin: 0;
-        padding: 20px;
         text-align: center;
+        padding: 20px;
       }
-
       h1 {
         font-size: 2.5rem;
         margin-bottom: 5px;
       }
-
       #username-label {
-        font-size: 1.2rem;
         color: #ffcb05;
-        margin-bottom: 10px;
-      }
-
-      #status {
         margin-bottom: 25px;
-        opacity: 0.7;
-        font-size: 0.9rem;
+        font-size: 1.2rem;
       }
-
-      /* Grid */
+      #status {
+        margin-bottom: 20px;
+        opacity: 0.8;
+      }
       #dex-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -40,62 +32,27 @@
         max-width: 1200px;
         margin: 0 auto;
       }
-
       .dex-entry {
         background: #1a1a1a;
         border: 2px solid #333;
-        padding: 10px;
         border-radius: 10px;
-        text-align: center;
-        transition: 0.2s;
+        padding: 10px;
       }
-
       .dex-entry.caught {
         border-color: #4caf50;
       }
-
       .dex-entry.shiny {
         border-color: gold;
         box-shadow: 0 0 10px gold;
       }
-
-      .dex-entry img {
+      img {
         width: 90px;
         height: 90px;
         object-fit: contain;
-        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
       }
-
       .uncaught img {
         filter: grayscale(1) brightness(0.3);
         opacity: 0.4;
-      }
-
-      .dex-number {
-        font-size: 0.9rem;
-        opacity: 0.8;
-      }
-
-      .dex-name {
-        font-size: 1rem;
-        margin-top: 5px;
-        margin-bottom: 5px;
-        font-weight: 600;
-      }
-
-      .variant-tags {
-        margin-top: 4px;
-        font-size: 0.9rem;
-      }
-
-      .tag-normal {
-        color: #4caf50;
-        font-weight: bold;
-      }
-
-      .tag-shiny {
-        color: gold;
-        font-weight: bold;
       }
     </style>
   </head>
@@ -107,12 +64,9 @@
     <div id="dex-grid"></div>
 
     <script>
-      // ---------------------------------------------------------------
-      // CONFIG
-      // ---------------------------------------------------------------
+      // -------- CONFIG ----------
       const SPRITE_BASE =
         "https://raw.githubusercontent.com/rearsilvergaming/Streamer-Tools/main/docs/Pokemon/";
-
       const ALL_POKEMON = [
         { num: 1, name: "Bulbasaur" },
         { num: 4, name: "Charmander" },
@@ -140,23 +94,16 @@
         { num: 778, name: "Mimikyu" },
       ];
 
-      // ---------------------------------------------------------------
-      // URL Parameters
-      // ---------------------------------------------------------------
       function getParam(key) {
-        const url = new URL(window.location.href);
-        return url.searchParams.get(key);
+        return new URL(window.location.href).searchParams.get(key);
       }
 
       const user = getParam("user") || "Unknown";
-      const userId = getParam("userId") || "0";
-
+      const userId = getParam("userId") || "";
       document.getElementById("username-label").innerText =
         "Showing Pokédex for " + user;
 
-      // ---------------------------------------------------------------
-      // WebSocket to Streamer.bot
-      // ---------------------------------------------------------------
+      // -------- WEBSOCKET REQUEST ----------
       let ws;
 
       function connectWS() {
@@ -179,32 +126,28 @@
         ws.onmessage = (event) => {
           let msg = JSON.parse(event.data);
 
-          if (msg.id === "pokedexRequest" && msg.data) {
-            const raw = msg.data.value || "[]";
-            let userDex = [];
+          if (msg.id === "pokedexRequest") {
+            let json = msg.data?.value ?? "[]";
+            let dex = [];
 
             try {
-              userDex = JSON.parse(raw);
-            } catch {
-              userDex = [];
-            }
+              dex = JSON.parse(json);
+            } catch {}
 
-            renderDex(userDex);
+            renderDex(dex);
           }
         };
 
         ws.onclose = () => {
           document.getElementById("status").innerText =
-            "Disconnected — Retrying…";
+            "Disconnected – reconnecting…";
           setTimeout(connectWS, 1000);
         };
       }
 
       connectWS();
 
-      // ---------------------------------------------------------------
-      // Render Pokémon Grid
-      // ---------------------------------------------------------------
+      // -------- RENDER ----------
       function renderDex(userDex) {
         const grid = document.getElementById("dex-grid");
         grid.innerHTML = "";
@@ -212,46 +155,19 @@
         const caughtMap = {};
         userDex.forEach((mon) => (caughtMap[mon.PokedexNum] = mon));
 
-        ALL_POKEMON.sort((a, b) => a.num - b.num).forEach((entry) => {
+        ALL_POKEMON.forEach((entry) => {
           const caught = caughtMap[entry.num];
 
           const cell = document.createElement("div");
           cell.className = "dex-entry " + (caught ? "caught" : "uncaught");
-          if (caught && caught.Shiny) cell.classList.add("shiny");
+          if (caught?.Shiny) cell.classList.add("shiny");
 
-          const img = document.createElement("img");
-          img.src = SPRITE_BASE + entry.name + ".png";
+          cell.innerHTML = `
+            <img src="${SPRITE_BASE}${entry.name}.png">
+            <div>#${entry.num}</div>
+            <div>${entry.name}</div>
+        `;
 
-          const number = document.createElement("div");
-          number.className = "dex-number";
-          number.innerText = `#${entry.num}`;
-
-          const name = document.createElement("div");
-          name.className = "dex-name";
-          name.innerText = entry.name;
-
-          const tags = document.createElement("div");
-          tags.className = "variant-tags";
-
-          if (caught) {
-            if (caught.Normal) {
-              const n = document.createElement("span");
-              n.className = "tag-normal";
-              n.innerText = "Normal ✓ ";
-              tags.appendChild(n);
-            }
-            if (caught.Shiny) {
-              const s = document.createElement("span");
-              s.className = "tag-shiny";
-              s.innerText = "Shiny ✨";
-              tags.appendChild(s);
-            }
-          }
-
-          cell.appendChild(img);
-          cell.appendChild(number);
-          cell.appendChild(name);
-          cell.appendChild(tags);
           grid.appendChild(cell);
         });
       }
