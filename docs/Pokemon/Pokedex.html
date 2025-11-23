@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Pokédex Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      body {
+        background: #0a0a0a;
+        color: white;
+        font-family: "Inter", sans-serif;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 5px;
+      }
+
+      #username-label {
+        font-size: 1.2rem;
+        color: #ffcb05;
+        margin-bottom: 25px;
+      }
+
+      #status {
+        margin-bottom: 20px;
+        opacity: 0.6;
+        font-size: 0.9rem;
+      }
+
+      #dex-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 18px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .dex-entry {
+        background: #1a1a1a;
+        border: 2px solid #333;
+        padding: 10px;
+        border-radius: 10px;
+        text-align: center;
+        transition: 0.2s;
+      }
+
+      .dex-entry.caught {
+        border-color: #4caf50;
+      }
+      .dex-entry.shiny {
+        border-color: gold;
+        box-shadow: 0 0 10px gold;
+      }
+
+      .dex-entry img {
+        width: 90px;
+        height: 90px;
+        object-fit: contain;
+        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+      }
+
+      .uncaught img {
+        filter: grayscale(1) brightness(0.3);
+        opacity: 0.4;
+      }
+
+      .dex-number {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      .dex-name {
+        font-size: 1rem;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        font-weight: 600;
+      }
+
+      .variant-tags {
+        margin-top: 4px;
+        font-size: 0.9rem;
+      }
+
+      .tag-normal {
+        color: #4caf50;
+        font-weight: bold;
+      }
+      .tag-shiny {
+        color: gold;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Pokédex</h1>
+    <div id="username-label"></div>
+    <div id="status">Connecting to Streamer.bot…</div>
+    <div id="dex-grid"></div>
+
+    <script>
+      // -------------------------------------------------------------------
+      // CONFIG
+      // -------------------------------------------------------------------
+      const SPRITE_BASE =
+        "https://raw.githubusercontent.com/rearsilvergaming/Streamer-Tools/main/docs/Pokemon/";
+
+      const ALL_POKEMON = [
+        { num: 1, name: "Bulbasaur" },
+        { num: 4, name: "Charmander" },
+        { num: 5, name: "Charmeleon" },
+        { num: 6, name: "Charizard" },
+        { num: 7, name: "Squirtle" },
+        { num: 16, name: "Pidgey" },
+        { num: 18, name: "Pidgeot" },
+        { num: 25, name: "Pikachu" },
+        { num: 35, name: "Clefairy" },
+        { num: 39, name: "Jigglypuff" },
+        { num: 52, name: "Meowth" },
+        { num: 54, name: "Psyduck" },
+        { num: 59, name: "Arcanine" },
+        { num: 79, name: "Slowpoke" },
+        { num: 94, name: "Gengar" },
+        { num: 132, name: "Ditto" },
+        { num: 133, name: "Eevee" },
+        { num: 143, name: "Snorlax" },
+        { num: 149, name: "Dragonite" },
+        { num: 150, name: "Mewtwo" },
+        { num: 151, name: "Mew" },
+        { num: 197, name: "Umbreon" },
+        { num: 727, name: "Incineroar" },
+        { num: 778, name: "Mimikyu" },
+      ];
+
+      // -------------------------------------------------------------------
+      // URL Params
+      // -------------------------------------------------------------------
+      function getParam(key) {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(key);
+      }
+
+      const user = getParam("user") || "Unknown Trainer";
+      document.getElementById("username-label").innerText =
+        "Showing Pokédex for " + user;
+
+      // -------------------------------------------------------------------
+      // WebSocket Connect to Streamer.bot
+      // -------------------------------------------------------------------
+      let ws;
+
+      function connectWS() {
+        ws = new WebSocket("ws://127.0.0.1:8080");
+
+        ws.onopen = () => {
+          document.getElementById("status").innerText = "Connected ✔️";
+
+          ws.send(
+            JSON.stringify({
+              request: "GetUserVar",
+              id: "pokedexRequest",
+              user: user,
+              variable: "pokedexData",
+              platform: "twitch",
+            })
+          );
+        };
+
+        ws.onmessage = (event) => {
+          let msg = JSON.parse(event.data);
+
+          if (msg.id === "pokedexRequest" && msg.data) {
+            const dexJson = msg.data.value || "[]";
+            let userDex;
+
+            try {
+              userDex = JSON.parse(dexJson);
+            } catch (e) {
+              userDex = [];
+            }
+
+            renderDex(userDex);
+          }
+        };
+
+        ws.onclose = () => {
+          document.getElementById("status").innerText =
+            "Disconnected – Retrying…";
+          setTimeout(connectWS, 1000);
+        };
+      }
+
+      connectWS();
+
+      // -------------------------------------------------------------------
+      // Render Dex Grid
+      // -------------------------------------------------------------------
+      function renderDex(userDex) {
+        const grid = document.getElementById("dex-grid");
+        grid.innerHTML = "";
+
+        const caughtMap = {};
+        userDex.forEach((mon) => (caughtMap[mon.PokedexNum] = mon));
+
+        ALL_POKEMON.sort((a, b) => a.num - b.num).forEach((entry) => {
+          const caught = caughtMap[entry.num];
+
+          const cell = document.createElement("div");
+          cell.className = "dex-entry " + (caught ? "caught" : "uncaught");
+          if (caught && caught.Shiny) cell.classList.add("shiny");
+
+          const img = document.createElement("img");
+          img.src = SPRITE_BASE + entry.name + ".png";
+
+          const number = document.createElement("div");
+          number.className = "dex-number";
+          number.innerText = `#${entry.num}`;
+
+          const name = document.createElement("div");
+          name.className = "dex-name";
+          name.innerText = entry.name;
+
+          const tags = document.createElement("div");
+          tags.className = "variant-tags";
+
+          if (caught) {
+            if (caught.Normal) {
+              const n = document.createElement("span");
+              n.className = "tag-normal";
+              n.innerText = "Normal ✓ ";
+              tags.appendChild(n);
+            }
+            if (caught.Shiny) {
+              const s = document.createElement("span");
+              s.className = "tag-shiny";
+              s.innerText = "Shiny ✨";
+              tags.appendChild(s);
+            }
+          }
+
+          cell.appendChild(img);
+          cell.appendChild(number);
+          cell.appendChild(name);
+          cell.appendChild(tags);
+          grid.appendChild(cell);
+        });
+      }
+    </script>
+  </body>
+</html>
