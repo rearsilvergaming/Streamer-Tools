@@ -23,15 +23,16 @@
       #username-label {
         font-size: 1.2rem;
         color: #ffcb05;
-        margin-bottom: 25px;
+        margin-bottom: 10px;
       }
 
       #status {
-        margin-bottom: 20px;
-        opacity: 0.6;
+        margin-bottom: 25px;
+        opacity: 0.7;
         font-size: 0.9rem;
       }
 
+      /* Grid */
       #dex-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -52,6 +53,7 @@
       .dex-entry.caught {
         border-color: #4caf50;
       }
+
       .dex-entry.shiny {
         border-color: gold;
         box-shadow: 0 0 10px gold;
@@ -90,6 +92,7 @@
         color: #4caf50;
         font-weight: bold;
       }
+
       .tag-shiny {
         color: gold;
         font-weight: bold;
@@ -104,9 +107,9 @@
     <div id="dex-grid"></div>
 
     <script>
-      // -------------------------------------------------------------------
+      // ---------------------------------------------------------------
       // CONFIG
-      // -------------------------------------------------------------------
+      // ---------------------------------------------------------------
       const SPRITE_BASE =
         "https://raw.githubusercontent.com/rearsilvergaming/Streamer-Tools/main/docs/Pokemon/";
 
@@ -137,21 +140,23 @@
         { num: 778, name: "Mimikyu" },
       ];
 
-      // -------------------------------------------------------------------
-      // URL Params
-      // -------------------------------------------------------------------
+      // ---------------------------------------------------------------
+      // URL Parameters
+      // ---------------------------------------------------------------
       function getParam(key) {
         const url = new URL(window.location.href);
         return url.searchParams.get(key);
       }
 
-      const user = getParam("user") || "Unknown Trainer";
+      const user = getParam("user") || "Unknown";
+      const userId = getParam("userId") || "0";
+
       document.getElementById("username-label").innerText =
         "Showing Pokédex for " + user;
 
-      // -------------------------------------------------------------------
-      // WebSocket Connect to Streamer.bot
-      // -------------------------------------------------------------------
+      // ---------------------------------------------------------------
+      // WebSocket to Streamer.bot
+      // ---------------------------------------------------------------
       let ws;
 
       function connectWS() {
@@ -162,11 +167,11 @@
 
           ws.send(
             JSON.stringify({
-              request: "GetUserVar",
+              request: "TwitchGetUserGlobal",
               id: "pokedexRequest",
-              user: user,
+              userId: userId,
               variable: "pokedexData",
-              platform: "twitch",
+              persisted: true,
             })
           );
         };
@@ -175,12 +180,12 @@
           let msg = JSON.parse(event.data);
 
           if (msg.id === "pokedexRequest" && msg.data) {
-            const dexJson = msg.data.value || "[]";
-            let userDex;
+            const raw = msg.data.value || "[]";
+            let userDex = [];
 
             try {
-              userDex = JSON.parse(dexJson);
-            } catch (e) {
+              userDex = JSON.parse(raw);
+            } catch {
               userDex = [];
             }
 
@@ -190,16 +195,16 @@
 
         ws.onclose = () => {
           document.getElementById("status").innerText =
-            "Disconnected – Retrying…";
+            "Disconnected — Retrying…";
           setTimeout(connectWS, 1000);
         };
       }
 
       connectWS();
 
-      // -------------------------------------------------------------------
-      // Render Dex Grid
-      // -------------------------------------------------------------------
+      // ---------------------------------------------------------------
+      // Render Pokémon Grid
+      // ---------------------------------------------------------------
       function renderDex(userDex) {
         const grid = document.getElementById("dex-grid");
         grid.innerHTML = "";
