@@ -103,7 +103,7 @@
       document.getElementById("username-label").innerText =
         "Showing Pokédex for " + user;
 
-      // -------- WEBSOCKET REQUEST ----------
+      // -------- WEBSOCKET ----------
       let ws;
 
       function connectWS() {
@@ -140,7 +140,7 @@
 
         ws.onclose = () => {
           document.getElementById("status").innerText =
-            "Disconnected – reconnecting…";
+            "Disconnected — reconnecting…";
           setTimeout(connectWS, 1000);
         };
       }
@@ -152,11 +152,12 @@
         const grid = document.getElementById("dex-grid");
         grid.innerHTML = "";
 
+        // FIXED: match by NAME, not number
         const caughtMap = {};
-        userDex.forEach((mon) => (caughtMap[mon.PokedexNum] = mon));
+        userDex.forEach((mon) => (caughtMap[mon.Pokemon] = mon));
 
         ALL_POKEMON.forEach((entry) => {
-          const caught = caughtMap[entry.num];
+          const caught = caughtMap[entry.name];
 
           const cell = document.createElement("div");
           cell.className = "dex-entry " + (caught ? "caught" : "uncaught");
@@ -166,7 +167,7 @@
             <img src="${SPRITE_BASE}${entry.name}.png">
             <div>#${entry.num}</div>
             <div>${entry.name}</div>
-        `;
+          `;
 
           grid.appendChild(cell);
         });
