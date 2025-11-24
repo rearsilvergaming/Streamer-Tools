@@ -34,8 +34,13 @@
       /* Controls + progress */
       #controls {
         max-width: 1200px;
-        margin: 0 auto 20px;
+        margin: 50px auto 50px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        padding-left: 20px;
+        padding-right: 20px;
         text-align: left;
+        border: #333 solid 5px;
       }
 
       #progress-summary {
@@ -219,12 +224,13 @@
       }
 
       .footer {
-        padding-bottom: 20px;
-        padding-top: 50px;
         margin-top: 50px;
-        border-top: 1px solid #333;
-        font-size: 0.95rem;
-        color: #ddd;
+        margin-bottom: 15px;
+        padding-top: 50px;
+        padding-bottom: 0px;
+        font-size: larger;
+        text-align: center;
+        border-top: #333 solid 5px;
       }
     </style>
   </head>
@@ -237,9 +243,11 @@
     <div id="controls">
       <div id="progress-summary"></div>
 
-      <div class="control-row">
+      <!-- Row 1: GENERATION FILTER -->
+      <div class="control-row" style="margin-bottom: 12px">
         <div class="control-group">
-          <label>Generation</label>
+          <label>Generation:</label>
+
           <button
             class="filter-button gen-btn active"
             data-gen="all"
@@ -272,9 +280,13 @@
             Gen 8
           </button>
         </div>
+      </div>
 
+      <!-- Row 2: SHOW FILTER -->
+      <div class="control-row" style="margin-bottom: 12px">
         <div class="control-group">
-          <label>Show</label>
+          <label>Show:</label>
+
           <button
             class="filter-button mode-btn active"
             data-mode="all"
@@ -296,14 +308,29 @@
           >
             Shiny
           </button>
+          <button
+            class="filter-button mode-btn"
+            data-mode="uncaught"
+            type="button"
+          >
+            Uncaught
+          </button>
         </div>
+      </div>
 
-        <div class="control-group">
+      <!-- Row 3: SEARCH BAR -->
+      <div class="control-row">
+        <div
+          class="control-group"
+          style="width: 100%; justify-content: flex-start"
+        >
+          <label>Dex Search:</label>
           <input
             id="search-input"
             type="text"
             placeholder="Search name or #25…"
             autocomplete="off"
+            style="max-width: 300px"
           />
         </div>
       </div>
@@ -496,6 +523,7 @@
           // Mode filter
           if (currentMode === "caught" && !caught) return;
           if (currentMode === "shiny" && !(caught && caught.Shiny)) return;
+          if (currentMode === "uncaught" && caught) return;
 
           // Search filter
           if (searchTerm) {
