@@ -160,19 +160,45 @@
       }
 
       .variant-tags {
-        margin-top: 2px;
-        font-size: 0.85rem;
+        margin-top: 4px;
+        font-size: 0.8rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: center;
+      }
+
+      .tag-pill {
+        padding: 2px 6px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
       }
 
       .tag-normal {
         color: #4caf50;
-        font-weight: bold;
-        margin-right: 4px;
+        border-color: #2e7d32;
+        background: rgba(46, 125, 50, 0.15);
       }
 
       .tag-shiny {
         color: gold;
-        font-weight: bold;
+        border-color: #ffeb3b;
+        background: rgba(255, 235, 59, 0.1);
+      }
+
+      .tag-amped {
+        color: #ff9800;
+        border-color: #f57c00;
+        background: rgba(245, 124, 0, 0.1);
+      }
+
+      .tag-lowkey {
+        color: #90caf9;
+        border-color: #42a5f5;
+        background: rgba(66, 165, 245, 0.12);
       }
 
       #empty-message {
@@ -218,8 +244,23 @@
           <button class="filter-button gen-btn" data-gen="2" type="button">
             Gen 2
           </button>
+          <button class="filter-button gen-btn" data-gen="3" type="button">
+            Gen 3
+          </button>
+          <button class="filter-button gen-btn" data-gen="4" type="button">
+            Gen 4
+          </button>
+          <button class="filter-button gen-btn" data-gen="5" type="button">
+            Gen 5
+          </button>
+          <button class="filter-button gen-btn" data-gen="6" type="button">
+            Gen 6
+          </button>
           <button class="filter-button gen-btn" data-gen="7" type="button">
             Gen 7
+          </button>
+          <button class="filter-button gen-btn" data-gen="8" type="button">
+            Gen 8
           </button>
         </div>
 
@@ -268,37 +309,8 @@
     <script>
       console.log("🔥 POKEDEX PAGE LOADED");
 
-      // ---------- CONFIG ----------
-      const SPRITE_BASE =
-        "https://raw.githubusercontent.com/rearsilvergaming/Streamer-Tools/main/docs/Pokemon/";
-
-      // Add generation so filters work even for uncaught mons
-      const ALL_POKEMON = [
-        { num: 1, name: "Bulbasaur", gen: 1 },
-        { num: 4, name: "Charmander", gen: 1 },
-        { num: 5, name: "Charmeleon", gen: 1 },
-        { num: 6, name: "Charizard", gen: 1 },
-        { num: 7, name: "Squirtle", gen: 1 },
-        { num: 16, name: "Pidgey", gen: 1 },
-        { num: 18, name: "Pidgeot", gen: 1 },
-        { num: 25, name: "Pikachu", gen: 1 },
-        { num: 35, name: "Clefairy", gen: 1 },
-        { num: 39, name: "Jigglypuff", gen: 1 },
-        { num: 52, name: "Meowth", gen: 1 },
-        { num: 54, name: "Psyduck", gen: 1 },
-        { num: 59, name: "Arcanine", gen: 1 },
-        { num: 79, name: "Slowpoke", gen: 1 },
-        { num: 94, name: "Gengar", gen: 1 },
-        { num: 132, name: "Ditto", gen: 1 },
-        { num: 133, name: "Eevee", gen: 1 },
-        { num: 143, name: "Snorlax", gen: 1 },
-        { num: 149, name: "Dragonite", gen: 1 },
-        { num: 150, name: "Mewtwo", gen: 1 },
-        { num: 151, name: "Mew", gen: 1 },
-        { num: 197, name: "Umbreon", gen: 2 },
-        { num: 727, name: "Incineroar", gen: 7 },
-        { num: 778, name: "Mimikyu", gen: 7 },
-      ];
+      const SPECIES_JSON_URL =
+        "https://raw.githubusercontent.com/rearsilvergaming/Streamer-Tools/main/docs/Pokemon/PokemonList.json";
 
       function getParam(key) {
         return new URL(window.location.href).searchParams.get(key);
@@ -309,13 +321,31 @@
       document.getElementById("username-label").innerText =
         "Showing Pokédex for " + user;
 
-      // Filter state
-      let currentGenFilter = "all"; // "all", "1", "2", "7"
-      let currentMode = "all"; // "all", "caught", "shiny"
-      let searchTerm = "";
+      // State
+      let allSpecies = [];
       let latestDex = [];
+      let currentGenFilter = "all";
+      let currentMode = "all";
+      let searchTerm = "";
 
-      // ---------- WEBSOCKET ----------
+      // ---------- Load species JSON ----------
+      fetch(SPECIES_JSON_URL)
+        .then((r) => r.json())
+        .then((data) => {
+          allSpecies = (data || [])
+            .slice()
+            .sort((a, b) => a.PokedexNum - b.PokedexNum);
+          console.log("📚 Loaded species list:", allSpecies);
+          if (latestDex) {
+            updateProgress(latestDex);
+            renderDex(latestDex);
+          }
+        })
+        .catch((err) => {
+          console.error("❌ Failed to load PokemonList.json", err);
+        });
+
+      // ---------- WebSocket to Streamer.bot ----------
       let ws;
 
       function connectWS() {
@@ -341,7 +371,9 @@
           const msg = JSON.parse(event.data);
 
           if (msg.id === "pokedexRequest") {
-            const dexRaw = msg.variables?.[0]?.value ?? "[]";
+            const dexRaw =
+              (msg.variables && msg.variables[0] && msg.variables[0].value) ||
+              "[]";
             console.log("📦 pokedexData raw:", dexRaw);
 
             let dex = [];
@@ -353,8 +385,11 @@
 
             latestDex = dex;
             console.log("📘 Parsed userDex:", latestDex);
-            updateProgress(latestDex);
-            renderDex(latestDex);
+
+            if (allSpecies.length > 0) {
+              updateProgress(latestDex);
+              renderDex(latestDex);
+            }
           }
         };
 
@@ -368,10 +403,10 @@
 
       connectWS();
 
-      // ---------- PROGRESS ----------
+      // ---------- Progress ----------
       function updateProgress(userDex) {
         const summary = document.getElementById("progress-summary");
-        if (!summary) return;
+        if (!summary || allSpecies.length === 0) return;
 
         const uniqueMap = {};
         userDex.forEach((mon) => {
@@ -379,7 +414,7 @@
         });
         const uniqueList = Object.values(uniqueMap);
 
-        const totalSpecies = ALL_POKEMON.length;
+        const totalSpecies = allSpecies.length;
         const caughtCount = uniqueList.length;
         const shinySpecies = uniqueList.filter((m) => m.Shiny).length;
 
@@ -391,10 +426,13 @@
         summary.textContent = `Caught ${caughtCount}/${totalSpecies} (${percent}%) • Shiny species: ${shinySpecies}`;
       }
 
-      // ---------- RENDER ----------
+      // ---------- Render ----------
       function renderDex(userDex) {
         const grid = document.getElementById("dex-grid");
         const emptyMessage = document.getElementById("empty-message");
+
+        if (!grid || allSpecies.length === 0) return;
+
         grid.innerHTML = "";
 
         const caughtMap = {};
@@ -404,16 +442,15 @@
 
         let visibleCount = 0;
 
-        ALL_POKEMON.forEach((entry, index) => {
-          // Generation filter
-          if (
-            currentGenFilter !== "all" &&
-            String(entry.gen) !== currentGenFilter
-          ) {
-            return;
-          }
+        allSpecies.forEach((entry, index) => {
+          const gen = String(entry.Generation || entry.gen || "");
+          const num = entry.PokedexNum || entry.num;
+          const name = entry.Name || entry.name;
 
-          const caught = caughtMap[entry.num];
+          // Gen filter
+          if (currentGenFilter !== "all" && gen !== currentGenFilter) return;
+
+          const caught = caughtMap[num];
 
           // Mode filter
           if (currentMode === "caught" && !caught) return;
@@ -422,8 +459,8 @@
           // Search filter
           if (searchTerm) {
             const term = searchTerm.toLowerCase();
-            const nameMatch = entry.name.toLowerCase().includes(term);
-            const numString = String(entry.num);
+            const nameMatch = name.toLowerCase().includes(term);
+            const numString = String(num);
             const numMatch =
               numString.includes(term.replace("#", "")) ||
               ("#" + numString).includes(term);
@@ -432,28 +469,37 @@
 
           const cell = document.createElement("div");
           cell.className = "dex-entry " + (caught ? "caught" : "uncaught");
-          if (caught?.Shiny) cell.classList.add("shiny");
+          if (caught && caught.Shiny) cell.classList.add("shiny");
 
-          // staggered reveal
+          // animated delay
           cell.style.setProperty(
             "--delay",
             (visibleCount * 0.03).toString() + "s"
           );
 
-          const normalTag =
-            caught && caught.Normal
-              ? '<span class="tag-normal">Normal ✓</span>'
-              : "";
-          const shinyTag =
-            caught && caught.Shiny
-              ? '<span class="tag-shiny">Shiny ✨</span>'
-              : "";
+          // Variant tags
+          const tagsHtml = [];
+
+          if (caught && caught.Normal) {
+            tagsHtml.push(`<span class="tag-pill tag-normal">✓ Normal</span>`);
+          }
+          if (caught && caught.Shiny) {
+            tagsHtml.push(`<span class="tag-pill tag-shiny">✨ Shiny</span>`);
+          }
+          if (caught && caught.Amped) {
+            tagsHtml.push(`<span class="tag-pill tag-amped">⚡ Amped</span>`);
+          }
+          if (caught && caught.LowKey) {
+            tagsHtml.push(
+              `<span class="tag-pill tag-lowkey">🎵 Low Key</span>`
+            );
+          }
 
           cell.innerHTML = `
-            <img src="${SPRITE_BASE}${entry.name}.png" alt="${entry.name}">
-            <div class="dex-number">#${entry.num}</div>
-            <div class="dex-name">${entry.name}</div>
-            <div class="variant-tags">${normalTag} ${shinyTag}</div>
+            <img src="${SPRITE_BASE}${name}.png" alt="${name}">
+            <div class="dex-number">#${num}</div>
+            <div class="dex-name">${name}</div>
+            <div class="variant-tags">${tagsHtml.join("")}</div>
           `;
 
           grid.appendChild(cell);
@@ -467,7 +513,10 @@
         }
       }
 
-      // ---------- FILTER UI HANDLERS ----------
+      const SPRITE_BASE =
+        "https://raw.githubusercontent.com/rearsilvergaming/Streamer-Tools/main/docs/Pokemon/";
+
+      // ---------- UI handlers ----------
       const genButtons = document.querySelectorAll(".gen-btn");
       genButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
