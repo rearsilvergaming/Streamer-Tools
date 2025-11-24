@@ -141,7 +141,7 @@
   { "Name": "Krabby", "PokedexNum": 98, "Generation": 1, "Evolution": "Kingler" },
   { "Name": "Kingler", "PokedexNum": 99, "Generation": 1, "Evolution": "None" },
 
-  { "Name": "Voltorb", "PokedexNum": 100, "Generation": 1, "Evolution": "Electrode" }
+  { "Name": "Voltorb", "PokedexNum": 100, "Generation": 1, "Evolution": "Electrode" },
   { "Name": "Electrode", "PokedexNum": 101, "Generation": 1, "Evolution": "None" },
 
   { "Name": "Exeggcute", "PokedexNum": 102, "Generation": 1, "Evolution": "Exeggutor" },
