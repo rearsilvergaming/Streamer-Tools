@@ -1,31 +1,233 @@
 [
   { "Name": "Bulbasaur", "PokedexNum": 1, "Generation": 1, "Evolution": "Ivysaur" },
+  { "Name": "Ivysaur", "PokedexNum": 2, "Generation": 1, "Evolution": "Venusaur" },
+  { "Name": "Venusaur", "PokedexNum": 3, "Generation": 1, "Evolution": "None" },
+
   { "Name": "Charmander", "PokedexNum": 4, "Generation": 1, "Evolution": "Charmeleon" },
   { "Name": "Charmeleon", "PokedexNum": 5, "Generation": 1, "Evolution": "Charizard" },
-  { "Name": "Charizard", "PokedexNum": 6, "Generation": 1, "Evolution": "None (Mega/Giga only)" },
+  { "Name": "Charizard", "PokedexNum": 6, "Generation": 1, "Evolution": "None" },
+
   { "Name": "Squirtle", "PokedexNum": 7, "Generation": 1, "Evolution": "Wartortle" },
+  { "Name": "Wartortle", "PokedexNum": 8, "Generation": 1, "Evolution": "Blastoise" },
+  { "Name": "Blastoise", "PokedexNum": 9, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Caterpie", "PokedexNum": 10, "Generation": 1, "Evolution": "Metapod" },
+  { "Name": "Metapod", "PokedexNum": 11, "Generation": 1, "Evolution": "Butterfree" },
+  { "Name": "Butterfree", "PokedexNum": 12, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Weedle", "PokedexNum": 13, "Generation": 1, "Evolution": "Kakuna" },
+  { "Name": "Kakuna", "PokedexNum": 14, "Generation": 1, "Evolution": "Beedrill" },
+  { "Name": "Beedrill", "PokedexNum": 15, "Generation": 1, "Evolution": "None" },
+
   { "Name": "Pidgey", "PokedexNum": 16, "Generation": 1, "Evolution": "Pidgeotto" },
+  { "Name": "Pidgeotto", "PokedexNum": 17, "Generation": 1, "Evolution": "Pidgeot" },
   { "Name": "Pidgeot", "PokedexNum": 18, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Rattata", "PokedexNum": 19, "Generation": 1, "Evolution": "Raticate" },
+  { "Name": "Raticate", "PokedexNum": 20, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Spearow", "PokedexNum": 21, "Generation": 1, "Evolution": "Fearow" },
+  { "Name": "Fearow", "PokedexNum": 22, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Ekans", "PokedexNum": 23, "Generation": 1, "Evolution": "Arbok" },
+  { "Name": "Arbok", "PokedexNum": 24, "Generation": 1, "Evolution": "None" },
+
   { "Name": "Pikachu", "PokedexNum": 25, "Generation": 1, "Evolution": "Raichu" },
+  { "Name": "Raichu", "PokedexNum": 26, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Sandshrew", "PokedexNum": 27, "Generation": 1, "Evolution": "Sandslash" },
+  { "Name": "Sandslash", "PokedexNum": 28, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Nidoran♀", "PokedexNum": 29, "Generation": 1, "Evolution": "Nidorina" },
+  { "Name": "Nidorina", "PokedexNum": 30, "Generation": 1, "Evolution": "Nidoqueen" },
+  { "Name": "Nidoqueen", "PokedexNum": 31, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Nidoran♂", "PokedexNum": 32, "Generation": 1, "Evolution": "Nidorino" },
+  { "Name": "Nidorino", "PokedexNum": 33, "Generation": 1, "Evolution": "Nidoking" },
+  { "Name": "Nidoking", "PokedexNum": 34, "Generation": 1, "Evolution": "None" },
+
   { "Name": "Clefairy", "PokedexNum": 35, "Generation": 1, "Evolution": "Clefable" },
+  { "Name": "Clefable", "PokedexNum": 36, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Vulpix", "PokedexNum": 37, "Generation": 1, "Evolution": "Ninetales" },
+  { "Name": "Ninetales", "PokedexNum": 38, "Generation": 1, "Evolution": "None" },
+
   { "Name": "Jigglypuff", "PokedexNum": 39, "Generation": 1, "Evolution": "Wigglytuff" },
+  { "Name": "Wigglytuff", "PokedexNum": 40, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Zubat", "PokedexNum": 41, "Generation": 1, "Evolution": "Golbat" },
+  { "Name": "Golbat", "PokedexNum": 42, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Oddish", "PokedexNum": 43, "Generation": 1, "Evolution": "Gloom" },
+  { "Name": "Gloom", "PokedexNum": 44, "Generation": 1, "Evolution": "Vileplume" },
+  { "Name": "Vileplume", "PokedexNum": 45, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Paras", "PokedexNum": 46, "Generation": 1, "Evolution": "Parasect" },
+  { "Name": "Parasect", "PokedexNum": 47, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Venonat", "PokedexNum": 48, "Generation": 1, "Evolution": "Venomoth" },
+  { "Name": "Venomoth", "PokedexNum": 49, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Diglett", "PokedexNum": 50, "Generation": 1, "Evolution": "Dugtrio" },
+  { "Name": "Dugtrio", "PokedexNum": 51, "Generation": 1, "Evolution": "None" },
+
   { "Name": "Meowth", "PokedexNum": 52, "Generation": 1, "Evolution": "Persian" },
+  { "Name": "Persian", "PokedexNum": 53, "Generation": 1, "Evolution": "None" },
+
   { "Name": "Psyduck", "PokedexNum": 54, "Generation": 1, "Evolution": "Golduck" },
+  { "Name": "Golduck", "PokedexNum": 55, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Mankey", "PokedexNum": 56, "Generation": 1, "Evolution": "Primeape" },
+  { "Name": "Primeape", "PokedexNum": 57, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Growlithe", "PokedexNum": 58, "Generation": 1, "Evolution": "Arcanine" },
   { "Name": "Arcanine", "PokedexNum": 59, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Poliwag", "PokedexNum": 60, "Generation": 1, "Evolution": "Poliwhirl" },
+  { "Name": "Poliwhirl", "PokedexNum": 61, "Generation": 1, "Evolution": "Poliwrath" },
+  { "Name": "Poliwrath", "PokedexNum": 62, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Abra", "PokedexNum": 63, "Generation": 1, "Evolution": "Kadabra" },
+  { "Name": "Kadabra", "PokedexNum": 64, "Generation": 1, "Evolution": "Alakazam" },
+  { "Name": "Alakazam", "PokedexNum": 65, "Generation": 1, "Evolution": "None" },
+
   { "Name": "Machop", "PokedexNum": 66, "Generation": 1, "Evolution": "Machoke" },
   { "Name": "Machoke", "PokedexNum": 67, "Generation": 1, "Evolution": "Machamp" },
   { "Name": "Machamp", "PokedexNum": 68, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Bellsprout", "PokedexNum": 69, "Generation": 1, "Evolution": "Weepinbell" },
+  { "Name": "Weepinbell", "PokedexNum": 70, "Generation": 1, "Evolution": "Victreebel" },
+  { "Name": "Victreebel", "PokedexNum": 71, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Tentacool", "PokedexNum": 72, "Generation": 1, "Evolution": "Tentacruel" },
+  { "Name": "Tentacruel", "PokedexNum": 73, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Geodude", "PokedexNum": 74, "Generation": 1, "Evolution": "Graveler" },
+  { "Name": "Graveler", "PokedexNum": 75, "Generation": 1, "Evolution": "Golem" },
+  { "Name": "Golem", "PokedexNum": 76, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Ponyta", "PokedexNum": 77, "Generation": 1, "Evolution": "Rapidash" },
+  { "Name": "Rapidash", "PokedexNum": 78, "Generation": 1, "Evolution": "None" },
+
   { "Name": "Slowpoke", "PokedexNum": 79, "Generation": 1, "Evolution": "Slowbro/Slowking" },
+  { "Name": "Slowbro", "PokedexNum": 80, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Magnemite", "PokedexNum": 81, "Generation": 1, "Evolution": "Magneton" },
+  { "Name": "Magneton", "PokedexNum": 82, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Farfetch'd", "PokedexNum": 83, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Doduo", "PokedexNum": 84, "Generation": 1, "Evolution": "Dodrio" },
+  { "Name": "Dodrio", "PokedexNum": 85, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Seel", "PokedexNum": 86, "Generation": 1, "Evolution": "Dewgong" },
+  { "Name": "Dewgong", "PokedexNum": 87, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Grimer", "PokedexNum": 88, "Generation": 1, "Evolution": "Muk" },
+  { "Name": "Muk", "PokedexNum": 89, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Shellder", "PokedexNum": 90, "Generation": 1, "Evolution": "Cloyster" },
+  { "Name": "Cloyster", "PokedexNum": 91, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Gastly", "PokedexNum": 92, "Generation": 1, "Evolution": "Haunter" },
+  { "Name": "Haunter", "PokedexNum": 93, "Generation": 1, "Evolution": "Gengar" },
   { "Name": "Gengar", "PokedexNum": 94, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Onix", "PokedexNum": 95, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Drowzee", "PokedexNum": 96, "Generation": 1, "Evolution": "Hypno" },
+  { "Name": "Hypno", "PokedexNum": 97, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Krabby", "PokedexNum": 98, "Generation": 1, "Evolution": "Kingler" },
+  { "Name": "Kingler", "PokedexNum": 99, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Voltorb", "PokedexNum": 100, "Generation": 1, "Evolution": "Electrode" }
+  { "Name": "Electrode", "PokedexNum": 101, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Exeggcute", "PokedexNum": 102, "Generation": 1, "Evolution": "Exeggutor" },
+  { "Name": "Exeggutor", "PokedexNum": 103, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Cubone", "PokedexNum": 104, "Generation": 1, "Evolution": "Marowak" },
+  { "Name": "Marowak", "PokedexNum": 105, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Hitmonlee", "PokedexNum": 106, "Generation": 1, "Evolution": "None" },
+  { "Name": "Hitmonchan", "PokedexNum": 107, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Lickitung", "PokedexNum": 108, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Koffing", "PokedexNum": 109, "Generation": 1, "Evolution": "Weezing" },
+  { "Name": "Weezing", "PokedexNum": 110, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Rhyhorn", "PokedexNum": 111, "Generation": 1, "Evolution": "Rhydon" },
+  { "Name": "Rhydon", "PokedexNum": 112, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Chansey", "PokedexNum": 113, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Tangela", "PokedexNum": 114, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Kangaskhan", "PokedexNum": 115, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Horsea", "PokedexNum": 116, "Generation": 1, "Evolution": "Seadra" },
+  { "Name": "Seadra", "PokedexNum": 117, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Goldeen", "PokedexNum": 118, "Generation": 1, "Evolution": "Seaking" },
+  { "Name": "Seaking", "PokedexNum": 119, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Staryu", "PokedexNum": 120, "Generation": 1, "Evolution": "Starmie" },
+  { "Name": "Starmie", "PokedexNum": 121, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Mr. Mime", "PokedexNum": 122, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Scyther", "PokedexNum": 123, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Jynx", "PokedexNum": 124, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Electabuzz", "PokedexNum": 125, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Magmar", "PokedexNum": 126, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Pinsir", "PokedexNum": 127, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Tauros", "PokedexNum": 128, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Magikarp", "PokedexNum": 129, "Generation": 1, "Evolution": "Gyarados" },
+  { "Name": "Gyarados", "PokedexNum": 130, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Lapras", "PokedexNum": 131, "Generation": 1, "Evolution": "None" },
+
   { "Name": "Ditto", "PokedexNum": 132, "Generation": 1, "Evolution": "None" },
+
   { "Name": "Eevee", "PokedexNum": 133, "Generation": 1, "Evolution": "Multiple Evolutions" },
+
+  { "Name": "Vaporeon", "PokedexNum": 134, "Generation": 1, "Evolution": "None" },
+  { "Name": "Jolteon", "PokedexNum": 135, "Generation": 1, "Evolution": "None" },
+  { "Name": "Flareon", "PokedexNum": 136, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Porygon", "PokedexNum": 137, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Omanyte", "PokedexNum": 138, "Generation": 1, "Evolution": "Omastar" },
+  { "Name": "Omastar", "PokedexNum": 139, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Kabuto", "PokedexNum": 140, "Generation": 1, "Evolution": "Kabutops" },
+  { "Name": "Kabutops", "PokedexNum": 141, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Aerodactyl", "PokedexNum": 142, "Generation": 1, "Evolution": "None" },
+
   { "Name": "Snorlax", "PokedexNum": 143, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Articuno", "PokedexNum": 144, "Generation": 1, "Evolution": "None" },
+  { "Name": "Zapdos", "PokedexNum": 145, "Generation": 1, "Evolution": "None" },
+  { "Name": "Moltres", "PokedexNum": 146, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Dratini", "PokedexNum": 147, "Generation": 1, "Evolution": "Dragonair" },
+  { "Name": "Dragonair", "PokedexNum": 148, "Generation": 1, "Evolution": "Dragonite" },
   { "Name": "Dragonite", "PokedexNum": 149, "Generation": 1, "Evolution": "None" },
+
   { "Name": "Mewtwo", "PokedexNum": 150, "Generation": 1, "Evolution": "None" },
   { "Name": "Mew", "PokedexNum": 151, "Generation": 1, "Evolution": "None" },
 
-  { "Name": "Murkrow", "PokedexNum": 198, "Generation": 2, "Evolution": "Honchkrow" },
   { "Name": "Umbreon", "PokedexNum": 197, "Generation": 2, "Evolution": "None" },
+  { "Name": "Murkrow", "PokedexNum": 198, "Generation": 2, "Evolution": "Honchkrow" },
   { "Name": "Lugia", "PokedexNum": 249, "Generation": 2, "Evolution": "None" },
   { "Name": "Ho-Oh", "PokedexNum": 250, "Generation": 2, "Evolution": "None" },
 
@@ -53,6 +255,7 @@
   { "Name": "Mimikyu", "PokedexNum": 778, "Generation": 7, "Evolution": "None" },
 
   { "Name": "Toxel", "PokedexNum": 848, "Generation": 8, "Evolution": "Toxtricity" },
+
   {
     "Name": "Toxtricity",
     "PokedexNum": 849,
@@ -62,3 +265,4 @@
     "HasLowKey": true
   }
 ]
+
