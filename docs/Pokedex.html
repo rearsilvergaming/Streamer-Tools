@@ -232,6 +232,94 @@
         text-align: center;
         border-top: #333 solid 5px;
       }
+
+      /* ------------------------------ */
+      /*      MOBILE RESPONSIVE CSS     */
+      /* ------------------------------ */
+
+      @media (max-width: 900px) {
+        #controls {
+          padding: 15px;
+          border-width: 4px;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+
+        .control-row {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .control-group {
+          width: 100%;
+          flex-wrap: wrap;
+        }
+
+        .filter-button {
+          flex: 1 1 auto;
+          text-align: center;
+          min-width: 90px;
+        }
+
+        #search-input {
+          width: 100%;
+          max-width: 100% !important;
+        }
+      }
+
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 1.7rem;
+        }
+
+        #username-label {
+          font-size: 1rem;
+        }
+
+        /* Make filter buttons full-width on tiny screens */
+        .filter-button {
+          flex: 1 1 45%;
+          padding: 8px;
+          font-size: 0.9rem;
+        }
+
+        .control-group label {
+          width: 100%;
+          margin-bottom: 4px;
+        }
+
+        #dex-grid {
+          grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+          gap: 14px;
+        }
+
+        .dex-entry img {
+          width: 70px;
+          height: 70px;
+        }
+      }
+
+      @media (max-width: 400px) {
+        #controls {
+          padding: 10px;
+        }
+
+        .filter-button {
+          flex: 1 1 100%;
+          font-size: 0.85rem;
+        }
+
+        #dex-grid {
+          grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+        }
+
+        .dex-entry {
+          padding: 8px;
+        }
+      }
     </style>
   </head>
 
