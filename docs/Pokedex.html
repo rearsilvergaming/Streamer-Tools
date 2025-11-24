@@ -2,16 +2,110 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Pokédex Viewer (Debug Mode)</title>
+    <title>Pokédex Viewer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <style>
       body {
         background: #0a0a0a;
-        color: white;
-        font-family: Inter, sans-serif;
+        color: #f5f5f5;
+        font-family: "Inter", sans-serif;
         text-align: center;
         padding: 20px;
       }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 5px;
+      }
+
+      #username-label {
+        color: #ffcb05;
+        margin-bottom: 6px;
+        font-size: 1.2rem;
+      }
+
+      #status {
+        margin-bottom: 10px;
+        opacity: 0.8;
+        font-size: 0.9rem;
+      }
+
+      /* Controls + progress */
+      #controls {
+        max-width: 1200px;
+        margin: 0 auto 20px;
+        text-align: left;
+      }
+
+      #progress-summary {
+        font-size: 0.95rem;
+        color: #ddd;
+        margin-bottom: 10px;
+      }
+
+      .control-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .control-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .control-group label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #aaa;
+      }
+
+      .filter-button {
+        background: #151515;
+        color: #eee;
+        border: 1px solid #444;
+        border-radius: 999px;
+        padding: 5px 12px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease,
+          transform 0.1s ease;
+      }
+
+      .filter-button:hover {
+        transform: translateY(-1px);
+        border-color: #ffcb05;
+      }
+
+      .filter-button.active {
+        border-color: #ffcb05;
+        background: #262018;
+        color: #fffbdd;
+      }
+
+      #search-input {
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid #444;
+        background: #111;
+        color: #f5f5f5;
+        font-size: 0.9rem;
+        min-width: 190px;
+      }
+
+      #search-input:focus {
+        outline: none;
+        border-color: #ffcb05;
+        box-shadow: 0 0 0 1px rgba(255, 203, 5, 0.4);
+      }
+
+      /* Grid */
       #dex-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -19,164 +113,386 @@
         max-width: 1200px;
         margin: 0 auto;
       }
+
+      /* Cards */
       .dex-entry {
         background: #1a1a1a;
         border: 2px solid #333;
         border-radius: 10px;
         padding: 10px;
+        opacity: 0;
+        transform: translateY(6px) scale(0.98);
+        animation: cardIn 0.25s ease-out forwards;
+        animation-delay: var(--delay, 0s);
       }
+
       .dex-entry.caught {
         border-color: #4caf50;
       }
+
       .dex-entry.shiny {
         border-color: gold;
         box-shadow: 0 0 10px gold;
       }
-      .uncaught img {
-        filter: grayscale(1) brightness(0.3);
-        opacity: 0.4;
-      }
-      img {
+
+      .dex-entry img {
         width: 90px;
         height: 90px;
         object-fit: contain;
+        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.25));
+      }
+
+      .dex-entry.uncaught img {
+        filter: grayscale(1) brightness(0.3);
+        opacity: 0.4;
+      }
+
+      .dex-number {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      .dex-name {
+        font-size: 1rem;
+        margin-top: 5px;
+        margin-bottom: 4px;
+        font-weight: 600;
+      }
+
+      .variant-tags {
+        margin-top: 2px;
+        font-size: 0.85rem;
+      }
+
+      .tag-normal {
+        color: #4caf50;
+        font-weight: bold;
+        margin-right: 4px;
+      }
+
+      .tag-shiny {
+        color: gold;
+        font-weight: bold;
+      }
+
+      #empty-message {
+        margin-top: 30px;
+        font-size: 0.95rem;
+        color: #aaa;
+      }
+
+      @keyframes cardIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
       }
     </style>
   </head>
 
   <body>
-    <h1>Pokédex (Debug)</h1>
+    <h1>RearSilver's Stream Pokédex</h1>
     <div id="username-label"></div>
-    <div id="status">Connecting…</div>
+    <div id="status">Connecting to Professor Oak…</div>
+
+    <div id="controls">
+      <div id="progress-summary"></div>
+
+      <div class="control-row">
+        <div class="control-group">
+          <label>Generation</label>
+          <button
+            class="filter-button gen-btn active"
+            data-gen="all"
+            type="button"
+          >
+            All
+          </button>
+          <button class="filter-button gen-btn" data-gen="1" type="button">
+            Gen 1
+          </button>
+          <button class="filter-button gen-btn" data-gen="2" type="button">
+            Gen 2
+          </button>
+          <button class="filter-button gen-btn" data-gen="7" type="button">
+            Gen 7
+          </button>
+        </div>
+
+        <div class="control-group">
+          <label>Show</label>
+          <button
+            class="filter-button mode-btn active"
+            data-mode="all"
+            type="button"
+          >
+            All
+          </button>
+          <button
+            class="filter-button mode-btn"
+            data-mode="caught"
+            type="button"
+          >
+            Caught
+          </button>
+          <button
+            class="filter-button mode-btn"
+            data-mode="shiny"
+            type="button"
+          >
+            Shiny
+          </button>
+        </div>
+
+        <div class="control-group">
+          <input
+            id="search-input"
+            type="text"
+            placeholder="Search name or #25…"
+            autocomplete="off"
+          />
+        </div>
+      </div>
+    </div>
+
     <div id="dex-grid"></div>
+    <div id="empty-message" style="display: none">
+      No Pokémon match your filters yet. Try changing generation, mode, or
+      search.
+    </div>
 
     <script>
       console.log("🔥 POKEDEX PAGE LOADED");
 
+      // ---------- CONFIG ----------
       const SPRITE_BASE =
         "https://raw.githubusercontent.com/rearsilvergaming/Streamer-Tools/main/docs/Pokemon/";
 
+      // Add generation so filters work even for uncaught mons
       const ALL_POKEMON = [
-        { num: 1, name: "Bulbasaur" },
-        { num: 4, name: "Charmander" },
-        { num: 5, name: "Charmeleon" },
-        { num: 6, name: "Charizard" },
-        { num: 7, name: "Squirtle" },
-        { num: 16, name: "Pidgey" },
-        { num: 18, name: "Pidgeot" },
-        { num: 25, name: "Pikachu" },
-        { num: 35, name: "Clefairy" },
-        { num: 39, name: "Jigglypuff" },
-        { num: 52, name: "Meowth" },
-        { num: 54, name: "Psyduck" },
-        { num: 59, name: "Arcanine" },
-        { num: 79, name: "Slowpoke" },
-        { num: 94, name: "Gengar" },
-        { num: 132, name: "Ditto" },
-        { num: 133, name: "Eevee" },
-        { num: 143, name: "Snorlax" },
-        { num: 149, name: "Dragonite" },
-        { num: 150, name: "Mewtwo" },
-        { num: 151, name: "Mew" },
-        { num: 197, name: "Umbreon" },
-        { num: 727, name: "Incineroar" },
-        { num: 778, name: "Mimikyu" },
+        { num: 1, name: "Bulbasaur", gen: 1 },
+        { num: 4, name: "Charmander", gen: 1 },
+        { num: 5, name: "Charmeleon", gen: 1 },
+        { num: 6, name: "Charizard", gen: 1 },
+        { num: 7, name: "Squirtle", gen: 1 },
+        { num: 16, name: "Pidgey", gen: 1 },
+        { num: 18, name: "Pidgeot", gen: 1 },
+        { num: 25, name: "Pikachu", gen: 1 },
+        { num: 35, name: "Clefairy", gen: 1 },
+        { num: 39, name: "Jigglypuff", gen: 1 },
+        { num: 52, name: "Meowth", gen: 1 },
+        { num: 54, name: "Psyduck", gen: 1 },
+        { num: 59, name: "Arcanine", gen: 1 },
+        { num: 79, name: "Slowpoke", gen: 1 },
+        { num: 94, name: "Gengar", gen: 1 },
+        { num: 132, name: "Ditto", gen: 1 },
+        { num: 133, name: "Eevee", gen: 1 },
+        { num: 143, name: "Snorlax", gen: 1 },
+        { num: 149, name: "Dragonite", gen: 1 },
+        { num: 150, name: "Mewtwo", gen: 1 },
+        { num: 151, name: "Mew", gen: 1 },
+        { num: 197, name: "Umbreon", gen: 2 },
+        { num: 727, name: "Incineroar", gen: 7 },
+        { num: 778, name: "Mimikyu", gen: 7 },
       ];
 
-      function getParam(k) {
-        return new URL(window.location.href).searchParams.get(k);
+      function getParam(key) {
+        return new URL(window.location.href).searchParams.get(key);
       }
 
-      const user = getParam("user");
-      const userId = getParam("userId");
-
+      const user = getParam("user") || "Unknown";
+      const userId = getParam("userId") || "";
       document.getElementById("username-label").innerText =
         "Showing Pokédex for " + user;
 
+      // Filter state
+      let currentGenFilter = "all"; // "all", "1", "2", "7"
+      let currentMode = "all"; // "all", "caught", "shiny"
+      let searchTerm = "";
+      let latestDex = [];
+
+      // ---------- WEBSOCKET ----------
       let ws;
 
       function connectWS() {
         console.log("🔌 Opening WebSocket…");
-
         ws = new WebSocket("ws://127.0.0.1:8080");
 
         ws.onopen = () => {
           console.log("🟢 WEBSOCKET CONNECTED");
+          document.getElementById("status").innerText = "Connected ✔️";
 
-          ws.send(
-            JSON.stringify({
-              request: "TwitchGetUserGlobal",
-              id: "pokedexRequest",
-              userId: userId,
-              variable: "pokedexData",
-              persisted: true,
-            })
-          );
+          const payload = {
+            request: "TwitchGetUserGlobal",
+            id: "pokedexRequest",
+            userId: userId,
+            variable: "pokedexData",
+            persisted: true,
+          };
+          ws.send(JSON.stringify(payload));
         };
 
         ws.onmessage = (event) => {
           console.log("📥 RAW MESSAGE:", event.data);
-          let msg = JSON.parse(event.data);
+          const msg = JSON.parse(event.data);
 
           if (msg.id === "pokedexRequest") {
-            console.log("🟣 Parsed Message:", msg);
-
-            // Correct extraction
             const dexRaw = msg.variables?.[0]?.value ?? "[]";
-
-            console.log("📦 Correct pokedexData raw:", dexRaw);
+            console.log("📦 pokedexData raw:", dexRaw);
 
             let dex = [];
             try {
               dex = JSON.parse(dexRaw);
             } catch (e) {
-              console.error("❌ JSON parse failed:", e);
+              console.error("❌ Failed to parse pokedexData JSON", e);
             }
 
-            console.log("📘 Parsed userDex:", dex);
-            renderDex(dex);
+            latestDex = dex;
+            console.log("📘 Parsed userDex:", latestDex);
+            updateProgress(latestDex);
+            renderDex(latestDex);
           }
         };
 
         ws.onclose = () => {
-          console.warn("🔴 WS Closed – reconnecting…");
+          console.warn("🔴 WebSocket closed – reconnecting…");
+          document.getElementById("status").innerText =
+            "Disconnected – reconnecting…";
           setTimeout(connectWS, 1000);
         };
       }
 
       connectWS();
 
+      // ---------- PROGRESS ----------
+      function updateProgress(userDex) {
+        const summary = document.getElementById("progress-summary");
+        if (!summary) return;
+
+        const uniqueMap = {};
+        userDex.forEach((mon) => {
+          uniqueMap[mon.PokedexNum] = mon;
+        });
+        const uniqueList = Object.values(uniqueMap);
+
+        const totalSpecies = ALL_POKEMON.length;
+        const caughtCount = uniqueList.length;
+        const shinySpecies = uniqueList.filter((m) => m.Shiny).length;
+
+        const percent =
+          totalSpecies > 0
+            ? ((caughtCount / totalSpecies) * 100).toFixed(1)
+            : "0.0";
+
+        summary.textContent = `Caught ${caughtCount}/${totalSpecies} (${percent}%) • Shiny species: ${shinySpecies}`;
+      }
+
+      // ---------- RENDER ----------
       function renderDex(userDex) {
         const grid = document.getElementById("dex-grid");
+        const emptyMessage = document.getElementById("empty-message");
         grid.innerHTML = "";
 
         const caughtMap = {};
-        userDex.forEach((mon) => (caughtMap[mon.PokedexNum] = mon));
+        userDex.forEach((mon) => {
+          caughtMap[mon.PokedexNum] = mon;
+        });
 
-        ALL_POKEMON.forEach((entry) => {
+        let visibleCount = 0;
+
+        ALL_POKEMON.forEach((entry, index) => {
+          // Generation filter
+          if (
+            currentGenFilter !== "all" &&
+            String(entry.gen) !== currentGenFilter
+          ) {
+            return;
+          }
+
           const caught = caughtMap[entry.num];
+
+          // Mode filter
+          if (currentMode === "caught" && !caught) return;
+          if (currentMode === "shiny" && !(caught && caught.Shiny)) return;
+
+          // Search filter
+          if (searchTerm) {
+            const term = searchTerm.toLowerCase();
+            const nameMatch = entry.name.toLowerCase().includes(term);
+            const numString = String(entry.num);
+            const numMatch =
+              numString.includes(term.replace("#", "")) ||
+              ("#" + numString).includes(term);
+            if (!nameMatch && !numMatch) return;
+          }
 
           const cell = document.createElement("div");
           cell.className = "dex-entry " + (caught ? "caught" : "uncaught");
           if (caught?.Shiny) cell.classList.add("shiny");
 
-          const normalTag = caught?.Normal
-            ? `<span class="tag-normal">Normal ✓</span>`
-            : "";
-          const shinyTag = caught?.Shiny
-            ? `<span class="tag-shiny">Shiny ✨</span>`
-            : "";
+          // staggered reveal
+          cell.style.setProperty(
+            "--delay",
+            (visibleCount * 0.03).toString() + "s"
+          );
+
+          const normalTag =
+            caught && caught.Normal
+              ? '<span class="tag-normal">Normal ✓</span>'
+              : "";
+          const shinyTag =
+            caught && caught.Shiny
+              ? '<span class="tag-shiny">Shiny ✨</span>'
+              : "";
 
           cell.innerHTML = `
-      <img src="${SPRITE_BASE}${entry.name}.png">
-      <div class="dex-number">#${entry.num}</div>
-      <div class="dex-name">${entry.name}</div>
-      <div class="variant-tags">${normalTag} ${shinyTag}</div>
-    `;
+            <img src="${SPRITE_BASE}${entry.name}.png" alt="${entry.name}">
+            <div class="dex-number">#${entry.num}</div>
+            <div class="dex-name">${entry.name}</div>
+            <div class="variant-tags">${normalTag} ${shinyTag}</div>
+          `;
 
           grid.appendChild(cell);
+          visibleCount++;
         });
+
+        if (visibleCount === 0) {
+          emptyMessage.style.display = "block";
+        } else {
+          emptyMessage.style.display = "none";
+        }
       }
+
+      // ---------- FILTER UI HANDLERS ----------
+      const genButtons = document.querySelectorAll(".gen-btn");
+      genButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          genButtons.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          currentGenFilter = btn.dataset.gen;
+          renderDex(latestDex);
+        });
+      });
+
+      const modeButtons = document.querySelectorAll(".mode-btn");
+      modeButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          modeButtons.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          currentMode = btn.dataset.mode;
+          renderDex(latestDex);
+        });
+      });
+
+      const searchInput = document.getElementById("search-input");
+      searchInput.addEventListener("input", () => {
+        searchTerm = searchInput.value.trim();
+        renderDex(latestDex);
+      });
     </script>
   </body>
 </html>
