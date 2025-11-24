@@ -38,11 +38,11 @@
   { "Name": "Sandshrew", "PokedexNum": 27, "Generation": 1, "Evolution": "Sandslash" },
   { "Name": "Sandslash", "PokedexNum": 28, "Generation": 1, "Evolution": "None" },
 
-  { "Name": "Nidoran♀", "PokedexNum": 29, "Generation": 1, "Evolution": "Nidorina" },
+  { "Name": "Nidoran\u2640", "PokedexNum": 29, "Generation": 1, "Evolution": "Nidorina" },
   { "Name": "Nidorina", "PokedexNum": 30, "Generation": 1, "Evolution": "Nidoqueen" },
   { "Name": "Nidoqueen", "PokedexNum": 31, "Generation": 1, "Evolution": "None" },
 
-  { "Name": "Nidoran♂", "PokedexNum": 32, "Generation": 1, "Evolution": "Nidorino" },
+{ "Name": "Nidoran\u2642", "PokedexNum": 32, "Generation": 1, "Evolution": "Nidorino" },
   { "Name": "Nidorino", "PokedexNum": 33, "Generation": 1, "Evolution": "Nidoking" },
   { "Name": "Nidoking", "PokedexNum": 34, "Generation": 1, "Evolution": "None" },
 
@@ -115,7 +115,7 @@
   { "Name": "Magnemite", "PokedexNum": 81, "Generation": 1, "Evolution": "Magneton" },
   { "Name": "Magneton", "PokedexNum": 82, "Generation": 1, "Evolution": "None" },
 
-  { "Name": "Farfetch'd", "PokedexNum": 83, "Generation": 1, "Evolution": "None" },
+{ "Name": "Farfetch\u0027d", "PokedexNum": 83, "Generation": 1, "Evolution": "None" },
 
   { "Name": "Doduo", "PokedexNum": 84, "Generation": 1, "Evolution": "Dodrio" },
   { "Name": "Dodrio", "PokedexNum": 85, "Generation": 1, "Evolution": "None" },
