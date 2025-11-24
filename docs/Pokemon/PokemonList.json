@@ -1,0 +1,64 @@
+[
+  { "Name": "Bulbasaur", "PokedexNum": 1, "Generation": 1, "Evolution": "Ivysaur" },
+  { "Name": "Charmander", "PokedexNum": 4, "Generation": 1, "Evolution": "Charmeleon" },
+  { "Name": "Charmeleon", "PokedexNum": 5, "Generation": 1, "Evolution": "Charizard" },
+  { "Name": "Charizard", "PokedexNum": 6, "Generation": 1, "Evolution": "None (Mega/Giga only)" },
+  { "Name": "Squirtle", "PokedexNum": 7, "Generation": 1, "Evolution": "Wartortle" },
+  { "Name": "Pidgey", "PokedexNum": 16, "Generation": 1, "Evolution": "Pidgeotto" },
+  { "Name": "Pidgeot", "PokedexNum": 18, "Generation": 1, "Evolution": "None" },
+  { "Name": "Pikachu", "PokedexNum": 25, "Generation": 1, "Evolution": "Raichu" },
+  { "Name": "Clefairy", "PokedexNum": 35, "Generation": 1, "Evolution": "Clefable" },
+  { "Name": "Jigglypuff", "PokedexNum": 39, "Generation": 1, "Evolution": "Wigglytuff" },
+  { "Name": "Meowth", "PokedexNum": 52, "Generation": 1, "Evolution": "Persian" },
+  { "Name": "Psyduck", "PokedexNum": 54, "Generation": 1, "Evolution": "Golduck" },
+  { "Name": "Arcanine", "PokedexNum": 59, "Generation": 1, "Evolution": "None" },
+  { "Name": "Machop", "PokedexNum": 66, "Generation": 1, "Evolution": "Machoke" },
+  { "Name": "Machoke", "PokedexNum": 67, "Generation": 1, "Evolution": "Machamp" },
+  { "Name": "Machamp", "PokedexNum": 68, "Generation": 1, "Evolution": "None" },
+  { "Name": "Slowpoke", "PokedexNum": 79, "Generation": 1, "Evolution": "Slowbro/Slowking" },
+  { "Name": "Gengar", "PokedexNum": 94, "Generation": 1, "Evolution": "None" },
+  { "Name": "Ditto", "PokedexNum": 132, "Generation": 1, "Evolution": "None" },
+  { "Name": "Eevee", "PokedexNum": 133, "Generation": 1, "Evolution": "Multiple Evolutions" },
+  { "Name": "Snorlax", "PokedexNum": 143, "Generation": 1, "Evolution": "None" },
+  { "Name": "Dragonite", "PokedexNum": 149, "Generation": 1, "Evolution": "None" },
+  { "Name": "Mewtwo", "PokedexNum": 150, "Generation": 1, "Evolution": "None" },
+  { "Name": "Mew", "PokedexNum": 151, "Generation": 1, "Evolution": "None" },
+
+  { "Name": "Murkrow", "PokedexNum": 198, "Generation": 2, "Evolution": "Honchkrow" },
+  { "Name": "Umbreon", "PokedexNum": 197, "Generation": 2, "Evolution": "None" },
+  { "Name": "Lugia", "PokedexNum": 249, "Generation": 2, "Evolution": "None" },
+  { "Name": "Ho-Oh", "PokedexNum": 250, "Generation": 2, "Evolution": "None" },
+
+  { "Name": "Taillow", "PokedexNum": 276, "Generation": 3, "Evolution": "Swellow" },
+  { "Name": "Swellow", "PokedexNum": 277, "Generation": 3, "Evolution": "None" },
+  { "Name": "Rayquaza", "PokedexNum": 384, "Generation": 3, "Evolution": "None" },
+
+  { "Name": "Honchkrow", "PokedexNum": 430, "Generation": 4, "Evolution": "None" },
+  { "Name": "Riolu", "PokedexNum": 447, "Generation": 4, "Evolution": "Lucario" },
+  { "Name": "Lucario", "PokedexNum": 448, "Generation": 4, "Evolution": "None" },
+
+  { "Name": "Zorua", "PokedexNum": 570, "Generation": 5, "Evolution": "Zoroark" },
+  { "Name": "Zoroark", "PokedexNum": 571, "Generation": 5, "Evolution": "None" },
+  { "Name": "Rufflet", "PokedexNum": 627, "Generation": 5, "Evolution": "Braviary" },
+  { "Name": "Braviary", "PokedexNum": 628, "Generation": 5, "Evolution": "None" },
+
+  { "Name": "Fletchling", "PokedexNum": 661, "Generation": 6, "Evolution": "Fletchinder" },
+  { "Name": "Fletchinder", "PokedexNum": 662, "Generation": 6, "Evolution": "Talonflame" },
+  { "Name": "Talonflame", "PokedexNum": 663, "Generation": 6, "Evolution": "None" },
+
+  { "Name": "Rowlet", "PokedexNum": 722, "Generation": 7, "Evolution": "Dartrix" },
+  { "Name": "Dartrix", "PokedexNum": 723, "Generation": 7, "Evolution": "Decidueye" },
+  { "Name": "Decidueye", "PokedexNum": 724, "Generation": 7, "Evolution": "None" },
+  { "Name": "Incineroar", "PokedexNum": 727, "Generation": 7, "Evolution": "None" },
+  { "Name": "Mimikyu", "PokedexNum": 778, "Generation": 7, "Evolution": "None" },
+
+  { "Name": "Toxel", "PokedexNum": 848, "Generation": 8, "Evolution": "Toxtricity" },
+  {
+    "Name": "Toxtricity",
+    "PokedexNum": 849,
+    "Generation": 8,
+    "Evolution": "None",
+    "HasAmped": true,
+    "HasLowKey": true
+  }
+]
