@@ -217,6 +217,15 @@
           transform: translateY(0) scale(1);
         }
       }
+
+      .footer {
+        padding-bottom: 20px;
+        padding-top: 50px;
+        margin-top: 50px;
+        border-top: 1px solid #333;
+        font-size: 0.95rem;
+        color: #ddd;
+      }
     </style>
   </head>
 
@@ -306,6 +315,37 @@
       search.
     </div>
 
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
+        <div>
+          <a
+            class="filter-button mode-btn"
+            href="https://rearsilvergaming.github.io/Streamer-Tools"
+            target="_blank"
+            rel="noreferrer"
+            >Streamer Toolkit</a
+          >
+          <a
+            class="filter-button mode-btn"
+            href="https://www.twitch.tv/rearsilver"
+            target="_blank"
+            rel="noreferrer"
+            >RearSilver's Twitch</a
+          >
+          <a
+            class="filter-button mode-btn"
+            href="https://discord.gg/RRbQ93Ceew"
+            target="_blank"
+            rel="noreferrer"
+            >RearSilver's Discord</a
+          >
+        </div>
+        <br />
+        <div>&copy; RearSilver 2025</div>
+      </div>
+    </footer>
+
     <script>
       console.log("🔥 POKEDEX PAGE LOADED");
 
@@ -354,7 +394,8 @@
 
         ws.onopen = () => {
           console.log("🟢 WEBSOCKET CONNECTED");
-          document.getElementById("status").innerText = "Connected ✔️";
+          document.getElementById("status").innerText =
+            "Connected to Professor Oak using FrontSilver Systems Ltd.✔️";
 
           const payload = {
             request: "TwitchGetUserGlobal",
