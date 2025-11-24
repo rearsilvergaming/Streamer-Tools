@@ -726,10 +726,16 @@
       function setPokemonSprite(name) {
         const png = `${BASE_IMAGE_URL}${name}.png`;
         const webp = `${BASE_IMAGE_URL}${name}.webp`;
+        const fallback = `${BASE_IMAGE_URL}Missing%20Image.png`;
 
         pokemonImage.src = png;
+
         pokemonImage.onerror = () => {
-          pokemonImage.onerror = null;
+          // Try .webp next
+          pokemonImage.onerror = () => {
+            // Final fallback
+            pokemonImage.src = fallback;
+          };
           pokemonImage.src = webp;
         };
       }

@@ -496,7 +496,12 @@
           }
 
           cell.innerHTML = `
-            <img src="${SPRITE_BASE}${name}.png" alt="${name}">
+            <img 
+  src="${SPRITE_BASE}${name}.png" 
+  alt="${name}"
+  onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/rearsilvergaming/Streamer-Tools/main/docs/Pokemon/Missing%20Image.png';"
+/>
+
             <div class="dex-number">#${num}</div>
             <div class="dex-name">${name}</div>
             <div class="variant-tags">${tagsHtml.join("")}</div>
