@@ -429,6 +429,70 @@
           filter: drop-shadow(0 0 15px gold);
         }
       }
+
+      /* === SCREEN SHAKE === */
+      .screen-shake {
+        animation: screenShake 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+      }
+
+      @keyframes screenShake {
+        0% {
+          transform: translate(0, 0);
+        }
+        20% {
+          transform: translate(-6px, 4px);
+        }
+        40% {
+          transform: translate(5px, -5px);
+        }
+        60% {
+          transform: translate(-4px, 3px);
+        }
+        80% {
+          transform: translate(3px, -4px);
+        }
+        100% {
+          transform: translate(0, 0);
+        }
+      }
+
+      /* === IDLE BOUNCE === */
+      .idle-bounce {
+        animation: idleBounce 2.6s ease-in-out infinite;
+      }
+
+      @keyframes idleBounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-4px);
+        }
+      }
+
+      /* === MISSED THROW (Pokéball flies past and falls off-screen) === */
+      .animate-miss-throw {
+        animation: missThrow 0.9s ease-out forwards;
+      }
+
+      @keyframes missThrow {
+        0% {
+          opacity: 0;
+          transform: translate(-200px, 150px) rotate(0deg) scale(0.1);
+        }
+        40% {
+          opacity: 1;
+          transform: translate(40px, -120px) rotate(360deg) scale(1.2);
+        }
+        70% {
+          transform: translate(200px, 20px) rotate(500deg) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(350px, 220px) rotate(720deg) scale(0.3);
+        }
+      }
     </style>
   </head>
   <body>
@@ -611,7 +675,7 @@
         setTimeout(() => startWebSocket(nextIndex), delay);
       }
 
-      // ---- Route incoming commands to overlay logic (unchanged) ----
+      // ---- Route incoming commands to overlay logic ----
       function routePokemonCommand(payload) {
         switch (payload.command) {
           case "spawn":
@@ -631,6 +695,9 @@
             break;
           case "flee":
             handleDisappear(payload);
+            break;
+          case "miss":
+            handleMissThrow(payload);
             break;
         }
       }
@@ -656,7 +723,6 @@
 
       /* =====================================================
    === Pokémon Overlay Logic ===
-   (Everything below is unchanged except image URLs)
    ===================================================== */
 
       const container = document.getElementById("pokemon-container");
@@ -677,7 +743,7 @@
 
       const THROW_DURATION = 800;
       const ESCAPE_DURATION = 600;
-      const SUCCESS_DURATION = 1500;
+      const SUCCESS_DURATION = 5000;
       const FLEE_DURATION = 1000;
 
       const BATTLE_CELL_SIZE = 350;
@@ -687,9 +753,11 @@
 
       function resetState() {
         container.style.opacity = "0";
+        container.classList.remove("screen-shake");
 
         [pokemonImage, pokeballImage, speedLines, dustSmall, dustLarge].forEach(
           (el) => {
+            if (!el) return;
             el.className = el.className.replace(/\banimate-[a-z-]+\b/g, "");
           }
         );
@@ -698,16 +766,33 @@
         pokemonImage.style.transform = "translateX(0) scale(1)";
         pokemonImage.style.width = "";
         pokemonImage.style.height = "";
+        pokemonImage.classList.remove(
+          "idle-bounce",
+          "shiny-glow",
+          "shiny-hue-pulse"
+        );
 
         pokeballImage.style.opacity = "0";
         pokeballImage.style.display = "none";
+        pokeballImage.classList.remove(
+          "animate-miss-throw",
+          "animate-pokeball-throw",
+          "animate-wiggle",
+          "animate-catch-success",
+          "animate-shiny-success"
+        );
 
         [speedLines, dustSmall, dustLarge].forEach((el) => {
+          if (!el) return;
           el.style.opacity = "0";
         });
 
         pokemonInfo.style.opacity = "0";
         pokemonInfo.textContent = "";
+        pokemonInfo.style.border = "2px solid #ffcb05";
+
+        const shinyLayer = document.getElementById("shiny-sparkle-layer");
+        shinyLayer.innerHTML = "";
 
         currentPokemonName = "";
       }
@@ -768,8 +853,13 @@
               pokemonInfo.style.border = "2px solid gold";
             }
 
-            // Original animation
+            // Run-in + screen shake + FX
             pokemonImage.classList.add("animate-run-in");
+            container.classList.remove("screen-shake");
+            requestAnimationFrame(() =>
+              container.classList.add("screen-shake")
+            );
+
             pokemonImage.style.opacity = "1";
             speedLines.classList.add("animate-speed-lines");
 
@@ -786,6 +876,11 @@
           setTimeout(() => {
             pokemonInfo.style.opacity = "1";
           }, 750);
+
+          // Start idle bounce after the main entrance finishes
+          setTimeout(() => {
+            pokemonImage.classList.add("idle-bounce");
+          }, 2200);
         };
 
         setPokemonSprite(currentPokemonName);
@@ -804,6 +899,15 @@
         pokeballImage.style.display = "block";
         pokeballImage.style.opacity = "1";
 
+        // Reset any previous throw/miss animations
+        pokeballImage.classList.remove(
+          "animate-miss-throw",
+          "animate-pokeball-throw",
+          "animate-catch-success",
+          "animate-shiny-success",
+          "animate-wiggle"
+        );
+
         // ⭐ SHINY BONUS: make Pokéball glow gold when thrown
         if (pokemonImage.classList.contains("shiny-glow")) {
           pokeballImage.style.filter =
@@ -812,6 +916,9 @@
           // Reset filter for normal mons
           pokeballImage.style.filter = "none";
         }
+
+        // Force reflow before animation
+        void pokeballImage.offsetWidth;
 
         pokeballImage.classList.add("animate-pokeball-throw");
 
@@ -828,12 +935,40 @@
         );
       }
 
+      function handleMissThrow() {
+        // Play a quick "miss" throw that flies past the Pokémon and falls away
+        const cacheBust = `?v=${Date.now()}`;
+        pokeballImage.src = POKEBALL_URL + cacheBust;
+        pokeballImage.style.display = "block";
+        pokeballImage.style.opacity = "1";
+
+        // Clear other animations
+        pokeballImage.classList.remove(
+          "animate-pokeball-throw",
+          "animate-wiggle",
+          "animate-catch-success",
+          "animate-shiny-success",
+          "animate-miss-throw"
+        );
+        container.classList.remove("screen-shake");
+
+        // Force reflow so we can retrigger animation
+        void pokeballImage.offsetWidth;
+
+        pokeballImage.classList.add("animate-miss-throw");
+        container.classList.add("screen-shake");
+
+        setTimeout(() => {
+          pokeballImage.style.display = "none";
+          pokeballImage.classList.remove("animate-miss-throw");
+          container.classList.remove("screen-shake");
+        }, 1000);
+      }
+
       function handleCatchFail() {
         if (!currentPokemonName) return;
 
-        // ==========================================
-        // 1. Remove ALL animation classes immediately
-        // ==========================================
+        // Remove ALL animation classes immediately
         pokemonImage.classList.remove(
           "animate-run-in",
           "animate-suck-in",
@@ -841,28 +976,22 @@
           "animate-flee-run"
         );
 
-        // 2. Hide Pokéball
+        // Hide Pokéball
         pokeballImage.style.display = "none";
         pokeballImage.classList.remove("animate-wiggle");
 
-        // ==========================================
-        // 3. Hard reset the Pokémon position & scale
-        // ==========================================
+        // Hard reset the Pokémon position & scale
         pokemonImage.style.opacity = "1";
         pokemonImage.style.transform = "translate(0,0) scale(1)";
 
         // Force reflow so the reset is applied BEFORE animation restarts
         void pokemonImage.offsetWidth;
 
-        // ==========================================
-        // 4. Apply the escape animation cleanly
-        // ==========================================
+        // Apply the escape animation cleanly
         pokemonImage.classList.add("animate-catch-fail-escape");
         pokemonInfo.textContent = `${currentPokemonName} escaped!`;
 
-        // ==========================================
-        // 5. After animation, restore idle form again
-        // ==========================================
+        // After animation, restore idle form again
         setTimeout(() => {
           pokemonImage.classList.remove("animate-catch-fail-escape");
           pokemonImage.style.opacity = "1";
@@ -880,6 +1009,7 @@
         pokeballImage.classList.remove("animate-wiggle");
         pokeballImage.classList.remove("animate-catch-success");
         pokeballImage.classList.remove("animate-shiny-success");
+        pokeballImage.classList.remove("animate-miss-throw");
 
         // ⭐ SHINY SUCCESS GLOW
         if (isShinyCatch) {
