@@ -571,19 +571,7 @@
           );
         }
       }
-
-      // ---- Optional: tell Streamer.bot overlay died (HTTP action) ----
-      function warnStreamerBot() {
-        try {
-          fetch("http://127.0.0.1:7474/overlayDisconnected", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ overlay: "pokemon" }),
-          });
-        } catch {
-          // If HTTP server isn't enabled, just ignore
-        }
-      }
+      // ---- WebSocket connection with reconnect logic ----
 
       function startWebSocket(endpointIndex = 0) {
         const url = endpoints[endpointIndex % endpoints.length];
@@ -710,11 +698,9 @@
         const silentFor = Date.now() - lastMessageTime;
         if (silentFor > MAX_SILENCE_MS) {
           console.warn(
-            "[WebSocket] Overlay has been silent too long, notifying SB."
+            "[Overlay] No activity detected — forcing browser reload"
           );
-          warnStreamerBot();
-          // Reset timer so we don't spam
-          lastMessageTime = Date.now();
+          location.reload();
         }
       }, 5000);
 
