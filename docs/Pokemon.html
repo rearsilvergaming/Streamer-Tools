@@ -798,20 +798,23 @@
       }
 
       function setPokemonSprite(name) {
-        const png = `${BASE_IMAGE_URL}${name}.png`;
-        const webp = `${BASE_IMAGE_URL}${name}.webp`;
-        const fallback = `${BASE_IMAGE_URL}Missing%20Image.png`;
+        const cacheBust = `?v=${Date.now()}`;
 
-        pokemonImage.src = png;
+        const png = `${BASE_IMAGE_URL}${name}.png${cacheBust}`;
+        const webp = `${BASE_IMAGE_URL}${name}.webp${cacheBust}`;
+        const fallback = `${BASE_IMAGE_URL}Missing%20Image.png${cacheBust}`;
+
+        // Clear src first to force OBS to drop the old texture
+        pokemonImage.src = "";
 
         pokemonImage.onerror = () => {
-          // Try .webp next
           pokemonImage.onerror = () => {
-            // Final fallback
             pokemonImage.src = fallback;
           };
           pokemonImage.src = webp;
         };
+
+        pokemonImage.src = png;
       }
 
       function handleSpawn(data) {
