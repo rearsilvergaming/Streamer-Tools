@@ -503,6 +503,10 @@
 
       // We expect: ?user=<name>&dex=<gzipBase64>
       const dexParam = getParam("dex") || "";
+      const keyParam = getParam("key") || "";
+
+      // ✅ CHANGE THIS to your Worker base URL
+      const WORKER_BASE = "https://YOUR-WORKER-DOMAIN";
 
       // Decode gzip+base64 into JSON text using DecompressionStream (Chromium/CEF)
       // If OBS/CEF ever lacks this, we show a clear error instead of silently failing.
@@ -530,10 +534,60 @@
         return text || "[]";
       }
 
-      (async function initDexFromUrl() {
+      (async function initDex() {
         const statusEl = document.getElementById("status");
 
         try {
+          // -----------------------------------------
+          // 1) KEY MODE (preferred): fetch from Worker
+          // -----------------------------------------
+          if (keyParam) {
+            statusEl.innerText = "Loading Pokédex from server…";
+            statusEl.style.opacity = "0.9";
+
+            const url =
+              WORKER_BASE.replace(/\/$/, "") +
+              "/get?key=" +
+              encodeURIComponent(keyParam);
+            const resp = await fetch(url, { method: "GET" });
+
+            if (!resp.ok) {
+              throw new Error("Worker fetch failed: " + resp.status);
+            }
+
+            const data = await resp.json(); // expects: { dex: "<gzipBase64>" } or { dex:"" }
+            const dexB64 = data && data.dex ? data.dex : "";
+
+            if (!dexB64) {
+              latestDex = [];
+              statusEl.innerText = "No Pokédex data found for this user yet.";
+              return;
+            }
+
+            const jsonText = await decodeDexFromUrl(dexB64);
+
+            let dex = [];
+            try {
+              dex = JSON.parse(jsonText);
+            } catch (e) {
+              console.error("❌ Failed to parse decoded dex JSON", e);
+              dex = [];
+            }
+
+            latestDex = Array.isArray(dex) ? dex : [];
+            statusEl.innerText = "Pokédex loaded ✔️";
+
+            if (allSpecies.length > 0) {
+              updateProgress(latestDex);
+              renderDex(latestDex);
+            }
+
+            return;
+          }
+
+          // -----------------------------------------
+          // 2) LEGACY MODE: dex is in URL param
+          // -----------------------------------------
           if (!dexParam) {
             latestDex = [];
             statusEl.innerText = "No Pokédex data found in the link.";
@@ -555,16 +609,15 @@
           statusEl.innerText = "Pokédex loaded ✔️";
           statusEl.style.opacity = "0.9";
 
-          // If species already loaded, render now.
           if (allSpecies.length > 0) {
             updateProgress(latestDex);
             renderDex(latestDex);
           }
         } catch (err) {
-          console.error("❌ Failed to decode Pokédex from URL:", err);
+          console.error("❌ Failed to load Pokédex:", err);
           latestDex = [];
           statusEl.innerText =
-            "Failed to load Pokédex from link (invalid/too long/corrupted data).";
+            "Failed to load Pokédex (server error / invalid data).";
           statusEl.style.opacity = "0.9";
         }
       })();
