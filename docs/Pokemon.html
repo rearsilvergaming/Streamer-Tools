@@ -687,6 +687,9 @@
           case "miss":
             handleMissThrow(payload);
             break;
+          case "_keepalive":
+            // No-op: keeps OBS browser source alive
+            return;
         }
       }
 
