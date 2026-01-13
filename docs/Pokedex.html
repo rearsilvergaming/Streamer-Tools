@@ -499,111 +499,42 @@
           console.error("❌ Failed to load PokemonList.json", err);
         });
 
-      // ---------- Load Dex from URL param (NO WebSocket) ----------
+      // ---------- Load Dex from Cloudflare key (NO WebSocket) ----------
+      // We expect: ?user=<name>&key=<shortKey>
 
-      // We expect: ?user=<name>&dex=<gzipBase64>
-      const dexParam = getParam("dex") || "";
       const keyParam = getParam("key") || "";
 
-      // ✅ CHANGE THIS to your Worker base URL
-      const WORKER_BASE = "https://YOUR-WORKER-DOMAIN";
+      // ✅ SET THIS to your Worker base URL (same one as C#)
+      const WORKER_BASE_URL = "https:/pokedex-api.rearsilver.workers.dev";
 
-      // Decode gzip+base64 into JSON text using DecompressionStream (Chromium/CEF)
-      // If OBS/CEF ever lacks this, we show a clear error instead of silently failing.
-      async function decodeDexFromUrl(dexB64) {
-        if (!dexB64) return "[]";
+      async function fetchDexFromWorker(key) {
+        const url = `${WORKER_BASE_URL.replace(
+          /\/$/,
+          ""
+        )}/dex?key=${encodeURIComponent(key)}`;
+        const res = await fetch(url, { method: "GET" });
 
-        // URLSearchParams already decoded once, but keep this safe:
-        const b64 = dexB64.replace(/ /g, "+");
-
-        // Base64 -> Uint8Array
-        const binary = atob(b64);
-        const bytes = new Uint8Array(binary.length);
-        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-
-        // Gunzip -> string
-        if (typeof DecompressionStream === "undefined") {
-          throw new Error(
-            "This browser does not support DecompressionStream('gzip')."
-          );
+        if (!res.ok) {
+          const t = await res.text();
+          throw new Error(`Worker GET failed (${res.status}): ${t}`);
         }
 
-        const ds = new DecompressionStream("gzip");
-        const decompressedStream = new Blob([bytes]).stream().pipeThrough(ds);
-        const text = await new Response(decompressedStream).text();
-        return text || "[]";
+        // This is the JSON array text you stored
+        return await res.json();
       }
 
-      (async function initDex() {
+      (async function initDexFromKey() {
         const statusEl = document.getElementById("status");
 
         try {
-          // -----------------------------------------
-          // 1) KEY MODE (preferred): fetch from Worker
-          // -----------------------------------------
-          if (keyParam) {
-            statusEl.innerText = "Loading Pokédex from server…";
-            statusEl.style.opacity = "0.9";
-
-            const url =
-              WORKER_BASE.replace(/\/$/, "") +
-              "/get?key=" +
-              encodeURIComponent(keyParam);
-            const resp = await fetch(url, { method: "GET" });
-
-            if (!resp.ok) {
-              throw new Error("Worker fetch failed: " + resp.status);
-            }
-
-            const data = await resp.json(); // expects: { dex: "<gzipBase64>" } or { dex:"" }
-            const dexB64 = data && data.dex ? data.dex : "";
-
-            if (!dexB64) {
-              latestDex = [];
-              statusEl.innerText = "No Pokédex data found for this user yet.";
-              return;
-            }
-
-            const jsonText = await decodeDexFromUrl(dexB64);
-
-            let dex = [];
-            try {
-              dex = JSON.parse(jsonText);
-            } catch (e) {
-              console.error("❌ Failed to parse decoded dex JSON", e);
-              dex = [];
-            }
-
-            latestDex = Array.isArray(dex) ? dex : [];
-            statusEl.innerText = "Pokédex loaded ✔️";
-
-            if (allSpecies.length > 0) {
-              updateProgress(latestDex);
-              renderDex(latestDex);
-            }
-
-            return;
-          }
-
-          // -----------------------------------------
-          // 2) LEGACY MODE: dex is in URL param
-          // -----------------------------------------
-          if (!dexParam) {
+          if (!keyParam) {
             latestDex = [];
-            statusEl.innerText = "No Pokédex data found in the link.";
+            statusEl.innerText = "No Pokédex key found in the link.";
             statusEl.style.opacity = "0.9";
             return;
           }
 
-          const jsonText = await decodeDexFromUrl(dexParam);
-
-          let dex = [];
-          try {
-            dex = JSON.parse(jsonText);
-          } catch (e) {
-            console.error("❌ Failed to parse decoded dex JSON", e);
-            dex = [];
-          }
+          const dex = await fetchDexFromWorker(keyParam);
 
           latestDex = Array.isArray(dex) ? dex : [];
           statusEl.innerText = "Pokédex loaded ✔️";
@@ -614,10 +545,10 @@
             renderDex(latestDex);
           }
         } catch (err) {
-          console.error("❌ Failed to load Pokédex:", err);
+          console.error("❌ Failed to load Pokédex from Worker:", err);
           latestDex = [];
           statusEl.innerText =
-            "Failed to load Pokédex (server error / invalid data).";
+            "Failed to load Pokédex (invalid key / expired / worker offline).";
           statusEl.style.opacity = "0.9";
         }
       })();
