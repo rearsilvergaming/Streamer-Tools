@@ -505,21 +505,23 @@
       const keyParam = getParam("key") || "";
 
       // ✅ SET THIS to your Worker base URL (same one as C#)
-      const WORKER_BASE_URL = "https://pokedex-api.rearsilver.workers.dev";
+      const WORKER_BASE_URL =
+        "https://pokedex-api.rearsilver.workers.dev".replace(/\/+$/, "");
 
       async function fetchDexFromWorker(key) {
-        const url = `${WORKER_BASE_URL.replace(
-          /\/$/,
-          ""
-        )}/dex?key=${encodeURIComponent(key)}`;
-        const res = await fetch(url, { method: "GET" });
+        const url = `https://pokedex-api.rearsilver.workers.dev/dex?key=${encodeURIComponent(
+          key
+        )}`;
+
+        console.log("📡 Fetching Pokédex from:", url);
+
+        const res = await fetch(url);
 
         if (!res.ok) {
           const t = await res.text();
           throw new Error(`Worker GET failed (${res.status}): ${t}`);
         }
 
-        // This is the JSON array text you stored
         return await res.json();
       }
 
