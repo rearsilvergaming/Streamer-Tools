@@ -472,7 +472,6 @@
       }
 
       const user = getParam("user") || "Unknown";
-      const userId = getParam("userId") || "";
       document.getElementById("username-label").innerText =
         "Showing Pokédex for " + user;
 
@@ -500,64 +499,75 @@
           console.error("❌ Failed to load PokemonList.json", err);
         });
 
-      // ---------- WebSocket to Streamer.bot ----------
-      let ws;
+      // ---------- Load Dex from URL param (NO WebSocket) ----------
 
-      function connectWS() {
-        console.log("🔌 Opening WebSocket…");
-        ws = new WebSocket("ws://127.0.0.1:8080");
+      // We expect: ?user=<name>&dex=<gzipBase64>
+      const dexParam = getParam("dex") || "";
 
-        ws.onopen = () => {
-          console.log("🟢 WEBSOCKET CONNECTED");
-          document.getElementById("status").innerText =
-            "Connected to Professor Oak using FrontSilver Systems Ltd.✔️";
+      // Decode gzip+base64 into JSON text using DecompressionStream (Chromium/CEF)
+      // If OBS/CEF ever lacks this, we show a clear error instead of silently failing.
+      async function decodeDexFromUrl(dexB64) {
+        if (!dexB64) return "[]";
 
-          const payload = {
-            request: "TwitchGetUserGlobal",
-            id: "pokedexRequest",
-            userId: userId,
-            variable: "pokedexData",
-            persisted: true,
-          };
-          ws.send(JSON.stringify(payload));
-        };
+        // URLSearchParams already decoded once, but keep this safe:
+        const b64 = dexB64.replace(/ /g, "+");
 
-        ws.onmessage = (event) => {
-          console.log("📥 RAW MESSAGE:", event.data);
-          const msg = JSON.parse(event.data);
+        // Base64 -> Uint8Array
+        const binary = atob(b64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
 
-          if (msg.id === "pokedexRequest") {
-            const dexRaw =
-              (msg.variables && msg.variables[0] && msg.variables[0].value) ||
-              "[]";
-            console.log("📦 pokedexData raw:", dexRaw);
+        // Gunzip -> string
+        if (typeof DecompressionStream === "undefined") {
+          throw new Error(
+            "This browser does not support DecompressionStream('gzip')."
+          );
+        }
 
-            let dex = [];
-            try {
-              dex = JSON.parse(dexRaw);
-            } catch (e) {
-              console.error("❌ Failed to parse pokedexData JSON", e);
-            }
-
-            latestDex = dex;
-            console.log("📘 Parsed userDex:", latestDex);
-
-            if (allSpecies.length > 0) {
-              updateProgress(latestDex);
-              renderDex(latestDex);
-            }
-          }
-        };
-
-        ws.onclose = () => {
-          console.warn("🔴 WebSocket closed – reconnecting…");
-          document.getElementById("status").innerText =
-            "Disconnected – reconnecting…";
-          setTimeout(connectWS, 1000);
-        };
+        const ds = new DecompressionStream("gzip");
+        const decompressedStream = new Blob([bytes]).stream().pipeThrough(ds);
+        const text = await new Response(decompressedStream).text();
+        return text || "[]";
       }
 
-      connectWS();
+      (async function initDexFromUrl() {
+        const statusEl = document.getElementById("status");
+
+        try {
+          if (!dexParam) {
+            latestDex = [];
+            statusEl.innerText = "No Pokédex data found in the link.";
+            statusEl.style.opacity = "0.9";
+            return;
+          }
+
+          const jsonText = await decodeDexFromUrl(dexParam);
+
+          let dex = [];
+          try {
+            dex = JSON.parse(jsonText);
+          } catch (e) {
+            console.error("❌ Failed to parse decoded dex JSON", e);
+            dex = [];
+          }
+
+          latestDex = Array.isArray(dex) ? dex : [];
+          statusEl.innerText = "Pokédex loaded ✔️";
+          statusEl.style.opacity = "0.9";
+
+          // If species already loaded, render now.
+          if (allSpecies.length > 0) {
+            updateProgress(latestDex);
+            renderDex(latestDex);
+          }
+        } catch (err) {
+          console.error("❌ Failed to decode Pokédex from URL:", err);
+          latestDex = [];
+          statusEl.innerText =
+            "Failed to load Pokédex from link (invalid/too long/corrupted data).";
+          statusEl.style.opacity = "0.9";
+        }
+      })();
 
       // ---------- Progress ----------
       function updateProgress(userDex) {
