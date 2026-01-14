@@ -509,13 +509,17 @@
         "https://pokedex-api.rearsilver.workers.dev".replace(/\/+$/, "");
 
       async function fetchDexFromWorker(key) {
-        const url = `https://pokedex-api.rearsilver.workers.dev/dex?key=${encodeURIComponent(
-          key
-        )}`;
+        const base = "https://pokedex-api.rearsilver.workers.dev";
+        const url = `${base}/dex?key=${encodeURIComponent(key)}`;
 
         console.log("📡 Fetching Pokédex from:", url);
 
-        const res = await fetch(url);
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        });
 
         if (!res.ok) {
           const t = await res.text();
