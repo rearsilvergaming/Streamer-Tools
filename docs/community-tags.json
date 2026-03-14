@@ -1,11 +1,19 @@
 [
   {
     "name": "#FirstPlaythrough",
-    "count": 77
+    "count": 104
   },
   {
     "name": "#NoBackseating",
-    "count": 63
+    "count": 89
+  },
+  {
+    "name": "#Furry",
+    "count": 76
+  },
+  {
+    "name": "#VTuber",
+    "count": 64
   },
   {
     "name": "#NoSpoilers",
@@ -14,10 +22,6 @@
   {
     "name": "#Gaming",
     "count": 60
-  },
-  {
-    "name": "#Furry",
-    "count": 54
   },
   {
     "name": "#18Plus",
@@ -32,11 +36,7 @@
     "count": 42
   },
   {
-    "name": "#VTuber",
-    "count": 42
-  },
-  {
-    "name": "#",
-    "count": 11
+    "name": "#CosyVibes",
+    "count": 23
   }
 ]
