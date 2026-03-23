@@ -1,0 +1,354 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Twitch Chat HUD</title>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 1100px; /* lock overlay canvas width */
+        height: 900px; /* match overlay height */
+        overflow: hidden; /* prevent scroll bleed */
+        font-family: Verdana, sans-serif;
+      }
+
+      .root {
+        position: relative;
+        width: 1100px;
+        height: 100%;
+      }
+
+      /* LEFT SIDE — CHAT ONLY */
+      .chat-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 800px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: #0f1115;
+      }
+
+      /* Top bar */
+      .topbar {
+        height: 36px;
+        background: #6441a5;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        font-size: 13px;
+        font-weight: bolder;
+        color: white;
+        justify-content: space-between;
+      }
+
+      /* Panel toggle tab */
+      .panel-tab {
+        position: absolute;
+        top: 0px;
+        right: 300px;
+        width: 40px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #6441a5;
+
+        cursor: pointer;
+        user-select: none;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 20px;
+      }
+
+      .panel-tab:hover {
+        background-color: #6441a5;
+        color: #9f9f9f;
+      }
+
+      /* Chat section */
+      .chat-frame-wrapper {
+        flex: 1;
+      }
+
+      .chat-frame-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      /* MY VERSION OF THE CONTROL PANEL WITH NO CHAT SECTION SIZE CHANGE*/
+      .control-panel {
+        position: absolute;
+        top: 0;
+        left: 800px; /* EXACTLY after chat */
+        width: 300px;
+        height: 100%;
+        background: #6441a5;
+        padding: 16px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        color: white;
+
+        opacity: 1;
+        pointer-events: auto;
+        transition: opacity 0.2s ease;
+      }
+
+      /* CHATGPT VERSION OF THE CONTROL PANEL WITH CHAT SECTION GROWTH*/
+      /*.control-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100%;
+    background: #6441a5;
+    padding: 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    color: white;
+
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.25s ease;
+}*/
+
+      .control-panel.hidden {
+        opacity: 0;
+        pointer-events: none; /* prevents invisible blocking */
+      }
+
+      .control-panel.hidden {
+        opacity: 0;
+        pointer-events: none; /* CRITICAL: stops blocking chat typing/clicking */
+      }
+
+      .control-panel label {
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 14px;
+        display: block;
+        opacity: 0.8;
+        color: white;
+      }
+
+      .control-panel input,
+      .control-panel select {
+        width: 100%;
+        margin-top: 6px;
+      }
+
+      button {
+        width: 100%;
+        margin-top: 18px;
+        padding: 8px;
+        background: white;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
+        color: #6441a5;
+        cursor: pointer;
+        font-family: Verdana, sans-serif;
+        font-weight: bold;
+      }
+
+      button:hover {
+        background-color: #6441a5;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="root">
+      <div class="chat-area">
+        <div class="topbar">
+          Twitch Chat HUD
+          <div class="panel-tab" onclick="togglePanel()">⚙</div>
+        </div>
+
+        <div class="chat-frame-wrapper">
+          <iframe id="chatFrame"></iframe>
+        </div>
+      </div>
+
+      <div class="control-panel">
+        <label>Anchor</label>
+        <select id="anchor">
+          <option value="0">World</option>
+          <option value="1">Head</option>
+          <option value="2">Right Hand</option>
+          <option value="3">Left Hand</option>
+        </select>
+
+        <label>Size</label>
+        <input
+          id="size"
+          type="range"
+          min="0.2"
+          max="1.2"
+          step="0.02"
+          value="0.35"
+        />
+
+        <label>Opacity</label>
+        <input
+          id="opacity"
+          type="range"
+          min="0.2"
+          max="1"
+          step="0.02"
+          value="0.9"
+        />
+
+        <label>Curvature</label>
+        <input id="curve" type="range" min="0" max="1" step="0.02" value="0" />
+
+        <label>Framerate</label>
+        <input id="fps" type="range" min="15" max="60" step="5" value="30" />
+
+        <button onclick="logout()">Logout</button>
+
+        <div style="margin-top: 12px; font-size: 11px; opacity: 1">
+          Developed by RearSilver
+          <br />
+          <br />
+          Not affiliated with Twitch.tv
+        </div>
+      </div>
+    </div>
+
+    <script src="js/helper.js"></script>
+
+    <script>
+      const API = new OVRT({ function_queue: true });
+      let Overlay = null;
+
+      // Set proper window title
+      window.addEventListener("api-ready", function () {
+        API.setCurrentBrowserTitle("Twitch Chat HUD");
+
+        API.sendNotification("HUD Ready", "api-ready fired in HUD");
+
+        API.getUniqueID().then((uid) => {
+          if (uid !== -1) {
+            Overlay = new OVRTOverlay(uid);
+            Overlay.setInputBlocked(false);
+            Overlay.setBrowserOptionsEnabled(false);
+
+            // === CONTROL PANEL WIRING ===
+
+            // Anchor
+            document
+              .getElementById("anchor")
+              .addEventListener("change", function (e) {
+                Overlay.setAttachedDevice(parseInt(e.target.value));
+              });
+
+            // Size
+            let sizeTimeout = null;
+
+            document
+              .getElementById("size")
+              .addEventListener("input", function (e) {
+                clearTimeout(sizeTimeout);
+
+                const value = parseFloat(e.target.value);
+
+                sizeTimeout = setTimeout(() => {
+                  Overlay.setSize(value);
+                }, 40); // small delay prevents feedback jitter
+              });
+
+            // Opacity
+            document
+              .getElementById("opacity")
+              .addEventListener("input", function (e) {
+                Overlay.setOpacity(parseFloat(e.target.value));
+              });
+
+            // Curvature
+            document
+              .getElementById("curve")
+              .addEventListener("input", function (e) {
+                Overlay.setCurve(parseFloat(e.target.value));
+              });
+
+            // Framerate
+            document
+              .getElementById("fps")
+              .addEventListener("input", function (e) {
+                Overlay.setFramerate(parseInt(e.target.value));
+              });
+
+            API.sendNotification("HUD Ready", "Overlay instance created");
+          }
+        });
+      });
+
+      // Load chat (delegate Twitch embedding to chat.html)
+      const params = new URLSearchParams(window.location.search);
+      let channel = params.get("channel");
+
+      const section = document.querySelector(".section");
+
+      if (channel) {
+        document.getElementById("chatFrame").src =
+          "https://rearsilvergaming.github.io/ovrt-stream-hud/chat.html?channel=" +
+          encodeURIComponent(channel);
+      } else {
+        // Replace chat area with login UI
+        section.innerHTML = `
+        <div style="padding:20px;">
+            <h3 style="margin-top:0;">Enter Twitch Channel</h3>
+            <input id="loginChannel"
+                   type="text"
+                   placeholder="rearsilver"
+                   style="width:100%; padding:8px; margin-top:10px;">
+            <button onclick="login()"
+                    style="margin-top:10px;">
+                Launch Chat
+            </button>
+        </div>
+    `;
+      }
+
+      // Logout clears saved channel
+      function logout() {
+        // Clear any saved channel (future use)
+        localStorage.removeItem("twitchChannel");
+
+        // OVRT-friendly feedback (alerts can be suppressed in overlays)
+        API.sendNotification(
+          "Twitch Chat HUD",
+          "Logged out. Returning to login…",
+        );
+
+        // Reload HUD into "no-channel" state (we'll implement the login view next)
+        // For now, this simply reloads the HUD page without parameters.
+        window.location.href =
+          "https://rearsilvergaming.github.io/ovrt-stream-hud/hud.html";
+      }
+      function login() {
+        const input = document.getElementById("loginChannel").value.trim();
+
+        if (!input) {
+          API.sendNotification("Twitch Chat HUD", "Enter a channel name.");
+          return;
+        }
+
+        window.location.href =
+          "https://rearsilvergaming.github.io/ovrt-stream-hud/hud.html?channel=" +
+          encodeURIComponent(input);
+      }
+
+      function togglePanel() {
+        const panel = document.querySelector(".control-panel");
+        panel.classList.toggle("hidden");
+      }
+    </script>
+  </body>
+</html>
