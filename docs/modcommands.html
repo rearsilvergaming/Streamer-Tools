@@ -500,6 +500,7 @@
     <a href="#links" class="sidebar-link block text-sm">Link Protection System</a>
     <a href="#measurements" class="sidebar-link block text-sm">Measurements (Explicit)</a>
     <a href="#modcommands" class="sidebar-link block text-sm">Mod Commands</a>
+    <a href="#pishock" class="sidebar-link block text-sm">⚡PiShock</a>
     <a href="#pronouns" class="sidebar-link block text-sm">Pronouns</a>
     <a href="#quote" class="sidebar-link block text-sm">Quote System</a>
     <a href="#raffle" class="sidebar-link block text-sm">Raffle System</a>
@@ -539,18 +540,19 @@
             <p>This handbook is a living document. Your input is always welcome. Please report any errors or suggest additions!</p>
           </div>
                   <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
-        <div>Last updated: <strong>27/01/2026</strong></div>
+        <div>Last updated: <strong>23/03/2026</strong></div>
       </div>
       <details class="collapsible mt-4" id="changelog">
         <summary><span class="twist">▶</span> <span class="text-accent font-semibold">Changelog</span></summary>
         <div class="content text-sm">
-          <ul class="list-disc pl-6 space-y-1">
-            <li>v1.5 — Made Mod Handbook mobile accessible/friendly.</li>
-            <li>v1.4 — Added Geordie Mode.</li>
-            <li>v1.3 — Added !goodboy and !kiss commands. Alphabetised Fun in Chat list.</li>
-            <li>v1.2 — Added the Walkies system.</li>
-            <li>v1.1 — Initial polished rebuild: auto theme, sidebar, search filtering, mod-only toggle, copy buttons, collapsibles, quick Discord links, version footer.</li>
-          </ul>
+            <ul class="list-disc pl-6 space-y-1">
+                <li>v1.5 — Added PiShock.</li>
+                <li>v1.5 — Made Mod Handbook mobile accessible/friendly.</li>
+                <li>v1.4 — Added Geordie Mode.</li>
+                <li>v1.3 — Added !goodboy and !kiss commands. Alphabetised Fun in Chat list.</li>
+                <li>v1.2 — Added the Walkies system.</li>
+                <li>v1.1 — Initial polished rebuild: auto theme, sidebar, search filtering, mod-only toggle, copy buttons, collapsibles, quick Discord links, version footer.</li>
+            </ul>
         </div>
       </details>
         </header>
@@ -711,554 +713,585 @@
         <p>This is a complete list of all active stream commands. Remember that commands are case-insensitive but must be preceded by a **`!`**.</p>
         </section>
 
-        <div id="command-tables-container">
+         <div id="command-tables-container">
 
-          <details id="translate" class="command-group">
-            <summary>Auto Translate System</summary>
-                        <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+             <details id="translate" class="command-group">
+                 <summary>Auto Translate System</summary>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
 
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!Setlang &lt;user&gt; &lt;language&gt;</td><td class="px-3 py-2">Set a user's native language.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!excludelist</td><td class="px-3 py-2">Shows the excluded word list in chat.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!excludeadd &lt;word&gt;</td><td class="px-3 py-2">Add word to exclude list.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!excluderemove &lt;word&gt;</td><td class="px-3 py-2">Remove word to exclude list.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!flaggedapprove</td><td class="px-3 py-2">Approve users flagged word suggestion.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!flaggeddeny</td><td class="px-3 py-2">Deny users flagged word suggestion.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!flaglist</td><td class="px-3 py-2">Shows words on the flag list.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!slurlist</td><td class="px-3 py-2">Shows words on the slur list.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!sluradd &lt;word&gt;</td><td class="px-3 py-2">Add word to slur list.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!slurremove &lt;word&gt;</td><td class="px-3 py-2">Remove word to exclude list.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!flagword &lt;word&gt;</td><td class="px-3 py-2">Users submission to add word to the slur list.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!Setlang &lt;user&gt; &lt;language&gt;</td><td class="px-3 py-2">Set a user's native language.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!excludelist</td><td class="px-3 py-2">Shows the excluded word list in chat.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!excludeadd &lt;word&gt;</td><td class="px-3 py-2">Add word to exclude list.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!excluderemove &lt;word&gt;</td><td class="px-3 py-2">Remove word to exclude list.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!flaggedapprove</td><td class="px-3 py-2">Approve users flagged word suggestion.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!flaggeddeny</td><td class="px-3 py-2">Deny users flagged word suggestion.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!flaglist</td><td class="px-3 py-2">Shows words on the flag list.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!slurlist</td><td class="px-3 py-2">Shows words on the slur list.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!sluradd &lt;word&gt;</td><td class="px-3 py-2">Add word to slur list.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!slurremove &lt;word&gt;</td><td class="px-3 py-2">Remove word to exclude list.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!flagword &lt;word&gt;</td><td class="px-3 py-2">Users submission to add word to the slur list.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
 
-          <details id="birthday" class="command-group">
-            <summary>Birthday System</summary>
-                        <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!birthday &lt;user&gt;</td><td class="px-3 py-2">Give manual birthday celebratory message to a user.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!setyear &lt;user&gt; &lt;year&gt;</td><td class="px-3 py-2">Set a user's year of birth for age logic.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!birthdayset &lt;user&gt; &lt;birthday&gt;</td><td class="px-3 py-2">Set a user's birthday.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!mybday &lt;birthday&gt;</td><td class="px-3 py-2">User to set their own birthday.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
+             <details id="birthday" class="command-group">
+                 <summary>Birthday System</summary>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!birthday &lt;user&gt;</td><td class="px-3 py-2">Give manual birthday celebratory message to a user.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!setyear &lt;user&gt; &lt;year&gt;</td><td class="px-3 py-2">Set a user's year of birth for age logic.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!birthdayset &lt;user&gt; &lt;birthday&gt;</td><td class="px-3 py-2">Set a user's birthday.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!mybday &lt;birthday&gt;</td><td class="px-3 py-2">User to set their own birthday.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
 
-          <details id="chat" class="command-group">
-            <summary>Chat Commands (General Info)</summary>
-                                    <p>No mod only commands here.</p>
+             <details id="chat" class="command-group">
+                 <summary>Chat Commands (General Info)</summary>
+                 <p>No mod only commands here.</p>
 
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!discord</td><td class="px-3 py-2">Puts link to server in chat.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!socials</td><td class="px-3 py-2">Puts RearSilver's socials in chat.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!clip</td><td class="px-3 py-2">Makes a 30 second clip and posts it to the server.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!destiny / !bungie / !id</td><td class="px-3 py-2">To put Destiny details in chat.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!steam</td><td class="px-3 py-2">For Steam details.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-          
-
-          <details id="death" class="command-group">
-            <summary>Death Counter</summary>
-            <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-             <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!ded</td><td class="px-3 py-2">When I die, adds +1 death.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!unded</td><td class="px-3 py-2">If added in error or someone in chat thinks they're funny. Removes -1 death.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!dedreset</td><td class="px-3 py-2">Resets the session deaths for the current game.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!dedresettotal</td><td class="px-3 py-2">Resets total death for the current game.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!dedset</td><td class="px-3 py-2">To set amount of deaths if a bunch have been missed or added in error.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!deaths</td><td class="px-3 py-2">Show in chat deaths for game session and total.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-          <details id="fun" class="command-group">
-            <summary>Fun in Chat (Interactive & Random)</summary>
-            <p>No mod only commands here.</p>
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!8ball &lt;question&gt;</td><td class="px-3 py-2">8-Ball fortune telling.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!badboy &lt;user&gt;</td><td class="px-3 py-2">Tracked command with different arrays for Streamer, Mods, Subscribers, VIP's and viewers.</td><td><button class="copy-btn">Copy</button></tr>                  
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!bap &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!bite &lt;user&gt;</td><td class="px-3 py-2">Playfully bite target/all.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!blow &lt;user&gt;</td><td class="px-3 py-2">Tracked command with different arrays for Streamer, Mods, Subscribers, VIP's and viewers.</td><td><button class="copy-btn">Copy</button></tr>                  
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!boop &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!cuddle &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!cumrag</td><td class="px-3 py-2">Tracked Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!dadjoke</td><td class="px-3 py-2">Tells a Dad Joke.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!dance &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!fistbump &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!followage</td><td class="px-3 py-2">Shows user followage.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!followed</td><td class="px-3 py-2">Shows stream follow status.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!fuck &lt;user&gt;</td><td class="px-3 py-2">Tracked Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!fuckme &lt;user&gt;</td><td class="px-3 py-2">Tracked Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!goodboy &lt;user&gt;</td><td class="px-3 py-2">Tracked command with different arrays for Streamer, Mods, Subscribers, VIP's and viewers.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!headpat &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!highfive &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!hug &lt;user&gt;</td><td class="px-3 py-2">Tracked Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!kiss &lt;user&gt;</td><td class="px-3 py-2">Tracked Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!love &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!lurk</td><td class="px-3 py-2">Lurk mode announcement.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!piss</td><td class="px-3 py-2">Tracked Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!slap</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!smack &lt;user&gt;</td><td class="px-3 py-2">Tracked Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!spooked</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!spray &lt;user&gt;</td><td class="px-3 py-2">Tracked Interactive fun command. Sprays the user.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!stats</td><td class="px-3 py-2">Shows stream/user status details.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!steal</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!tickle &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!time</td><td class="px-3 py-2">Shows stream time.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!unlurk</td><td class="px-3 py-2">Unlurk mode announcement.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!uptime</td><td class="px-3 py-2">Shows stream uptime.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!wyr</td><td class="px-3 py-2">Random Would You Rather question.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-          <details id="geordie" class="command-group">
-            <summary>Geordie Translator System</summary>
-            <p class="p">When Geordie Mode = On, FrontSilver will randomly take a message from chat and translate it into Geordie (RearSilver's home town dialect *Newcastle*).
-
-              This will be as a chat message as well as a text-to-speech message with varying degrees of sass at this task.
-              When Geordie Mode = Off, FrontSilver will stop translating messages into Geordie and return to normal operation.
-            </p>
-
-            <p class ="p">Feel free to use this system at any time.
-            </p>
-                        <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!geordieon</td><td class="px-3 py-2">Turns on Geordie Mode.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!geordieoff</td><td class="px-3 py-2">Turns off Geordie Mode.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-                    <details id="hunt" class="command-group">
-            <summary>Hunt Game System (WIP)</summary>
-                        <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!huntstart</td><td class="px-3 py-2">Chooses a random viewer to be the target that chat has to hunt/catch.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!hunt</td><td class="px-3 py-2">Catch attempt.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!stopmock</td><td class="px-3 py-2">Stops the auto mocking of the hunt target.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-          <details id="links" class="command-group">
-            <summary>Link Protection System</summary>
-                                    <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!lpallow &lt;user&gt;</td><td class="px-3 py-2">Give a user 60 seconds amnesty to post a link.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!lpreset &lt;user&gt;</td><td class="px-3 py-2">Reset a user's strikes.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!lpadd &lt;link&gt;</td><td class="px-3 py-2">Add a domain root to the whitelist.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!lprm &lt;link&gt;</td><td class="px-3 py-2">Remove a domain root from the whitelist.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-          <details id="measurements" class="command-group">
-            <summary>Measurements (Explicit)</summary>
-                        <p>No mod only commands here.</p>
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!measurements</td><td class="px-3 py-2">Lists the commands in chat.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!alpha</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!breedable</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!bottom</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                    <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!compatibility &lt;user&gt; / &lt;user&gt; &lt;user&gt;</td><td class="px-3 py-2">&lt;user&gt; Will do a compatibility check with &lt;redeemer&gt; &amp; &lt;target&gt;. &lt;user&gt; &lt;user&gt; Will do a compatibility check with &lt;target&gt; &amp; &lt;target&gt;.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!daddy</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!depth</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!hole &lt;user&gt;</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!horny</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!musk</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!peen / !pp / !penis</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!position</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!simp</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!stretch</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!slut</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!tight</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!top</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                    <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!uwu</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-          <details id="modcommands" class="command-group">
-            <summary>Mod Commands (Moderation Tools)</summary>
-            <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-           <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!emergency</td><td class="px-3 py-2">Puts stream in lockdown mode for hate raids (slow mode, followers only, clears chat).</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!emergencyover</td><td class="px-3 py-2">Removes lockdown mode.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!setgame &lt;game&gt;</td><td class="px-3 py-2">Sets the current game category.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!settitle &lt;title&gt;</td><td class="px-3 py-2">Sets the stream title.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!ban &lt;user&gt; &lt;reason&gt;</td><td class="px-3 py-2">Permanently ban a user.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!clear</td><td class="px-3 py-2">Clears chat.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!registermod &lt;Discord ID&gt;</td><td class="px-3 py-2">Registers mods to bot for upcoming bot actions/communication.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!snitch &lt;user&gt; &lt;reason&gt;</td><td class="px-3 py-2">Adds user to a snitch list (Unofficial warning).</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!snitchlist</td><td class="px-3 py-2">See users on the snitch list.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!unsnitch &lt;user&gt;</td><td class="px-3 py-2">Removes user from the snitch list.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!to &lt;user&gt; &lt;duration&gt; &lt;reason&gt;</td><td class="px-3 py-2">Time out user for duration (seconds).</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!torandom</td><td class="px-3 py-2">Time out a random user... just because.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!tw &lt;trigger warning&gt;</td><td class="px-3 py-2">Add a trigger warning to chat for mod to pin.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!textset &lt;message&gt;</td><td class="px-3 py-2">Sets on stream message (if I need to nip away quickly or on a break or something).</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!textclear</td><td class="px-3 py-2">Removes text overlay.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raidmessage &lt;message&gt;</td><td class="px-3 py-2">Sets the raid message.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raidsong</td><td class="px-3 py-2">Plays the raid song when we get raided.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!resettile </td><td class="px-3 py-2">Resets the stream title (removes the event followed/subbed etc from title).</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!so &lt;user&gt;</td><td class="px-3 py-2">Basic shoutout for user.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!soadd &lt;user&gt;</td><td class="px-3 py-2">Add user to the basic auto-shoutout group.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!cso &lt;user&gt;</td><td class="px-3 py-2">Clip shoutout for user.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!csoadd &lt;user&gt;</td><td class="px-3 py-2">Add user to the clip auto-shoutout group.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!modtts &lt;message&gt;</td><td class="px-3 py-2">Mod specific text to speech to get my attention for anything.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!remind &lt;thing to remind me about&gt;</td><td class="px-3 py-2">Send a reminder to the server.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-          <details id="pronouns" class="command-group">
-            <summary>Pronouns Commands</summary>
-                                                <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!pronouns</td><td class="px-3 py-2">Puts link in chat for user to set their pronoun.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!pronounsoverride</td><td class="px-3 py-2">For user to change their pronoun.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!modpronounsoverride &lt;user&gt; &lt;pronouns&gt;</td><td class="px-3 py-2">Mod override users pronoun.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-          <details id="quote" class="command-group">
-            <summary>Quote System</summary>
-            <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!addquote &lt;quote&gt;</td><td class="px-3 py-2">Adds quote.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!delquote &lt;quote number eg \#5&gt;</td><td class="px-3 py-2">Delete quote by number.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!quote</td><td class="px-3 py-2">Gets random quote.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!quotesearch &lt;search term&gt;</td><td class="px-3 py-2">Can search via quote number, keyword and user. If none found, a random quote will be returned.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-          <details id="raffle" class="command-group">
-            <summary>Raffle System</summary>
-            <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raffleopen</td><td class="px-3 py-2">Opens the raffle.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!enter</td><td class="px-3 py-2">To enter the raffle.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raffleend</td><td class="px-3 py-2">To end the raffle.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!draw</td><td class="px-3 py-2">To draw a winner.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!draw &lt;number&gt;</td><td class="px-3 py-2">To draw number of winners.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!clearraffle</td><td class="px-3 py-2">To clear the raffle entrants.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-                    <details id="control" class="command-group">
-            <summary>Stream Control</summary>
-                        <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-             <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!brb</td><td class="px-3 py-2">Change to brb scene.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!back</td><td class="px-3 py-2">Change back to game scene.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!end</td><td class="px-3 py-2">Move to ending scene/credits.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raid &lt;user&gt;</td><td class="px-3 py-2">Initiate a raid (*only works if bot is working).</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-          <details id="support" class="command-group">
-            <summary>Support System</summary>
-            <p>Never forget, other mods and myself are always there to help and explain things to you. There's <strong>NO</strong> stupid questions when it comes to safety!</p>
-            <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!mod / !mods / !modlist</td><td class="px-3 py-2">Lists all channel mods in stream chat, whispers the user a link to the support channel on the server, pings all mods in the Twitch Mod Channel on the server to see if anyone is available to assist.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-                    <details id="queue" class="command-group">
-            <summary>Viewers Queue/Play with RearSilver Queue System</summary>
-                                    <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!open</td><td class="px-3 py-2">Opens the queue.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!join</td><td class="px-3 py-2">To join the queue.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!leave</td><td class="px-3 py-2">To leave the queue.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!clear</td><td class="px-3 py-2">To clear the queue.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!close</td><td class="px-3 py-2">To close the queue.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!queue</td><td class="px-3 py-2">To see the list of who is in the queue.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!pick</td><td class="px-3 py-2">Picks random person from the queue.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!pick &lt;number&gt;</td><td class="px-3 py-2">Picks number of random people from the queue.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-                              <details id="vtuber" class="command-group">
-            <summary>VTuber Commands</summary>
-                                    <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!backflip</td><td class="px-3 py-2">Makes RearSilver do a backflip.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!cartwheel</td><td class="px-3 py-2">Makes RearSilver do a cartwheel.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!toothless</td><td class="px-3 py-2">Makes RearSilver do the Toothless dance.</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-
-          <details id="walk" class="command-group">
-  <summary>Walkies System</summary>
-
-  <p class="p">
-    The Walkies System is how chat can force me onto the treadmill like the obedient little gremlin I am.
-    <br><br>
-    Certain events during stream add time to a global “Walkies Queue.”  
-    Once the queued time reaches <strong>30 minutes</strong>, Walkies can begin — either automatically on a Walkies Stream, or manually if I choose to activate it.
-  </p>
-
-  <p class="p"><strong>I'll always make it clear if it's a Walkies Stream</strong> (pinned message, title, etc).</p>
-
-  <h2>Events That Add Time</h2>
-
-  <p class="p">Every event below adds both <strong>time</strong> and a calculated <strong>distance</strong>. Distance is used for the on-screen goal bar and post-walk stats.</p>
-
-  <table class="command-table">
-    <thead>
-      <tr>
-        <th class="px-3 py-2 text-left">Trigger</th>
-        <th class="px-3 py-2 text-left">Adds Time</th>
-        <th class="px-3 py-2 text-left">Adds Distance</th>
-        <th class="px-3 py-2 text-left">Details</th>
-      </tr>
-    </thead>
-
-    <tbody>
-
-      <!-- SUBSCRIPTIONS -->
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">Subscription (Tier 1)</td>
-        <td class="px-3 py-2">2 minutes</td>
-        <td class="px-3 py-2">0.10 miles</td>
-        <td class="px-3 py-2">Tier multipliers apply to Tier 2 & 3</td>
-      </tr>
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">Subscription (Tier 2)</td>
-        <td class="px-3 py-2">3 minutes</td>
-        <td class="px-3 py-2">0.15 miles</td>
-        <td class="px-3 py-2">1.5× base rate</td>
-      </tr>
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">Subscription (Tier 3)</td>
-        <td class="px-3 py-2">4 minutes</td>
-        <td class="px-3 py-2">0.20 miles</td>
-        <td class="px-3 py-2">2× base rate</td>
-      </tr>
-
-      <!-- RESUB -->
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">Resubscription</td>
-        <td class="px-3 py-2">2 minutes</td>
-        <td class="px-3 py-2">0.10 miles</td>
-        <td class="px-3 py-2">Tier bonuses apply</td>
-      </tr>
-
-      <!-- GIFT SUB -->
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">Gift Sub</td>
-        <td class="px-3 py-2">2 minutes per gifted sub</td>
-        <td class="px-3 py-2">0.10 miles each</td>
-        <td class="px-3 py-2">Bulk gifts scale automatically</td>
-      </tr>
-
-      <!-- BITS -->
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">Bits / Cheers</td>
-        <td class="px-3 py-2">1 second per bit (after 100 bits)</td>
-        <td class="px-3 py-2">0.001 miles per bit</td>
-        <td class="px-3 py-2">Minimum 100 bits to count</td>
-      </tr>
-
-      <!-- RAID -->
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">Raid</td>
-        <td class="px-3 py-2">20 seconds per raider</td>
-        <td class="px-3 py-2">0.01 miles per raider</td>
-        <td class="px-3 py-2">Minimum 3 raiders</td>
-      </tr>
-
-      <!-- DONATION -->
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">Donation / Tip</td>
-        <td class="px-3 py-2">1 minute per £1</td>
-        <td class="px-3 py-2">0.05 miles per £1</td>
-        <td class="px-3 py-2">Minimum £1</td>
-      </tr>
-
-      <!-- FOLLOW -->
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">Follow</td>
-        <td class="px-3 py-2">20 seconds</td>
-        <td class="px-3 py-2">0.02 miles</td>
-        <td class="px-3 py-2">Useful for charity Walkies streams</td>
-      </tr>
-
-    </tbody>
-  </table>
-
-  <br>
-
-  <h2>How the Walkies System Works</h2>
-
-  <p class="p">
-    Here’s the full breakdown so mods understand the system from start to finish:
-  </p>
-
-  <ul class="p">
-    <li><strong>Every eligible event</strong> adds time + distance to the global queue.</li>
-    <li>This time persists even if I’m offline or change scenes.</li>
-    <li>Once the queue reaches <strong>30 minutes</strong>:
-      <ul>
-        <li>Walkies can begin</li>
-        <li>HUD will show total time, time remaining, speed, distance and calories</li>
-      </ul>
-    </li>
-    <li>During active Walkies:
-      <ul>
-        <li>Events extend the timer live</li>
-        <li>HUD updates automatically</li>
-        <li>Distance bar continues filling</li>
-        <li>FrontSilver randomly shouts motivational abuse</li>
-      </ul>
-    </li>
-    <li>When the timer hits 0:
-      <ul>
-        <li>The walk auto-finishes</li>
-        <li>HUD shows final stats (distance walked, calories burned)</li>
-        <li>Queue resets to 0</li>
-      </ul>
-    </li>
-  </ul>
-
-  <h2>Moderator Commands</h2>
-
-  <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-
-  <table class="command-table">
-    <thead>
-      <tr>
-        <th class="px-3 py-2 text-left">Command</th>
-        <th class="px-3 py-2 text-left">Purpose</th>
-      </tr>
-    </thead>
-    <tbody>
-
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">*!walkies</td>
-        <td class="px-3 py-2">Switch to the Walkies scene to prepare</td>
-        <td><button class="copy-btn">Copy</button></td>
-      </tr>
-
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">*!setspeed &lt;speed&gt;</td>
-        <td class="px-3 py-2">Sets the treadmill speed in the HUD (example: <code>!setspeed 5</code>)</td>
-        <td><button class="copy-btn">Copy</button></td>
-      </tr>
-
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">*!startwalk</td>
-        <td class="px-3 py-2">Begins the walk and starts the HUD timer</td>
-        <td><button class="copy-btn">Copy</button></td>
-      </tr>
-
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">*!pausewalk</td>
-        <td class="px-3 py-2">Pauses the walk if I need to stop</td>
-        <td><button class="copy-btn">Copy</button></td>
-      </tr>
-
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">*!resumewalk</td>
-        <td class="px-3 py-2">Resumes the paused walk</td>
-        <td><button class="copy-btn">Copy</button></td>
-      </tr>
-
-      <tr class="searchable-item">
-        <td class="px-3 py-2 font-mono cmd-cell">*!finishwalk</td>
-        <td class="px-3 py-2">Ends the walk, shows stats and resets the queue</td>
-        <td><button class="copy-btn">Copy</button></td>
-      </tr>
-
-    </tbody>
-  </table>
-</details>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!discord</td><td class="px-3 py-2">Puts link to server in chat.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!socials</td><td class="px-3 py-2">Puts RearSilver's socials in chat.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!clip</td><td class="px-3 py-2">Makes a 30 second clip and posts it to the server.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!destiny / !bungie / !id</td><td class="px-3 py-2">To put Destiny details in chat.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!steam</td><td class="px-3 py-2">For Steam details.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
 
 
-          <details id="xp" class="command-group">
-            <summary>XP/levelling up System</summary>
-            <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
-            <table class="command-table">
-                <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
-                <tbody>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!xpadd &lt;user&gt; &lt;amount&gt;</td><td class="px-3 py-2">Give a user XP.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!xpset &lt;user&gt; &lt;amount&gt;</td><td class="px-3 py-2">Set a user's XP to a specific amount.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!rank</td><td class="px-3 py-2">See your current XP and place on the leaderboard.</td><td><button class="copy-btn">Copy</button></tr>
-                  <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!xpleaderboard</td> </td><td class="px-3 py-2">See the leaderboard (*mods have a separate one to viewers).</td><td><button class="copy-btn">Copy</button></tr>
-                </tbody>
-              </table>
-          </details>
-          
-           <section id="thanks">
-          <h1>Thank You</h1>
-        </section>
 
-        <!-- General Sections -->
-          <h2>Acknowedgements</h2>
-          <p>Thank you, each and every one of you for everything you do to keep our streams safe, inclusive and fun.</p>
-          <h3>You are the heart and soul of our community</h3>
-          <ul class="list-disc ml-6 text-[var(--text)]">
-            <li><strong>Escaroda</strong></li>
-            <li><strong>FrontSilver</strong></li>
-            <li><strong>Lukkehuijaa</strong></li>
-            <li><strong>OhnoItsMarshall</strong></li>
-            <li><strong>VanirTheWolf</strong></li>
-            <li><strong>WhiteWuffy</strong></li>
-            <li><strong>XxSkylar2002xX</strong></li>
-            <li>And all the other mods past and present who have helped along the way!</li>
-        </ol>
-          </ul>
-        </div>
+             <details id="death" class="command-group">
+                 <summary>Death Counter</summary>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!ded</td><td class="px-3 py-2">When I die, adds +1 death.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!unded</td><td class="px-3 py-2">If added in error or someone in chat thinks they're funny. Removes -1 death.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!dedreset</td><td class="px-3 py-2">Resets the session deaths for the current game.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!dedresettotal</td><td class="px-3 py-2">Resets total death for the current game.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!dedset</td><td class="px-3 py-2">To set amount of deaths if a bunch have been missed or added in error.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!deaths</td><td class="px-3 py-2">Show in chat deaths for game session and total.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="fun" class="command-group">
+                 <summary>Fun in Chat (Interactive & Random)</summary>
+                 <p>No mod only commands here.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!8ball &lt;question&gt;</td><td class="px-3 py-2">8-Ball fortune telling.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!badboy &lt;user&gt;</td><td class="px-3 py-2">Tracked command with different arrays for Streamer, Mods, Subscribers, VIP's and viewers.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!bap &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!bite &lt;user&gt;</td><td class="px-3 py-2">Playfully bite target/all.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!blow &lt;user&gt;</td><td class="px-3 py-2">Tracked command with different arrays for Streamer, Mods, Subscribers, VIP's and viewers.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!boop &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!cuddle &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!cumrag</td><td class="px-3 py-2">Tracked Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!dadjoke</td><td class="px-3 py-2">Tells a Dad Joke.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!dance &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!fistbump &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!followage</td><td class="px-3 py-2">Shows user followage.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!followed</td><td class="px-3 py-2">Shows stream follow status.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!fuck &lt;user&gt;</td><td class="px-3 py-2">Tracked Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!fuckme &lt;user&gt;</td><td class="px-3 py-2">Tracked Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!goodboy &lt;user&gt;</td><td class="px-3 py-2">Tracked command with different arrays for Streamer, Mods, Subscribers, VIP's and viewers.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!headpat &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!highfive &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!hug &lt;user&gt;</td><td class="px-3 py-2">Tracked Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!kiss &lt;user&gt;</td><td class="px-3 py-2">Tracked Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!love &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!lurk</td><td class="px-3 py-2">Lurk mode announcement.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!piss</td><td class="px-3 py-2">Tracked Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!slap</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!smack &lt;user&gt;</td><td class="px-3 py-2">Tracked Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!spooked</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!spray &lt;user&gt;</td><td class="px-3 py-2">Tracked Interactive fun command. Sprays the user.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!stats</td><td class="px-3 py-2">Shows stream/user status details.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!steal</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!tickle &lt;user&gt;</td><td class="px-3 py-2">Interactive fun command.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!time</td><td class="px-3 py-2">Shows stream time.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!unlurk</td><td class="px-3 py-2">Unlurk mode announcement.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!uptime</td><td class="px-3 py-2">Shows stream uptime.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!wyr</td><td class="px-3 py-2">Random Would You Rather question.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="geordie" class="command-group">
+                 <summary>Geordie Translator System</summary>
+                 <p class="p">
+                     When Geordie Mode = On, FrontSilver will randomly take a message from chat and translate it into Geordie (RearSilver's home town dialect *Newcastle*).
+
+                     This will be as a chat message as well as a text-to-speech message with varying degrees of sass at this task.
+                     When Geordie Mode = Off, FrontSilver will stop translating messages into Geordie and return to normal operation.
+                 </p>
+
+                 <p class="p">
+                     Feel free to use this system at any time.
+                 </p>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!geordieon</td><td class="px-3 py-2">Turns on Geordie Mode.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!geordieoff</td><td class="px-3 py-2">Turns off Geordie Mode.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="hunt" class="command-group">
+                 <summary>Hunt Game System (WIP)</summary>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!huntstart</td><td class="px-3 py-2">Chooses a random viewer to be the target that chat has to hunt/catch.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!hunt</td><td class="px-3 py-2">Catch attempt.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!stopmock</td><td class="px-3 py-2">Stops the auto mocking of the hunt target.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="links" class="command-group">
+                 <summary>Link Protection System</summary>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!lpallow &lt;user&gt;</td><td class="px-3 py-2">Give a user 60 seconds amnesty to post a link.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!lpreset &lt;user&gt;</td><td class="px-3 py-2">Reset a user's strikes.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!lpadd &lt;link&gt;</td><td class="px-3 py-2">Add a domain root to the whitelist.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!lprm &lt;link&gt;</td><td class="px-3 py-2">Remove a domain root from the whitelist.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="measurements" class="command-group">
+                 <summary>Measurements (Explicit)</summary>
+                 <p>No mod only commands here.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!measurements</td><td class="px-3 py-2">Lists the commands in chat.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!alpha</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!breedable</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!bottom</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!compatibility &lt;user&gt; / &lt;user&gt; &lt;user&gt;</td><td class="px-3 py-2">&lt;user&gt; Will do a compatibility check with &lt;redeemer&gt; &amp; &lt;target&gt;. &lt;user&gt; &lt;user&gt; Will do a compatibility check with &lt;target&gt; &amp; &lt;target&gt;.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!daddy</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!depth</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!hole &lt;user&gt;</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!horny</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!musk</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!peen / !pp / !penis</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!position</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!simp</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!stretch</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!slut</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!tight</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!top</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!uwu</td><td class="px-3 py-2">Gives a random explicit measurement result.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="modcommands" class="command-group">
+                 <summary>Mod Commands (Moderation Tools)</summary>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!emergency</td><td class="px-3 py-2">Puts stream in lockdown mode for hate raids (slow mode, followers only, clears chat).</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!emergencyover</td><td class="px-3 py-2">Removes lockdown mode.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!setgame &lt;game&gt;</td><td class="px-3 py-2">Sets the current game category.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!settitle &lt;title&gt;</td><td class="px-3 py-2">Sets the stream title.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!ban &lt;user&gt; &lt;reason&gt;</td><td class="px-3 py-2">Permanently ban a user.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!clear</td><td class="px-3 py-2">Clears chat.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!registermod &lt;Discord ID&gt;</td><td class="px-3 py-2">Registers mods to bot for upcoming bot actions/communication.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!snitch &lt;user&gt; &lt;reason&gt;</td><td class="px-3 py-2">Adds user to a snitch list (Unofficial warning).</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!snitchlist</td><td class="px-3 py-2">See users on the snitch list.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!unsnitch &lt;user&gt;</td><td class="px-3 py-2">Removes user from the snitch list.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!to &lt;user&gt; &lt;duration&gt; &lt;reason&gt;</td><td class="px-3 py-2">Time out user for duration (seconds).</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!torandom</td><td class="px-3 py-2">Time out a random user... just because.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!tw &lt;trigger warning&gt;</td><td class="px-3 py-2">Add a trigger warning to chat for mod to pin.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!textset &lt;message&gt;</td><td class="px-3 py-2">Sets on stream message (if I need to nip away quickly or on a break or something).</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!textclear</td><td class="px-3 py-2">Removes text overlay.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raidmessage &lt;message&gt;</td><td class="px-3 py-2">Sets the raid message.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raidsong</td><td class="px-3 py-2">Plays the raid song when we get raided.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!resettile </td><td class="px-3 py-2">Resets the stream title (removes the event followed/subbed etc from title).</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!so &lt;user&gt;</td><td class="px-3 py-2">Basic shoutout for user.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!soadd &lt;user&gt;</td><td class="px-3 py-2">Add user to the basic auto-shoutout group.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!cso &lt;user&gt;</td><td class="px-3 py-2">Clip shoutout for user.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!csoadd &lt;user&gt;</td><td class="px-3 py-2">Add user to the clip auto-shoutout group.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!modtts &lt;message&gt;</td><td class="px-3 py-2">Mod specific text to speech to get my attention for anything.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!remind &lt;thing to remind me about&gt;</td><td class="px-3 py-2">Send a reminder to the server.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="pishock" class="command-group">
+                 <summary>⚡PiShock⚡</summary>
+                 <p class="p">
+                     These commands are only active when the PiShock overlay is visible on stream, it's in the title or a pinned message.
+
+                     Cheer - 100 = Vibrate Low
+                     Cheer - 500 = Vibrate Medium
+                     Cheer - 1000 = Vibrate High
+                     Cheer - 2000 = Shock Low
+                     Cheer - 3000 = Shock Medium
+                     Cheer - 4000 = Shock High
+
+                     Death = Vibrate High
+                     I swear during no swear redeem - Shock medium
+                 </p>
+
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!PiDed</td><td class="px-3 py-2">Vibrate High.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!PiSwore</td><td class="px-3 py-2">Shock Medium.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="pronouns" class="command-group">
+                 <summary>Pronouns Commands</summary>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!pronouns</td><td class="px-3 py-2">Puts link in chat for user to set their pronoun.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!pronounsoverride</td><td class="px-3 py-2">For user to change their pronoun.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!modpronounsoverride &lt;user&gt; &lt;pronouns&gt;</td><td class="px-3 py-2">Mod override users pronoun.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="quote" class="command-group">
+                 <summary>Quote System</summary>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!addquote &lt;quote&gt;</td><td class="px-3 py-2">Adds quote.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!delquote &lt;quote number eg \#5&gt;</td><td class="px-3 py-2">Delete quote by number.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!quote</td><td class="px-3 py-2">Gets random quote.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!quotesearch &lt;search term&gt;</td><td class="px-3 py-2">Can search via quote number, keyword and user. If none found, a random quote will be returned.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="raffle" class="command-group">
+                 <summary>Raffle System</summary>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raffleopen</td><td class="px-3 py-2">Opens the raffle.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!enter</td><td class="px-3 py-2">To enter the raffle.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raffleend</td><td class="px-3 py-2">To end the raffle.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!draw</td><td class="px-3 py-2">To draw a winner.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!draw &lt;number&gt;</td><td class="px-3 py-2">To draw number of winners.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!clearraffle</td><td class="px-3 py-2">To clear the raffle entrants.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="control" class="command-group">
+                 <summary>Stream Control</summary>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!brb</td><td class="px-3 py-2">Change to brb scene.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!back</td><td class="px-3 py-2">Change back to game scene.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!end</td><td class="px-3 py-2">Move to ending scene/credits.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!raid &lt;user&gt;</td><td class="px-3 py-2">Initiate a raid (*only works if bot is working).</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="support" class="command-group">
+                 <summary>Support System</summary>
+                 <p>Never forget, other mods and myself are always there to help and explain things to you. There's <strong>NO</strong> stupid questions when it comes to safety!</p>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!mod / !mods / !modlist</td><td class="px-3 py-2">Lists all channel mods in stream chat, whispers the user a link to the support channel on the server, pings all mods in the Twitch Mod Channel on the server to see if anyone is available to assist.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="queue" class="command-group">
+                 <summary>Viewers Queue/Play with RearSilver Queue System</summary>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!open</td><td class="px-3 py-2">Opens the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!join</td><td class="px-3 py-2">To join the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!leave</td><td class="px-3 py-2">To leave the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!clear</td><td class="px-3 py-2">To clear the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!close</td><td class="px-3 py-2">To close the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!queue</td><td class="px-3 py-2">To see the list of who is in the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!pick</td><td class="px-3 py-2">Picks random person from the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!pick &lt;number&gt;</td><td class="px-3 py-2">Picks number of random people from the queue.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="vtuber" class="command-group">
+                 <summary>VTuber Commands</summary>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!backflip</td><td class="px-3 py-2">Makes RearSilver do a backflip.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!cartwheel</td><td class="px-3 py-2">Makes RearSilver do a cartwheel.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!toothless</td><td class="px-3 py-2">Makes RearSilver do the Toothless dance.</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <details id="walk" class="command-group">
+                 <summary>Walkies System</summary>
+
+                 <p class="p">
+                     The Walkies System is how chat can force me onto the treadmill like the obedient little gremlin I am.
+                     <br><br>
+                     Certain events during stream add time to a global “Walkies Queue.”
+                     Once the queued time reaches <strong>30 minutes</strong>, Walkies can begin — either automatically on a Walkies Stream, or manually if I choose to activate it.
+                 </p>
+
+                 <p class="p"><strong>I'll always make it clear if it's a Walkies Stream</strong> (pinned message, title, etc).</p>
+
+                 <h2>Events That Add Time</h2>
+
+                 <p class="p">Every event below adds both <strong>time</strong> and a calculated <strong>distance</strong>. Distance is used for the on-screen goal bar and post-walk stats.</p>
+
+                 <table class="command-table">
+                     <thead>
+                         <tr>
+                             <th class="px-3 py-2 text-left">Trigger</th>
+                             <th class="px-3 py-2 text-left">Adds Time</th>
+                             <th class="px-3 py-2 text-left">Adds Distance</th>
+                             <th class="px-3 py-2 text-left">Details</th>
+                         </tr>
+                     </thead>
+
+                     <tbody>
+
+                         <!-- SUBSCRIPTIONS -->
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">Subscription (Tier 1)</td>
+                             <td class="px-3 py-2">2 minutes</td>
+                             <td class="px-3 py-2">0.10 miles</td>
+                             <td class="px-3 py-2">Tier multipliers apply to Tier 2 & 3</td>
+                         </tr>
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">Subscription (Tier 2)</td>
+                             <td class="px-3 py-2">3 minutes</td>
+                             <td class="px-3 py-2">0.15 miles</td>
+                             <td class="px-3 py-2">1.5× base rate</td>
+                         </tr>
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">Subscription (Tier 3)</td>
+                             <td class="px-3 py-2">4 minutes</td>
+                             <td class="px-3 py-2">0.20 miles</td>
+                             <td class="px-3 py-2">2× base rate</td>
+                         </tr>
+
+                         <!-- RESUB -->
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">Resubscription</td>
+                             <td class="px-3 py-2">2 minutes</td>
+                             <td class="px-3 py-2">0.10 miles</td>
+                             <td class="px-3 py-2">Tier bonuses apply</td>
+                         </tr>
+
+                         <!-- GIFT SUB -->
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">Gift Sub</td>
+                             <td class="px-3 py-2">2 minutes per gifted sub</td>
+                             <td class="px-3 py-2">0.10 miles each</td>
+                             <td class="px-3 py-2">Bulk gifts scale automatically</td>
+                         </tr>
+
+                         <!-- BITS -->
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">Bits / Cheers</td>
+                             <td class="px-3 py-2">1 second per bit (after 100 bits)</td>
+                             <td class="px-3 py-2">0.001 miles per bit</td>
+                             <td class="px-3 py-2">Minimum 100 bits to count</td>
+                         </tr>
+
+                         <!-- RAID -->
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">Raid</td>
+                             <td class="px-3 py-2">20 seconds per raider</td>
+                             <td class="px-3 py-2">0.01 miles per raider</td>
+                             <td class="px-3 py-2">Minimum 3 raiders</td>
+                         </tr>
+
+                         <!-- DONATION -->
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">Donation / Tip</td>
+                             <td class="px-3 py-2">1 minute per £1</td>
+                             <td class="px-3 py-2">0.05 miles per £1</td>
+                             <td class="px-3 py-2">Minimum £1</td>
+                         </tr>
+
+                         <!-- FOLLOW -->
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">Follow</td>
+                             <td class="px-3 py-2">20 seconds</td>
+                             <td class="px-3 py-2">0.02 miles</td>
+                             <td class="px-3 py-2">Useful for charity Walkies streams</td>
+                         </tr>
+
+                     </tbody>
+                 </table>
+
+                 <br>
+
+                 <h2>How the Walkies System Works</h2>
+
+                 <p class="p">
+                     Here’s the full breakdown so mods understand the system from start to finish:
+                 </p>
+
+                 <ul class="p">
+                     <li><strong>Every eligible event</strong> adds time + distance to the global queue.</li>
+                     <li>This time persists even if I’m offline or change scenes.</li>
+                     <li>
+                         Once the queue reaches <strong>30 minutes</strong>:
+                         <ul>
+                             <li>Walkies can begin</li>
+                             <li>HUD will show total time, time remaining, speed, distance and calories</li>
+                         </ul>
+                     </li>
+                     <li>
+                         During active Walkies:
+                         <ul>
+                             <li>Events extend the timer live</li>
+                             <li>HUD updates automatically</li>
+                             <li>Distance bar continues filling</li>
+                             <li>FrontSilver randomly shouts motivational abuse</li>
+                         </ul>
+                     </li>
+                     <li>
+                         When the timer hits 0:
+                         <ul>
+                             <li>The walk auto-finishes</li>
+                             <li>HUD shows final stats (distance walked, calories burned)</li>
+                             <li>Queue resets to 0</li>
+                         </ul>
+                     </li>
+                 </ul>
+
+                 <h2>Moderator Commands</h2>
+
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+
+                 <table class="command-table">
+                     <thead>
+                         <tr>
+                             <th class="px-3 py-2 text-left">Command</th>
+                             <th class="px-3 py-2 text-left">Purpose</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">*!walkies</td>
+                             <td class="px-3 py-2">Switch to the Walkies scene to prepare</td>
+                             <td><button class="copy-btn">Copy</button></td>
+                         </tr>
+
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">*!setspeed &lt;speed&gt;</td>
+                             <td class="px-3 py-2">Sets the treadmill speed in the HUD (example: <code>!setspeed 5</code>)</td>
+                             <td><button class="copy-btn">Copy</button></td>
+                         </tr>
+
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">*!startwalk</td>
+                             <td class="px-3 py-2">Begins the walk and starts the HUD timer</td>
+                             <td><button class="copy-btn">Copy</button></td>
+                         </tr>
+
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">*!pausewalk</td>
+                             <td class="px-3 py-2">Pauses the walk if I need to stop</td>
+                             <td><button class="copy-btn">Copy</button></td>
+                         </tr>
+
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">*!resumewalk</td>
+                             <td class="px-3 py-2">Resumes the paused walk</td>
+                             <td><button class="copy-btn">Copy</button></td>
+                         </tr>
+
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">*!finishwalk</td>
+                             <td class="px-3 py-2">Ends the walk, shows stats and resets the queue</td>
+                             <td><button class="copy-btn">Copy</button></td>
+                         </tr>
+
+                     </tbody>
+                 </table>
+             </details>
+
+
+             <details id="xp" class="command-group">
+                 <summary>XP/levelling up System</summary>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!xpadd &lt;user&gt; &lt;amount&gt;</td><td class="px-3 py-2">Give a user XP.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!xpset &lt;user&gt; &lt;amount&gt;</td><td class="px-3 py-2">Set a user's XP to a specific amount.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!rank</td><td class="px-3 py-2">See your current XP and place on the leaderboard.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!xpleaderboard</td> </td><td class="px-3 py-2">See the leaderboard (*mods have a separate one to viewers).</td><td><button class="copy-btn">Copy</button></tr>
+                     </tbody>
+                 </table>
+             </details>
+
+             <section id="thanks">
+                 <h1>Thank You</h1>
+             </section>
+
+             <!-- General Sections -->
+             <h2>Acknowedgements</h2>
+             <p>Thank you, each and every one of you for everything you do to keep our streams safe, inclusive and fun.</p>
+             <h3>You are the heart and soul of our community</h3>
+             <ul class="list-disc ml-6 text-[var(--text)]">
+                 <li><strong>Escaroda</strong></li>
+                 <li><strong>FrontSilver</strong></li>
+                 <li><strong>Lukkehuijaa</strong></li>
+                 <li><strong>OhnoItsMarshall</strong></li>
+                 <li><strong>VanirTheWolf</strong></li>
+                 <li><strong>WhiteWuffy</strong></li>
+                 <li><strong>XxSkylar2002xX</strong></li>
+                 <li>And all the other mods past and present who have helped along the way!</li>
+                 </ol>
+             </ul>
+         </div>
       </div>
          <!-- Back to Top Button -->
     <button id="back-to-top" class="icon-btn hidden-top" title="Back to top (t)">⬆</button>
