@@ -945,25 +945,34 @@
                  <p class="p">
                      These commands are only active when the PiShock overlay is visible on stream, it's in the title or a pinned message.
                  </p>
-                     <!-- Events -->
-                     <tr class="searchable-item">
-                         <td class="px-3 py-2 font-mono cmd-cell">Cheers</td>
-                         <td class="px-3 py-2">Cheer - 100 = Vibrate Low</td>
-                         <td class="px-3 py-2">Cheer - 500 = Vibrate Medium</td>
-                         <td class="px-3 py-2">Cheer - 1000 = Vibrate High</td>
-                         <td class="px-3 py-2">Cheer - 2000 = Shock Low</td>
-                         <td class="px-3 py-2">Cheer - 3000 = Shock Medium</td>
-                         <td class="px-3 py-2">Cheer - 4000 = Shock High</td>
-                     </tr>
-                     <tr class="searchable-item">
-                         <td class="px-3 py-2 font-mono cmd-cell">Death</td>
-                         <td class="px-3 py-2">Death = Vibrate High</td>
-                     </tr>
-                     <tr class="searchable-item">
-                         <td class="px-3 py-2 font-mono cmd-cell">No swear redeem</td>
-                         <td class="px-3 py-2">I swear during no swear redeem - Shock medium</td>
-                     </tr>
-
+                 <!-- Events -->
+                 <table class="command-table">
+                     <thead>
+                         <tr>
+                             <th class="px-3 py-2 text-left">Event</th>
+                             <th class="px-3 py-2 text-left" colspan="6">Outcome</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">Cheers</td>
+                             <td class="px-3 py-2">Cheer - 100 = Vibrate Low</td>
+                             <td class="px-3 py-2">Cheer - 500 = Vibrate Medium</td>
+                             <td class="px-3 py-2">Cheer - 1000 = Vibrate High</td>
+                             <td class="px-3 py-2">Cheer - 2000 = Shock Low</td>
+                             <td class="px-3 py-2">Cheer - 3000 = Shock Medium</td>
+                             <td class="px-3 py-2">Cheer - 4000 = Shock High</td>
+                         </tr>
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">Death</td>
+                             <td class="px-3 py-2" colspan="6">Death = Vibrate High</td>
+                         </tr>
+                         <tr class="searchable-item">
+                             <td class="px-3 py-2 font-mono cmd-cell">No swear redeem</td>
+                             <td class="px-3 py-2" colspan="6">I swear during no swear redeem - Shock medium</td>
+                         </tr>
+                     </tbody>
+                 </table>
 
                  <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
                  <table class="command-table">
