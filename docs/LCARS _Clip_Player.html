@@ -35,14 +35,15 @@
       /* Main module */
       #main-container {
         position: absolute;
-        top: 28px;
+        top: 14px;
         left: 50%;
         transform: translateX(-50%);
-        width: 860px;
+        width: 920px;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
         opacity: 1;
+        box-sizing: border-box;
       }
 
       /* Top LCARS header strip */
@@ -126,9 +127,9 @@
       #info-overlay {
         width: 100%;
         display: grid;
-        grid-template-columns: 96px minmax(0, 1fr);
+        grid-template-columns: 88px minmax(0, 1fr);
         align-items: start;
-        column-gap: 10px;
+        column-gap: 8px;
         pointer-events: none;
         opacity: 1;
         transition: opacity 0.35s ease-in-out;
@@ -143,7 +144,7 @@
       /* Avatar panel */
       #image-panel {
         width: 100%;
-        min-height: 232px;
+        min-height: 206px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -213,7 +214,7 @@
         min-width: 0;
         display: grid;
         grid-template-rows: repeat(4, minmax(0, auto));
-        row-gap: 8px;
+        row-gap: 6px;
         box-sizing: border-box;
       }
 
@@ -221,7 +222,7 @@
         width: 100%;
         min-width: 0;
         box-sizing: border-box;
-        padding: 8px 10px 9px 14px;
+        padding: 7px 10px 8px 14px;
         background: linear-gradient(
           to bottom,
           rgba(16, 18, 24, 0.96) 0%,
@@ -295,9 +296,9 @@
       }
 
       #username.value {
-        font-size: 20px;
+        font-size: 17px;
         font-weight: 900;
-        letter-spacing: 0.45px;
+        letter-spacing: 0.35px;
         text-transform: uppercase;
       }
 
