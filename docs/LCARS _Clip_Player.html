@@ -35,15 +35,15 @@
       /* Main module */
       #main-container {
         position: absolute;
-        top: 12px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 860px;
+        inset: 0;
+        width: 100%;
+        height: 100%;
         display: flex;
         flex-direction: column;
         gap: 8px;
         opacity: 1;
         box-sizing: border-box;
+        padding: 14px 22px 14px 22px;
       }
 
       /* Top LCARS header strip */
@@ -52,6 +52,8 @@
         align-items: stretch;
         gap: 0;
         height: 34px;
+        width: 100%;
+        flex: 0 0 auto;
       }
 
       .header-block {
@@ -90,6 +92,8 @@
       #videocontainer {
         position: relative;
         width: 100%;
+        flex: 1 1 auto;
+        min-height: 0;
         background: linear-gradient(
           to bottom,
           rgba(16, 18, 24, 0.96) 0%,
@@ -100,6 +104,9 @@
         overflow: hidden;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.42);
         box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       #videocontainer::after {
@@ -111,24 +118,27 @@
         width: 8px;
         background: var(--lcars-gold);
         pointer-events: none;
-        z-index: 1;
+        z-index: 2;
       }
 
       #videoplayer {
         display: block;
         width: 100%;
-        aspect-ratio: 16 / 9;
+        height: 100%;
         object-fit: contain;
         visibility: hidden;
         background: #000;
+        position: relative;
+        z-index: 1;
       }
 
       /* Lower info module */
       #info-overlay {
         width: 100%;
+        flex: 0 0 auto;
         display: grid;
         grid-template-columns: 88px minmax(0, 1fr);
-        align-items: start;
+        align-items: stretch;
         column-gap: 8px;
         pointer-events: none;
         opacity: 1;
@@ -144,7 +154,7 @@
       /* Avatar panel */
       #image-panel {
         width: 100%;
-        min-height: 206px;
+        min-height: 170px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -216,13 +226,14 @@
         grid-template-rows: repeat(4, minmax(0, auto));
         row-gap: 6px;
         box-sizing: border-box;
+        align-content: start;
       }
 
       .lcars-row {
         width: 100%;
         min-width: 0;
         box-sizing: border-box;
-        padding: 7px 10px 8px 14px;
+        padding: 6px 10px 7px 14px;
         background: linear-gradient(
           to bottom,
           rgba(16, 18, 24, 0.96) 0%,
@@ -296,9 +307,9 @@
       }
 
       #username.value {
-        font-size: 17px;
+        font-size: 15px;
         font-weight: 900;
-        letter-spacing: 0.35px;
+        letter-spacing: 0.3px;
         text-transform: uppercase;
       }
 
