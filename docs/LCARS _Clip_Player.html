@@ -320,6 +320,18 @@
       #main-container.hidden {
         opacity: 0;
       }
+      .h1 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #fff;
+        font-size: 24px;
+        font-weight: bold;
+        text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+        pointer-events: none;
+        z-index: 3;
+      }
     </style>
   </head>
   <body onload="shoutout()">
@@ -336,6 +348,9 @@
           autoplay
           onended="setTimeout('cleanup()', 500)"
         ></video>
+        <div class="h1">
+          UPLOAD VERSION - REAR SILVER LCARS SHOUTOUT PLAYER TEST
+        </div>
       </div>
 
       <div id="info-overlay" class="hidden">
