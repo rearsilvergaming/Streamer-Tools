@@ -1,0 +1,257 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>RearSilver LCARS No Clip Shoutout</title>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: transparent;
+        font-family: Helvetica, Arial, sans-serif;
+      }
+
+      :root {
+        --lcars-gold: #e6bc72;
+        --lcars-gold-2: #efc66d;
+        --lcars-lilac: #c7a2d8;
+        --lcars-salmon: #d48a7a;
+        --lcars-beige: #d9c7a1;
+        --lcars-dark: rgba(10, 12, 17, 0.96);
+        --lcars-dark-2: rgba(16, 18, 24, 0.94);
+        --lcars-border: rgba(255, 255, 255, 0.08);
+        --lcars-text: #f2f2f2;
+        --lcars-muted: #16120f;
+      }
+
+      #main-container {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 1;
+        transition: opacity 0.35s ease-in-out;
+      }
+
+      #main-container.hidden {
+        opacity: 0;
+      }
+
+      #shoutout-card {
+        width: 680px;
+        max-width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      #header-strip {
+        display: flex;
+        align-items: stretch;
+        height: 34px;
+        width: 100%;
+      }
+
+      .header-block {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: #16120f;
+        box-sizing: border-box;
+        padding: 0 12px;
+      }
+
+      .header-block.left {
+        width: 110px;
+        background: var(--lcars-lilac);
+        border-radius: 18px 0 0 18px;
+      }
+
+      .header-block.mid {
+        flex: 1;
+        background: var(--lcars-beige);
+        border-left: 3px solid rgba(0, 0, 0, 0.25);
+        border-right: 3px solid rgba(0, 0, 0, 0.25);
+      }
+
+      .header-block.right {
+        width: 150px;
+        background: var(--lcars-gold);
+        border-radius: 0 18px 18px 0;
+      }
+
+      #body-panel {
+        display: grid;
+        grid-template-columns: 110px minmax(0, 1fr);
+        gap: 10px;
+        background: linear-gradient(
+          to bottom,
+          rgba(16, 18, 24, 0.96) 0%,
+          rgba(10, 12, 17, 0.98) 100%
+        );
+        border: 1px solid var(--lcars-border);
+        border-radius: 0 16px 16px 16px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+        padding: 16px 16px 16px 22px;
+      }
+
+      #body-panel::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 9px;
+        background: var(--lcars-gold);
+        pointer-events: none;
+      }
+
+      #avatar-panel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #avatar {
+        width: 82px;
+        height: 82px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid var(--lcars-gold);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      #avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      #text-panel {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .label {
+        font-size: 8px;
+        font-weight: 800;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: var(--lcars-gold);
+        line-height: 1;
+      }
+
+      #username {
+        color: var(--lcars-text);
+        font-size: 28px;
+        font-weight: 900;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        line-height: 1.05;
+        word-break: break-word;
+      }
+
+      #message {
+        color: #eef2f6;
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.25;
+        word-break: break-word;
+      }
+
+      #footer-row {
+        display: flex;
+        gap: 8px;
+        height: 28px;
+      }
+
+      .footer-pill {
+        flex: 1;
+        background: var(--lcars-salmon);
+        border-radius: 0 0 16px 16px;
+      }
+
+      .footer-pill.small {
+        flex: 0 0 150px;
+        background: var(--lcars-gold);
+        border-radius: 16px;
+      }
+    </style>
+  </head>
+
+  <body onload="shoutout()">
+    <div id="main-container">
+      <div id="shoutout-card">
+        <div id="header-strip">
+          <div class="header-block left">LCARS</div>
+          <div class="header-block mid">Shoutout Transmission</div>
+          <div class="header-block right">Signal Boost</div>
+        </div>
+
+        <div id="body-panel">
+          <div id="avatar-panel">
+            <div id="avatar"></div>
+          </div>
+
+          <div id="text-panel">
+            <div class="label">Signal Target</div>
+            <div id="username"></div>
+            <div id="message"></div>
+          </div>
+        </div>
+
+        <div id="footer-row">
+          <div class="footer-pill"></div>
+          <div class="footer-pill small"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function shoutout() {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const user = urlParams.get("user") || "Unknown Signal";
+        const image = urlParams.get("image") || "";
+        const game = urlParams.get("game") || "";
+        const message =
+          urlParams.get("message") ||
+          (game !== ""
+            ? `They were last seen playing ${game}.`
+            : "Go give them some love.");
+
+        document.getElementById("username").textContent =
+          `Shoutout to ${user}!`;
+        document.getElementById("message").textContent = message;
+
+        if (image !== "") {
+          document.getElementById("avatar").innerHTML =
+            `<img src="${image}" alt="${user}" />`;
+        }
+      }
+    </script>
+  </body>
+</html>
