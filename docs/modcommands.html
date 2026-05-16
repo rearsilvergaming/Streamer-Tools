@@ -500,6 +500,7 @@
     <a href="#links" class="sidebar-link block text-sm">Link Protection System</a>
     <a href="#measurements" class="sidebar-link block text-sm">Measurements (Explicit)</a>
     <a href="#modcommands" class="sidebar-link block text-sm">Mod Commands</a>
+    <a href="#objective" class="sidebar-link block text-sm">Objectives System</a>
     <a href="#pishock" class="sidebar-link block text-sm">⚡PiShock</a>
     <a href="#pronouns" class="sidebar-link block text-sm">Pronouns</a>
     <a href="#quote" class="sidebar-link block text-sm">Quote System</a>
@@ -540,12 +541,13 @@
             <p>This handbook is a living document. Your input is always welcome. Please report any errors or suggest additions!</p>
           </div>
                   <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
-        <div>Last updated: <strong>23/03/2026</strong></div>
+        <div>Last updated: <strong>16/05/2026</strong></div>
       </div>
       <details class="collapsible mt-4" id="changelog">
         <summary><span class="twist">▶</span> <span class="text-accent font-semibold">Changelog</span></summary>
         <div class="content text-sm">
             <ul class="list-disc pl-6 space-y-1">
+               <li>v1.5 — Added Objective System.</li>
                 <li>v1.5 — Added PiShock.</li>
                 <li>v1.5 — Made Mod Handbook mobile accessible/friendly.</li>
                 <li>v1.4 — Added Geordie Mode.</li>
@@ -937,6 +939,22 @@
                          <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!modtts &lt;message&gt;</td><td class="px-3 py-2">Mod specific text to speech to get my attention for anything.</td><td><button class="copy-btn">Copy</button></tr>
                          <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!remind &lt;thing to remind me about&gt;</td><td class="px-3 py-2">Send a reminder to the server.</td><td><button class="copy-btn">Copy</button></tr>
                      </tbody>
+                 </table>
+             </details>
+
+                          <details id="objective" class="command-group">
+                 <summary>Objective System</summary>
+                 <p>Commands starting with <code class="font-mono">*</code> are <strong>Moderator-Only</strong>.</p>
+                 <table class="command-table">
+                     <thead><tr><th class="px-3 py-2 text-left">Command</th><th class="px-3 py-2 text-left">Purpose</th></tr></thead>
+                     <tbody>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!objective &lt;objective&gt; </td><td class="px-3 py-2">Sets the current objective whether stream or game related.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!objectivecomplete</td><td class="px-3 py-2">Marks the objective as completed.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!objectivefail </td><td class="px-3 py-2">Marks the objective as failed.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">*!objectiveclear </td><td class="px-3 py-2">Clears the current objective.</td><td><button class="copy-btn">Copy</button></tr>
+                         <tr class="searchable-item"><td class="px-3 py-2 font-mono cmd-cell">!objectivestatus </td><td class="px-3 py-2">View status of current objective.</td><td><button class="copy-btn">Copy</button></tr>
+
+                        </tbody>
                  </table>
              </details>
 
