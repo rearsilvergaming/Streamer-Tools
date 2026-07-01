@@ -1,0 +1,459 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Nexus Command Check-Ins</title>
+
+    <style>
+      :root {
+        --bg: rgba(8, 12, 18, 0.9);
+        --text: #f7f2e8;
+        --muted: rgba(247, 242, 232, 0.64);
+        --cyan: #42e8ff;
+        --gold: #f0be65;
+        --green: #75f0a8;
+        --red: #ff6c6c;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: transparent;
+        font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+        color: var(--text);
+      }
+
+      .widget {
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        padding: 14px;
+        border-radius: 18px;
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(66, 232, 255, 0.18),
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at bottom right,
+            rgba(240, 190, 101, 0.14),
+            transparent 42%
+          ),
+          linear-gradient(135deg, rgba(7, 12, 18, 0.96), rgba(20, 25, 33, 0.92));
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow:
+          0 10px 28px rgba(0, 0, 0, 0.42),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+        overflow: hidden;
+      }
+
+      .header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: start;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .eyebrow {
+        font-size: 10px;
+        line-height: 1;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--cyan);
+        font-weight: 900;
+        margin-bottom: 4px;
+      }
+
+      .title {
+        font-size: 24px;
+        line-height: 1;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 900;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 9px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 8px;
+        line-height: 1;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.75px;
+      }
+
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: var(--gold);
+        box-shadow: 0 0 7px rgba(240, 190, 101, 0.8);
+      }
+
+      .status.connected .dot {
+        background: var(--green);
+        box-shadow: 0 0 7px rgba(117, 240, 168, 0.8);
+      }
+
+      .status.error .dot {
+        background: var(--red);
+        box-shadow: 0 0 7px rgba(255, 108, 108, 0.8);
+      }
+
+      .latest {
+        padding: 12px 13px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.055);
+        border: 1px solid rgba(240, 190, 101, 0.22);
+        margin-bottom: 10px;
+      }
+
+      .label {
+        font-size: 9px;
+        line-height: 1;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1.3px;
+        font-weight: 900;
+        margin-bottom: 6px;
+      }
+
+      .latest-location {
+        font-size: 18px;
+        line-height: 1.15;
+        color: var(--text);
+        font-weight: 900;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+        margin-bottom: 10px;
+      }
+
+      .stat {
+        min-width: 0;
+        padding: 9px 11px;
+        border-radius: 12px;
+        background: rgba(12, 18, 28, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.075);
+      }
+
+      .stat span {
+        display: inline-block;
+        color: var(--gold);
+        font-size: 20px;
+        font-weight: 900;
+        line-height: 1;
+        margin-right: 5px;
+      }
+
+      .stat em {
+        color: var(--muted);
+        font-size: 9px;
+        font-style: normal;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+
+      .activity {
+        padding: 8px 10px;
+        border-radius: 12px;
+        background: rgba(10, 16, 24, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.075);
+        overflow: hidden;
+      }
+
+      .history-list {
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .history-row {
+        min-width: 0;
+        display: flex;
+        align-items: baseline;
+        gap: 7px;
+        font-size: 11px;
+        line-height: 1.1;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      .history-user {
+        flex: 0 0 auto;
+        color: var(--cyan);
+        font-weight: 900;
+        white-space: nowrap;
+      }
+
+      .history-place {
+        min-width: 0;
+        flex: 1 1 auto;
+        color: var(--muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .empty {
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .flash {
+        animation: flash-in 0.45s ease-out;
+      }
+
+      @keyframes flash-in {
+        from {
+          transform: scale(1.012);
+          filter: brightness(1.35);
+        }
+        to {
+          transform: scale(1);
+          filter: brightness(1);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="widget" class="widget">
+      <div class="header">
+        <div>
+          <div class="eyebrow">Nexus Command</div>
+          <div class="title">Check-In Data <br />!checkin &lt;location&gt;</div>
+        </div>
+
+        <div id="status" class="status waiting">
+          <span class="dot"></span>
+          <span id="statusText">Connecting</span>
+        </div>
+      </div>
+
+      <div class="latest">
+        <div class="label">Latest Signal</div>
+        <div id="latestLocation" class="latest-location">
+          Awaiting check-in data
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span id="totalCheckins">0</span>
+          <em>check-ins</em>
+        </div>
+
+        <div class="stat">
+          <span id="totalLocations">0</span>
+          <em>locations</em>
+        </div>
+      </div>
+
+      <div class="activity">
+        <div class="label">Recent Signals</div>
+        <div id="historyList" class="history-list">
+          <div class="empty">No recent signals yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function parseURL() {
+        const url = new URL(document.URL);
+
+        const ws_uri =
+          url.searchParams.get("ws_uri") !== null
+            ? decodeURI(url.searchParams.get("ws_uri"))
+            : "ws://127.0.0.1:8080/";
+
+        return {
+          ws_uri,
+        };
+      }
+
+      const config = parseURL();
+
+      const widget = document.getElementById("widget");
+      const status = document.getElementById("status");
+      const statusText = document.getElementById("statusText");
+
+      const latestLocation = document.getElementById("latestLocation");
+      const totalCheckins = document.getElementById("totalCheckins");
+      const totalLocations = document.getElementById("totalLocations");
+      const historyList = document.getElementById("historyList");
+
+      let socket = null;
+
+      function setStatus(mode, text) {
+        status.classList.remove("connected", "waiting", "error");
+
+        if (mode) {
+          status.classList.add(mode);
+        }
+
+        statusText.innerText = text;
+      }
+
+      function safeText(value, fallback = "") {
+        if (value === undefined || value === null || value === "") {
+          return fallback;
+        }
+
+        return String(value);
+      }
+
+      function updateNexusCheckins(data) {
+        if (!data) {
+          return;
+        }
+
+        widget.classList.remove("flash");
+        void widget.offsetWidth;
+        widget.classList.add("flash");
+
+        totalCheckins.innerText = String(Number(data.totalCheckins || 0));
+        totalLocations.innerText = String(Number(data.totalLocations || 0));
+
+        const latest = data.latest || {};
+
+        if (latest.displayLocation) {
+          latestLocation.innerText = latest.displayLocation;
+        } else {
+          latestLocation.innerText = "Awaiting check-in data";
+        }
+
+        renderHistory(
+          Array.isArray(data.recentHistory) ? data.recentHistory : [],
+        );
+      }
+
+      function renderHistory(history) {
+        historyList.innerHTML = "";
+
+        const checkinsOnly = history
+          .filter(
+            (item) =>
+              String(item.action || "checkin").toLowerCase() === "checkin",
+          )
+          .reverse();
+
+        if (checkinsOnly.length === 0) {
+          historyList.innerHTML =
+            '<div class="empty">No recent signals yet.</div>';
+          return;
+        }
+
+        const item = checkinsOnly[0];
+
+        const row = document.createElement("div");
+        row.className = "history-row";
+
+        const user = document.createElement("span");
+        user.className = "history-user";
+        user.innerText = safeText(item.username, "Viewer");
+
+        const place = document.createElement("span");
+        place.className = "history-place";
+        place.innerText = safeText(item.displayLocation, "Unknown location");
+
+        row.appendChild(user);
+        row.appendChild(place);
+
+        historyList.appendChild(row);
+      }
+
+      function handleStreamerBotEvent(wsdata) {
+        const isWrappedCustomEvent =
+          wsdata.event?.source === "General" &&
+          wsdata.event?.type === "Custom" &&
+          typeof wsdata.data?.data === "string";
+
+        if (!isWrappedCustomEvent) {
+          return;
+        }
+
+        let innerMessage = null;
+
+        try {
+          innerMessage = JSON.parse(wsdata.data.data);
+        } catch (error) {
+          console.warn(
+            "Nexus widget could not parse wrapped custom event",
+            error,
+          );
+          return;
+        }
+
+        if (innerMessage.data?.name === "NexusCheckinsUpdated") {
+          updateNexusCheckins(innerMessage.data.payload);
+        }
+      }
+
+      function connectws() {
+        setStatus("waiting", "Connecting");
+
+        socket = new WebSocket(config.ws_uri);
+
+        socket.onopen = () => {
+          setStatus("connected", "Connected");
+
+          socket.send(
+            JSON.stringify({
+              request: "Subscribe",
+              id: "nexus-checkin-widget",
+              events: {
+                General: ["Custom"],
+              },
+            }),
+          );
+
+          console.log("Connected to", config.ws_uri);
+        };
+
+        socket.onmessage = (event) => {
+          let wsdata = null;
+
+          try {
+            wsdata = JSON.parse(event.data);
+          } catch (error) {
+            return;
+          }
+
+          handleStreamerBotEvent(wsdata);
+        };
+
+        socket.onerror = () => {
+          setStatus("error", "Error");
+        };
+
+        socket.onclose = () => {
+          setStatus("error", "Offline");
+          setTimeout(connectws, 5000);
+        };
+      }
+
+      connectws();
+    </script>
+  </body>
+</html>
