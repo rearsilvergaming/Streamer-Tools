@@ -335,17 +335,24 @@
         totalCheckins.innerText = String(Number(data.totalCheckins || 0));
         totalLocations.innerText = String(Number(data.totalLocations || 0));
 
-        const latest = data.latest || {};
+        const recentHistory = Array.isArray(data.recentHistory)
+          ? data.recentHistory
+          : [];
 
-        if (latest.displayLocation) {
-          latestLocation.innerText = latest.displayLocation;
+        const latestRecentCheckin = recentHistory
+          .filter(
+            (item) =>
+              String(item.action || "checkin").toLowerCase() === "checkin",
+          )
+          .reverse()[0];
+
+        if (latestRecentCheckin && latestRecentCheckin.displayLocation) {
+          latestLocation.innerText = latestRecentCheckin.displayLocation;
         } else {
           latestLocation.innerText = "Awaiting check-in data";
         }
 
-        renderHistory(
-          Array.isArray(data.recentHistory) ? data.recentHistory : [],
-        );
+        renderHistory(recentHistory);
       }
 
       function renderHistory(history) {
