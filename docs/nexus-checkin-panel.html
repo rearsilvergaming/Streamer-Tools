@@ -1,0 +1,865 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Nexus Command Check-In Alert</title>
+
+    <style>
+      :root {
+        --text: #f7f2e8;
+        --muted: rgba(247, 242, 232, 0.66);
+        --cyan: #42e8ff;
+        --cyan-soft: rgba(66, 232, 255, 0.28);
+        --gold: #f0be65;
+        --green: #75f0a8;
+        --red: #ff6c6c;
+        --panel: rgba(8, 12, 18, 0.94);
+        --panel-soft: rgba(16, 23, 35, 0.9);
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: transparent;
+        font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+        color: var(--text);
+      }
+
+      .overlay {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        pointer-events: none;
+        opacity: 0;
+        transform: scale(0.96);
+      }
+
+      .overlay.show {
+        animation: alert-in 0.55s ease-out forwards;
+      }
+
+      .overlay.hide {
+        animation: alert-out 0.45s ease-in forwards;
+      }
+
+      .panel {
+        width: 1040px;
+        height: 580px;
+        box-sizing: border-box;
+        padding: 28px;
+        border-radius: 28px;
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(66, 232, 255, 0.22),
+            transparent 34%
+          ),
+          radial-gradient(
+            circle at bottom right,
+            rgba(240, 190, 101, 0.15),
+            transparent 38%
+          ),
+          linear-gradient(135deg, rgba(7, 12, 18, 0.97), rgba(18, 25, 36, 0.94));
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        box-shadow:
+          0 0 42px rgba(66, 232, 255, 0.18),
+          0 28px 90px rgba(0, 0, 0, 0.62),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.045);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          rgba(255, 255, 255, 0.025) 50%,
+          rgba(0, 0, 0, 0.06) 50%
+        );
+        background-size: 100% 4px;
+        opacity: 0.32;
+        mix-blend-mode: screen;
+        pointer-events: none;
+      }
+
+      .panel::after {
+        content: "";
+        position: absolute;
+        inset: -40%;
+        background: linear-gradient(
+          115deg,
+          transparent 42%,
+          rgba(66, 232, 255, 0.12) 48%,
+          rgba(255, 255, 255, 0.16) 50%,
+          rgba(66, 232, 255, 0.12) 52%,
+          transparent 58%
+        );
+        transform: translateX(-70%);
+        animation: sweep 4s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      .content {
+        position: relative;
+        z-index: 2;
+        height: 100%;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 20px;
+      }
+
+      .header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 20px;
+        align-items: start;
+      }
+
+      .eyebrow {
+        color: var(--cyan);
+        font-size: 13px;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      .title {
+        font-size: 48px;
+        line-height: 0.95;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 13px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: var(--muted);
+        font-size: 10px;
+        line-height: 1;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--gold);
+        box-shadow: 0 0 10px rgba(240, 190, 101, 0.85);
+      }
+
+      .status.connected .dot {
+        background: var(--green);
+        box-shadow: 0 0 10px rgba(117, 240, 168, 0.85);
+      }
+
+      .status.error .dot {
+        background: var(--red);
+        box-shadow: 0 0 10px rgba(255, 108, 108, 0.85);
+      }
+
+      .main {
+        display: grid;
+        grid-template-columns: 410px 1fr;
+        gap: 24px;
+        min-height: 0;
+      }
+
+      .map-card,
+      .data-card {
+        min-height: 0;
+        border-radius: 22px;
+        background: rgba(10, 16, 24, 0.78);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .map-card {
+        display: grid;
+        place-items: center;
+      }
+
+      .radar {
+        width: 330px;
+        height: 330px;
+        border-radius: 50%;
+        position: relative;
+        border: 1px solid rgba(66, 232, 255, 0.36);
+        background:
+          radial-gradient(
+            circle,
+            transparent 0 22%,
+            rgba(66, 232, 255, 0.08) 23% 23.5%,
+            transparent 24% 44%,
+            rgba(66, 232, 255, 0.08) 45% 45.5%,
+            transparent 46% 68%,
+            rgba(66, 232, 255, 0.08) 69% 69.5%,
+            transparent 70%
+          ),
+          linear-gradient(
+            90deg,
+            transparent 49.8%,
+            rgba(66, 232, 255, 0.18) 50%,
+            transparent 50.2%
+          ),
+          linear-gradient(
+            0deg,
+            transparent 49.8%,
+            rgba(66, 232, 255, 0.18) 50%,
+            transparent 50.2%
+          ),
+          radial-gradient(
+            circle,
+            rgba(66, 232, 255, 0.16),
+            rgba(66, 232, 255, 0.04) 45%,
+            transparent 72%
+          );
+        box-shadow:
+          0 0 34px rgba(66, 232, 255, 0.16),
+          inset 0 0 34px rgba(66, 232, 255, 0.12);
+      }
+
+      .radar::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 0deg,
+          rgba(66, 232, 255, 0.42) 0deg,
+          rgba(66, 232, 255, 0.18) 24deg,
+          transparent 58deg,
+          transparent 360deg
+        );
+        animation: radar-spin 2.8s linear infinite;
+        opacity: 0.9;
+      }
+
+      .radar::after {
+        content: "";
+        position: absolute;
+        inset: 50%;
+        width: 10px;
+        height: 10px;
+        margin: -5px 0 0 -5px;
+        border-radius: 50%;
+        background: var(--gold);
+        box-shadow: 0 0 18px rgba(240, 190, 101, 0.9);
+      }
+
+      .ping {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 16px;
+        height: 16px;
+        margin: -8px 0 0 -8px;
+        border-radius: 50%;
+        background: var(--gold);
+        box-shadow: 0 0 20px rgba(240, 190, 101, 0.95);
+        transform: translate(var(--ping-x, 70px), var(--ping-y, -56px));
+      }
+
+      .ping::before,
+      .ping::after {
+        content: "";
+        position: absolute;
+        inset: -12px;
+        border-radius: 50%;
+        border: 2px solid rgba(240, 190, 101, 0.75);
+        animation: pulse 1.5s ease-out infinite;
+      }
+
+      .ping::after {
+        animation-delay: 0.45s;
+      }
+
+      .map-label {
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        bottom: 18px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(7, 12, 18, 0.78);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .map-label .small {
+        color: var(--muted);
+        font-size: 10px;
+        line-height: 1;
+        text-transform: uppercase;
+        letter-spacing: 1.4px;
+        font-weight: 900;
+        margin-bottom: 6px;
+      }
+
+      .map-label .place {
+        color: var(--text);
+        font-size: 16px;
+        line-height: 1.15;
+        font-weight: 900;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .data-card {
+        padding: 24px;
+        box-sizing: border-box;
+        display: grid;
+        grid-template-rows: auto auto 1fr;
+        gap: 18px;
+      }
+
+      .viewer-line {
+        color: var(--cyan);
+        font-size: 20px;
+        line-height: 1;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+      }
+
+      .location-line {
+        color: var(--text);
+        font-size: 38px;
+        line-height: 1.05;
+        font-weight: 900;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      .stat {
+        padding: 15px 16px;
+        border-radius: 16px;
+        background: rgba(12, 18, 28, 0.84);
+        border: 1px solid rgba(255, 255, 255, 0.075);
+      }
+
+      .stat span {
+        display: block;
+        color: var(--gold);
+        font-size: 30px;
+        line-height: 1;
+        font-weight: 900;
+        margin-bottom: 7px;
+      }
+
+      .stat em {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        line-height: 1;
+        font-style: normal;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .recent {
+        min-height: 0;
+        padding: 16px;
+        border-radius: 16px;
+        background: rgba(7, 12, 18, 0.62);
+        border: 1px solid rgba(255, 255, 255, 0.075);
+        overflow: hidden;
+      }
+
+      .label {
+        color: var(--muted);
+        font-size: 10px;
+        line-height: 1;
+        text-transform: uppercase;
+        letter-spacing: 1.4px;
+        font-weight: 900;
+        margin-bottom: 12px;
+      }
+
+      .recent-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .recent-row {
+        display: grid;
+        grid-template-columns: 150px 1fr;
+        gap: 12px;
+        min-width: 0;
+        font-size: 14px;
+        line-height: 1.15;
+      }
+
+      .recent-user {
+        color: var(--cyan);
+        font-weight: 900;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .recent-place {
+        color: var(--muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .footer {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 20px;
+        align-items: center;
+        padding: 14px 18px;
+        border-radius: 18px;
+        background: rgba(7, 12, 18, 0.64);
+        border: 1px solid rgba(255, 255, 255, 0.075);
+      }
+
+      .command {
+        color: var(--gold);
+        font-size: 20px;
+        line-height: 1;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .subtext {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      @keyframes alert-in {
+        0% {
+          opacity: 0;
+          transform: translateY(34px) scale(0.94);
+          filter: brightness(1.8) blur(3px);
+        }
+        65% {
+          opacity: 1;
+          transform: translateY(-6px) scale(1.01);
+          filter: brightness(1.18) blur(0);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          filter: brightness(1);
+        }
+      }
+
+      @keyframes alert-out {
+        from {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          filter: brightness(1);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(26px) scale(0.96);
+          filter: brightness(0.8) blur(2px);
+        }
+      }
+
+      @keyframes radar-spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes pulse {
+        from {
+          opacity: 0.9;
+          transform: scale(0.55);
+        }
+        to {
+          opacity: 0;
+          transform: scale(2.6);
+        }
+      }
+
+      @keyframes sweep {
+        0%,
+        55% {
+          transform: translateX(-70%);
+        }
+        100% {
+          transform: translateX(70%);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="overlay" class="overlay">
+      <div class="panel">
+        <div class="content">
+          <div class="header">
+            <div>
+              <div class="eyebrow">Nexus Command</div>
+              <div class="title">Signal Acquired</div>
+            </div>
+
+            <div id="status" class="status waiting">
+              <span class="dot"></span>
+              <span id="statusText">Connecting</span>
+            </div>
+          </div>
+
+          <div class="main">
+            <div class="map-card">
+              <div id="radar" class="radar">
+                <div id="ping" class="ping"></div>
+              </div>
+
+              <div class="map-label">
+                <div class="small">Signal Location</div>
+                <div id="mapLocation" class="place">Awaiting check-in data</div>
+              </div>
+            </div>
+
+            <div class="data-card">
+              <div>
+                <div id="viewerLine" class="viewer-line">
+                  Viewer check-in received
+                </div>
+                <div id="locationLine" class="location-line">
+                  Awaiting check-in data
+                </div>
+              </div>
+
+              <div class="stats">
+                <div class="stat">
+                  <span id="totalCheckins">0</span>
+                  <em>check-ins</em>
+                </div>
+
+                <div class="stat">
+                  <span id="totalLocations">0</span>
+                  <em>locations</em>
+                </div>
+
+                <div class="stat">
+                  <span id="totalHistoryEvents">0</span>
+                  <em>events</em>
+                </div>
+              </div>
+
+              <div class="recent">
+                <div class="label">Recent Signals</div>
+                <div id="recentList" class="recent-list">
+                  <div class="recent-row">
+                    <span class="recent-user">Nexus</span>
+                    <span class="recent-place">No recent signals yet.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <div class="command">!checkin &lt;location&gt;</div>
+            <div class="subtext">
+              Approximate locations only · no street data
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function parseURL() {
+        const url = new URL(document.URL);
+
+        const ws_uri =
+          url.searchParams.get("ws_uri") !== null
+            ? decodeURI(url.searchParams.get("ws_uri"))
+            : "ws://127.0.0.1:8080/";
+
+        return {
+          ws_uri,
+        };
+      }
+
+      const config = parseURL();
+
+      const overlay = document.getElementById("overlay");
+      const status = document.getElementById("status");
+      const statusText = document.getElementById("statusText");
+
+      const viewerLine = document.getElementById("viewerLine");
+      const locationLine = document.getElementById("locationLine");
+      const mapLocation = document.getElementById("mapLocation");
+      const totalCheckins = document.getElementById("totalCheckins");
+      const totalLocations = document.getElementById("totalLocations");
+      const totalHistoryEvents = document.getElementById("totalHistoryEvents");
+      const recentList = document.getElementById("recentList");
+      const radar = document.getElementById("radar");
+
+      let socket = null;
+      let hasReceivedInitialData = false;
+      let seenCheckinTimes = new Set();
+      let hideTimer = null;
+
+      function setStatus(mode, text) {
+        status.classList.remove("connected", "waiting", "error");
+
+        if (mode) {
+          status.classList.add(mode);
+        }
+
+        statusText.innerText = text;
+      }
+
+      function safeText(value, fallback = "") {
+        if (value === undefined || value === null || value === "") {
+          return fallback;
+        }
+
+        return String(value);
+      }
+
+      function getActiveCheckins(data) {
+        const recentHistory = Array.isArray(data.recentHistory)
+          ? data.recentHistory
+          : [];
+
+        return recentHistory
+          .filter(
+            (item) =>
+              String(item.action || "checkin").toLowerCase() === "checkin",
+          )
+          .reverse();
+      }
+
+      function updatePanel(data, shouldAnimate) {
+        if (!data) {
+          return;
+        }
+
+        const activeCheckins = getActiveCheckins(data);
+        const latest = activeCheckins[0] || null;
+
+        totalCheckins.innerText = String(Number(data.totalCheckins || 0));
+        totalLocations.innerText = String(Number(data.totalLocations || 0));
+        totalHistoryEvents.innerText = String(
+          Number(data.totalHistoryEvents || 0),
+        );
+
+        if (latest) {
+          const username = safeText(latest.username, "Viewer");
+          const place = safeText(latest.displayLocation, "Unknown location");
+
+          viewerLine.innerText = username + " has checked in";
+          locationLine.innerText = place;
+          mapLocation.innerText = place;
+
+          setRadarPing(place);
+        } else {
+          viewerLine.innerText = "Viewer check-in received";
+          locationLine.innerText = "Awaiting check-in data";
+          mapLocation.innerText = "Awaiting check-in data";
+        }
+
+        renderRecent(activeCheckins);
+
+        if (shouldAnimate && latest) {
+          showAlert();
+        }
+      }
+
+      function renderRecent(activeCheckins) {
+        recentList.innerHTML = "";
+
+        const rows = activeCheckins.slice(0, 5);
+
+        if (rows.length === 0) {
+          recentList.innerHTML =
+            '<div class="recent-row"><span class="recent-user">Nexus</span><span class="recent-place">No recent signals yet.</span></div>';
+          return;
+        }
+
+        for (const item of rows) {
+          const row = document.createElement("div");
+          row.className = "recent-row";
+
+          const user = document.createElement("span");
+          user.className = "recent-user";
+          user.innerText = safeText(item.username, "Viewer");
+
+          const place = document.createElement("span");
+          place.className = "recent-place";
+          place.innerText = safeText(item.displayLocation, "Unknown location");
+
+          row.appendChild(user);
+          row.appendChild(place);
+
+          recentList.appendChild(row);
+        }
+      }
+
+      function showAlert() {
+        if (hideTimer) {
+          clearTimeout(hideTimer);
+          hideTimer = null;
+        }
+
+        overlay.classList.remove("hide");
+        overlay.classList.remove("show");
+
+        void overlay.offsetWidth;
+
+        overlay.classList.add("show");
+
+        hideTimer = setTimeout(() => {
+          overlay.classList.remove("show");
+          overlay.classList.add("hide");
+        }, 10000);
+      }
+
+      function setRadarPing(locationText) {
+        const hash = hashString(locationText);
+
+        const angle = (hash % 360) * (Math.PI / 180);
+        const distance = 60 + (hash % 88);
+
+        const x = Math.cos(angle) * distance;
+        const y = Math.sin(angle) * distance;
+
+        radar.style.setProperty("--ping-x", x.toFixed(0) + "px");
+        radar.style.setProperty("--ping-y", y.toFixed(0) + "px");
+      }
+
+      function hashString(text) {
+        let hash = 0;
+        const value = String(text || "");
+
+        for (let i = 0; i < value.length; i++) {
+          hash = (hash << 5) - hash + value.charCodeAt(i);
+          hash = hash & hash;
+        }
+
+        return Math.abs(hash);
+      }
+
+      function handleNexusPayload(data, reason) {
+        const activeCheckins = getActiveCheckins(data);
+        const latest = activeCheckins[0] || null;
+
+        if (!hasReceivedInitialData) {
+          hasReceivedInitialData = true;
+          updatePanel(data, false);
+          return;
+        }
+
+        if (reason === "checkin" && latest) {
+          updatePanel(data, true);
+        } else {
+          updatePanel(data, false);
+        }
+      }
+
+      function handleStreamerBotEvent(wsdata) {
+        const isWrappedCustomEvent =
+          wsdata.event?.source === "General" &&
+          wsdata.event?.type === "Custom" &&
+          typeof wsdata.data?.data === "string";
+
+        if (!isWrappedCustomEvent) {
+          return;
+        }
+
+        let innerMessage = null;
+
+        try {
+          innerMessage = JSON.parse(wsdata.data.data);
+        } catch (error) {
+          console.warn(
+            "Nexus alert could not parse wrapped custom event",
+            error,
+          );
+          return;
+        }
+
+        if (innerMessage.data?.name === "NexusCheckinsUpdated") {
+          handleNexusPayload(
+            innerMessage.data.payload,
+            innerMessage.data.reason || "refresh",
+          );
+        }
+      }
+
+      function connectws() {
+        setStatus("waiting", "Connecting");
+
+        socket = new WebSocket(config.ws_uri);
+
+        socket.onopen = () => {
+          setStatus("connected", "Connected");
+
+          socket.send(
+            JSON.stringify({
+              request: "Subscribe",
+              id: "nexus-checkin-alert",
+              events: {
+                General: ["Custom"],
+              },
+            }),
+          );
+
+          console.log("Nexus alert connected to", config.ws_uri);
+        };
+
+        socket.onmessage = (event) => {
+          let wsdata = null;
+
+          try {
+            wsdata = JSON.parse(event.data);
+          } catch (error) {
+            return;
+          }
+
+          handleStreamerBotEvent(wsdata);
+        };
+
+        socket.onerror = () => {
+          setStatus("error", "Error");
+        };
+
+        socket.onclose = () => {
+          setStatus("error", "Offline");
+          setTimeout(connectws, 5000);
+        };
+      }
+
+      connectws();
+    </script>
+  </body>
+</html>
