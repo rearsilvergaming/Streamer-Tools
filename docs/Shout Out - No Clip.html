@@ -1,0 +1,375 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>RearSilver Nexus Command No Clip Shoutout</title>
+
+    <style>
+      :root {
+        --text: #f7f2e8;
+        --muted: rgba(247, 242, 232, 0.66);
+        --cyan: #42e8ff;
+        --gold: #f0be65;
+        --green: #75f0a8;
+        --panel: rgba(7, 12, 18, 0.97);
+        --panel-soft: rgba(15, 22, 32, 0.93);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: transparent;
+        font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+        color: var(--text);
+      }
+
+      body {
+        pointer-events: none;
+      }
+
+      #main-container {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        opacity: 1;
+        transition: opacity 0.35s ease-in-out;
+      }
+
+      #main-container.hidden {
+        opacity: 0;
+      }
+
+      #shoutout-card {
+        position: relative;
+        width: 680px;
+        max-width: 100%;
+        min-height: 190px;
+        padding: 18px;
+        overflow: hidden;
+        border-radius: 24px;
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(66, 232, 255, 0.2),
+            transparent 38%
+          ),
+          radial-gradient(
+            circle at bottom right,
+            rgba(240, 190, 101, 0.15),
+            transparent 42%
+          ),
+          linear-gradient(135deg, rgba(7, 12, 18, 0.98), rgba(18, 25, 36, 0.96));
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow:
+          0 0 36px rgba(66, 232, 255, 0.15),
+          0 22px 70px rgba(0, 0, 0, 0.58),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+        animation: card-in 0.55s ease-out;
+      }
+
+      #shoutout-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          rgba(255, 255, 255, 0.025) 50%,
+          rgba(0, 0, 0, 0.055) 50%
+        );
+        background-size: 100% 4px;
+        opacity: 0.3;
+        pointer-events: none;
+      }
+
+      #shoutout-card::after {
+        content: "";
+        position: absolute;
+        inset: -45%;
+        background: linear-gradient(
+          115deg,
+          transparent 43%,
+          rgba(66, 232, 255, 0.1) 48%,
+          rgba(255, 255, 255, 0.14) 50%,
+          rgba(66, 232, 255, 0.1) 52%,
+          transparent 57%
+        );
+        transform: translateX(-72%);
+        animation: sweep 4.2s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      .content {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 14px;
+      }
+
+      .header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: start;
+        gap: 16px;
+      }
+
+      .eyebrow {
+        margin-bottom: 5px;
+        color: var(--cyan);
+        font-size: 11px;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: 2.4px;
+        text-transform: uppercase;
+      }
+
+      .title {
+        font-size: 28px;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: 0.7px;
+        text-transform: uppercase;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 11px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.11);
+        color: var(--muted);
+        font-size: 9px;
+        line-height: 1;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+      }
+
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 9px rgba(117, 240, 168, 0.85);
+      }
+
+      .main {
+        display: grid;
+        grid-template-columns: 118px minmax(0, 1fr);
+        gap: 14px;
+      }
+
+      #avatar-panel,
+      #text-panel {
+        position: relative;
+        min-width: 0;
+        border-radius: 17px;
+        background: rgba(9, 15, 23, 0.78);
+        border: 1px solid rgba(255, 255, 255, 0.085);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+      }
+
+      #avatar-panel {
+        min-height: 112px;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+
+      #avatar-panel::before {
+        content: "SOURCE";
+        position: absolute;
+        top: 8px;
+        left: 10px;
+        color: var(--muted);
+        font-size: 8px;
+        font-weight: 900;
+        letter-spacing: 1px;
+      }
+
+      #avatar {
+        width: 82px;
+        height: 82px;
+        margin-top: 9px;
+        overflow: hidden;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(66, 232, 255, 0.14),
+          rgba(6, 11, 17, 0.9)
+        );
+        border: 2px solid rgba(66, 232, 255, 0.7);
+        box-shadow: 0 0 24px rgba(66, 232, 255, 0.2);
+      }
+
+      #avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      #text-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 8px;
+        padding: 16px 18px;
+      }
+
+      .label {
+        color: var(--gold);
+        font-size: 9px;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+      }
+
+      #username {
+        color: var(--cyan);
+        font-size: 27px;
+        line-height: 1.05;
+        font-weight: 900;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        overflow-wrap: anywhere;
+      }
+
+      #message {
+        color: var(--text);
+        font-size: 16px;
+        line-height: 1.28;
+        font-weight: 800;
+        overflow-wrap: anywhere;
+      }
+
+      .footer {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: 10px 13px;
+        border-radius: 13px;
+        background: rgba(8, 13, 20, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+      }
+
+      .footer-left {
+        color: var(--gold);
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .footer-right {
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+      }
+
+      @keyframes card-in {
+        from {
+          opacity: 0;
+          transform: translateY(24px) scale(0.96);
+          filter: brightness(1.7) blur(2px);
+        }
+        70% {
+          opacity: 1;
+          transform: translateY(-4px) scale(1.01);
+          filter: brightness(1.15) blur(0);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          filter: brightness(1);
+        }
+      }
+
+      @keyframes sweep {
+        0%,
+        58% {
+          transform: translateX(-72%);
+        }
+        100% {
+          transform: translateX(72%);
+        }
+      }
+    </style>
+  </head>
+
+  <body onload="shoutout()">
+    <div id="main-container">
+      <div id="shoutout-card">
+        <div class="content">
+          <div class="header">
+            <div>
+              <div class="eyebrow">Nexus Command</div>
+              <div class="title">Signal Boost</div>
+            </div>
+
+            <div class="status">
+              <span class="dot"></span>
+              <span>Target Acquired</span>
+            </div>
+          </div>
+
+          <div class="main">
+            <div id="avatar-panel">
+              <div id="avatar"></div>
+            </div>
+
+            <div id="text-panel">
+              <div class="label">Featured Transmission</div>
+              <div id="username"></div>
+              <div id="message"></div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <div class="footer-left">Boost Their Signal</div>
+            <div class="footer-right">Nexus Network Relay</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function shoutout() {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const user = urlParams.get("user") || "Unknown Signal";
+        const image = urlParams.get("image") || "";
+        const game = urlParams.get("game") || "";
+        const message =
+          urlParams.get("message") ||
+          (game !== ""
+            ? `They were last seen playing ${game}.`
+            : "Go give them some love.");
+
+        document.getElementById("username").textContent =
+          `Shoutout to ${user}!`;
+        document.getElementById("message").textContent = message;
+
+        if (image !== "") {
+          document.getElementById("avatar").innerHTML =
+            `<img src="${image}" alt="${user}" />`;
+        }
+      }
+    </script>
+  </body>
+</html>
