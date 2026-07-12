@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -81,7 +81,9 @@
         opacity: 0;
         display: none;
         z-index: 10;
-        transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+        transition:
+          opacity 0.2s ease-out,
+          transform 0.2s ease-out;
       }
 
       /* FX: speed lines (behind Pokémon) */
@@ -504,19 +506,25 @@
             id="speed-lines"
             src=""
             alt="Speed Lines"
-            onerror="console.error('Speed lines failed to load from:', this.src)"
+            onerror="
+              console.error('Speed lines failed to load from:', this.src)
+            "
           />
           <img
             id="dust-small"
             src=""
             alt="Small Dust Cloud"
-            onerror="console.error('Small dust cloud failed to load from:', this.src)"
+            onerror="
+              console.error('Small dust cloud failed to load from:', this.src)
+            "
           />
           <img
             id="dust-large"
             src=""
             alt="Large Dust Cloud"
-            onerror="console.error('Large dust cloud failed to load from:', this.src)"
+            onerror="
+              console.error('Large dust cloud failed to load from:', this.src)
+            "
           />
         </div>
 
@@ -527,7 +535,9 @@
               id="pokemon-image"
               src=""
               alt="Wild Pokemon"
-              onerror="console.error('Pokemon image failed to load from:', this.src)"
+              onerror="
+                console.error('Pokemon image failed to load from:', this.src)
+              "
             />
           </div>
           <div id="shiny-sparkle-layer" class="fx-layer"></div>
@@ -535,7 +545,9 @@
             id="pokeball-image"
             src=""
             alt="Pokeball"
-            onerror="console.error('Pokeball image failed to load from:', this.src)"
+            onerror="
+              console.error('Pokeball image failed to load from:', this.src)
+            "
           />
         </div>
       </div>
@@ -567,11 +579,26 @@
       function sendHeartbeat() {
         if (ws && ws.readyState === WebSocket.OPEN) {
           ws.send(
-            JSON.stringify({ request: "Ping", id: "pokemon-overlay-heartbeat" })
+            JSON.stringify({
+              request: "Ping",
+              id: "pokemon-overlay-heartbeat",
+            }),
           );
         }
       }
-      // ---- WebSocket connection with reconnect logic ----
+
+      // ---- Optional: tell Streamer.bot overlay died (HTTP action) ----
+      function warnStreamerBot() {
+        try {
+          fetch("http://127.0.0.1:7474/overlayDisconnected", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ overlay: "pokemon" }),
+          });
+        } catch {
+          // If HTTP server isn't enabled, just ignore
+        }
+      }
 
       function startWebSocket(endpointIndex = 0) {
         const url = endpoints[endpointIndex % endpoints.length];
@@ -687,9 +714,6 @@
           case "miss":
             handleMissThrow(payload);
             break;
-          case "_keepalive":
-            // No-op: keeps OBS browser source alive
-            return;
         }
       }
 
@@ -701,9 +725,11 @@
         const silentFor = Date.now() - lastMessageTime;
         if (silentFor > MAX_SILENCE_MS) {
           console.warn(
-            "[Overlay] No activity detected — forcing browser reload"
+            "[WebSocket] Overlay has been silent too long, notifying SB.",
           );
-          location.reload();
+          warnStreamerBot();
+          // Reset timer so we don't spam
+          lastMessageTime = Date.now();
         }
       }, 5000);
 
@@ -742,13 +768,13 @@
 
       function resetState() {
         container.style.opacity = "0";
-        container.classList.remove("screen-shake");
+        container.classList.remove("screen-shake", "animate-fade-out");
 
         [pokemonImage, pokeballImage, speedLines, dustSmall, dustLarge].forEach(
           (el) => {
             if (!el) return;
             el.className = el.className.replace(/\banimate-[a-z-]+\b/g, "");
-          }
+          },
         );
 
         pokemonImage.style.opacity = "0";
@@ -758,7 +784,7 @@
         pokemonImage.classList.remove(
           "idle-bounce",
           "shiny-glow",
-          "shiny-hue-pulse"
+          "shiny-hue-pulse",
         );
 
         pokeballImage.style.opacity = "0";
@@ -768,7 +794,7 @@
           "animate-pokeball-throw",
           "animate-wiggle",
           "animate-catch-success",
-          "animate-shiny-success"
+          "animate-shiny-success",
         );
 
         [speedLines, dustSmall, dustLarge].forEach((el) => {
@@ -798,27 +824,26 @@
       }
 
       function setPokemonSprite(name) {
-        const cacheBust = `?v=${Date.now()}`;
+        const png = `${BASE_IMAGE_URL}${name}.png`;
+        const webp = `${BASE_IMAGE_URL}${name}.webp`;
+        const fallback = `${BASE_IMAGE_URL}Missing%20Image.png`;
 
-        const png = `${BASE_IMAGE_URL}${name}.png${cacheBust}`;
-        const webp = `${BASE_IMAGE_URL}${name}.webp${cacheBust}`;
-        const fallback = `${BASE_IMAGE_URL}Missing%20Image.png${cacheBust}`;
-
-        // Clear src first to force OBS to drop the old texture
-        pokemonImage.src = "";
+        pokemonImage.src = png;
 
         pokemonImage.onerror = () => {
+          // Try .webp next
           pokemonImage.onerror = () => {
+            // Final fallback
             pokemonImage.src = fallback;
           };
           pokemonImage.src = webp;
         };
-
-        pokemonImage.src = png;
       }
 
       function handleSpawn(data) {
         resetState();
+
+        container.classList.remove("animate-fade-out");
 
         currentPokemonName = data.pokemonName;
         const isShiny = data.isShiny === true;
@@ -849,7 +874,7 @@
             pokemonImage.classList.add("animate-run-in");
             container.classList.remove("screen-shake");
             requestAnimationFrame(() =>
-              container.classList.add("screen-shake")
+              container.classList.add("screen-shake"),
             );
 
             pokemonImage.style.opacity = "1";
@@ -857,11 +882,11 @@
 
             setTimeout(
               () => dustSmall.classList.add("animate-dust-small"),
-              380
+              380,
             );
             setTimeout(
               () => dustLarge.classList.add("animate-dust-large"),
-              430
+              430,
             );
           });
 
@@ -884,7 +909,13 @@
       }
 
       function handleThrow() {
-        if (!currentPokemonName) return;
+        if (!currentPokemonName) {
+          console.warn(
+            "[Pokemon Overlay] Throw received but no currentPokemonName is set. Spawn was probably missed or the browser source refreshed.",
+          );
+
+          return;
+        }
 
         const cacheBust = `?v=${Date.now()}`;
         pokeballImage.src = POKEBALL_URL + cacheBust;
@@ -897,7 +928,7 @@
           "animate-pokeball-throw",
           "animate-catch-success",
           "animate-shiny-success",
-          "animate-wiggle"
+          "animate-wiggle",
         );
 
         // ⭐ SHINY BONUS: make Pokéball glow gold when thrown
@@ -923,7 +954,7 @@
 
         pokeballImage.classList.remove("animate-wiggle");
         requestAnimationFrame(() =>
-          pokeballImage.classList.add("animate-wiggle")
+          pokeballImage.classList.add("animate-wiggle"),
         );
       }
 
@@ -940,7 +971,7 @@
           "animate-wiggle",
           "animate-catch-success",
           "animate-shiny-success",
-          "animate-miss-throw"
+          "animate-miss-throw",
         );
         container.classList.remove("screen-shake");
 
@@ -965,7 +996,7 @@
           "animate-run-in",
           "animate-suck-in",
           "animate-catch-fail-escape",
-          "animate-flee-run"
+          "animate-flee-run",
         );
 
         // Hide Pokéball
