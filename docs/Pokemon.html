@@ -649,11 +649,6 @@
           const payload = extractPokemonPayload(msg);
 
           if (!payload) {
-            console.log(
-              "[Pokemon Overlay] WebSocket message ignored. No pokemon command found.",
-              msg,
-            );
-
             return;
           }
 
@@ -907,12 +902,6 @@
 
         currentPokemonName = data.pokemonName;
 
-        console.log(
-          "[Pokemon Overlay] Spawn received for:",
-          currentPokemonName,
-          data,
-        );
-
         const isShiny = data.isShiny === true;
 
         const cacheBust = `?v=${Date.now()}`;
@@ -924,11 +913,6 @@
         pokemonImage.onload = () => {
           rescalePokemonSprite();
           container.style.opacity = "1";
-
-          console.log(
-            "[Pokemon Overlay] Sprite loaded and container shown:",
-            pokemonImage.src,
-          );
 
           requestAnimationFrame(() => {
             // Apply shiny FX if shiny
