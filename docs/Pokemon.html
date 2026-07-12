@@ -504,7 +504,7 @@
         <div class="fx-layer">
           <img
             id="speed-lines"
-            src=""
+            src="about:blank"
             alt="Speed Lines"
             onerror="
               console.error('Speed lines failed to load from:', this.src)
@@ -512,7 +512,7 @@
           />
           <img
             id="dust-small"
-            src=""
+            src="about:blank"
             alt="Small Dust Cloud"
             onerror="
               console.error('Small dust cloud failed to load from:', this.src)
@@ -520,7 +520,7 @@
           />
           <img
             id="dust-large"
-            src=""
+            src="about:blank"
             alt="Large Dust Cloud"
             onerror="
               console.error('Large dust cloud failed to load from:', this.src)
@@ -533,7 +533,7 @@
           <div id="pokemon-wrapper">
             <img
               id="pokemon-image"
-              src=""
+              src="about:blank"
               alt="Wild Pokemon"
               onerror="
                 console.error('Pokemon image failed to load from:', this.src)
@@ -543,7 +543,7 @@
           <div id="shiny-sparkle-layer" class="fx-layer"></div>
           <img
             id="pokeball-image"
-            src=""
+            src="about:blank"
             alt="Pokeball"
             onerror="
               console.error('Pokeball image failed to load from:', this.src)
@@ -635,40 +635,35 @@
           lastMessageTime = Date.now();
 
           let msg;
+
           try {
             msg = JSON.parse(event.data);
           } catch (e) {
             console.error("WS JSON parse error:", e);
+            console.log("Raw WS data:", event.data);
             return;
           }
 
           console.log("WebSocket message:", msg);
 
-          /* =============================
-       Payload format from:
-       CPH.WebsocketBroadcastJson()
-       -----------------------------
-       {
-         event:{ source:"General", type:"Custom" },
-         data:{
-           command:"spawn",
-           pokemonName:"Pikachu",
-           ...
-         }
-       }
-       ============================= */
+          const payload = extractPokemonPayload(msg);
 
-          if (msg.data && msg.data.command) {
-            const payload = msg.data;
-            routePokemonCommand(payload);
+          if (!payload) {
+            console.log(
+              "[Pokemon Overlay] WebSocket message ignored. No pokemon command found.",
+              msg,
+            );
+
             return;
           }
 
-          // Fallback: some older SB versions use msg.type+msg.data.data
-          if (msg.type && msg.data && msg.data.data && msg.data.data.command) {
-            routePokemonCommand(msg.data.data);
-            return;
-          }
+          console.log(
+            "[Pokemon Overlay] Routed command:",
+            payload.command,
+            payload,
+          );
+
+          routePokemonCommand(payload);
         };
 
         ws.onerror = () => {
@@ -688,6 +683,71 @@
         reconnectAttempts++;
         const delay = Math.min(1000 * reconnectAttempts, 8000); // cap at 8s
         setTimeout(() => startWebSocket(nextIndex), delay);
+      }
+
+      function tryParseJson(value) {
+        if (typeof value !== "string") {
+          return value;
+        }
+
+        try {
+          return JSON.parse(value);
+        } catch {
+          return value;
+        }
+      }
+
+      function extractPokemonPayload(msg) {
+        if (!msg) {
+          return null;
+        }
+
+        // Direct payload:
+        // { command: "spawn", ... }
+        if (msg.command) {
+          return msg;
+        }
+
+        // Common Streamer.bot shape:
+        // { data: { command: "spawn", ... } }
+        if (msg.data) {
+          const data = tryParseJson(msg.data);
+
+          if (data && data.command) {
+            return data;
+          }
+
+          // Nested data:
+          // { data: { data: { command: "spawn", ... } } }
+          if (data && data.data) {
+            const nestedData = tryParseJson(data.data);
+
+            if (nestedData && nestedData.command) {
+              return nestedData;
+            }
+          }
+        }
+
+        // Some versions/actions may use eventData
+        if (msg.eventData) {
+          const eventData = tryParseJson(msg.eventData);
+
+          if (eventData && eventData.command) {
+            return eventData;
+          }
+        }
+
+        // Some custom events may arrive as:
+        // { event: ..., data: { raw: "{\"command\":\"spawn\"}" } }
+        if (msg.data && msg.data.raw) {
+          const raw = tryParseJson(msg.data.raw);
+
+          if (raw && raw.command) {
+            return raw;
+          }
+        }
+
+        return null;
       }
 
       // ---- Route incoming commands to overlay logic ----
