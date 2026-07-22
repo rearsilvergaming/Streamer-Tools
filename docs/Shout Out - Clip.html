@@ -303,6 +303,20 @@
       #videocontainer.hidden {
         opacity: 0;
       }
+
+      #video-debug {
+        position: absolute;
+        left: 14px;
+        bottom: 12px;
+        z-index: 10;
+        padding: 7px 10px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.82);
+        color: #42e8ff;
+        font-size: 12px;
+        font-weight: 800;
+        pointer-events: none;
+      }
     </style>
   </head>
 
@@ -328,6 +342,8 @@
           playsinline
           onended="setTimeout(cleanup, 500)"
         ></video>
+
+        <div id="video-debug">Starting shoutout…</div>
       </div>
 
       <div id="info-overlay" class="hidden">
@@ -368,24 +384,44 @@
     </div>
 
     <script>
+      function setVideoDebug(message) {
+        const debugElement = document.getElementById("video-debug");
+
+        if (debugElement) {
+          debugElement.textContent = message;
+        }
+
+        console.log("[Shoutout Player]", message);
+      }
+
       async function showVideo() {
         const videoElement = document.getElementById("videoplayer");
-        if (!videoElement) return;
+
+        if (!videoElement) {
+          setVideoDebug("ERROR: Video element not found");
+          return;
+        }
 
         videoElement.style.visibility = "visible";
+        setVideoDebug("Calling video.play()");
 
         try {
           await videoElement.play();
-          console.log("Muted clip playback started.");
+          setVideoDebug("SUCCESS: Video is playing");
         } catch (error) {
-          console.error("Muted clip playback failed:", error);
+          setVideoDebug(`PLAY FAILED: ${error.name} — ${error.message}`);
         }
       }
 
       async function shoutout() {
+        setVideoDebug("Shoutout page started");
+
         const urlParams = new URLSearchParams(window.location.search);
         const overlay = document.getElementById("info-overlay");
-        if (overlay) overlay.classList.remove("hidden");
+
+        if (overlay) {
+          overlay.classList.remove("hidden");
+        }
 
         const user = urlParams.get("user");
         const clipUser = urlParams.get("clip_user");
@@ -410,66 +446,82 @@
         }
 
         const videoElement = document.getElementById("videoplayer");
-        if (!videoElement) return;
 
-        // Corrected parser to handle Streamer.bot's customized embed formatting safely
+        if (!videoElement) {
+          setVideoDebug("ERROR: Video element not found");
+          return;
+        }
+
         let clipId = null;
+
         if (video) {
           const match = video.match(/clip=([^&"' >]+)/);
+
           if (match) {
             clipId = match[1].split("/").filter(Boolean).pop();
           } else {
             const cleanUrl = video.split("?")[0].replace(/\/$/, "");
+
             clipId = cleanUrl.split("/").filter(Boolean).pop();
           }
         }
 
         if (!clipId || clipId === "null" || clipId === "undefined") {
+          setVideoDebug("ERROR: Could not extract clip ID");
           console.error("Could not parse a valid Clip ID from value:", video);
           return;
         }
 
+        setVideoDebug(`Clip ID found: ${clipId}`);
+
         const url = "https://gql.twitch.tv/gql";
 
-        // Reverted to your exact working GraphQL query variable configuration
         const query = {
           operationName: "VideoAccessToken_Clip",
+
           variables: {
             slug: clipId,
           },
+
           query: `
-            query VideoAccessToken_Clip($slug: ID!) {
-              clip(slug: $slug) {
-                playbackAccessToken(
-                  params: {
-                    platform: "web"
-                    playerBackend: "mediaplayer"
-                    playerType: "site"
-                  }
-                ) {
-                  signature
-                  value
-                }
-                videoQualities {
-                  frameRate
-                  quality
-                  sourceURL
-                }
+        query VideoAccessToken_Clip($slug: ID!) {
+          clip(slug: $slug) {
+            playbackAccessToken(
+              params: {
+                platform: "web"
+                playerBackend: "mediaplayer"
+                playerType: "site"
               }
+            ) {
+              signature
+              value
             }
-          `,
+
+            videoQualities {
+              frameRate
+              quality
+              sourceURL
+            }
+          }
+        }
+      `,
         };
 
         try {
-          // Asynchronous fetch structure to satisfy modern OBS/Chromium requirements
+          setVideoDebug("Requesting Twitch playback data");
+
           const response = await fetch(url, {
             method: "POST",
+
             headers: {
               "Content-Type": "application/json",
               "Client-ID": "kimne78kx3ncx6brgo4mv6wki5h1ko",
             },
+
             body: JSON.stringify(query),
           });
+
+          setVideoDebug(`Twitch response received: HTTP ${response.status}`);
 
           if (!response.ok) {
             throw new Error(`Twitch GQL HTTP error status: ${response.status}`);
@@ -478,56 +530,130 @@
           const clipInfo = await response.json();
 
           if (clipInfo.errors && clipInfo.errors.length > 0) {
+            setVideoDebug(`TWITCH ERROR: ${clipInfo.errors[0].message}`);
+
             console.error("Twitch GraphQL returned errors:", clipInfo.errors);
+
             return;
           }
 
-          const clipData = clipInfo.data;
+          const clipData = clipInfo.data?.clip;
+
           if (
             !clipData ||
-            !clipData.clip ||
-            !clipData.clip.videoQualities ||
-            clipData.clip.videoQualities.length === 0
+            !Array.isArray(clipData.videoQualities) ||
+            clipData.videoQualities.length === 0
           ) {
+            setVideoDebug("ERROR: Twitch returned no video source");
+
             console.error(
               "Twitch did not return any media properties or video sources.",
             );
+
             return;
           }
 
-          const clipSource = clipData.clip.videoQualities[0].sourceURL;
-          const clipSig = clipData.clip.playbackAccessToken.signature;
-          const clipToken = clipData.clip.playbackAccessToken.value;
+          if (
+            !clipData.playbackAccessToken?.signature ||
+            !clipData.playbackAccessToken?.value
+          ) {
+            setVideoDebug("ERROR: Twitch returned no playback token");
+            return;
+          }
+
+          const clipSource = clipData.videoQualities[0].sourceURL;
+
+          const clipSig = clipData.playbackAccessToken.signature;
+
+          const clipToken = clipData.playbackAccessToken.value;
 
           const videoSrc =
             clipSource +
             "?sig=" +
-            clipSig +
+            encodeURIComponent(clipSig) +
             "&token=" +
             encodeURIComponent(clipToken);
 
+          videoElement.addEventListener(
+            "loadstart",
+            () => {
+              setVideoDebug("OBS started loading the MP4");
+            },
+            { once: true },
+          );
+
+          videoElement.addEventListener(
+            "loadedmetadata",
+            () => {
+              setVideoDebug(`Metadata loaded: ${videoElement.duration}s`);
+            },
+            { once: true },
+          );
+
+          videoElement.addEventListener(
+            "canplay",
+            () => {
+              setVideoDebug("Video can play");
+            },
+            { once: true },
+          );
+
+          videoElement.addEventListener(
+            "playing",
+            () => {
+              setVideoDebug("SUCCESS: Video is playing");
+            },
+            { once: true },
+          );
+
+          videoElement.addEventListener(
+            "error",
+            () => {
+              const mediaError = videoElement.error;
+
+              setVideoDebug(
+                `VIDEO ERROR ${mediaError?.code ?? "unknown"}: ${
+                  mediaError?.message || "No error message"
+                }`,
+              );
+            },
+            { once: true },
+          );
+
+          setVideoDebug("Assigning signed MP4 source");
+
           videoElement.src = videoSrc;
           videoElement.load();
-
           videoElement.style.visibility = "hidden";
+
           setTimeout(showVideo, 1000);
-        } catch (err) {
-          console.error("Failed handling Twitch clip source extraction:", err);
+        } catch (error) {
+          setVideoDebug(`REQUEST FAILED: ${error.name} — ${error.message}`);
+
+          console.error(
+            "Failed handling Twitch clip source extraction:",
+            error,
+          );
         }
       }
 
       function cleanup() {
         const videoElement = document.getElementById("videoplayer");
+
         if (videoElement) {
+          videoElement.pause();
           videoElement.removeAttribute("src");
           videoElement.load();
           videoElement.style.visibility = "hidden";
         }
 
         const overlay = document.getElementById("info-overlay");
+
         if (overlay) {
           overlay.classList.add("hidden");
         }
+
+        setVideoDebug("Playback finished");
       }
     </script>
   </body>
