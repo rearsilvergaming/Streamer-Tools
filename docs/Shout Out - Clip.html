@@ -161,16 +161,15 @@
         pointer-events: none;
       }
 
-      #videoplayer {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        visibility: hidden;
-        background: #000;
-        position: relative;
-        z-index: 1;
-      }
+#clipplayer {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #000;
+  position: relative;
+  z-index: 1;
+}
 
       #info-overlay {
         display: grid;
@@ -325,7 +324,7 @@
       <div class="header">
         <div>
           <div class="eyebrow">Nexus Command</div>
-          <div class="title">Shoutout Transmission — DEBUG 7</div>
+          <div class="title">Shoutout Transmission</div>
         </div>
 
         <div class="status">
@@ -335,16 +334,12 @@
       </div>
 
       <div id="videocontainer">
-        <video
-          id="videoplayer"
-          autoplay
-          muted
-          playsinline
-          onended="setTimeout(cleanup, 500)"
-        ></video>
-
-        <div id="video-debug">Starting shoutout…</div>
-      </div>
+<iframe
+  id="clipplayer"
+  allow="autoplay; fullscreen"
+  frameborder="0"
+  scrolling="no"
+></iframe>
 
       <div id="info-overlay" class="hidden">
         <div id="image-panel">
@@ -383,278 +378,101 @@
       </div>
     </div>
 
-    <script>
-      function setVideoDebug(message) {
-        const debugElement = document.getElementById("video-debug");
+   <script>
+  function shoutout() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const overlay = document.getElementById("info-overlay");
 
-        if (debugElement) {
-          debugElement.textContent = message;
-        }
+    overlay.classList.remove("hidden");
 
-        console.log("[Shoutout Player]", message);
+    const user = urlParams.get("user");
+    const clipUser = urlParams.get("clip_user");
+    const image = urlParams.get("image");
+    const video = urlParams.get("video");
+    const clipTitle = urlParams.get("title");
+    const views = urlParams.get("views");
+    const time = Number.parseInt(urlParams.get("time"), 10);
+
+    document.getElementById("username").textContent =
+      `Shout out to ${user}!`;
+
+    document.getElementById("clip-title").textContent =
+      clipTitle || "";
+
+    document.getElementById("clip-user").textContent =
+      `Clipped by ${clipUser}`;
+
+    document.getElementById("views").textContent =
+      views || "0";
+
+    if (image) {
+      document.getElementById("imagebox2").innerHTML =
+        `<img src="${image}" width="100%" />`;
+    }
+
+    let clipId = null;
+
+    if (video) {
+      const match = video.match(/clip=([^&"' >]+)/);
+
+      if (match) {
+        clipId = match[1]
+          .split("/")
+          .filter(Boolean)
+          .pop();
+      } else {
+        const cleanUrl = video
+          .split("?")[0]
+          .replace(/\/$/, "");
+
+        clipId = cleanUrl
+          .split("/")
+          .filter(Boolean)
+          .pop();
       }
+    }
 
-      async function showVideo() {
-        const videoElement = document.getElementById("videoplayer");
+    if (!clipId) {
+      console.error("Could not extract Twitch clip ID from:", video);
+      return;
+    }
 
-        if (!videoElement) {
-          setVideoDebug("ERROR: Video element not found");
-          return;
-        }
+    const clipPlayer =
+      document.getElementById("clipplayer");
 
-        videoElement.style.visibility = "visible";
-        setVideoDebug("Calling video.play()");
+    const embedUrl =
+      "https://clips.twitch.tv/embed" +
+      "?clip=" +
+      encodeURIComponent(clipId) +
+      "&parent=rearsilvergaming.github.io" +
+      "&autoplay=true" +
+      "&muted=false";
 
-        try {
-          await videoElement.play();
-          setVideoDebug("SUCCESS: Video is playing");
-        } catch (error) {
-          setVideoDebug(`PLAY FAILED: ${error.name} — ${error.message}`);
-        }
-      }
+    clipPlayer.src = embedUrl;
 
-      async function shoutout() {
-        setVideoDebug("Shoutout page started");
+    if (Number.isFinite(time) && time > 0) {
+      setTimeout(cleanup, time);
+    }
+  }
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const overlay = document.getElementById("info-overlay");
+  function cleanup() {
+    const clipPlayer =
+      document.getElementById("clipplayer");
 
-        if (overlay) {
-          overlay.classList.remove("hidden");
-        }
+    if (clipPlayer) {
+      clipPlayer.src = "about:blank";
+    }
 
-        const user = urlParams.get("user");
-        const clipUser = urlParams.get("clip_user");
-        const image = urlParams.get("image");
-        const video = urlParams.get("video");
-        const clipTitle = urlParams.get("title");
-        const views = urlParams.get("views");
+    const overlay =
+      document.getElementById("info-overlay");
 
-        document.getElementById("username").textContent =
-          `Shout out to ${user}!`;
+    overlay.classList.add("hidden");
 
-        document.getElementById("clip-title").textContent = clipTitle || "";
+    const mainContainer =
+      document.getElementById("main-container");
 
-        document.getElementById("clip-user").textContent =
-          `Clipped by ${clipUser}`;
-
-        document.getElementById("views").textContent = views || "0";
-
-        if (image) {
-          document.getElementById("imagebox2").innerHTML =
-            `<img src="${image}" width="100%" />`;
-        }
-
-        const videoElement = document.getElementById("videoplayer");
-
-        if (!videoElement) {
-          setVideoDebug("ERROR: Video element not found");
-          return;
-        }
-
-        let clipId = null;
-
-        if (video) {
-          const match = video.match(/clip=([^&"' >]+)/);
-
-          if (match) {
-            clipId = match[1].split("/").filter(Boolean).pop();
-          } else {
-            const cleanUrl = video.split("?")[0].replace(/\/$/, "");
-
-            clipId = cleanUrl.split("/").filter(Boolean).pop();
-          }
-        }
-
-        if (!clipId || clipId === "null" || clipId === "undefined") {
-          setVideoDebug("ERROR: Could not extract clip ID");
-          console.error("Could not parse a valid Clip ID from value:", video);
-          return;
-        }
-
-        setVideoDebug(`Clip ID found: ${clipId}`);
-
-        const url = "https://gql.twitch.tv/gql";
-
-        const query = {
-          operationName: "VideoAccessToken_Clip",
-
-          variables: {
-            slug: clipId,
-          },
-
-          query: `
-        query VideoAccessToken_Clip($slug: ID!) {
-          clip(slug: $slug) {
-            playbackAccessToken(
-              params: {
-                platform: "web"
-                playerBackend: "mediaplayer"
-                playerType: "site"
-              }
-            ) {
-              signature
-              value
-            }
-
-            videoQualities {
-              frameRate
-              quality
-              sourceURL
-            }
-          }
-        }
-      `,
-        };
-
-        try {
-          setVideoDebug("Requesting Twitch playback data");
-
-          const response = await fetch(url, {
-            method: "POST",
-
-            headers: {
-              "Content-Type": "application/json",
-              "Client-ID": "kimne78kx3ncx6brgo4mv6wki5h1ko",
-            },
-
-            body: JSON.stringify(query),
-          });
-
-          setVideoDebug(`Twitch response received: HTTP ${response.status}`);
-
-          if (!response.ok) {
-            throw new Error(`Twitch GQL HTTP error status: ${response.status}`);
-          }
-
-          const clipInfo = await response.json();
-
-          if (clipInfo.errors && clipInfo.errors.length > 0) {
-            setVideoDebug(`TWITCH ERROR: ${clipInfo.errors[0].message}`);
-
-            console.error("Twitch GraphQL returned errors:", clipInfo.errors);
-
-            return;
-          }
-
-          const clipData = clipInfo.data?.clip;
-
-          if (
-            !clipData ||
-            !Array.isArray(clipData.videoQualities) ||
-            clipData.videoQualities.length === 0
-          ) {
-            setVideoDebug("ERROR: Twitch returned no video source");
-
-            console.error(
-              "Twitch did not return any media properties or video sources.",
-            );
-
-            return;
-          }
-
-          if (
-            !clipData.playbackAccessToken?.signature ||
-            !clipData.playbackAccessToken?.value
-          ) {
-            setVideoDebug("ERROR: Twitch returned no playback token");
-            return;
-          }
-
-          const clipSource = clipData.videoQualities[0].sourceURL;
-
-          const clipSig = clipData.playbackAccessToken.signature;
-
-          const clipToken = clipData.playbackAccessToken.value;
-
-          const videoSrc =
-            clipSource +
-            "?sig=" +
-            encodeURIComponent(clipSig) +
-            "&token=" +
-            encodeURIComponent(clipToken);
-
-          videoElement.addEventListener(
-            "loadstart",
-            () => {
-              setVideoDebug("OBS started loading the MP4");
-            },
-            { once: true },
-          );
-
-          videoElement.addEventListener(
-            "loadedmetadata",
-            () => {
-              setVideoDebug(`Metadata loaded: ${videoElement.duration}s`);
-            },
-            { once: true },
-          );
-
-          videoElement.addEventListener(
-            "canplay",
-            () => {
-              setVideoDebug("Video can play");
-            },
-            { once: true },
-          );
-
-          videoElement.addEventListener(
-            "playing",
-            () => {
-              setVideoDebug("SUCCESS: Video is playing");
-            },
-            { once: true },
-          );
-
-          videoElement.addEventListener(
-            "error",
-            () => {
-              const mediaError = videoElement.error;
-
-              setVideoDebug(
-                `VIDEO ERROR ${mediaError?.code ?? "unknown"}: ${
-                  mediaError?.message || "No error message"
-                }`,
-              );
-            },
-            { once: true },
-          );
-
-          setVideoDebug("Assigning signed MP4 source");
-
-          videoElement.src = videoSrc;
-          videoElement.load();
-          videoElement.style.visibility = "hidden";
-
-          setTimeout(showVideo, 1000);
-        } catch (error) {
-          setVideoDebug(`REQUEST FAILED: ${error.name} — ${error.message}`);
-
-          console.error(
-            "Failed handling Twitch clip source extraction:",
-            error,
-          );
-        }
-      }
-
-      function cleanup() {
-        const videoElement = document.getElementById("videoplayer");
-
-        if (videoElement) {
-          videoElement.pause();
-          videoElement.removeAttribute("src");
-          videoElement.load();
-          videoElement.style.visibility = "hidden";
-        }
-
-        const overlay = document.getElementById("info-overlay");
-
-        if (overlay) {
-          overlay.classList.add("hidden");
-        }
-
-        setVideoDebug("Playback finished");
-      }
-    </script>
+    mainContainer.classList.add("hidden");
+  }
+</script>
   </body>
 </html>
