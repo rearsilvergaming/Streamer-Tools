@@ -459,17 +459,33 @@
 
         const query = {
           operationName: "VideoAccessToken_Clip",
+
           variables: {
-            platform: "web",
             slug: clipId,
           },
-          extensions: {
-            persistedQuery: {
-              version: 1,
-              sha256Hash:
-                "36b89d2507fce29e5ca551df756d27c1cfe079e2609642b4390aa4c35796eb11",
-            },
-          },
+
+          query: `
+    query VideoAccessToken_Clip($slug: ID!) {
+      clip(slug: $slug) {
+        playbackAccessToken(
+          params: {
+            platform: "web"
+            playerBackend: "mediaplayer"
+            playerType: "site"
+          }
+        ) {
+          signature
+          value
+        }
+
+        videoQualities {
+          frameRate
+          quality
+          sourceURL
+        }
+      }
+    }
+  `,
         };
 
         let response;
