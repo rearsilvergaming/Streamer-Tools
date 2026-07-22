@@ -324,6 +324,8 @@
         <video
           id="videoplayer"
           autoplay
+          muted
+          playsinline
           onended="setTimeout(cleanup, 500)"
         ></video>
       </div>
@@ -373,13 +375,10 @@
         videoElement.style.visibility = "visible";
 
         try {
-          videoElement.muted = true;
           await videoElement.play();
-
-          videoElement.muted = false;
-          videoElement.volume = 1;
+          console.log("Muted clip playback started.");
         } catch (error) {
-          console.error("Clip could not start:", error);
+          console.error("Muted clip playback failed:", error);
         }
       }
 
