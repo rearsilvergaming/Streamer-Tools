@@ -510,7 +510,10 @@
         }
 
         if (clipInfo.errors?.length) {
-          console.error("Twitch GraphQL returned errors:", clipInfo.errors);
+          console.error(
+            "Twitch GraphQL returned errors:",
+            JSON.stringify(clipInfo.errors, null, 2),
+          );
           return;
         }
 
