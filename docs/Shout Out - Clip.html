@@ -324,8 +324,6 @@
         <video
           id="videoplayer"
           autoplay
-          playsinline
-          disablepictureinpicture
           onended="setTimeout('cleanup()', 500)"
         ></video>
       </div>
@@ -368,25 +366,15 @@
     </div>
 
     <script>
-      async function showVideo() {
+      function showVideo() {
         const videoElement = document.getElementById("videoplayer");
-
-        videoElement.controls = false;
         videoElement.style.visibility = "visible";
-
-        try {
-          await videoElement.play();
-          console.log("Clip playback started successfully.");
-        } catch (error) {
-          console.error("Clip autoplay was blocked:", error);
-        }
+        videoElement.play();
       }
 
       async function shoutout() {
         const urlParams = new URLSearchParams(window.location.search);
         const overlay = document.getElementById("info-overlay");
-        const videoElement = document.getElementById("videoplayer");
-
         overlay.classList.remove("hidden");
 
         const user = urlParams.get("user");
@@ -397,63 +385,34 @@
         const views = urlParams.get("views");
 
         document.getElementById("username").textContent =
-          `Shout out to ${user || "Unknown user"}!`;
+          `Shout out to ${user}!`;
 
         document.getElementById("clip-title").textContent = clipTitle || "";
 
         document.getElementById("clip-user").textContent =
-          `Clipped by ${clipUser || "Unknown user"}`;
+          `Clipped by ${clipUser}`;
 
         document.getElementById("views").textContent = views || "0";
 
-        if (image) {
-          const profileImage = document.createElement("img");
-          profileImage.src = image;
-          profileImage.alt = "";
-          profileImage.width = 76;
-          profileImage.height = 76;
+        document.getElementById("imagebox2").innerHTML =
+          `<img src="${image}" width="100%" />`;
 
-          const imageBox = document.getElementById("imagebox2");
-          imageBox.replaceChildren(profileImage);
-        }
+        const videoElement = document.getElementById("videoplayer");
 
-        if (!video) {
-          console.error("No video parameter was supplied.");
-          return;
-        }
-
-        /*
-      Accepts:
-      https://www.twitch.tv/embed?clip=channel/clip/ClipSlug
-      https://clips.twitch.tv/ClipSlug
-      https://www.twitch.tv/channel/clip/ClipSlug
-      ClipSlug
-    */
-        let clipId = null;
-
-        try {
-          const suppliedUrl = new URL(video);
-          const clipParameter = suppliedUrl.searchParams.get("clip");
-
-          if (clipParameter) {
-            clipId = clipParameter.split("/").filter(Boolean).pop();
-          } else {
-            clipId = suppliedUrl.pathname.split("/").filter(Boolean).pop();
-          }
-        } catch {
-          clipId = video.split("/").filter(Boolean).pop()?.split("?")[0];
-        }
-
-        if (!clipId) {
-          console.error("Could not extract a Twitch clip ID from:", video);
-          return;
-        }
-
-        console.log("Supplied video parameter:", video);
-        console.log("Extracted clip ID:", clipId);
+        const match = video.match(/clip=([^\"]+)/);
+        const fullClipId = match ? match[1] : null;
+        const match2 = fullClipId ? fullClipId.match(/([^/]+)$/) : null;
+        const clipId = match2 ? match2[1] : null;
 
         const url = "https://gql.twitch.tv/gql";
 
+        /*
+      Twitch removed the old persisted query, which caused:
+      PersistedQueryNotFound
+
+      This sends the full query instead while leaving the original
+      loading and playback behaviour untouched.
+    */
         const query = {
           operationName: "VideoAccessToken_Clip",
 
@@ -462,191 +421,69 @@
           },
 
           query: `
-    query VideoAccessToken_Clip($slug: ID!) {
-      clip(slug: $slug) {
-        playbackAccessToken(
-          params: {
-            platform: "web"
-            playerBackend: "mediaplayer"
-            playerType: "site"
-          }
-        ) {
-          signature
-          value
-        }
+        query VideoAccessToken_Clip($slug: ID!) {
+          clip(slug: $slug) {
+            playbackAccessToken(
+              params: {
+                platform: "web"
+                playerBackend: "mediaplayer"
+                playerType: "site"
+              }
+            ) {
+              signature
+              value
+            }
 
-        videoQualities {
-          frameRate
-          quality
-          sourceURL
+            videoQualities {
+              frameRate
+              quality
+              sourceURL
+            }
+          }
         }
-      }
-    }
-  `,
+      `,
         };
 
-        let response;
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", url, false);
+        xhr.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+        xhr.setRequestHeader("Client-ID", "kimne78kx3ncx6brgo4mv6wki5h1ko");
+        xhr.send(JSON.stringify(query));
 
-        try {
-          response = await fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "text/plain;charset=UTF-8",
-              "Client-ID": "kimne78kx3ncx6brgo4mv6wki5h1ko",
-            },
-            body: JSON.stringify(query),
-          });
-        } catch (error) {
-          console.error("The Twitch GraphQL request could not be sent:", error);
-          return;
+        if (xhr.status === 200) {
+          const clipInfo = JSON.parse(xhr.responseText);
+
+          if (clipInfo.errors && clipInfo.errors.length > 0) {
+            console.error("Twitch GraphQL returned errors:", clipInfo.errors);
+            return;
+          }
+
+          const clipData = clipInfo.data;
+          const clipSource = clipData.clip.videoQualities[0].sourceURL;
+          const clipSig = clipData.clip.playbackAccessToken.signature;
+          const clipToken = clipData.clip.playbackAccessToken.value;
+
+          const videoSrc =
+            clipSource + "?sig=" + clipSig + "&token=" + encodeURI(clipToken);
+
+          videoElement.src = videoSrc;
+          videoElement.load();
+
+          await videoElement.play();
+        } else {
+          console.error("Request failed with status: " + xhr.status);
         }
 
-        console.log("Twitch GraphQL HTTP status:", response.status);
+        videoElement.style.visibility = "hidden";
 
-        let clipInfo;
-
-        try {
-          clipInfo = await response.json();
-        } catch (error) {
-          console.error("Twitch returned an unreadable response:", error);
-          return;
-        }
-
-        console.log("Twitch GraphQL response:", clipInfo);
-
-        if (!response.ok) {
-          console.error(
-            `Twitch request failed with HTTP status ${response.status}.`,
-            clipInfo,
-          );
-          return;
-        }
-
-        if (clipInfo.errors?.length) {
-          console.error(
-            "Twitch GraphQL returned errors:",
-            JSON.stringify(clipInfo.errors, null, 2),
-          );
-          return;
-        }
-
-        const clipData = clipInfo?.data?.clip;
-
-        if (!clipData) {
-          console.error("Twitch returned no clip object:", clipInfo);
-          return;
-        }
-
-        const videoQualities = clipData.videoQualities;
-        const accessToken = clipData.playbackAccessToken;
-
-        if (!Array.isArray(videoQualities) || videoQualities.length === 0) {
-          console.error(
-            "Twitch returned the clip but no video qualities:",
-            clipData,
-          );
-          return;
-        }
-
-        if (!accessToken?.signature || !accessToken?.value) {
-          console.error(
-            "Twitch returned the clip but no usable playback token:",
-            clipData,
-          );
-          return;
-        }
-
-        /*
-      Prefer the highest available quality if Twitch supplies quality values.
-      Fall back to the first entry if they are missing or non-numeric.
-    */
-        const selectedQuality =
-          [...videoQualities].sort((a, b) => {
-            const qualityA = Number.parseInt(a.quality, 10) || 0;
-            const qualityB = Number.parseInt(b.quality, 10) || 0;
-            return qualityB - qualityA;
-          })[0] || videoQualities[0];
-
-        const clipSource = selectedQuality.sourceURL;
-        const clipSig = accessToken.signature;
-        const clipToken = accessToken.value;
-
-        if (!clipSource) {
-          console.error(
-            "Twitch returned a video-quality entry without a source URL:",
-            selectedQuality,
-          );
-          return;
-        }
-
-        const videoSrc =
-          clipSource +
-          "?sig=" +
-          encodeURIComponent(clipSig) +
-          "&token=" +
-          encodeURIComponent(clipToken);
-
-        console.log("Selected Twitch video quality:", selectedQuality.quality);
-        console.log("Unsigned clip source:", clipSource);
-        console.log("Signed clip source was created.");
-
-        videoElement.addEventListener(
-          "loadedmetadata",
-          () => {
-            console.log(
-              "Clip metadata loaded.",
-              `Duration: ${videoElement.duration} seconds`,
-            );
-          },
-          { once: true },
-        );
-
-        videoElement.addEventListener(
-          "canplay",
-          () => {
-            console.log("Clip has buffered enough to begin playback.");
-          },
-          { once: true },
-        );
-
-        videoElement.addEventListener(
-          "error",
-          () => {
-            const mediaError = videoElement.error;
-
-            console.error("The browser failed to load the signed clip URL:", {
-              code: mediaError?.code,
-              message: mediaError?.message,
-              networkState: videoElement.networkState,
-              readyState: videoElement.readyState,
-            });
-          },
-          { once: true },
-        );
-
-        videoElement.src = videoSrc;
-        videoElement.load();
-
-        // Keep your original one-second presentation delay.
-        setTimeout(() => {
-          showVideo();
-        }, 1000);
+        setTimeout("showVideo();", 1000);
       }
 
       function cleanup() {
-        const videoElement = document.getElementById("videoplayer");
-
-        if (videoElement) {
-          videoElement.pause();
-          videoElement.removeAttribute("src");
-          videoElement.load();
-        }
+        document.getElementById("videocontainer").innerHTML = "";
 
         const overlay = document.getElementById("info-overlay");
         overlay.classList.add("hidden");
-
-        const mainContainer = document.getElementById("main-container");
-        mainContainer.classList.add("hidden");
       }
     </script>
   </body>
