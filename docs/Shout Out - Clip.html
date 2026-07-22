@@ -366,10 +366,20 @@
     </div>
 
     <script>
-      function showVideo() {
+      async function showVideo() {
         const videoElement = document.getElementById("videoplayer");
+
         videoElement.style.visibility = "visible";
-        videoElement.play();
+
+        try {
+          videoElement.muted = true;
+          await videoElement.play();
+
+          videoElement.muted = false;
+          videoElement.volume = 1;
+        } catch (error) {
+          console.error("Clip could not start:", error);
+        }
       }
 
       async function shoutout() {
@@ -468,10 +478,9 @@
 
           videoElement.src = videoSrc;
           videoElement.load();
-
-          await videoElement.play();
         } else {
           console.error("Request failed with status: " + xhr.status);
+          return;
         }
 
         videoElement.style.visibility = "hidden";
