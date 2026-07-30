@@ -1,279 +1,272 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>Nexus Command Check-Ins</title>
 
     <style>
       :root {
-        --bg: rgba(8, 12, 18, 0.9);
         --text: #f7f2e8;
-        --muted: rgba(247, 242, 232, 0.64);
+        --muted: rgba(247, 242, 232, 0.68);
         --cyan: #42e8ff;
         --gold: #f0be65;
         --green: #75f0a8;
-        --red: #ff6c6c;
+        --panel: rgba(7, 12, 18, 0.78);
+      }
+
+      * {
+        box-sizing: border-box;
       }
 
       html,
       body {
         margin: 0;
         padding: 0;
-        width: 100%;
-        height: 100%;
+        width: 430px;
+        height: 120px;
         overflow: hidden;
         background: transparent;
         font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
         color: var(--text);
       }
 
-      .widget {
-        box-sizing: border-box;
-        width: 100%;
-        height: 100%;
-        padding: 14px;
-        border-radius: 18px;
-        background:
-          radial-gradient(
-            circle at top left,
-            rgba(66, 232, 255, 0.18),
-            transparent 40%
-          ),
-          radial-gradient(
-            circle at bottom right,
-            rgba(240, 190, 101, 0.14),
-            transparent 42%
-          ),
-          linear-gradient(135deg, rgba(7, 12, 18, 0.96), rgba(20, 25, 33, 0.92));
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        box-shadow:
-          0 10px 28px rgba(0, 0, 0, 0.42),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.04);
-        overflow: hidden;
+      body {
+        pointer-events: none;
       }
 
-      .header {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        align-items: start;
+      .stage {
+        width: 430px;
+        height: 120px;
+        display: flex;
+        align-items: center;
         gap: 10px;
-        margin-bottom: 10px;
+        padding: 5px;
+      }
+
+      .icon-wrap {
+        position: relative;
+        flex: 0 0 auto;
+        width: 102px;
+        height: 102px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background: radial-gradient(
+          circle,
+          rgba(66, 232, 255, 0.16),
+          rgba(5, 10, 16, 0.88)
+        );
+        border: 2px solid rgba(66, 232, 255, 0.82);
+        box-shadow:
+          0 0 18px rgba(66, 232, 255, 0.3),
+          inset 0 0 18px rgba(66, 232, 255, 0.1);
+      }
+
+      .icon-wrap::after {
+        content: "";
+        position: absolute;
+        inset: 5px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .icon {
+        color: var(--cyan);
+        font-size: 38px;
+        line-height: 1;
+        font-weight: 900;
+        transform: translateY(-1px);
+      }
+
+      .stack {
+        flex: 1 1 auto;
+        min-width: 0;
+        height: 106px;
+        display: grid;
+        grid-template-rows: 26px 48px 26px;
+        gap: 3px;
+      }
+
+      .strip {
+        position: relative;
+        min-width: 0;
+        overflow: hidden;
+        padding: 5px 10px;
+        border-radius: 8px;
+        background:
+          linear-gradient(90deg, rgba(66, 232, 255, 0.07), transparent 42%),
+          var(--panel);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        box-shadow:
+          inset 3px 0 0 rgba(66, 232, 255, 0.72),
+          0 4px 12px rgba(0, 0, 0, 0.18);
+      }
+
+      .header-strip {
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
       .eyebrow {
-        font-size: 10px;
-        line-height: 1;
-        letter-spacing: 2px;
-        text-transform: uppercase;
         color: var(--cyan);
-        font-weight: 900;
-        margin-bottom: 4px;
-      }
-
-      .title {
-        font-size: 24px;
+        font-size: 7px;
         line-height: 1;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
         font-weight: 900;
-      }
-
-      .status {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 9px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        font-size: 8px;
-        line-height: 1;
-        color: var(--muted);
+        letter-spacing: 1.5px;
         text-transform: uppercase;
-        letter-spacing: 0.75px;
-      }
-
-      .dot {
-        width: 7px;
-        height: 7px;
-        border-radius: 999px;
-        background: var(--gold);
-        box-shadow: 0 0 7px rgba(240, 190, 101, 0.8);
-      }
-
-      .status.connected .dot {
-        background: var(--green);
-        box-shadow: 0 0 7px rgba(117, 240, 168, 0.8);
-      }
-
-      .status.error .dot {
-        background: var(--red);
-        box-shadow: 0 0 7px rgba(255, 108, 108, 0.8);
-      }
-
-      .latest {
-        padding: 12px 13px;
-        border-radius: 14px;
-        background: rgba(255, 255, 255, 0.055);
-        border: 1px solid rgba(240, 190, 101, 0.22);
-        margin-bottom: 10px;
-      }
-
-      .label {
-        font-size: 9px;
-        line-height: 1;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 1.3px;
-        font-weight: 900;
-        margin-bottom: 6px;
-      }
-
-      .latest-location {
-        font-size: 18px;
-        line-height: 1.15;
-        color: var(--text);
-        font-weight: 900;
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
 
-      .stats {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 9px;
-        margin-bottom: 10px;
-      }
-
-      .stat {
-        min-width: 0;
-        padding: 9px 11px;
-        border-radius: 12px;
-        background: rgba(12, 18, 28, 0.82);
-        border: 1px solid rgba(255, 255, 255, 0.075);
-      }
-
-      .stat span {
-        display: inline-block;
-        color: var(--gold);
-        font-size: 20px;
-        font-weight: 900;
+      .header-title {
+        color: var(--text);
+        font-size: 13px;
         line-height: 1;
-        margin-right: 5px;
-      }
-
-      .stat em {
-        color: var(--muted);
-        font-size: 9px;
-        font-style: normal;
+        font-weight: 900;
+        letter-spacing: 0.4px;
         text-transform: uppercase;
-        letter-spacing: 0.8px;
+        white-space: nowrap;
       }
 
-      .activity {
-        padding: 8px 10px;
-        border-radius: 12px;
-        background: rgba(10, 16, 24, 0.82);
-        border: 1px solid rgba(255, 255, 255, 0.075);
-        overflow: hidden;
+      .latest-strip {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
 
-      .history-list {
-        width: 100%;
-        overflow: hidden;
+      .record-label {
+        margin-bottom: 3px;
+        color: var(--muted);
+        font-size: 7px;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: 1px;
+        text-transform: uppercase;
       }
 
-      .history-row {
-        min-width: 0;
+      .latest-line {
         display: flex;
         align-items: baseline;
         gap: 7px;
-        font-size: 11px;
-        line-height: 1.1;
-        white-space: nowrap;
-        overflow: hidden;
-      }
-
-      .history-user {
-        flex: 0 0 auto;
-        color: var(--cyan);
-        font-weight: 900;
-        white-space: nowrap;
-      }
-
-      .history-place {
         min-width: 0;
-        flex: 1 1 auto;
-        color: var(--muted);
+      }
+
+      .latest-location {
+        min-width: 0;
+        max-width: 165px;
+        color: var(--cyan);
+        font-size: 16px;
+        line-height: 1;
+        font-weight: 900;
+        text-transform: uppercase;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
 
-      .empty {
-        color: var(--muted);
-        font-size: 11px;
-        line-height: 1.1;
+      .latest-user {
+        min-width: 0;
+        color: var(--gold);
+        font-size: 9px;
+        line-height: 1;
+        font-weight: 900;
+        text-transform: uppercase;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
 
-      .flash {
-        animation: flash-in 0.45s ease-out;
+      .stats-strip {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
       }
 
-      @keyframes flash-in {
+      .command {
+        min-width: 0;
+        color: var(--text);
+        font-size: 8px;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .counts {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 7px;
+        line-height: 1;
+        font-weight: 900;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .counts b {
+        color: var(--gold);
+        font-size: 9px;
+      }
+
+      .flash .icon-wrap,
+      .flash .latest-strip,
+      .flash .stats-strip {
+        animation: data-in 0.45s ease-out;
+      }
+
+      @keyframes data-in {
         from {
-          transform: scale(1.012);
-          filter: brightness(1.35);
+          opacity: 0;
+          transform: translateX(-10px);
+          filter: blur(2px) brightness(1.4);
         }
+
         to {
-          transform: scale(1);
-          filter: brightness(1);
+          opacity: 1;
+          transform: translateX(0);
+          filter: blur(0) brightness(1);
         }
       }
     </style>
   </head>
 
   <body>
-    <div id="widget" class="widget">
-      <div class="header">
-        <div>
-          <div class="eyebrow">Nexus Command</div>
-          <div class="title">Check-In Data <br />!checkin &lt;location&gt;</div>
-        </div>
-
-        <div id="status" class="status waiting">
-          <span class="dot"></span>
-          <span id="statusText">Connecting</span>
-        </div>
+    <div id="stage" class="stage">
+      <div class="icon-wrap">
+        <div class="icon">⌖</div>
       </div>
 
-      <div class="latest">
-        <div class="label">Latest Signal</div>
-        <div id="latestLocation" class="latest-location">
-          Awaiting check-in data
-        </div>
-      </div>
-
-      <div class="stats">
-        <div class="stat">
-          <span id="totalCheckins">0</span>
-          <em>check-ins</em>
+      <div class="stack">
+        <div class="strip header-strip">
+          <span class="eyebrow">Nexus Command</span>
+          <span class="header-title">Check-In Data</span>
         </div>
 
-        <div class="stat">
-          <span id="totalLocations">0</span>
-          <em>locations</em>
-        </div>
-      </div>
+        <div class="strip latest-strip">
+          <div class="record-label">Latest Signal</div>
 
-      <div class="activity">
-        <div class="label">Recent Signals</div>
-        <div id="historyList" class="history-list">
-          <div class="empty">No recent signals yet.</div>
+          <div class="latest-line">
+            <span id="latestLocation" class="latest-location"
+              >Awaiting Data</span
+            >
+            <span id="latestUser" class="latest-user">Standing by</span>
+          </div>
+        </div>
+
+        <div class="strip stats-strip">
+          <span class="command">Use !checkin &lt;location&gt;</span>
+
+          <div class="counts">
+            <span><b id="totalCheckins">0</b> CHECK-INS</span>
+            <span><b id="totalLocations">0</b> LOCATIONS</span>
+          </div>
         </div>
       </div>
     </div>
@@ -282,38 +275,23 @@
       function parseURL() {
         const url = new URL(document.URL);
 
-        const ws_uri =
-          url.searchParams.get("ws_uri") !== null
-            ? decodeURI(url.searchParams.get("ws_uri"))
-            : "ws://127.0.0.1:8080/";
-
         return {
-          ws_uri,
+          wsUri:
+            url.searchParams.get("ws_uri") !== null
+              ? decodeURI(url.searchParams.get("ws_uri"))
+              : "ws://127.0.0.1:8080/",
         };
       }
 
       const config = parseURL();
 
-      const widget = document.getElementById("widget");
-      const status = document.getElementById("status");
-      const statusText = document.getElementById("statusText");
-
+      const stage = document.getElementById("stage");
       const latestLocation = document.getElementById("latestLocation");
+      const latestUser = document.getElementById("latestUser");
       const totalCheckins = document.getElementById("totalCheckins");
       const totalLocations = document.getElementById("totalLocations");
-      const historyList = document.getElementById("historyList");
 
       let socket = null;
-
-      function setStatus(mode, text) {
-        status.classList.remove("connected", "waiting", "error");
-
-        if (mode) {
-          status.classList.add(mode);
-        }
-
-        statusText.innerText = text;
-      }
 
       function safeText(value, fallback = "") {
         if (value === undefined || value === null || value === "") {
@@ -327,10 +305,6 @@
         if (!data) {
           return;
         }
-
-        widget.classList.remove("flash");
-        void widget.offsetWidth;
-        widget.classList.add("flash");
 
         totalCheckins.innerText = String(Number(data.totalCheckins || 0));
         totalLocations.innerText = String(Number(data.totalLocations || 0));
@@ -346,48 +320,24 @@
           )
           .reverse()[0];
 
-        if (latestRecentCheckin && latestRecentCheckin.displayLocation) {
-          latestLocation.innerText = latestRecentCheckin.displayLocation;
+        if (latestRecentCheckin) {
+          latestLocation.innerText = safeText(
+            latestRecentCheckin.displayLocation,
+            "Unknown location",
+          );
+
+          latestUser.innerText = safeText(
+            latestRecentCheckin.username,
+            "Viewer",
+          );
         } else {
-          latestLocation.innerText = "Awaiting check-in data";
+          latestLocation.innerText = "Awaiting Data";
+          latestUser.innerText = "Standing by";
         }
 
-        renderHistory(recentHistory);
-      }
-
-      function renderHistory(history) {
-        historyList.innerHTML = "";
-
-        const checkinsOnly = history
-          .filter(
-            (item) =>
-              String(item.action || "checkin").toLowerCase() === "checkin",
-          )
-          .reverse();
-
-        if (checkinsOnly.length === 0) {
-          historyList.innerHTML =
-            '<div class="empty">No recent signals yet.</div>';
-          return;
-        }
-
-        const item = checkinsOnly[0];
-
-        const row = document.createElement("div");
-        row.className = "history-row";
-
-        const user = document.createElement("span");
-        user.className = "history-user";
-        user.innerText = safeText(item.username, "Viewer");
-
-        const place = document.createElement("span");
-        place.className = "history-place";
-        place.innerText = safeText(item.displayLocation, "Unknown location");
-
-        row.appendChild(user);
-        row.appendChild(place);
-
-        historyList.appendChild(row);
+        stage.classList.remove("flash");
+        void stage.offsetWidth;
+        stage.classList.add("flash");
       }
 
       function handleStreamerBotEvent(wsdata) {
@@ -404,11 +354,7 @@
 
         try {
           innerMessage = JSON.parse(wsdata.data.data);
-        } catch (error) {
-          console.warn(
-            "Nexus widget could not parse wrapped custom event",
-            error,
-          );
+        } catch {
           return;
         }
 
@@ -418,13 +364,9 @@
       }
 
       function connectws() {
-        setStatus("waiting", "Connecting");
-
-        socket = new WebSocket(config.ws_uri);
+        socket = new WebSocket(config.wsUri);
 
         socket.onopen = () => {
-          setStatus("connected", "Connected");
-
           socket.send(
             JSON.stringify({
               request: "Subscribe",
@@ -434,8 +376,6 @@
               },
             }),
           );
-
-          console.log("Connected to", config.ws_uri);
         };
 
         socket.onmessage = (event) => {
@@ -443,19 +383,14 @@
 
           try {
             wsdata = JSON.parse(event.data);
-          } catch (error) {
+          } catch {
             return;
           }
 
           handleStreamerBotEvent(wsdata);
         };
 
-        socket.onerror = () => {
-          setStatus("error", "Error");
-        };
-
         socket.onclose = () => {
-          setStatus("error", "Offline");
           setTimeout(connectws, 5000);
         };
       }
